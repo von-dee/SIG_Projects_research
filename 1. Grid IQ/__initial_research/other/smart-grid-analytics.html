@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Grid Analytics — Competitive Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0) !important;
+        }
+        .animate-fade-up { transform: translateY(40px); }
+        .animate-fade-left { transform: translateX(-40px); }
+        .animate-fade-right { transform: translateX(40px); }
+        .animate-scale { transform: scale(0.8); }
+
+        .hero-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(16, 185, 129, 0.15) 0%, transparent 50%);
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes gridPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .card-glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .card-glass:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            border-radius: 4px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .shimmer-text {
+            background: linear-gradient(90deg, #3b82f6, #10b981, #3b82f6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .tab-active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .competitor-card {
+            transition: all 0.4s ease;
+        }
+        .competitor-card:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+
+        .gap-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+
+        .solution-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transition: left 0.6s ease;
+        }
+        .solution-card:hover::before {
+            left: 100%;
+        }
+
+        .number-counter {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            margin: 4rem 0;
+        }
+
+        .phase-timeline {
+            position: relative;
+        }
+        .phase-timeline::before {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #3b82f6, #10b981, #f59e0b);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="sticky-nav py-4 px-6">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center floating-icon">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="font-bold text-xl tracking-tight">Grid<span class="text-blue-400">Analytics</span></span>
+            </div>
+            <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#landscape" class="hover:text-blue-400 transition-colors">Landscape</a>
+                <a href="#gaps" class="hover:text-blue-400 transition-colors">Gaps</a>
+                <a href="#solutions" class="hover:text-blue-400 transition-colors">Solutions</a>
+                <a href="#strategy" class="hover:text-blue-400 transition-colors">Strategy</a>
+                <a href="#roi" class="hover:text-blue-400 transition-colors">ROI</a>
+            </div>
+            <button onclick="scrollToSection('strategy')" class="px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-semibold text-sm hover:shadow-lg hover:shadow-blue-500/30 transition-all">
+                View Portfolio
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center relative">
+        <div class="absolute inset-0 grid-bg opacity-30"></div>
+
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-20 left-10 w-2 h-2 bg-blue-500 rounded-full animate-ping" style="animation-duration: 3s;"></div>
+            <div class="absolute top-40 right-20 w-3 h-3 bg-emerald-500 rounded-full animate-ping" style="animation-duration: 4s; animation-delay: 1s;"></div>
+            <div class="absolute bottom-32 left-1/4 w-2 h-2 bg-blue-400 rounded-full animate-ping" style="animation-duration: 5s; animation-delay: 2s;"></div>
+            <div class="absolute top-1/3 right-1/3 w-4 h-4 bg-emerald-400 rounded-full animate-pulse" style="animation-duration: 6s;"></div>
+        </div>
+
+        <div class="max-w-6xl mx-auto px-6 py-20 relative z-10">
+            <div class="text-center space-y-8">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm font-medium mb-4 animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    Comprehensive Market Analysis 2026
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-black leading-tight animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    Smart Grid Analytics<br>
+                    <span class="shimmer-text">Competitors & Opportunities</span>
+                </h1>
+
+                <p class="text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto leading-relaxed animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    Identifying <span class="text-white font-semibold">10 critical gaps</span> and 
+                    <span class="text-white font-semibold">15 breakthrough solutions</span> in Africa's 
+                    <span class="text-emerald-400 font-semibold">$15B+</span> smart grid market
+                </p>
+
+                <div class="flex flex-wrap justify-center gap-4 mt-8 animate-on-scroll animate-fade-up" style="animation-delay: 0.4s;">
+                    <div class="metric-card px-6 py-4 rounded-xl">
+                        <div class="text-3xl font-bold text-blue-400 number-counter" data-target="19.14">0</div>
+                        <div class="text-sm text-slate-400 mt-1">Billion USD (2026)</div>
+                    </div>
+                    <div class="metric-card px-6 py-4 rounded-xl">
+                        <div class="text-3xl font-bold text-emerald-400 number-counter" data-target="109.45">0</div>
+                        <div class="text-sm text-slate-400 mt-1">Billion USD (2035)</div>
+                    </div>
+                    <div class="metric-card px-6 py-4 rounded-xl">
+                        <div class="text-3xl font-bold text-amber-400 number-counter" data-target="21.38">0</div>
+                        <div class="text-sm text-slate-400 mt-1">% CAGR Growth</div>
+                    </div>
+                </div>
+
+                <div class="animate-on-scroll animate-fade-up" style="animation-delay: 0.5s;">
+                    <button onclick="scrollToSection('landscape')" class="mt-8 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-bold text-lg hover:shadow-2xl hover:shadow-blue-500/30 transition-all transform hover:scale-105 flex items-center gap-2 mx-auto">
+                        Explore Analysis
+                        <svg class="w-5 h-5 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
+    </section>
+
+    <!-- Market Context -->
+    <section class="py-20 px-6" id="context">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="animate-on-scroll animate-fade-left">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">The African Energy Crisis</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                        Africa represents a dramatically underserved segment with unique challenges that global players fail to address.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-xl">40%</div>
+                            <div>
+                                <div class="font-semibold">Grid Losses in Nigeria</div>
+                                <div class="text-sm text-slate-500">Technical & non-technical losses</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-lg">600M+</div>
+                            <div>
+                                <div class="font-semibold">Without Electricity</div>
+                                <div class="text-sm text-slate-500">Sub-Saharan Africa population</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg">$500K</div>
+                            <div>
+                                <div class="font-semibold">Minimum Enterprise Cost</div>
+                                <div class="text-sm text-slate-500">Schneider/Siemens entry point</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="animate-on-scroll animate-fade-right">
+                    <div class="card-glass rounded-2xl p-8">
+                        <h3 class="text-xl font-bold mb-6 text-blue-400">Market Size Trajectory</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm">
+                                    <span>Global Smart Grid Software</span>
+                                    <span class="text-blue-400 font-bold">$19.14B → $109.45B</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" data-width="85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm">
+                                    <span>MEA Grid Operations</span>
+                                    <span class="text-emerald-400 font-bold">$620M (Fastest Growing)</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" data-width="65%" style="background: linear-gradient(90deg, #10b981, #059669);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm">
+                                    <span>Grid Edge Orchestration</span>
+                                    <span class="text-amber-400 font-bold">$6.89B → $13.46B</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" data-width="55%" style="background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2 text-sm">
+                                    <span>Africa's Market Share</span>
+                                    <span class="text-purple-400 font-bold">~5% (2x Growth Rate)</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" data-width="30%" style="background: linear-gradient(90deg, #8b5cf6, #7c3aed);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Competitive Landscape -->
+    <section class="py-20 px-6" id="landscape">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Competitive Landscape</h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">Four distinct player categories with unique strengths and critical gaps</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Enterprise Global -->
+                <div class="card-glass rounded-2xl p-6 competitor-card animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Enterprise Global</h3>
+                    <p class="text-sm text-slate-400 mb-4">Schneider, Siemens, Hitachi</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Proven at scale
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Digital twins
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Enterprise security
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-700">
+                        <div class="text-xs font-semibold text-red-400 mb-2">CRITICAL GAPS</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="gap-badge bg-red-500/20 text-red-400">$500K-$5M+</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">12-24 mo deploy</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">Needs SCADA</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">Not for NTL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- African Specialists -->
+                <div class="card-glass rounded-2xl p-6 competitor-card animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="w-14 h-14 rounded-xl bg-emerald-500/20 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">African Specialists</h3>
+                    <p class="text-sm text-slate-400 mb-4">Beacon Power, Awesense</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Local context
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Low-cost deploy
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            NTL focus
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-700">
+                        <div class="text-xs font-semibold text-amber-400 mb-2">CRITICAL GAPS</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="gap-badge bg-amber-500/20 text-amber-400">Software only</span>
+                            <span class="gap-badge bg-amber-500/20 text-amber-400">5 countries max</span>
+                            <span class="gap-badge bg-amber-500/20 text-amber-400">No carbon layer</span>
+                            <span class="gap-badge bg-amber-500/20 text-amber-400">Limited predictive</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Investment Platforms -->
+                <div class="card-glass rounded-2xl p-6 competitor-card animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Investment Platforms</h3>
+                    <p class="text-sm text-slate-400 mb-4">AEMP, AfDB backed</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Deal flow
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Policy influence
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Blended finance
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-700">
+                        <div class="text-xs font-semibold text-red-400 mb-2">CRITICAL GAPS</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="gap-badge bg-red-500/20 text-red-400">Not tech provider</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">No grid software</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">Policy only</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">No operational impact</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hardware Vendors -->
+                <div class="card-glass rounded-2xl p-6 competitor-card animate-on-scroll animate-fade-up" style="animation-delay: 0.4s;">
+                    <div class="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Hardware Vendors</h3>
+                    <p class="text-sm text-slate-400 mb-4">ABB, GE, Itron</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Reliable sensors
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            SCADA integration
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Proven hardware
+                        </div>
+                    </div>
+                    <div class="pt-4 border-t border-slate-700">
+                        <div class="text-xs font-semibold text-red-400 mb-2">CRITICAL GAPS</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="gap-badge bg-red-500/20 text-red-400">$100K-$2M CAPEX</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">Needs infrastructure</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">No AI native</span>
+                            <span class="gap-badge bg-red-500/20 text-red-400">Foreign tech dependency</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Critical Gaps -->
+    <section class="py-20 px-6" id="gaps">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">10 Critical Gaps Identified</h2>
+                <p class="text-slate-400 text-lg">Systematic failures across the value chain creating market opportunities</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.05s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 font-bold">G1</div>
+                        <h3 class="font-bold">Affordable End-to-End</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">No comprehensive solution under $100K for small utilities</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-400 font-bold">G2</div>
+                        <h3 class="font-bold">NTL Reduction</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">Theft and bypass detection remains manual and reactive</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.15s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">G3</div>
+                        <h3 class="font-bold">Low-Cost Sensors</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">AMI sensors cost 10-50x more than African utilities can afford</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold">G4</div>
+                        <h3 class="font-bold">Unified Platform</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">No integration between national grid, mini-grid, and off-grid assets</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.25s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">G5</div>
+                        <h3 class="font-bold">Predictive Maintenance</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">Transformers fail catastrophically due to lack of monitoring</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold">G6</div>
+                        <h3 class="font-bold">Satellite Monitoring</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">Vegetation and ROW monitoring relies on expensive helicopters</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.35s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">G7</div>
+                        <h3 class="font-bold">Outage Management</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">No automated fault isolation for LV networks</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.4s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">G8</div>
+                        <h3 class="font-bold">Hybrid Billing</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">No platform supports prepaid, postpaid, and PAYG simultaneously</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.45s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">G9</div>
+                        <h3 class="font-bold">Carbon Credits</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">Grid loss reduction not monetized as carbon assets</p>
+                </div>
+                <div class="card-glass rounded-xl p-5 animate-on-scroll animate-fade-up" style="animation-delay: 0.5s;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold">G10</div>
+                        <h3 class="font-bold">Workforce Management</h3>
+                    </div>
+                    <p class="text-sm text-slate-400">Field teams lack mobile-first tools with offline sync</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Solutions -->
+    <section class="py-20 px-6" id="solutions">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">15 Solutions Portfolio</h2>
+                <p class="text-slate-400 text-lg">5 Hardware + 10 Software solutions mapped to critical gaps</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex justify-center gap-4 mb-12 animate-on-scroll animate-fade-up">
+                <button onclick="switchTab('hardware')" id="tab-hardware" class="tab-active px-6 py-3 rounded-lg font-semibold transition-all">
+                    Hardware (5)
+                </button>
+                <button onclick="switchTab('software')" id="tab-software" class="px-6 py-3 rounded-lg font-semibold bg-slate-800 text-slate-400 hover:text-white transition-all">
+                    Software (10)
+                </button>
+            </div>
+
+            <!-- Hardware Solutions -->
+            <div id="content-hardware" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-blue-500/20 text-blue-400">G3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">GridEdge Nano-Sensor</h3>
+                    <p class="text-sm text-slate-400 mb-4">Sub-$50 LoRaWAN sensor for voltage, current, temperature at distribution transformer level</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Unit Price</span>
+                            <span class="font-semibold">$45 + $7/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$1.8B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$45M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="45%"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">10x cheaper than traditional AMI sensors</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.15s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-emerald-500/20 text-emerald-400">G5</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Transformer Health Monitor</h3>
+                    <p class="text-sm text-slate-400 mb-4">IoT device with thermal imaging + vibration analysis for distribution transformers</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Unit Price</span>
+                            <span class="font-semibold">$180 + $15/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$1.2B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$28M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="50%" style="background: linear-gradient(90deg, #10b981, #059669);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Prevents 30% of African outages</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-amber-500/20 text-amber-400">G3</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Solar-Powered AMI Gateway</h3>
+                    <p class="text-sm text-slate-400 mb-4">All-in-one gateway for smart metering with solar + battery backup</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Unit Price</span>
+                            <span class="font-semibold">$320 + $10/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$800M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$18M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="42%" style="background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Works completely off-grid</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.25s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-red-500/20 text-red-400">G2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Theft Detection Clamp</h3>
+                    <p class="text-sm text-slate-400 mb-4">Non-invasive current clamp with AI anomaly detection for bypass/theft identification</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Unit Price</span>
+                            <span class="font-semibold">$65 + $8/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$600M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$15M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="55%" style="background: linear-gradient(90deg, #ef4444, #dc2626);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Real-time theft pattern detection</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-purple-500/20 text-purple-400">G7</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">LV Self-Healing Switch</h3>
+                    <p class="text-sm text-slate-400 mb-4">Low-cost automated recloser for LV networks with AI-driven fault isolation</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Unit Price</span>
+                            <span class="font-semibold">$280 + $12/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$900M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$22M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="48%" style="background: linear-gradient(90deg, #8b5cf6, #7c3aed);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Reduces outage duration by 70%</div>
+                </div>
+            </div>
+
+            <!-- Software Solutions -->
+            <div id="content-software" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+                <div class="solution-card card-glass rounded-2xl p-6 border-2 border-blue-500/50 animate-on-scroll animate-fade-up" style="animation-delay: 0.05s;">
+                    <div class="absolute top-4 right-4">
+                        <span class="gap-badge bg-blue-500 text-white text-xs">⭐ HIGHEST PRIORITY</span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-blue-500/20 text-blue-400">G2</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">NTL.AI Platform</h3>
+                    <p class="text-sm text-slate-400 mb-4">AI/ML platform analyzing consumption patterns, energy balancing, and anomaly detection</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.15/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$4.0B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$35M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="75%"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">+$150M/year revenue protected</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-emerald-500/20 text-emerald-400">G4</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">GridSync Unified OS</h3>
+                    <p class="text-sm text-slate-400 mb-4">Single platform integrating national grid, mini-grid, and off-grid assets with open APIs</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.25/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$1.2B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$22M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="80%" style="background: linear-gradient(90deg, #10b981, #059669);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Only platform connecting all three grid types</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.15s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-amber-500/20 text-amber-400">G6</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">SatGrid Monitor</h3>
+                    <p class="text-sm text-slate-400 mb-4">Satellite imagery + AI for vegetation encroachment, asset location, and ROW monitoring</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.08/km/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$800M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$12M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="85%" style="background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">90% cheaper than helicopter inspections</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-purple-500/20 text-purple-400">G10</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">FieldForce Pro</h3>
+                    <p class="text-sm text-slate-400 mb-4">Mobile-first workforce management with offline sync, route optimization, job tracking</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$15/user/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$600M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$10M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="82%" style="background: linear-gradient(90deg, #8b5cf6, #7c3aed);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">1,200 jobs created, 30% efficiency gain</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.25s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-teal-500/20 text-teal-400">G9</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">CarbonGrid Ledger</h3>
+                    <p class="text-sm text-slate-400 mb-4">Blockchain-based carbon credit tracking for every kWh of loss reduction and diesel displaced</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.02/tCO2e</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$500M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$12M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="90%" style="background: linear-gradient(90deg, #14b8a6, #0d9488);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">5.0 Mt CO2e/year — highest climate impact</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-rose-500/20 text-rose-400">G5</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">PredictiveTransformer</h3>
+                    <p class="text-sm text-slate-400 mb-4">Cloud-based predictive maintenance for distribution transformers using sensor fusion</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.12/transformer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$2.0B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$28M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="78%" style="background: linear-gradient(90deg, #f43f5e, #e11d48);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Integrates with H2 hardware for closed-loop</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.35s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-cyan-500/20 text-cyan-400">G4</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">MicroGrid Orchestrator</h3>
+                    <p class="text-sm text-slate-400 mb-4">DERMS for mini-grids with automated dispatch, demand response, grid-forming control</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.20/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$600M</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$15M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="75%" style="background: linear-gradient(90deg, #06b6d4, #0891b2);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Only DERMS designed for African mini-grid economics</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.4s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-indigo-500/20 text-indigo-400">G8</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">RevenueShield Hybrid Billing</h3>
+                    <p class="text-sm text-slate-400 mb-4">Unified billing platform supporting prepaid, postpaid, and pay-as-you-go models</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.10/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$1.0B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$32M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="72%" style="background: linear-gradient(90deg, #6366f1, #4f46e5);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Seamless transition between payment models</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.45s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-orange-500/20 text-orange-400">G7</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">OutagePredict AI</h3>
+                    <p class="text-sm text-slate-400 mb-4">Low-bandwidth AI model predicting outages 24-48 hours ahead using weather + load + asset data</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.18/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$1.5B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$18M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="80%" style="background: linear-gradient(90deg, #f97316, #ea580c);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">Works on 2G networks, no high-bandwidth requirement</div>
+                </div>
+
+                <div class="solution-card card-glass rounded-2xl p-6 animate-on-scroll animate-fade-up" style="animation-delay: 0.5s;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                            </svg>
+                        </div>
+                        <span class="gap-badge bg-pink-500/20 text-pink-400">G1</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Utility Digital Twin Lite</h3>
+                    <p class="text-sm text-slate-400 mb-4">Lightweight digital twin for utilities under 100K customers, no PhD required</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Pricing</span>
+                            <span class="font-semibold">$0.30/customer/mo</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">TAM</span>
+                            <span class="font-semibold text-blue-400">$2.5B</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Year 5 Revenue</span>
+                            <span class="font-semibold text-emerald-400">$25M</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" data-width="85%" style="background: linear-gradient(90deg, #ec4899, #db2777);"></div>
+                    </div>
+                    <div class="mt-3 text-xs text-slate-500">1/20th the cost of Siemens/GE digital twins</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Strategic Portfolio -->
+    <section class="py-20 px-6" id="strategy">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Strategic Portfolio Recommendation</h2>
+                <p class="text-slate-400 text-lg">Three-phase investment roadmap over 5 years</p>
+            </div>
+
+            <div class="phase-timeline space-y-8 pl-4 md:pl-0">
+                <!-- Phase 1 -->
+                <div class="relative pl-16 animate-on-scroll animate-fade-up" style="animation-delay: 0.1s;">
+                    <div class="absolute left-0 md:left-4 top-0 w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold z-10">1</div>
+                    <div class="card-glass rounded-2xl p-8">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-blue-400">Phase 1: Foundation</h3>
+                                <p class="text-slate-400">0-18 months — $5.5M Investment</p>
+                            </div>
+                            <div class="mt-4 md:mt-0 text-right">
+                                <div class="text-3xl font-bold text-emerald-400">$80M</div>
+                                <div class="text-sm text-slate-500">Year 5 Revenue</div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-blue-500/20 text-blue-400">S1</span>
+                                    <h4 class="font-bold">NTL.AI Platform</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-blue-400 mb-2">$2.5M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Highest impact gap, proven demand</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Outcome-based pricing aligns with cash flow</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>No hardware dependency to launch</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-emerald-500/20 text-emerald-400">H1</span>
+                                    <h4 class="font-bold">GridEdge Nano-Sensor</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-emerald-400 mb-2">$3.0M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Hardware anchor for all software layers</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Creates data moat for NTL.AI</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Shenzhen + African assembly</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center gap-4">
+                            <div class="flex-1 bg-slate-800 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-2 rounded-full" style="width: 30%"></div>
+                            </div>
+                            <span class="text-sm font-semibold text-blue-400">14.5x ROI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="relative pl-16 animate-on-scroll animate-fade-up" style="animation-delay: 0.2s;">
+                    <div class="absolute left-0 md:left-4 top-0 w-12 h-12 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold z-10">2</div>
+                    <div class="card-glass rounded-2xl p-8">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-emerald-400">Phase 2: Platform Expansion</h3>
+                                <p class="text-slate-400">18-36 months — $7.5M Investment</p>
+                            </div>
+                            <div class="mt-4 md:mt-0 text-right">
+                                <div class="text-3xl font-bold text-emerald-400">$50M</div>
+                                <div class="text-sm text-slate-500">Year 5 Revenue</div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-emerald-500/20 text-emerald-400">S2</span>
+                                    <h4 class="font-bold">GridSync Unified OS</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-emerald-400 mb-2">$4.0M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Platform play with network effects</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>API ecosystem creates developer community</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Natural upsell from NTL.AI base</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-rose-500/20 text-rose-400">S6</span>
+                                    <h4 class="font-bold">PredictiveTransformer</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-rose-400 mb-2">$3.5M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Natural upsell from GridEdge sensors</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>High-margin SaaS with hardware integration</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Addresses aging infrastructure crisis</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center gap-4">
+                            <div class="flex-1 bg-slate-800 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-emerald-500 to-rose-500 h-2 rounded-full" style="width: 55%"></div>
+                            </div>
+                            <span class="text-sm font-semibold text-emerald-400">6.7x ROI</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="relative pl-16 animate-on-scroll animate-fade-up" style="animation-delay: 0.3s;">
+                    <div class="absolute left-0 md:left-4 top-0 w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-white font-bold z-10">3</div>
+                    <div class="card-glass rounded-2xl p-8">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-amber-400">Phase 3: Ecosystem & Differentiation</h3>
+                                <p class="text-slate-400">36-60 months — $5.5M Investment</p>
+                            </div>
+                            <div class="mt-4 md:mt-0 text-right">
+                                <div class="text-3xl font-bold text-emerald-400">$30M</div>
+                                <div class="text-sm text-slate-500">Year 5 Revenue</div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-teal-500/20 text-teal-400">S5</span>
+                                    <h4 class="font-bold">CarbonGrid Ledger</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-teal-400 mb-2">$2.0M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Emerging carbon market, ESG tailwinds</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Differentiation from BPS/Awesense</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Additional revenue for existing customers</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-800/50 rounded-xl p-6">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <span class="gap-badge bg-orange-500/20 text-orange-400">S9</span>
+                                    <h4 class="font-bold">OutagePredict AI</h4>
+                                </div>
+                                <div class="text-2xl font-bold text-orange-400 mb-2">$3.5M</div>
+                                <ul class="text-sm text-slate-400 space-y-2">
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Low-bandwidth differentiation</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>2G-compatible AI models</li>
+                                    <li class="flex items-center gap-2"><svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Competitive moat against global players</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex items-center gap-4">
+                            <div class="flex-1 bg-slate-800 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-teal-500 to-orange-500 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                            <span class="text-sm font-semibold text-amber-400">5.5x ROI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Total Portfolio & ROI -->
+    <section class="py-20 px-6" id="roi">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Total Portfolio Impact</h2>
+                <p class="text-slate-400 text-lg">$18.5M investment generating transformational outcomes</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="card-glass rounded-2xl p-8 text-center animate-on-scroll animate-scale" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center mx-auto mb-4 floating-icon">
+                        <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="text-4xl font-black text-blue-400 number-counter" data-target="18.5">0</div>
+                    <div class="text-sm text-slate-400 mt-2">Total Investment ($M)</div>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 text-center animate-on-scroll animate-scale" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center mx-auto mb-4 floating-icon" style="animation-delay: 0.5s;">
+                        <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                    <div class="text-4xl font-black text-emerald-400 number-counter" data-target="160">0</div>
+                    <div class="text-sm text-slate-400 mt-2">Year 5 Revenue ($M)</div>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 text-center animate-on-scroll animate-scale" style="animation-delay: 0.3s;">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center mx-auto mb-4 floating-icon" style="animation-delay: 1s;">
+                        <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="text-4xl font-black text-amber-400 number-counter" data-target="8.6">0</div>
+                    <div class="text-sm text-slate-400 mt-2">Portfolio ROI (x)</div>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 text-center animate-on-scroll animate-scale" style="animation-delay: 0.4s;">
+                    <div class="w-16 h-16 rounded-2xl bg-purple-500/20 flex items-center justify-center mx-auto mb-4 floating-icon" style="animation-delay: 1.5s;">
+                        <svg class="w-8 h-8 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="text-4xl font-black text-purple-400 number-counter" data-target="3000">0</div>
+                    <div class="text-sm text-slate-400 mt-2">Jobs Created</div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-left" style="animation-delay: 0.2s;">
+                    <h3 class="text-xl font-bold mb-6 text-emerald-400">Environmental Impact</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-400">CO2 Reduction</span>
+                            <span class="text-2xl font-bold text-emerald-400">8.5+ Mt</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" data-width="85%" style="background: linear-gradient(90deg, #10b981, #059669);"></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-slate-400">Revenue Protected</span>
+                            <span class="text-2xl font-bold text-blue-400">$300M+/yr</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" data-width="75%"></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-slate-400">Customers Served</span>
+                            <span class="text-2xl font-bold text-amber-400">20M+</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" data-width="90%" style="background: linear-gradient(90deg, #f59e0b, #d97706);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-right" style="animation-delay: 0.3s;">
+                    <h3 class="text-xl font-bold mb-6 text-blue-400">Why Now?</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-400 font-bold text-sm">1</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">DFI Capital Flow</div>
+                                <div class="text-sm text-slate-400">AfDB estimates $150B+ in power infrastructure by 2033</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-emerald-400 font-bold text-sm">2</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">BPS Validation</div>
+                                <div class="text-sm text-slate-400">Proved African utilities will pay (ECG Ghana: 2x revenue)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-amber-400 font-bold text-sm">3</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Carbon Market Maturity</div>
+                                <div class="text-sm text-slate-400">Article 6 mechanisms creating demand for verified credits</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-purple-400 font-bold text-sm">4</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Connectivity Expansion</div>
+                                <div class="text-sm text-slate-400">LoRaWAN networks expanding (Senet, Actility, local operators)</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-rose-400 font-bold text-sm">5</span>
+                            </div>
+                            <div>
+                                <div class="font-semibold">Regulatory Pressure</div>
+                                <div class="text-sm text-slate-400">Nigeria mandates 20% loss reduction target by 2025</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-divider max-w-4xl mx-auto"></div>
+
+    <!-- Competitive Positioning -->
+    <section class="py-20 px-6" id="positioning">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 animate-on-scroll animate-fade-up">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Competitive Positioning</h2>
+                <p class="text-slate-400 text-lg">How the portfolio wins against each competitor category</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-left" style="animation-delay: 0.1s;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">vs. Schneider / Siemens / Hitachi</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">10x lower price point</strong> — accessible to African utilities</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Designed for intermittent connectivity</strong> — works on 2G/3G</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Local field operations</strong> — mobile-first, offline-capable</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Outcome-based pricing</strong> — aligned with utility cash flow</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Rapid deployment</strong> — weeks not months</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-right" style="animation-delay: 0.2s;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">vs. BPS / Awesense</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Hardware + Software</strong> integrated stack — not software-only</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Broader geographic scalability</strong> — pan-African from day 1</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Carbon credit monetization</strong> — additional revenue stream</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Open platform</strong> vs. closed proprietary — API ecosystem</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Predictive maintenance</strong> — proactive vs. reactive analytics</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-left" style="animation-delay: 0.3s;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">vs. Mini-grid Operators</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Grid-to-grid integration</strong> — connects national + mini + off-grid</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Enterprise-grade analytics</strong> — not siloed operations</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Utility partnership model</strong> — leverages existing infrastructure</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Scalable software economics</strong> — 80%+ gross margins</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-glass rounded-2xl p-8 animate-on-scroll animate-fade-right" style="animation-delay: 0.4s;">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold">vs. Traditional Hardware Vendors</h3>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">AI-native design</strong> — not bolt-on analytics</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Low-bandwidth optimization</strong> — works in connectivity-constrained environments</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">SaaS business model</strong> — OPEX not CAPEX</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-sm">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">✓</span>
+                            <span><strong class="text-white">Rapid deployment</strong> — no 18-month implementation cycles</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <span class="font-bold text-xl tracking-tight">Grid<span class="text-blue-400">Analytics</span></span>
+            </div>
+            <p class="text-slate-500 text-sm max-w-2xl mx-auto">
+                The African smart grid analytics market represents a $15B+ opportunity with significant white space. 
+                This is not just a technology opportunity — it's an infrastructure-critical, climate-impactful, 
+                high-return investment in Africa's energy future.
+            </p>
+            <div class="mt-8 text-xs text-slate-600">
+                Analysis based on market data from 2026. Projections subject to market conditions.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Animate progress bars
+                    const progressBars = entry.target.querySelectorAll('.progress-bar-fill');
+                    progressBars.forEach(bar => {
+                        const width = bar.getAttribute('data-width');
+                        if (width) {
+                            setTimeout(() => {
+                                bar.style.width = width;
+                            }, 200);
+                        }
+                    });
+
+                    // Animate number counters
+                    const counters = entry.target.querySelectorAll('.number-counter');
+                    counters.forEach(counter => {
+                        const target = parseFloat(counter.getAttribute('data-target'));
+                        if (target && !counter.classList.contains('counted')) {
+                            counter.classList.add('counted');
+                            animateCounter(counter, target);
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Number counter animation
+        function animateCounter(element, target) {
+            const duration = 2000;
+            const start = 0;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing function
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = start + (target - start) * easeOutQuart;
+
+                if (target >= 1000) {
+                    element.textContent = Math.floor(current).toLocaleString();
+                } else if (target % 1 !== 0) {
+                    element.textContent = current.toFixed(2);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    if (target >= 1000) {
+                        element.textContent = Math.floor(target).toLocaleString();
+                    } else if (target % 1 !== 0) {
+                        element.textContent = target.toFixed(2);
+                    } else {
+                        element.textContent = target;
+                    }
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            const hardwareContent = document.getElementById('content-hardware');
+            const softwareContent = document.getElementById('content-software');
+            const hardwareTab = document.getElementById('tab-hardware');
+            const softwareTab = document.getElementById('tab-software');
+
+            if (tab === 'hardware') {
+                hardwareContent.classList.remove('hidden');
+                softwareContent.classList.add('hidden');
+                hardwareTab.classList.add('tab-active');
+                hardwareTab.classList.remove('bg-slate-800', 'text-slate-400');
+                softwareTab.classList.remove('tab-active');
+                softwareTab.classList.add('bg-slate-800', 'text-slate-400');
+            } else {
+                hardwareContent.classList.add('hidden');
+                softwareContent.classList.remove('hidden');
+                softwareTab.classList.add('tab-active');
+                softwareTab.classList.remove('bg-slate-800', 'text-slate-400');
+                hardwareTab.classList.remove('tab-active');
+                hardwareTab.classList.add('bg-slate-800', 'text-slate-400');
+            }
+
+            // Re-observe elements in the newly visible tab
+            setTimeout(() => {
+                document.querySelectorAll('#content-' + tab + ' .animate-on-scroll').forEach(el => {
+                    el.classList.remove('visible');
+                    observer.observe(el);
+                });
+            }, 100);
+        }
+
+        // Smooth scroll
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize progress bars on page load for visible elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const heroSection = document.querySelector('.hero-bg');
+            if (heroSection) {
+                heroSection.querySelectorAll('.animate-on-scroll').forEach(el => {
+                    el.classList.add('visible');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

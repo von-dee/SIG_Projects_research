@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GridIQ West Africa — Critical Gap Analysis Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace'],
+            },
+        }
+    }
+}
+</script>
+<style>
+:root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: #1a1f2e;
+    --border-color: #2a3441;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent-cyan: #06b6d4;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+    --accent-emerald: #10b981;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+.bg-grid {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; opacity: 0.4;
+}
+.bg-grid::before {
+    content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
+    background-image:
+        linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridMove 20s linear infinite;
+}
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+}
+.particles {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 1; overflow: hidden;
+}
+.particle {
+    position: absolute; width: 4px; height: 4px;
+    background: var(--accent-cyan); border-radius: 50%; opacity: 0;
+    animation: floatUp linear infinite;
+}
+@keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+.glass-card {
+    background: rgba(26, 31, 46, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card:hover {
+    border-color: rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.1), 0 4px 20px rgba(0,0,0,0.3);
+    transform: translateY(-4px);
+}
+.badge-p0 {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+}
+.badge-p1 {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+.badge-p2 {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+.badge-p3 {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+.progress-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 999px;
+    overflow: hidden;
+    height: 8px;
+}
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    opacity: 0;
+}
+.accordion-content.open {
+    opacity: 1;
+}
+.tab-btn {
+    position: relative;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-secondary);
+}
+.tab-btn:hover {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+}
+.tab-btn.active {
+    background: rgba(6, 182, 212, 0.1);
+    border-color: rgba(6, 182, 212, 0.3);
+    color: var(--accent-cyan);
+}
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 20%;
+    width: 60%;
+    height: 2px;
+    background: var(--accent-cyan);
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+.pulse-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent-emerald);
+    position: relative;
+}
+.pulse-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: inherit;
+    animation: pulse 2s ease-out infinite;
+    transform: translate(-50%, -50%);
+}
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50%, -50%) scale(3); opacity: 0; }
+}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+.nav-link {
+    position: relative;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+.nav-link:hover, .nav-link.active {
+    color: var(--text-primary);
+    background: rgba(6, 182, 212, 0.1);
+}
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 3px; height: 60%;
+    background: var(--accent-cyan);
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+.filter-btn {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+}
+.filter-btn:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+.filter-btn.active {
+    background: var(--accent-cyan);
+    color: var(--bg-primary);
+    border-color: var(--accent-cyan);
+}
+.compare-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+.compare-table td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.875rem;
+}
+.compare-table tr:hover td {
+    background: rgba(255,255,255,0.02);
+}
+.scenario-card {
+    position: relative;
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+.scenario-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+}
+.scenario-card.selected {
+    border-color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.05);
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
+}
+.scenario-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 24px; height: 24px;
+    background: var(--accent-cyan);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--bg-primary);
+    font-weight: 700;
+}
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.status-critical {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+.status-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+.status-ok {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.gradient-text {
+    background: linear-gradient(135deg, #06b6d4, #8b5cf6, #f43f5e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.animated-border {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.animated-border::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, #06b6d4, #8b5cf6, #f43f5e, #f59e0b, #06b6d4);
+    background-size: 400% 400%;
+    z-index: -1;
+    border-radius: 18px;
+    animation: borderRotate 4s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.animated-border:hover::before { opacity: 1; }
+@keyframes borderRotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.card-shine {
+    position: relative;
+    overflow: hidden;
+}
+.card-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0.03) 50%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0) 100%
+    );
+    transform: rotate(30deg);
+    transition: transform 0.6s;
+    pointer-events: none;
+}
+.card-shine:hover::after {
+    transform: rotate(30deg) translate(20%, 20%);
+}
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+}
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-overlay.open .modal-content {
+    transform: scale(1) translateY(0);
+}
+.toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    padding: 16px 24px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    z-index: 1000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+html { scroll-behavior: smooth; }
+section { position: relative; z-index: 2; }
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="particles" id="particles"></div>
+
+<!-- Navigation -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500" style="background: transparent;">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <span class="font-bold text-lg tracking-tight">GridIQ</span>
+                <span class="text-xs text-slate-400 ml-2 font-mono">WEST AFRICA</span>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-2">
+            <button onclick="scrollToSection('overview')" class="nav-link text-sm">Overview</button>
+            <button onclick="scrollToSection('matrix')" class="nav-link text-sm">Risk Matrix</button>
+            <button onclick="scrollToSection('gaps')" class="nav-link text-sm">12 Gaps</button>
+            <button onclick="scrollToSection('scenarios')" class="nav-link text-sm">Scenarios</button>
+            <button onclick="scrollToSection('action')" class="nav-link text-sm">Action Plan</button>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="pulse-dot"></div>
+            <span class="text-xs text-emerald-400 font-mono">LIVE ANALYSIS</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center pt-20">
+    <div class="max-w-6xl mx-auto px-6 text-center">
+        <div class="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/20 bg-cyan-500/5">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-400"></i>
+            <span class="text-sm text-cyan-300 font-mono">CRITICAL GAP ANALYSIS — 2026</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+            <span class="gradient-text">12 Critical Gaps</span><br>
+            <span class="text-slate-200">Threatening GridIQ</span>
+        </h1>
+        <p class="text-xl text-slate-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+            A comprehensive interactive analysis of existential risks, operational blind spots, and strategic vulnerabilities in the GridIQ West Africa venture.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mb-12">
+            <div class="glass-card p-6 text-center card-shine">
+                <div class="text-3xl font-black text-rose-400 counter" data-target="2">0</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Existential Risks</div>
+            </div>
+            <div class="glass-card p-6 text-center card-shine">
+                <div class="text-3xl font-black text-amber-400 counter" data-target="12">0</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Critical Gaps</div>
+            </div>
+            <div class="glass-card p-6 text-center card-shine">
+                <div class="text-3xl font-black text-cyan-400 counter" data-target="15">0</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">ECOWAS Markets</div>
+            </div>
+            <div class="glass-card p-6 text-center card-shine">
+                <div class="text-3xl font-black text-emerald-400 counter" data-target="4">0</div>
+                <div class="text-xs text-slate-400 mt-1 uppercase tracking-wider">Priority Tiers</div>
+            </div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-4">
+            <button onclick="scrollToSection('matrix')" class="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-semibold text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all hover:scale-105 flex items-center gap-2">
+                <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Explore Risk Matrix
+            </button>
+            <button onclick="scrollToSection('gaps')" class="px-8 py-4 border border-slate-600 rounded-xl font-semibold text-slate-300 hover:border-cyan-500 hover:text-cyan-400 transition-all flex items-center gap-2">
+                <i data-lucide="list" class="w-5 h-5"></i> View All Gaps
+            </button>
+        </div>
+        <div class="mt-20 animate-bounce">
+            <i data-lucide="chevron-down" class="w-6 h-6 text-slate-500 mx-auto"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Executive Summary -->
+<section id="overview" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Executive Summary</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">GridIQ has a genuinely strong core insight, but the business plan reads like technology in search of a viable business model.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="glass-card p-8 card-shine animated-border">
+                <div class="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center mb-6">
+                    <i data-lucide="shield-alert" class="w-7 h-7 text-rose-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Existential Threats</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-4">Sovereign non-payment and political interference represent P0 risks that could kill the venture before it scales. West African utilities are insolvent state-owned entities.</p>
+                <span class="badge-p0 text-xs px-3 py-1 rounded-full text-white font-semibold">P0 — EXISTENTIAL</span>
+            </div>
+            <div class="glass-card p-8 card-shine animated-border">
+                <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-6">
+                    <i data-lucide="brain-circuit" class="w-7 h-7 text-amber-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Technology neq Adoption</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-4">The bottleneck is human capacity and organizational culture, not data. Understaffed units, low digital literacy, and union resistance block adoption.</p>
+                <span class="badge-p1 text-xs px-3 py-1 rounded-full text-white font-semibold">P1 — CRITICAL</span>
+            </div>
+            <div class="glass-card p-8 card-shine animated-border">
+                <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 flex items-center justify-center mb-6">
+                    <i data-lucide="trending-up" class="w-7 h-7 text-cyan-400"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Path to Viability</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-4">Restructure around DFI customers, not utilities. Build cybersecurity, change management, and honest hardware costing into the model from day one.</p>
+                <span class="badge-p2 text-xs px-3 py-1 rounded-full text-white font-semibold">P2 — IMPORTANT</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Risk Matrix -->
+<section id="matrix" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Interactive Risk Matrix</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Impact vs. Likelihood visualization of all 12 critical gaps. Click any cell to explore details.</p>
+        </div>
+        <div class="glass-card p-8 mb-8">
+            <div class="flex flex-wrap gap-3 mb-6 justify-center">
+                <button class="filter-btn active" onclick="filterGaps('all')">All Gaps</button>
+                <button class="filter-btn" onclick="filterGaps('P0')">P0 Existential</button>
+                <button class="filter-btn" onclick="filterGaps('P1')">P1 Critical</button>
+                <button class="filter-btn" onclick="filterGaps('P2')">P2 Important</button>
+                <button class="filter-btn" onclick="filterGaps('P3')">P3 Enhancement</button>
+            </div>
+            <div class="relative">
+                <div class="absolute -left-12 top-1/2 -translate-y-1/2 -rotate-90 text-xs text-slate-500 font-mono tracking-widest uppercase">Impact &rarr;</div>
+                <div class="absolute bottom-[-30px] left-1/2 -translate-x-1/2 text-xs text-slate-500 font-mono tracking-widest uppercase">Likelihood &rarr;</div>
+                <div class="grid grid-cols-5 gap-3" id="riskMatrix"></div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 mt-10 pt-6 border-t border-slate-700/50">
+                <div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-rose-500"></div><span class="text-xs text-slate-400">P0 Existential</span></div>
+                <div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-amber-500"></div><span class="text-xs text-slate-400">P1 Critical</span></div>
+                <div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-blue-500"></div><span class="text-xs text-slate-400">P2 Important</span></div>
+                <div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-emerald-500"></div><span class="text-xs text-slate-400">P3 Enhancement</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Charts -->
+<section class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="pie-chart" class="w-5 h-5 text-cyan-400"></i> Gap Distribution by Priority
+                </h3>
+                <div class="h-64"><canvas id="priorityChart"></canvas></div>
+            </div>
+            <div class="glass-card p-8">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="radar" class="w-5 h-5 text-cyan-400"></i> Risk Category Radar
+                </h3>
+                <div class="h-64"><canvas id="radarChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- The 12 Gaps -->
+<section id="gaps" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">The 12 Critical Gaps</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Click any gap to expand and explore detailed analysis, risks, and recommended fixes.</p>
+        </div>
+        <div class="space-y-4" id="gapsContainer">
+            <!-- Gap 1 -->
+            <div class="glass-card overflow-hidden" data-priority="P0" data-gap="1">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(1)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p0 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P0</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Government &amp; Political Risk</h3>
+                            <p class="text-sm text-slate-400">The elephant in the room &mdash; sovereign non-payment, regulatory capture, and political interference</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-rose-500" style="width: 95%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-1"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-1">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="grid md:grid-cols-3 gap-6 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-rose-400 mb-3 flex items-center gap-2"><i data-lucide="alert-circle" class="w-4 h-4"></i> Key Risks</h4>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-rose-400 mt-1">&bull;</span> Sovereign non-payment from insolvent utilities</li>
+                                    <li class="flex items-start gap-2"><span class="text-rose-400 mt-1">&bull;</span> Political interference with revenue protection</li>
+                                    <li class="flex items-start gap-2"><span class="text-rose-400 mt-1">&bull;</span> Regulatory capture protecting utilities</li>
+                                    <li class="flex items-start gap-2"><span class="text-rose-400 mt-1">&bull;</span> Leadership changes every 2&ndash;4 years</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-amber-400 mb-3 flex items-center gap-2"><i data-lucide="eye-off" class="w-4 h-4"></i> Blind Spots</h4>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-1">&bull;</span> Assumes utilities can pay SaaS fees</li>
+                                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-1">&bull;</span> No political heat map feature</li>
+                                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-1">&bull;</span> No escalation protocol for sensitive alerts</li>
+                                    <li class="flex items-start gap-2"><span class="text-amber-400 mt-1">&bull;</span> No institutional memory strategy</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-emerald-400 mb-3 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Recommended Fixes</h4>
+                                <ul class="space-y-2 text-sm text-slate-300">
+                                    <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">&rarr;</span> Engage only utilities with active DFI reform programs</li>
+                                    <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">&rarr;</span> Draw fees from DFI technical assistance, not utility opex</li>
+                                    <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">&rarr;</span> Route politically sensitive alerts through legal/compliance</li>
+                                    <li class="flex items-start gap-2"><span class="text-emerald-400 mt-1">&rarr;</span> Train permanent ministry staff, not just management</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-6 p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                            <p class="text-sm text-rose-300"><strong class="text-rose-400">Critical Insight:</strong> EDSA (Sierra Leone) and EDG (Guinea) are insolvent. They cannot pay vendors, let alone SaaS fees. The document assumes payment capability that does not exist.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 2 -->
+            <div class="glass-card overflow-hidden" data-priority="P0" data-gap="2">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(2)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p0 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P0</span>
+                        <div>
+                            <h3 class="text-lg font-bold">The &quot;Who Pays?&quot; Problem</h3>
+                            <p class="text-sm text-slate-400">Revenue model fiction &mdash; insolvent utilities cannot afford $3K&ndash;40K/month SaaS</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-rose-500" style="width: 100%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-2"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-2">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="grid md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-rose-400 mb-3">Current Model Flaws</h4>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-slate-800/50 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-slate-300">Utility pays SaaS</span><span class="text-rose-400">&cross; Broken</span></div>
+                                        <p class="text-xs text-slate-500">Utility has no money &mdash; loses 25-40% to theft, cannot collect from paying customers</p>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/50 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-slate-300">Hardware sold to utility</span><span class="text-rose-400">&cross; Broken</span></div>
+                                        <p class="text-xs text-slate-500">Utility has no capex budget, already in debt to IPPs and DFIs</p>
+                                    </div>
+                                    <div class="p-3 bg-slate-800/50 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-slate-300">Revenue share on recovery</span><span class="text-rose-400">&cross; Broken</span></div>
+                                        <p class="text-xs text-slate-500">Utility cannot attribute causality; disputes inevitable</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-emerald-400 mb-3">Restructured Model</h4>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-emerald-300 font-semibold">Primary: DFI pays</span><span class="text-emerald-400">&check; Viable</span></div>
+                                        <p class="text-xs text-slate-400">AfDB, World Bank, EU/AFD fund as technical assistance. They need verified impact data.</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-emerald-300 font-semibold">Secondary: Ministry pays</span><span class="text-emerald-400">&check; Viable</span></div>
+                                        <p class="text-xs text-slate-400">National energy ministries need EIS data for policy and DFI compact conditions.</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <div class="flex justify-between text-sm mb-1"><span class="text-emerald-300 font-semibold">Tertiary: Utility gets free</span><span class="text-emerald-400">&check; Viable</span></div>
+                                        <p class="text-xs text-slate-400">Platform bundled in DFI reform packages. Utility commits to data sharing only.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 3 -->
+            <div class="glass-card overflow-hidden" data-priority="P1" data-gap="3">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(3)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p1 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P1</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Cybersecurity &amp; Data Sovereignty</h3>
+                            <p class="text-sm text-slate-400">Dangerously absent &mdash; cloud-hosted SCADA data with no security framework in 2026</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-amber-500" style="width: 85%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-3"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-3">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="server" class="w-6 h-6 text-amber-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-2">Data Residency</h5>
+                                    <p class="text-xs text-slate-400">Nigeria, Ghana require citizen data stored locally. Commit to in-country AWS/Azure regions.</p>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="shield" class="w-6 h-6 text-amber-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-2">Air-Gapped Option</h5>
+                                    <p class="text-xs text-slate-400">High-security utilities may refuse cloud. Offer on-premise deployment for Enterprise tier.</p>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="award" class="w-6 h-6 text-amber-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-2">SOC 2 / ISO 27001</h5>
+                                    <p class="text-xs text-slate-400">DFI procurement increasingly requires certifications. Roadmap needed; interim pentest reports.</p>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="cpu" class="w-6 h-6 text-amber-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-2">IoT Security</h5>
+                                    <p class="text-xs text-slate-400">Unsecured sensors = grid attack vectors. Secure boot, signed firmware, encrypted LoRaWAN.</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                                <p class="text-sm text-amber-300"><strong class="text-amber-400">Alert:</strong> 2023&ndash;2024 saw multiple ransomware attacks on South African and Nigerian utilities. Nigeria&apos;s NCC, Ghana&apos;s NCA, and ECOWAS are drafting critical infrastructure cybersecurity frameworks.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 4 -->
+            <div class="glass-card overflow-hidden" data-priority="P1" data-gap="4">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(4)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p1 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P1</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Human &amp; Organizational Gap</h3>
+                            <p class="text-sm text-slate-400">Technology neq Adoption &mdash; the bottleneck is human capacity, not data</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-amber-500" style="width: 80%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-4"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-4">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="grid md:grid-cols-2 gap-6 mt-4">
+                            <div>
+                                <h4 class="font-semibold text-amber-400 mb-3">Reality on the Ground</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                        <i data-lucide="users" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                                        <div><p class="text-sm font-medium">Understaffed Units</p><p class="text-xs text-slate-400">Sometimes 5 people for 100,000+ customers</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                        <i data-lucide="monitor" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                                        <div><p class="text-sm font-medium">Low Digital Literacy</p><p class="text-xs text-slate-400">Field staff and middle management struggle with dashboards</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                        <i data-lucide="building-2" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                                        <div><p class="text-sm font-medium">Siloed Departments</p><p class="text-xs text-slate-400">Engineering, commercial, finance don&apos;t share data</p></div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 bg-slate-800/50 rounded-lg">
+                                        <i data-lucide="hand" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5"></i>
+                                        <div><p class="text-sm font-medium">Union Resistance</p><p class="text-xs text-slate-400">Automation perceived as job-threatening</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-emerald-400 mb-3">Adoption Strategy</h4>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <p class="text-sm font-semibold text-emerald-300">Change Management Program</p>
+                                        <p class="text-xs text-slate-400 mt-1">Dedicated resource; train-the-trainer model for sustainable adoption</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <p class="text-sm font-semibold text-emerald-300">Union Engagement</p>
+                                        <p class="text-xs text-slate-400 mt-1">Reframe as &quot;upskilling&quot;; create &quot;data analyst&quot; roles for former field staff</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <p class="text-sm font-semibold text-emerald-300">Executive Sponsorship</p>
+                                        <p class="text-xs text-slate-400 mt-1">Require CEO/board champion with KPI tied to NTL reduction</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <p class="text-sm font-semibold text-emerald-300">Field Incentives</p>
+                                        <p class="text-xs text-slate-400 mt-1">10% of recovered revenue shared with field teams as bonus pool</p>
+                                    </div>
+                                    <div class="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                        <p class="text-sm font-semibold text-emerald-300">Literacy Layer</p>
+                                        <p class="text-xs text-slate-400 mt-1">Simplified &quot;traffic light&quot; mobile UI; SMS alerts; voice in local languages</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 5 -->
+            <div class="glass-card overflow-hidden" data-priority="P2" data-gap="5">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(5)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p2 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P2</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Competition from Free Alternatives</h3>
+                            <p class="text-sm text-slate-400">World Bank open-source tools, smart meter vendor bundles, and in-house IT teams</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-blue-500" style="width: 65%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-5"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-5">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4 overflow-x-auto">
+                            <table class="w-full compare-table">
+                                <thead><tr><th>Alternative</th><th>Threat Level</th><th>GridIQ Response</th></tr></thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center gap-2"><i data-lucide="globe" class="w-4 h-4 text-blue-400"></i><span class="font-medium">World Bank/DfID Open-Source</span></div>
+                                            <p class="text-xs text-slate-500 mt-1">ESMAP free grid loss assessment tools</p>
+                                        </td>
+                                        <td><span class="status-warning">HIGH</span></td>
+                                        <td class="text-slate-300">Demonstrate superior ROI vs. free tools; partner to integrate</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center gap-2"><i data-lucide="plug" class="w-4 h-4 text-blue-400"></i><span class="font-medium">Smart Meter Vendor Bundles</span></div>
+                                            <p class="text-xs text-slate-500 mt-1">Conlog, Hexing, Mojec &quot;free&quot; analytics</p>
+                                        </td>
+                                        <td><span class="status-warning">HIGH</span></td>
+                                        <td class="text-slate-300">Prove value above vendor tools; become vendor-agnostic aggregator</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center gap-2"><i data-lucide="laptop" class="w-4 h-4 text-blue-400"></i><span class="font-medium">Utility In-House IT</span></div>
+                                            <p class="text-xs text-slate-500 mt-1">ECG, SENELEC internal resistance</p>
+                                        </td>
+                                        <td><span class="status-ok">MEDIUM</span></td>
+                                        <td class="text-slate-300">Offer white-label or API-only; don&apos;t force UI replacement</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="flex items-center gap-2"><i data-lucide="graduation-cap" class="w-4 h-4 text-blue-400"></i><span class="font-medium">Academic/NGO Pilots</span></div>
+                                            <p class="text-xs text-slate-500 mt-1">Free datasets from university projects</p>
+                                        </td>
+                                        <td><span class="status-ok">LOW</span></td>
+                                        <td class="text-slate-300">Commercialize faster; academic projects rarely scale</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 6 -->
+            <div class="glass-card overflow-hidden" data-priority="P1" data-gap="6">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(6)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p1 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P1</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Hardware Reality Check</h3>
+                            <p class="text-sm text-slate-400">IoT deployment is harder than described &mdash; transformer access, theft, connectivity gaps</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-amber-500" style="width: 75%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-6"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-6">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h5 class="font-semibold text-rose-300 text-sm">Document Assumption</h5>
+                                            <span class="text-xs text-rose-400 font-mono">$200-300/unit</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">10 ruggedised sensors, 4G/LoRaWAN, 48hr battery, IP65 enclosure</p>
+                                    </div>
+                                    <div class="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h5 class="font-semibold text-amber-300 text-sm">Ground Reality</h5>
+                                            <span class="text-xs text-amber-400 font-mono">$800-1,500/unit</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Skilled technicians $500-800/day; rural travel adds days; copper theft endemic; 4G patchy outside urban cores</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <h5 class="font-semibold text-emerald-400 text-sm mb-2">Phased Hardware Strategy</h5>
+                                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/30 transition-colors">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-xs">1</span></div>
+                                        <div><p class="text-sm font-medium">Software-Only Phase</p><p class="text-xs text-slate-400">Smart meter analytics for 12-18 months</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/30 transition-colors">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-xs">2</span></div>
+                                        <div><p class="text-sm font-medium">Local Partnership</p><p class="text-xs text-slate-400">Partner with Ghana/Nigeria assemblers for repair</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/30 transition-colors">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-xs">3</span></div>
+                                        <div><p class="text-sm font-medium">Theft-Deterrent Design</p><p class="text-xs text-slate-400">No copper, no resale value, GPS tracking, tamper alarm</p></div>
+                                    </div>
+                                    <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/30 transition-colors">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-xs">4</span></div>
+                                        <div><p class="text-sm font-medium">Satellite Backup</p><p class="text-xs text-slate-400">Budget for Swarm, Astrocast, or Starlink IoT for remote sites</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 7 -->
+            <div class="glass-card overflow-hidden" data-priority="P2" data-gap="7">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(7)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p2 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P2</span>
+                        <div>
+                            <h3 class="text-lg font-bold">The &quot;10 Sensors&quot; Pilot Scope</h3>
+                            <p class="text-sm text-slate-400">Statistically meaningless &mdash; cannot produce significant loss attribution or train ML models</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-blue-500" style="width: 60%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-7"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-7">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="p-5 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h4 class="font-semibold text-rose-400 mb-4">Current Pilot Design Flaws</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0"><span class="text-rose-400 font-bold text-lg">10</span></div>
+                                            <div><p class="text-sm font-medium text-rose-300">Sensors Deployed</p><p class="text-xs text-slate-400">For 100,000+ customers and thousands of transformers</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0"><i data-lucide="x-circle" class="w-5 h-5 text-rose-400"></i></div>
+                                            <div><p class="text-sm font-medium text-rose-300">No Statistical Significance</p><p class="text-xs text-slate-400">Cannot attribute causality of loss reduction</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0"><i data-lucide="x-circle" class="w-5 h-5 text-rose-400"></i></div>
+                                            <div><p class="text-sm font-medium text-rose-300">No ML Training Viability</p><p class="text-xs text-slate-400">Insufficient data for generalizable pattern recognition</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0"><i data-lucide="x-circle" class="w-5 h-5 text-rose-400"></i></div>
+                                            <div><p class="text-sm font-medium text-rose-300">No Control Group</p><p class="text-xs text-slate-400">Cannot isolate GridIQ impact from external factors</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                    <h4 class="font-semibold text-emerald-400 mb-4">Rigorous Pilot Design</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><span class="text-emerald-400 font-bold text-lg">50+</span></div>
+                                            <div><p class="text-sm font-medium text-emerald-300">Minimum Sensors</p><p class="text-xs text-slate-400">For meaningful spatial coverage across zones</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i></div>
+                                            <div><p class="text-sm font-medium text-emerald-300">Control Group Required</p><p class="text-xs text-slate-400">Compare &quot;GridIQ zones&quot; vs. &quot;business-as-usual zones&quot;</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i></div>
+                                            <div><p class="text-sm font-medium text-emerald-300">6-12 Month Baseline</p><p class="text-xs text-slate-400">Pre-deployment data to establish true baseline</p></div>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0"><i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i></div>
+                                            <div><p class="text-sm font-medium text-emerald-300">Independent Verification</p><p class="text-xs text-slate-400">Third-party auditor (PwC, KPMG) validates NTL reduction</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 8 -->
+            <div class="glass-card overflow-hidden" data-priority="P2" data-gap="8">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(8)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p2 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P2</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Talent &amp; Team Gaps</h3>
+                            <p class="text-sm text-slate-400">Missing cybersecurity lead, hardware engineer, francophone BD, and regulatory affairs roles</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-blue-500" style="width: 55%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-8"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-8">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="shield-check" class="w-6 h-6 text-blue-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Cybersecurity Lead</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Critical infrastructure protection</p>
+                                    <span class="text-xs text-blue-400 font-mono">Contract CISO; partner with African CERTs</span>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="cpu" class="w-6 h-6 text-blue-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Hardware Engineering Lead</h5>
+                                    <p class="text-xs text-slate-400 mb-2">IoT design for African conditions</p>
+                                    <span class="text-xs text-blue-400 font-mono">Huawei/ZTE Africa alumni; local university labs</span>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="globe-2" class="w-6 h-6 text-blue-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Francophone BD</h5>
+                                    <p class="text-xs text-slate-400 mb-2">8 of 15 ECOWAS members are Francophone</p>
+                                    <span class="text-xs text-blue-400 font-mono">Essential for Senegal, CI, Benin, Burkina, Mali</span>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="landmark" class="w-6 h-6 text-blue-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Regulatory Affairs</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Navigate utility politics, DFI procurement</p>
+                                    <span class="text-xs text-blue-400 font-mono">Former DFI staff or ex-utility regulators</span>
+                                </div>
+                                <div class="p-4 bg-slate-800/50 rounded-xl border border-slate-700/50">
+                                    <i data-lucide="heart-handshake" class="w-6 h-6 text-blue-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Customer Success</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Drive adoption, reduce churn</p>
+                                    <span class="text-xs text-blue-400 font-mono">Flutterwave, Paystack alumni with African exp</span>
+                                </div>
+                                <div class="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl">
+                                    <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-400 mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1 text-amber-300">Compensation Reality</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Top AI/ML talent in Lagos, Accra, Nairobi</p>
+                                    <span class="text-xs text-amber-400 font-mono">$80-150K USD vs. global remote employers</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 9 -->
+            <div class="glass-card overflow-hidden" data-priority="P2" data-gap="9">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(9)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p2 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P2</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Intellectual Property &amp; Legal Structure</h3>
+                            <p class="text-sm text-slate-400">Unclear IP ownership, data licensing, liability, and local entity requirements across 15 countries</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-blue-500" style="width: 50%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-9"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-9">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h5 class="font-semibold text-rose-300 text-sm mb-2">IP Ownership</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Three partners (RenewBiz, AFCEN, Smart Innovation) — who owns what?</p>
+                                    <p class="text-xs text-emerald-400">&rarr; Clear IP assignment agreement; consider single holding company</p>
+                                </div>
+                                <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h5 class="font-semibold text-rose-300 text-sm mb-2">Data Licensing</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Utility data used to train models — who owns improved models?</p>
+                                    <p class="text-xs text-emerald-400">&rarr; Utility retains data; GridIQ retains model IP; license back to utility</p>
+                                </div>
+                                <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h5 class="font-semibold text-rose-300 text-sm mb-2">Liability for Incorrect Alerts</h5>
+                                    <p class="text-xs text-slate-400 mb-2">If GridIQ flags innocent customer as theft-suspect?</p>
+                                    <p class="text-xs text-emerald-400">&rarr; Limitation of liability; &quot;investigation queue&quot; language (suspect, not confirmed)</p>
+                                </div>
+                                <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h5 class="font-semibold text-rose-300 text-sm mb-2">Local Entity Structure</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Operating in 15 countries requires local incorporation</p>
+                                    <p class="text-xs text-emerald-400">&rarr; Start with Ghana or Nigeria holding company; branch per country</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 10 -->
+            <div class="glass-card overflow-hidden" data-priority="P3" data-gap="10">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(10)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p3 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P3</span>
+                        <div>
+                            <h3 class="text-lg font-bold">Exit Strategy — Or Lack Thereof</h3>
+                            <p class="text-sm text-slate-400">No discussion of how investors get liquidity. IPO unrealistic; DFI buyout not viable.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-emerald-500" style="width: 40%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-10"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-10">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <div class="p-4 bg-slate-800/50 rounded-xl">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="font-semibold text-sm">Acquisition by Siemens/Schneider</h5>
+                                            <span class="status-ok text-xs">Possible</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">These players prefer to build, not buy, in Africa. Need data moat or EIS integration lock-in.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-800/50 rounded-xl">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="font-semibold text-sm">IPO</h5>
+                                            <span class="status-critical text-xs">Unrealistic</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Sub-$10M ARR African SaaS not IPO-ready. Should not be proposed.</p>
+                                    </div>
+                                    <div class="p-4 bg-slate-800/50 rounded-xl">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="font-semibold text-sm">DFI Buyout</h5>
+                                            <span class="status-critical text-xs">Not Viable</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">DFIs don&apos;t acquire tech companies. Not a viable path.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="font-semibold text-sm text-emerald-300">Strategic Sale to Meter Vendor</h5>
+                                            <span class="status-ok text-xs">Most Likely</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Conlog, Hexing, or Inhemeter may want analytics capability. Most realistic 5-7 year exit.</p>
+                                    </div>
+                                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <h5 class="font-semibold text-sm text-emerald-300">Management Buyout</h5>
+                                            <span class="status-ok text-xs">Possible</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">If cash-flow positive. No mention of dividend policy or buyback mechanics.</p>
+                                    </div>
+                                    <div class="p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl">
+                                        <h5 class="font-semibold text-sm text-cyan-300 mb-2">Recommended Exit Hypothesis</h5>
+                                        <p class="text-xs text-slate-400">Acqui-hire or strategic sale to smart meter vendor or global utility software player entering Africa, once GridIQ has 10+ utility relationships and EIS integration lock-in.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 11 -->
+            <div class="glass-card overflow-hidden" data-priority="P3" data-gap="11">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(11)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p3 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P3</span>
+                        <div>
+                            <h3 class="text-lg font-bold">The Climate / ESG Angle — Underexploited</h3>
+                            <p class="text-sm text-slate-400">Powerful decarbonization story barely mentioned — diesel displacement, RE integration, gender lens</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-emerald-500" style="width: 35%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-11"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-11">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
+                                    <i data-lucide="fuel" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Diesel Displacement</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Every 1 GWh recovered displaces ~300K liters of diesel</p>
+                                    <span class="text-xs text-emerald-400 font-mono">Carbon credits potential</span>
+                                </div>
+                                <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
+                                    <i data-lucide="sun" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">RE Integration</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Reducing losses improves renewable energy bankability</p>
+                                    <span class="text-xs text-emerald-400 font-mono">Green bond eligibility</span>
+                                </div>
+                                <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
+                                    <i data-lucide="users" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Just Transition</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Revenue recovery funds grid extension to unserved</p>
+                                    <span class="text-xs text-emerald-400 font-mono">SDG 7 alignment</span>
+                                </div>
+                                <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl text-center">
+                                    <i data-lucide="venus" class="w-8 h-8 text-emerald-400 mx-auto mb-3"></i>
+                                    <h5 class="font-semibold text-sm mb-1">Gender Lens</h5>
+                                    <p class="text-xs text-slate-400 mb-2">Field teams can be majority female (less intimidation)</p>
+                                    <span class="text-xs text-emerald-400 font-mono">Gender-lens investing appeal</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                <p class="text-sm text-emerald-300"><strong class="text-emerald-400">Recommendation:</strong> Develop dedicated ESG impact thesis, carbon credit methodology, and gender-lens investing narrative for DFIs with mandates (AfDB Gender Strategy, EU Gender Action Plan).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gap 12 -->
+            <div class="glass-card overflow-hidden" data-priority="P3" data-gap="12">
+                <div class="p-6 cursor-pointer flex items-center justify-between gap-4" onclick="toggleGap(12)">
+                    <div class="flex items-center gap-4">
+                        <span class="badge-p3 text-xs px-3 py-1 rounded-full text-white font-bold shrink-0">P3</span>
+                        <div>
+                            <h3 class="text-lg font-bold">The &quot;Conlog/Hexing&quot; Assumption — Vendor Lock-In Risk</h3>
+                            <p class="text-sm text-slate-400">What if smart meter vendors refuse data access? Entire analytics engine depends on their cooperation.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 shrink-0">
+                        <div class="hidden sm:flex items-center gap-2">
+                            <span class="text-xs text-slate-500">Impact</span>
+                            <div class="w-24 progress-track"><div class="progress-fill bg-emerald-500" style="width: 45%"></div></div>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-slate-500 transition-transform duration-300" id="icon-12"></i>
+                    </div>
+                </div>
+                <div class="accordion-content px-6" id="content-12">
+                    <div class="pb-6 pt-2 border-t border-slate-700/30">
+                        <div class="mt-4">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div class="p-5 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                                    <h4 class="font-semibold text-rose-400 mb-4">Vendor Risks</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-start gap-3">
+                                            <i data-lucide="lock" class="w-5 h-5 text-rose-400 shrink-0 mt-0.5"></i>
+                                            <div><p class="text-sm font-medium">Data Viewed as Proprietary</p><p class="text-xs text-slate-400">Conlog, Hexing, Mojec may refuse third-party access</p></div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i data-lucide="trending-up" class="w-5 h-5 text-rose-400 shrink-0 mt-0.5"></i>
+                                            <div><p class="text-sm font-medium">Competing Analytics</p><p class="text-xs text-slate-400">Vendors may build their own competing dashboards</p></div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i data-lucide="shuffle" class="w-5 h-5 text-rose-400 shrink-0 mt-0.5"></i>
+                                            <div><p class="text-sm font-medium">Format Changes</p><p class="text-xs text-slate-400">Data formats change without notice, breaking integrations</p></div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i data-lucide="file-x" class="w-5 h-5 text-rose-400 shrink-0 mt-0.5"></i>
+                                            <div><p class="text-sm font-medium">Exclusive Contracts</p><p class="text-xs text-slate-400">Utility contracts may restrict third-party data access</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-5 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                                    <h4 class="font-semibold text-emerald-400 mb-4">Mitigation Strategy</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5"><span class="text-emerald-400 text-xs font-bold">1</span></div>
+                                            <div><p class="text-sm font-medium">Data Access Agreements</p><p class="text-xs text-slate-400">Negotiate formal MOUs with Conlog, Hexing, Mojec before pilot</p></div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5"><span class="text-emerald-400 text-xs font-bold">2</span></div>
+                                            <div><p class="text-sm font-medium">API Abstraction Layer</p><p class="text-xs text-slate-400">Build adapters for multiple vendors; platform not hostage to one</p></div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0 mt-0.5"><span class="text-emerald-400 text-xs font-bold">3</span></div>
+                                            <div><p class="text-sm font-medium">Direct Meter Integration</p><p class="text-xs text-slate-400">Deploy GridIQ-branded or white-label meters with open APIs</p></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Scenarios Section -->
+<section id="scenarios" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Business Model Scenarios</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Compare different go-to-market strategies. Click to select and see projected outcomes.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="scenario-card" id="scenario-1" onclick="selectScenario(1)">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                        <i data-lucide="x-circle" class="w-6 h-6 text-rose-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Status Quo</h3>
+                        <p class="text-xs text-slate-400">Utility pays directly</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between"><span class="text-slate-400">Viability</span><span class="text-rose-400 font-semibold">0%</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Payment Risk</span><span class="text-rose-400 font-semibold">Extreme</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Scale Potential</span><span class="text-rose-400 font-semibold">None</span></div>
+                </div>
+                <div class="mt-4 p-3 bg-rose-500/5 border border-rose-500/20 rounded-lg">
+                    <p class="text-xs text-rose-300">Utilities like EDSA and EDG are insolvent. This model is guaranteed to fail.</p>
+                </div>
+            </div>
+            <div class="scenario-card selected" id="scenario-2" onclick="selectScenario(2)">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                        <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">DFI-Funded</h3>
+                        <p class="text-xs text-slate-400">Development finance pays</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between"><span class="text-slate-400">Viability</span><span class="text-emerald-400 font-semibold">85%</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Payment Risk</span><span class="text-emerald-400 font-semibold">Low</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Scale Potential</span><span class="text-emerald-400 font-semibold">High</span></div>
+                </div>
+                <div class="mt-4 p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                    <p class="text-xs text-emerald-300">AfDB, World Bank, EU/AFD fund as TA. Verified impact data satisfies their accountability needs.</p>
+                </div>
+            </div>
+            <div class="scenario-card" id="scenario-3" onclick="selectScenario(3)">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                        <i data-lucide="git-merge" class="w-6 h-6 text-cyan-400"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Hybrid Model</h3>
+                        <p class="text-xs text-slate-400">DFI + Revenue Share</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between"><span class="text-slate-400">Viability</span><span class="text-cyan-400 font-semibold">70%</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Payment Risk</span><span class="text-amber-400 font-semibold">Medium</span></div>
+                    <div class="flex justify-between"><span class="text-slate-400">Scale Potential</span><span class="text-cyan-400 font-semibold">High</span></div>
+                </div>
+                <div class="mt-4 p-3 bg-cyan-500/5 border border-cyan-500/20 rounded-lg">
+                    <p class="text-xs text-cyan-300">DFI covers base platform; utility pays success bonus validated by independent auditor.</p>
+                </div>
+            </div>
+        </div>
+        <div class="glass-card p-8" id="scenario-details">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="trending-up" class="w-5 h-5 text-emerald-400"></i>
+                Selected: DFI-Funded Model (Recommended)
+            </h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <h4 class="font-semibold text-sm mb-2 text-emerald-300">Primary Revenue</h4>
+                    <p class="text-xs text-slate-400">DFI technical assistance grants cover platform fees. GridIQ becomes a verified impact measurement tool for DFI accountability.</p>
+                </div>
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <h4 class="font-semibold text-sm mb-2 text-emerald-300">Secondary Revenue</h4>
+                    <p class="text-xs text-slate-400">National energy ministries pay for EIS integration and policy analytics. Satisfies DFI compact conditions.</p>
+                </div>
+                <div class="p-4 bg-slate-800/50 rounded-xl">
+                    <h4 class="font-semibold text-sm mb-2 text-emerald-300">Tertiary Revenue</h4>
+                    <p class="text-xs text-slate-400">Utilities receive platform "free" as part of reform packages. Commit to data sharing and field team cooperation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Priority Action Plan -->
+<section id="action" class="py-20 relative">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Priority Action Plan</h2>
+            <p class="text-slate-400 max-w-2xl mx-auto">Ranked fixes from existential to enhancement. Toggle priority tiers to focus on what matters most.</p>
+        </div>
+        <div class="glass-card p-8">
+            <div class="flex flex-wrap gap-3 mb-8 justify-center">
+                <button class="filter-btn active" onclick="filterActions('all')">All Actions</button>
+                <button class="filter-btn" onclick="filterActions('P0')">P0 — Do First</button>
+                <button class="filter-btn" onclick="filterActions('P1')">P1 — Do Next</button>
+                <button class="filter-btn" onclick="filterActions('P2')">P2 — Do Soon</button>
+                <button class="filter-btn" onclick="filterActions('P3')">P3 — Do Later</button>
+            </div>
+            <div class="space-y-3" id="actionList">
+                <div class="action-item flex items-center gap-4 p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl" data-priority="P0">
+                    <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-rose-400 font-bold text-sm">P0</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Restructure revenue model around DFI customers, not utilities</h4>
+                        <p class="text-xs text-slate-400">This is existential. Without this change, no other fix matters.</p>
+                    </div>
+                    <span class="status-critical text-xs shrink-0">EXISTENTIAL</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl" data-priority="P0">
+                    <div class="w-10 h-10 rounded-lg bg-rose-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-rose-400 font-bold text-sm">P0</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Add political heat map, escalation protocols, civil service embedment</h4>
+                        <p class="text-xs text-slate-400">Protect field teams and ensure platform survives leadership changes.</p>
+                    </div>
+                    <span class="status-critical text-xs shrink-0">EXISTENTIAL</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl" data-priority="P1">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-amber-400 font-bold text-sm">P1</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Build SOC 2 roadmap, data residency plan, incident response</h4>
+                        <p class="text-xs text-slate-400">Cybersecurity is no longer optional for critical infrastructure in Africa.</p>
+                    </div>
+                    <span class="status-warning text-xs shrink-0">CRITICAL</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl" data-priority="P1">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-amber-400 font-bold text-sm">P1</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Phase hardware deployment; start software-only for 12-18 months</h4>
+                        <p class="text-xs text-slate-400">Honest cost modeling: $800-1,500/unit, not $200-300. Build relationships first.</p>
+                    </div>
+                    <span class="status-warning text-xs shrink-0">CRITICAL</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl" data-priority="P1">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-amber-400 font-bold text-sm">P1</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Launch change management program with union engagement</h4>
+                        <p class="text-xs text-slate-400">Technology fails without adoption. Field incentives and literacy layers are essential.</p>
+                    </div>
+                    <span class="status-warning text-xs shrink-0">CRITICAL</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl" data-priority="P2">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-blue-400 font-bold text-sm">P2</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Develop "better than free" positioning and vendor partnerships</h4>
+                        <p class="text-xs text-slate-400">Free tools require manual analysis. GridIQ is automated, integrated, and accountable.</p>
+                    </div>
+                    <span class="status-ok text-xs shrink-0">IMPORTANT</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl" data-priority="P2">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-blue-400 font-bold text-sm">P2</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Redesign pilot with 50-100 sensors, control groups, independent audit</h4>
+                        <p class="text-xs text-slate-400">10 sensors is statistically meaningless. Need rigorous design to convince DFIs.</p>
+                    </div>
+                    <span class="status-ok text-xs shrink-0">IMPORTANT</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl" data-priority="P2">
+                    <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-blue-400 font-bold text-sm">P2</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Hire cybersecurity, hardware, francophone BD, regulatory affairs</h4>
+                        <p class="text-xs text-slate-400">Critical roles missing from the current team structure.</p>
+                    </div>
+                    <span class="status-ok text-xs shrink-0">IMPORTANT</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl" data-priority="P3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-emerald-400 font-bold text-sm">P3</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Develop ESG impact thesis: carbon credits, gender lens, RE bankability</h4>
+                        <p class="text-xs text-slate-400">Powerful narrative for DFIs with climate and gender mandates. Unlock green bond eligibility.</p>
+                    </div>
+                    <span class="status-ok text-xs shrink-0">ENHANCEMENT</span>
+                </div>
+                <div class="action-item flex items-center gap-4 p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl" data-priority="P3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                        <span class="text-emerald-400 font-bold text-sm">P3</span>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm">Define realistic M&A exit hypothesis and vendor partnership discussions</h4>
+                        <p class="text-xs text-slate-400">Most likely: strategic sale to smart meter vendor once 10+ utility relationships established.</p>
+                    </div>
+                    <span class="status-ok text-xs shrink-0">ENHANCEMENT</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-12 border-t border-slate-800/50 relative z-10">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+        <div class="flex items-center justify-center gap-3 mb-4">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                <i data-lucide="zap" class="w-4 h-4 text-white"></i>
+            </div>
+            <span class="font-bold">GridIQ Critical Gap Analysis</span>
+        </div>
+        <p class="text-sm text-slate-500 max-w-xl mx-auto">Based on comprehensive market research and document analysis. The difference between a compelling DFI-funded pilot and a sustainable, scalable company.</p>
+        <div class="flex justify-center gap-6 mt-6 text-xs text-slate-600">
+            <span>12 Critical Gaps Identified</span>
+            <span>&bull;</span>
+            <span>4 Priority Tiers</span>
+            <span>&bull;</span>
+            <span>15 ECOWAS Markets</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="flex items-center gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-cyan-400"></i>
+        <span id="toast-message">Notification</span>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-content p-8" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-start mb-6">
+            <h3 class="text-xl font-bold" id="modal-title">Gap Details</h3>
+            <button onclick="closeModal()" class="p-2 hover:bg-slate-700/50 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+            </button>
+        </div>
+        <div id="modal-body" class="text-slate-300 text-sm leading-relaxed"></div>
+    </div>
+</div>
+
+<script>
+// Initialize Lucide icons
+document.addEventListener('DOMContentLoaded', function() {
+    lucide.createIcons();
+    initParticles();
+    initCounters();
+    initCharts();
+    initRiskMatrix();
+    initScrollAnimations();
+    initNavbar();
+});
+
+// Particles
+function initParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.width = (2 + Math.random() * 3) + 'px';
+        p.style.height = p.style.width;
+        container.appendChild(p);
+    }
+}
+
+// Counter animation
+function initCounters() {
+    const counters = document.querySelectorAll('.counter');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const counter = entry.target;
+                const target = parseInt(counter.dataset.target);
+                let current = 0;
+                const increment = target / 60;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 25);
+                observer.unobserve(counter);
+            }
+        });
+    }, { threshold: 0.5 });
+    counters.forEach(c => observer.observe(c));
+}
+
+// Toggle gap accordion
+function toggleGap(id) {
+    const content = document.getElementById('content-' + id);
+    const icon = document.getElementById('icon-' + id);
+    const isOpen = content.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.accordion-content').forEach(c => {
+        c.classList.remove('open');
+        c.style.maxHeight = '0';
+    });
+    document.querySelectorAll('[id^="icon-"]').forEach(i => {
+        i.style.transform = 'rotate(0deg)';
+    });
+
+    // Open clicked if was closed
+    if (!isOpen) {
+        content.classList.add('open');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.style.transform = 'rotate(180deg)';
+    }
+
+    // Re-init icons in expanded content
+    setTimeout(() => lucide.createIcons(), 100);
+}
+
+// Filter gaps
+function filterGaps(priority) {
+    const gaps = document.querySelectorAll('[data-priority]');
+    const buttons = document.querySelectorAll('.filter-btn');
+
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    gaps.forEach(gap => {
+        if (priority === 'all' || gap.dataset.priority === priority) {
+            gap.style.display = '';
+            gap.style.opacity = '0';
+            gap.style.transform = 'translateY(10px)';
+            setTimeout(() => {
+                gap.style.transition = 'all 0.4s ease';
+                gap.style.opacity = '1';
+                gap.style.transform = 'translateY(0)';
+            }, 50);
+        } else {
+            gap.style.display = 'none';
+        }
+    });
+}
+
+// Filter actions
+function filterActions(priority) {
+    const actions = document.querySelectorAll('.action-item');
+    const buttons = document.querySelectorAll('#action .filter-btn');
+
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    actions.forEach(action => {
+        if (priority === 'all' || action.dataset.priority === priority) {
+            action.style.display = 'flex';
+            action.style.opacity = '0';
+            setTimeout(() => {
+                action.style.transition = 'opacity 0.3s ease';
+                action.style.opacity = '1';
+            }, 50);
+        } else {
+            action.style.display = 'none';
+        }
+    });
+}
+
+// Select scenario
+function selectScenario(id) {
+    document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('scenario-' + id).classList.add('selected');
+
+    const details = document.getElementById('scenario-details');
+    const configs = {
+        1: {
+            title: 'Selected: Status Quo (NOT RECOMMENDED)',
+            icon: 'x-circle',
+            color: 'rose',
+            content: `
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-rose-300">Why It Fails</h4>
+                        <p class="text-xs text-slate-400">Utilities like EDSA (Sierra Leone) and EDG (Guinea) are insolvent. They lose 25-40% to theft and cannot collect from paying customers. Expecting them to pay $3K-40K/month SaaS is a category error.</p>
+                    </div>
+                    <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-rose-300">Cash Flow Reality</h4>
+                        <p class="text-xs text-slate-400">No budget for "digital transformation." Already in debt to IPPs and DFIs. Hardware capex is non-existent. Revenue share models fail because causality cannot be attributed.</p>
+                    </div>
+                    <div class="p-4 bg-rose-500/5 border border-rose-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-rose-300">Outcome</h4>
+                        <p class="text-xs text-slate-400">Pilots die when invoices go unpaid. Field teams get pulled. The platform becomes shelfware. GridIQ runs out of runway before proving product-market fit.</p>
+                    </div>
+                </div>
+            `
+        },
+        2: {
+            title: 'Selected: DFI-Funded Model (RECOMMENDED)',
+            icon: 'check-circle',
+            color: 'emerald',
+            content: `
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-emerald-300">Primary Revenue</h4>
+                        <p class="text-xs text-slate-400">AfDB, World Bank, EU/AFD fund platform as technical assistance. GridIQ becomes a verified impact measurement tool — exactly what DFIs need for their own accountability reporting.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-emerald-300">Secondary Revenue</h4>
+                        <p class="text-xs text-slate-400">National energy ministries pay for EIS integration and policy analytics. This satisfies DFI compact conditions and gives ministries data-driven credibility.</p>
+                    </div>
+                    <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-emerald-300">Tertiary Benefit</h4>
+                        <p class="text-xs text-slate-400">Utilities receive platform "free" as part of reform packages. They only commit to data sharing and field team cooperation — no payment risk.</p>
+                    </div>
+                </div>
+            `
+        },
+        3: {
+            title: 'Selected: Hybrid Model (Viable Alternative)',
+            icon: 'git-merge',
+            color: 'cyan',
+            content: `
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-cyan-300">Base Platform</h4>
+                        <p class="text-xs text-slate-400">DFI covers core platform costs as technical assistance. This de-risks the initial deployment and relationship building with utilities.</p>
+                    </div>
+                    <div class="p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-cyan-300">Success Bonus</h4>
+                        <p class="text-xs text-slate-400">Utility pays performance bonus tied to verified NTL reduction. Independent auditor validates causality. Fixed fee + success bonus structure.</p>
+                    </div>
+                    <div class="p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-xl">
+                        <h4 class="font-semibold text-sm mb-2 text-cyan-300">Risk Profile</h4>
+                        <p class="text-xs text-slate-400">Medium complexity. Requires robust M&amp;E framework and independent verification. But aligns incentives and creates sustainable revenue as utilities improve.</p>
+                    </div>
+                </div>
+            `
+        }
+    };
+
+    const config = configs[id];
+    details.querySelector('h3').innerHTML = `<i data-lucide="${config.icon}" class="w-5 h-5 text-${config.color}-400"></i> ${config.title}`;
+    details.querySelector('.grid').outerHTML = config.content;
+    lucide.createIcons();
+
+    // Animate
+    details.style.opacity = '0';
+    details.style.transform = 'translateY(10px)';
+    setTimeout(() => {
+        details.style.transition = 'all 0.4s ease';
+        details.style.opacity = '1';
+        details.style.transform = 'translateY(0)';
+    }, 50);
+}
+
+// Risk Matrix
+function initRiskMatrix() {
+    const matrix = document.getElementById('riskMatrix');
+    const gaps = [
+        { name: 'Political Risk', priority: 'P0', impact: 5, likelihood: 5, id: 1 },
+        { name: 'Who Pays?', priority: 'P0', impact: 5, likelihood: 5, id: 2 },
+        { name: 'Cybersecurity', priority: 'P1', impact: 4, likelihood: 4, id: 3 },
+        { name: 'Human Gap', priority: 'P1', impact: 4, likelihood: 5, id: 4 },
+        { name: 'Competition', priority: 'P2', impact: 3, likelihood: 4, id: 5 },
+        { name: 'Hardware', priority: 'P1', impact: 4, likelihood: 4, id: 6 },
+        { name: 'Pilot Scope', priority: 'P2', impact: 3, likelihood: 3, id: 7 },
+        { name: 'Talent', priority: 'P2', impact: 3, likelihood: 4, id: 8 },
+        { name: 'IP/Legal', priority: 'P2', impact: 3, likelihood: 3, id: 9 },
+        { name: 'Exit Strategy', priority: 'P3', impact: 2, likelihood: 3, id: 10 },
+        { name: 'ESG/Climate', priority: 'P3', impact: 2, likelihood: 2, id: 11 },
+        { name: 'Vendor Lock-in', priority: 'P3', impact: 2, likelihood: 4, id: 12 },
+    ];
+
+    const colors = { P0: '#ef4444', P1: '#f59e0b', P2: '#3b82f6', P3: '#10b981' };
+
+    for (let row = 5; row >= 1; row--) {
+        for (let col = 1; col <= 5; col++) {
+            const cell = document.createElement('div');
+            cell.className = 'aspect-square rounded-lg flex items-center justify-center relative cursor-pointer transition-all hover:scale-110 hover:z-10';
+            cell.style.background = 'rgba(255,255,255,0.03)';
+
+            const gap = gaps.find(g => g.impact === row && g.likelihood === col);
+            if (gap) {
+                cell.style.background = colors[gap.priority] + '40';
+                cell.style.border = `1px solid ${colors[gap.priority]}60`;
+                cell.innerHTML = `<span class="text-xs font-bold" style="color:${colors[gap.priority]}">${gap.id}</span>`;
+                cell.onclick = () => {
+                    scrollToSection('gaps');
+                    setTimeout(() => toggleGap(gap.id), 500);
+                };
+
+                // Tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-xs whitespace-nowrap opacity-0 pointer-events-none transition-opacity z-20';
+                tooltip.innerHTML = `<span class="font-semibold">${gap.name}</span><br><span class="text-slate-400">${gap.priority}</span>`;
+                cell.appendChild(tooltip);
+                cell.onmouseenter = () => tooltip.style.opacity = '1';
+                cell.onmouseleave = () => tooltip.style.opacity = '0';
+            }
+
+            matrix.appendChild(cell);
+        }
+    }
+}
+
+// Charts
+function initCharts() {
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+
+    // Priority Pie Chart
+    new Chart(document.getElementById('priorityChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['P0 Existential', 'P1 Critical', 'P2 Important', 'P3 Enhancement'],
+            datasets: [{
+                data: [2, 3, 4, 3],
+                backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6', '#10b981'],
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { padding: 16, font: { size: 12 } }
+                }
+            },
+            cutout: '65%'
+        }
+    });
+
+    // Radar Chart
+    new Chart(document.getElementById('radarChart'), {
+        type: 'radar',
+        data: {
+            labels: ['Financial', 'Political', 'Technical', 'Organizational', 'Legal', 'Competitive'],
+            datasets: [{
+                label: 'Current Risk Level',
+                data: [5, 5, 4, 4, 3, 3],
+                backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                borderColor: '#ef4444',
+                pointBackgroundColor: '#ef4444',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#ef4444'
+            }, {
+                label: 'Target (Post-Mitigation)',
+                data: [2, 2, 2, 2, 2, 2],
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                borderColor: '#10b981',
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#10b981'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 5,
+                    ticks: { stepSize: 1, backdropColor: 'transparent' },
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    angleLines: { color: 'rgba(255,255,255,0.05)' },
+                    pointLabels: { font: { size: 11 } }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { padding: 16, font: { size: 11 } }
+                }
+            }
+        }
+    });
+}
+
+// Scroll animations
+function initScrollAnimations() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.utils.toArray('.glass-card').forEach((card, i) => {
+        gsap.from(card, {
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 85%',
+                toggleActions: 'play none none none'
+            },
+            y: 40,
+            opacity: 0,
+            duration: 0.6,
+            delay: i * 0.05,
+            ease: 'power3.out'
+        });
+    });
+}
+
+// Navbar scroll behavior
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 100) {
+            navbar.style.background = 'rgba(10, 14, 26, 0.9)';
+            navbar.style.backdropFilter = 'blur(20px)';
+            navbar.style.borderBottom = '1px solid rgba(42, 52, 65, 0.5)';
+        } else {
+            navbar.style.background = 'transparent';
+            navbar.style.backdropFilter = 'none';
+            navbar.style.borderBottom = 'none';
+        }
+
+        lastScroll = currentScroll;
+    });
+}
+
+// Scroll to section
+function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// Toast
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Modal
+function openModal(title, content) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = content;
+    document.getElementById('modal').classList.add('open');
+    lucide.createIcons();
+}
+
+function closeModal(e) {
+    if (!e || e.target === document.getElementById('modal')) {
+        document.getElementById('modal').classList.remove('open');
+    }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeModal();
+        // Close all accordions
+        document.querySelectorAll('.accordion-content').forEach(c => {
+            c.classList.remove('open');
+            c.style.maxHeight = '0';
+        });
+        document.querySelectorAll('[id^="icon-"]').forEach(i => {
+            i.style.transform = 'rotate(0deg)';
+        });
+    }
+});
+</script>
+</body>
+</html>

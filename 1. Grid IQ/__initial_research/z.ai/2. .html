@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridIQ West Africa — Strategy & Intelligence Brief</title>
+    <style>
+        /* Typography & Base */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700&display=swap');
+
+        :root {
+            --navy: #0a192f;
+            --navy-light: #112240;
+            --amber: #ffb400;
+            --amber-light: #fff8e1;
+            --text-main: #333333;
+            --text-light: #555555;
+            --bg-gray: #f4f7f6;
+            --white: #ffffff;
+            --red: #d32f2f;
+            --red-light: #ffebee;
+            --green: #2e7d32;
+            --green-light: #e8f5e9;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 0;
+            font-size: 11pt;
+        }
+
+        /* Page Container for Print */
+        .page-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: var(--white);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Cover Page */
+        .cover {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+            color: var(--white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4cm 2cm;
+            page-break-after: always;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 20% 80%, rgba(255,180,0,0.1) 0%, transparent 40%),
+                              radial-gradient(circle at 80% 20%, rgba(255,180,0,0.1) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .cover h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 32pt;
+            margin-bottom: 10px;
+            color: var(--amber);
+            letter-spacing: 1px;
+        }
+
+        .cover h2 {
+            font-size: 16pt;
+            font-weight: 300;
+            margin-top: 0;
+            opacity: 0.9;
+        }
+
+        .kpi-grid {
+            display: flex;
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .kpi-box {
+            border: 1px solid rgba(255,180,0,0.3);
+            background: rgba(255,255,255,0.05);
+            padding: 20px 30px;
+            border-radius: 8px;
+        }
+
+        .kpi-box .value {
+            font-size: 24pt;
+            font-weight: 800;
+            color: var(--amber);
+            display: block;
+        }
+
+        .kpi-box .label {
+            font-size: 9pt;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        .doc-control {
+            position: absolute;
+            bottom: 40px;
+            font-size: 9pt;
+            opacity: 0.6;
+        }
+
+        /* Headers & Typography */
+        h1, h2, h3, h4 { font-family: 'Inter', sans-serif; color: var(--navy); }
+        
+        .part-title {
+            background: var(--navy);
+            color: var(--white);
+            padding: 40px 60px;
+            page-break-after: always;
+            display: flex;
+            align-items: center;
+            font-size: 24pt;
+        }
+        
+        .part-title span {
+            color: var(--amber);
+            margin-right: 20px;
+            font-weight: 800;
+        }
+
+        .section-header {
+            padding: 60px 60px 20px;
+            page-break-after: avoid;
+        }
+
+        .section-header h2 {
+            font-size: 18pt;
+            margin: 0;
+            border-bottom: 3px solid var(--amber);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .content-area {
+            padding: 20px 60px 40px;
+        }
+
+        h3 { font-size: 13pt; color: var(--navy-light); margin-top: 30px; }
+        h4 { font-size: 11pt; color: var(--amber); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 10pt;
+        }
+
+        th {
+            background-color: var(--navy);
+            color: var(--white);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) { background-color: var(--bg-gray); }
+        tr:hover { background-color: #eef2f5; }
+
+        /* Callout Boxes */
+        .callout {
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+            border-left: 5px solid;
+            page-break-inside: avoid;
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 11pt;
+            text-transform: uppercase;
+        }
+
+        .callout-amber { border-color: var(--amber); background-color: var(--amber-light); }
+        .callout-amber .callout-title { color: #b27d00; }
+
+        .callout-red { border-color: var(--red); background-color: var(--red-light); }
+        .callout-red .callout-title { color: var(--red); }
+
+        .callout-green { border-color: var(--green); background-color: var(--green-light); }
+        .callout-green .callout-title { color: var(--green); }
+
+        .callout-navy { border-color: var(--navy); background-color: #e8eaf6; }
+        .callout-navy .callout-title { color: var(--navy); }
+
+        /* Lists */
+        ul, ol { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+
+        /* Strong text */
+        strong { color: var(--navy); }
+
+        /* Print Settings */
+        @media print {
+            body { background: none; font-size: 10pt; }
+            .page-container { box-shadow: none; max-width: 100%; }
+            .part-title, .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .section-header { padding-top: 30px; }
+            .content-area { padding: 10px 50px 30px; }
+            .section-header { padding-left: 50px; }
+            h3 { page-break-after: avoid; }
+            table { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+
+    <!-- COVER PAGE -->
+    <div class="cover">
+        <h2>Strategy & Intelligence Brief</h2>
+        <h1>GridIQ West Africa</h1>
+        <p>Platform Architecture, Gap Analysis & Investor Framework</p>
+        
+        <div class="kpi-grid">
+            <div class="kpi-box">
+                <span class="value">$1.2B+</span>
+                <span class="label">Annual NTL Loss</span>
+            </div>
+            <div class="kpi-box">
+                <span class="value">21%</span>
+                <span class="label">Average Loss Rate</span>
+            </div>
+            <div class="kpi-box">
+                <span class="value">8</span>
+                <span class="label">ECOWAS Utilities</span>
+            </div>
+        </div>
+
+        <div class="doc-control">
+            Version 1.0 | Confidential — Investor & Partner Use Only | June 2025
+        </div>
+    </div>
+
+    <!-- PART I -->
+    <div class="part-title"><span>PART I</span> THE PLATFORM STRATEGY</div>
+
+    <!-- Section 01 -->
+    <div class="section-header">
+        <h2>Section 01 — The Opportunity</h2>
+    </div>
+    <div class="content-area">
+        <h3>1.1 Core Thesis</h3>
+        <p>Revenue recovery from existing generation is faster and cheaper than building new capacity. Across the ECOWAS region, utilities are losing between 15% and 41% of generated electricity to non-technical losses (NTL) — theft, meter bypass, billing fraud, and unmetered consumption. These are not engineering problems; they are information and enforcement problems. GridIQ exists to convert invisible losses into recoverable revenue.</p>
+        
+        <table>
+            <thead>
+                <tr><th>Metric</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Total ECOWAS Installed Capacity</td><td>26.6 GW</td></tr>
+                <tr><td>Total Annual Generation</td><td>96,057 GWh</td></tr>
+                <tr><td>Average Regional Demand Growth</td><td>7.4% annually</td></tr>
+                <tr><td>Estimated Annual NTL Loss</td><td>$1.2B+ (USD)</td></tr>
+                <tr><td>Average NTL Rate Across 8 Utilities</td><td>21%</td></tr>
+                <tr><td>Worst-Case NTL Outlier</td><td>41%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>1.2 The Structural Paradox</h3>
+        <p>West African grids generate power that is already paid for in capital and operational expenditure — but a fifth of it never generates revenue. The causal chain is straightforward:</p>
+        <table>
+            <thead><tr><th>Stage</th><th>Dynamic</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Invisible Losses</strong></td><td>Utilities cannot see where power is lost between generation and billing</td></tr>
+                <tr><td><strong>Revenue Leakage</strong></td><td>Without spatial attribution, losses are accepted as a cost of doing business</td></tr>
+                <tr><td><strong>Under-Investment</strong></td><td>Revenue shortfalls prevent grid maintenance and expansion</td></tr>
+                <tr><td><strong>Private Capital Exit</strong></td><td>Investors and DFIs see unreliable returns and withdraw or condition lending</td></tr>
+                <tr><td><strong>Capacity Stagnation</strong></td><td>New generation cannot be financed; the cycle deepens</td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout callout-amber">
+            <div class="callout-title">The ECOWAS EIS Data Blindness</div>
+            <p>The ECOWAS Energy Information System (EIS) relies on self-reported, aggregated loss figures from national utilities — data that is often delayed, incomplete, or politically massaged. GridIQ's integration replaces self-reporting with instrument-grade, georeferenced loss data, unlocking regulatory buy-in.</p>
+        </div>
+    </div>
+
+    <!-- Section 02 -->
+    <div class="section-header">
+        <h2>Section 02 — The Problem Being Solved</h2>
+    </div>
+    <div class="content-area">
+        <h3>2.1 Non-Technical Loss in Depth</h3>
+        <table>
+            <thead><tr><th>Utility</th><th>Country</th><th>NTL Rate</th><th>Technical Loss</th><th>Total Loss</th></tr></thead>
+            <tbody>
+                <tr><td>PHED</td><td>Nigeria</td><td>~32%</td><td>~8%</td><td>~40%</td></tr>
+                <tr><td>EDSA</td><td>Sierra Leone</td><td>~35%</td><td>~6%</td><td>~41%</td></tr>
+                <tr><td>CEB</td><td>Togo/Benin</td><td>~22%</td><td>~7%</td><td>~29%</td></tr>
+                <tr><td>SENELEC</td><td>Senegal</td><td>~18%</td><td>~9%</td><td>~27%</td></tr>
+                <tr><td>CI-ENERGIES</td><td>Côte d'Ivoire</td><td>~14%</td><td>~6%</td><td>~20%</td></tr>
+                <tr><td>VRA/ECD</td><td>Ghana</td><td>~16%</td><td>~5%</td><td>~21%</td></tr>
+                <tr><td>NAWEC</td><td>Gambia</td><td>~28%</td><td>~8%</td><td>~36%</td></tr>
+                <tr><td>EDM</td><td>Mali</td><td>~24%</td><td>~7%</td><td>~31%</td></tr>
+            </tbody>
+        </table>
+
+        <h3>2.2 Why Previous Interventions Failed</h3>
+        <p>Six structural failure modes explain why smart meter deployments, billing system upgrades, and donor-funded reform programmes have not resolved NTL:</p>
+        
+        <div class="callout callout-red">
+            <div class="callout-title">F-01: Spatial Attribution Failure</div>
+            <p>Utilities know their aggregate loss rate but cannot attribute losses to specific feeders, transformers, or customer clusters. Without spatial precision, enforcement resources are deployed blindly.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">F-02: Siloed Meter Data</div>
+            <p>Prepaid meter data sits in vending systems operated by mobile money integrations. Postpaid meter data sits in legacy billing systems. These datasets are never merged.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">F-03: Internal Collusion</div>
+            <p>A significant share of NTL originates inside the utility — billing staff manipulating reads, token vending agents generating fraudulent credits, field agents accepting bribes not to disconnect.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">F-04: The Enforcement Gap</div>
+            <p>Detection without enforcement is a cost centre. Revenue protection units are typically understaffed, lack legal authority, and face community resistance or internal collusion.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">F-05: Community Resistance</div>
+            <p>In informal settlements, "theft" is survival. Aggressive enforcement without regularisation pathways triggers community backlash that paralyses field operations.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">F-06: The EIS Information Vacuum</div>
+            <p>Regional regulators and DFIs operate on self-reported, aggregated data that is often unreliable, creating a trust deficit that conditions lending.</p>
+        </div>
+    </div>
+
+    <!-- Section 03 -->
+    <div class="section-header">
+        <h2>Section 03 — Platform Architecture</h2>
+    </div>
+    <div class="content-area">
+        <h3>3.1 System Overview</h3>
+        <table>
+            <thead><tr><th>Component</th><th>Delivery Function</th><th>Core Technology</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Smart Meter Analytics Engine</strong></td><td>Analyzes prepaid token streams and postpaid consumption to detect anomalies</td><td>Token-stream ML models, vending system APIs</td></tr>
+                <tr><td><strong>IoT Grid Node Monitoring</strong></td><td>Measures power flow at transformer/feeder level for physical loss attribution</td><td>Ruggedised IoT sensors, edge compute modules</td></tr>
+                <tr><td><strong>GIS Loss Dashboard</strong></td><td>Maps losses geographically for operational targeting</td><td>GIS/geo-spatial visualisation, heat mapping</td></tr>
+                <tr><td><strong>EIS Reporting Pipeline</strong></td><td>Submits instrument-grade loss data to ECOWAS EIS</td><td>Automated compliance reporting, API integration</td></tr>
+                <tr><td><strong>Predictive Maintenance</strong></td><td>Identifies infrastructure failures before outages</td><td>Time-series anomaly detection</td></tr>
+                <tr><td><strong>Impact ROI Tracker</strong></td><td>Quantifies revenue recovered; reports to utility management and DFIs</td><td>Financial modelling engine, audit trail logging</td></tr>
+            </tbody>
+        </table>
+
+        <h3>3.2 Component Specifications</h3>
+        <h4>Smart Meter Analytics Engine</h4>
+        <p>Ingests token purchase data from prepaid vending systems (Conlog, Hexing) and consumption data from postpaid billing systems. By analysing token purchase cadence, volume, and geo-coordinates, the engine identifies consumption patterns inconsistent with registered load profiles.</p>
+
+        <h4>IoT Grid Node Monitoring</h4>
+        <p>Sensors deployed at distribution transformers and feeder nodes measure voltage, current, power factor, and energy flow in real time. Sensors are ruggedised: wide voltage tolerance (80–300V), IP65 enclosure, battery backup with energy harvesting, and local data buffering for connectivity gaps of up to 72 hours.</p>
+    </div>
+
+    <!-- Section 04 -->
+    <div class="section-header">
+        <h2>Section 04 — AI Opportunity Engine</h2>
+    </div>
+    <div class="content-area">
+        <h3>4.1 Why AI Is Not Optional</h3>
+        <p>Rule-based loss detection systems fail in West African distribution networks because the data is noisy, the infrastructure is heterogeneous, and theft patterns adapt quickly.</p>
+
+        <h3>4.2 Four Intelligence Functions</h3>
+        <ul>
+            <li><strong>I-01: Token-Stream NTL Detection</strong> — Detects token purchase volume inconsistent with registered load, purchase cadence suggesting shared meter bypass, and token redemption patterns indicating credit fraud.</li>
+            <li><strong>I-02: Georeferenced Loss Attribution</strong> — Combines IoT sensor data with meter data to attribute losses to specific geographic zones.</li>
+            <li><strong>I-03: Predictive Maintenance Intelligence</strong> — Identifies infrastructure degradation patterns from sensor time-series data.</li>
+            <li><strong>I-04: Revenue Quantification Engine</strong> — Calculates the financial value of detected losses at applicable tariff rates.</li>
+        </ul>
+
+        <div class="callout callout-green">
+            <div class="callout-title">4.3 Model Improvement Architecture</div>
+            <p>The AI's value compounds over time only if models are continuously retrained on confirmed field outcomes:</p>
+            <ul>
+                <li><strong>Feedback Loop</strong>: Field team confirms theft → case outcome updates training data → model retrains.</li>
+                <li><strong>Retraining Cadence</strong>: Quarterly model refresh.</li>
+                <li><strong>False Positive Management</strong>: Alert confidence scoring with threshold adjustment.</li>
+            </ul>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">4.4 Internal Fraud Detection Layer</div>
+            <p>A dedicated sub-model analyses anomalies indicating internal collusion: billing adjustments inconsistent with field records, token vending volumes exceeding expected demand, and disconnection reversals without work orders. Role-based alert routing restricts sensitive investigation data from potentially compromised staff.</p>
+        </div>
+    </div>
+
+    <!-- Section 05 -->
+    <div class="section-header">
+        <h2>Section 05 — Revenue Model</h2>
+    </div>
+    <div class="content-area">
+        <h3>5.1 Six Monetisation Streams</h3>
+        <table>
+            <thead><tr><th>Stream</th><th>Model</th><th>Indicative Pricing</th></tr></thead>
+            <tbody>
+                <tr><td>SaaS Platform Subscription</td><td>Annual licence per utility</td><td>$80K–$150K/year</td></tr>
+                <tr><td>Hardware Deployment</td><td>IoT sensor units + installation</td><td>$200–$400/sensor</td></tr>
+                <tr><td>Performance Fee</td><td>% of verified revenue recovered</td><td>8–12% of recovered revenue</td></tr>
+                <tr><td>DFI / Grant-Funded Deployment</td><td>Project-based implementation</td><td>$500K–$2M per programme</td></tr>
+                <tr><td>Data Licensing</td><td>Anonymised loss intelligence to DFIs</td><td>$50K–$100K/year</td></tr>
+                <tr><td>Managed Services</td><td>Ongoing analytics and field coordination</td><td>$30K–$60K/year</td></tr>
+            </tbody>
+        </table>
+
+        <h3>5.2 Five-Year Financial Projections</h3>
+        <table>
+            <thead><tr><th>Year</th><th>SaaS</th><th>Hardware</th><th>Perf. Fees</th><th>Grant/DFI</th><th>Data/Svc</th><th>Total</th></tr></thead>
+            <tbody>
+                <tr><td>Y1</td><td>$150K</td><td>$200K</td><td>$0</td><td>$500K</td><td>$50K</td><td>$900K</td></tr>
+                <tr><td>Y2</td><td>$400K</td><td>$500K</td><td>$180K</td><td>$800K</td><td>$120K</td><td>$2.0M</td></tr>
+                <tr><td>Y3</td><td>$750K</td><td>$600K</td><td>$520K</td><td>$600K</td><td>$250K</td><td>$2.72M</td></tr>
+                <tr><td>Y4</td><td>$1.2M</td><td>$400K</td><td>$1.1M</td><td>$400K</td><td>$450K</td><td>$3.55M</td></tr>
+                <tr><td>Y5</td><td>$1.8M</td><td>$300K</td><td>$2.4M</td><td>$200K</td><td>$700K</td><td>$5.4M</td></tr>
+            </tbody>
+        </table>
+        <p><strong>Break-even:</strong> Month 28 (early Y3) | <strong>Gross Margin at Y5:</strong> 72%</p>
+    </div>
+
+    <!-- Section 06 -->
+    <div class="section-header">
+        <h2>Section 06 — Platform Features</h2>
+    </div>
+    <div class="content-area">
+        <table>
+            <thead><tr><th>ID</th><th>Module</th><th>Description</th></tr></thead>
+            <tbody>
+                <tr><td>F-01</td><td>Loss Heat Map</td><td>GIS-rendered geographic loss intensity</td></tr>
+                <tr><td>F-02</td><td>Feeder Loss Ranking</td><td>Ranked list by NTL rate with trend analysis</td></tr>
+                <tr><td>F-03</td><td>Investigation Queue</td><td>AI-generated alerts with confidence scores</td></tr>
+                <tr><td>F-04</td><td>Revenue Recovery Tracker</td><td>Real-time recovered revenue vs. baseline</td></tr>
+                <tr><td>F-05</td><td>EIS Compliance Dashboard</td><td>Automated reporting submissions status</td></tr>
+                <tr><td>F-06</td><td>Predictive Maintenance</td><td>Equipment degradation warnings</td></tr>
+                <tr><td>F-07</td><td>Internal Audit Interface</td><td>Anomaly detection for internal fraud; restricted access</td></tr>
+                <tr><td>F-08</td><td>Regularisation Portal</td><td>Customer regularisation workflows</td></tr>
+                <tr><td>F-09</td><td>Low-Bandwidth Interface</td><td>Optimised for &lt;2 Mbps; English/French</td></tr>
+                <tr><td>F-10</td><td>Work Order Integration</td><td>API link to field operations for alert-to-action</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section 07 -->
+    <div class="section-header">
+        <h2>Section 07 — Competitive Landscape & Moat</h2>
+    </div>
+    <div class="content-area">
+        <h3>7.1 Competitor Categories</h3>
+        <table>
+            <thead><tr><th>Category</th><th>Examples</th><th>Limitation in West Africa</th></tr></thead>
+            <tbody>
+                <tr><td>Western Smart Grid</td><td>Oracle, SAP, Siemens</td><td>Cannot handle incomplete asset registers or connectivity gaps</td></tr>
+                <tr><td>Meter Vendors</td><td>Conlog, Hexing</td><td>Data locked in silos; no independent loss attribution</td></tr>
+                <tr><td>Telecom-Adjacent</td><td>MTN, Orange, Airtel</td><td>No grid domain expertise; would need to build/acquire NTL layer</td></tr>
+                <tr><td>Chinese Infra Co.</td><td>TBEA, Huawei</td><td>Generic analytics not adapted to West African loss patterns</td></tr>
+            </tbody>
+        </table>
+
+        <h3>7.2 Five Structural Moats</h3>
+        <ul>
+            <li><strong>Data Gravity:</strong> Proprietary access to vending data pipelines.</li>
+            <li><strong>Network Effects:</strong> Regional loss pattern libraries create compounding accuracy.</li>
+            <li><strong>Environmental Hardening:</strong> Purpose-built for West African conditions.</li>
+            <li><strong>Institutional Integration:</strong> ECOWAS EIS relationship creates de facto standard.</li>
+            <li><strong>Operational Model:</strong> Enforcement integration and community regularisation require domain expertise that cannot be replicated by software alone.</li>
+        </ul>
+    </div>
+
+    <!-- Section 08 & 09 -->
+    <div class="section-header">
+        <h2>Sections 08 & 09 — Go-to-Market & Tech Stack</h2>
+    </div>
+    <div class="content-area">
+        <h3>Go-to-Market: Four Deployment Phases</h3>
+        <table>
+            <thead><tr><th>Phase</th><th>Timeline</th><th>Geography</th><th>Objective</th></tr></thead>
+            <tbody>
+                <tr><td>Pilot</td><td>Mo 1-12</td><td>Sierra Leone</td><td>Prove detection accuracy on 2-3 feeder corridors</td></tr>
+                <tr><td>Regional</td><td>Mo 12-30</td><td>Ghana, Senegal</td><td>Validate bilingual platform; DFI expansion</td></tr>
+                <tr><td>Scale</td><td>Mo 30-48</td><td>Nigeria, Côte d'Ivoire</td><td>Deploy at scale; activate performance fees</td></tr>
+                <tr><td>Licensing</td><td>Mo 48+</td><td>East/Southern Africa</td><td>Continental platform licensing</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Technology Stack (6-Layer Architecture)</h3>
+        <ul>
+            <li><strong>Hardware/Edge:</strong> Ruggedised CT/VT sensors (80-300V), ARM edge compute, 72-hr buffer, GSM/4G.</li>
+            <li><strong>Cloud/Data:</strong> AWS/Azure, InfluxDB, PostgreSQL+PostGIS, Apache Kafka.</li>
+            <li><strong>AI/ML:</strong> Python (XGBoost, PyTorch), containerised inference, MLflow.</li>
+            <li><strong>Application:</strong> FastAPI backend, React.js frontend, Mapbox GIS, RESTful APIs.</li>
+            <li><strong>Frontend:</strong> D3.js, Service Worker caching, full EN/FR bilingual support.</li>
+            <li><strong>Security:</strong> AES-256, TLS 1.3, OAuth 2.0 + MFA, RBAC, immutable audit trails, tamper-evident sensors.</li>
+        </ul>
+    </div>
+
+    <!-- Section 10 -->
+    <div class="section-header">
+        <h2>Section 10 — Team, Risks & Use of Funds</h2>
+    </div>
+    <div class="content-area">
+        <h3>Founding Partners & Key Hires</h3>
+        <p><strong>Founders:</strong> CEO/Commercial, CTO/Technical, COO/Operations.</p>
+        <p><strong>Y1 Hires:</strong> Sr. ML Engineer, Embedded Systems Eng, GIS Eng, WA Field Ops Manager, DFI Partnerships Mgr, Cybersecurity Specialist.</p>
+
+        <h3>Risk Register (Top Risks)</h3>
+        <table>
+            <thead><tr><th>Risk</th><th>Impact</th><th>Mitigation</th></tr></thead>
+            <tbody>
+                <tr><td>Pilot utility leadership change</td><td>Critical</td><td>Contractual protections; backup pilot pipeline</td></tr>
+                <tr><td>Hardware deployment delays</td><td>High</td><td>Asset inventory as Phase 0; start with meter analytics</td></tr>
+                <tr><td>Internal collusion neuters alerts</td><td>High</td><td>Internal fraud layer; role-based alert access</td></tr>
+                <tr><td>Community backlash</td><td>High</td><td>Regularisation portal; community engagement protocol</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Use of Funds — $1.5M Seed</h3>
+        <table>
+            <thead><tr><th>Allocation</th><th>Amount</th><th>%</th></tr></thead>
+            <tbody>
+                <tr><td>Engineering & Product</td><td>$600K</td><td>40%</td></tr>
+                <tr><td>Sierra Leone Pilot</td><td>$400K</td><td>27%</td></tr>
+                <tr><td>Team Hiring</td><td>$300K</td><td>20%</td></tr>
+                <tr><td>DFI Partnerships & BD</td><td>$150K</td><td>10%</td></tr>
+                <tr><td>Operations & Legal</td><td>$50K</td><td>3%</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PART II -->
+    <div class="part-title"><span>PART II</span> CRITICAL ASSESSMENT</div>
+
+    <div class="section-header">
+        <h2>Section 11 — What's Genuinely Strong</h2>
+    </div>
+    <div class="content-area">
+        <div class="callout callout-green">
+            <div class="callout-title">Core Strengths</div>
+            <ul>
+                <li>The core problem is real and well-quantified. A 21% average loss rate — with outliers at 41% — represents enormous economic leakage.</li>
+                <li>The IoT-plus-AI framing is a logical fit.</li>
+                <li>The ECOWAS EIS integration is a smart political hook that could unlock institutional buy-in.</li>
+                <li>The token-stream analytics approach is genuinely differentiated — detecting NTL without requiring universal smart meter deployment.</li>
+                <li>The DFI-as-channel strategy is well-conceived.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Section 12 — Fundamental Criticisms</h2>
+    </div>
+    <div class="content-area">
+        <div class="callout callout-red">
+            <div class="callout-title">Hardware Deployment & Power Quality</div>
+            <p>Installing IoT sensors across networks with incomplete asset registers is an enormous physical undertaking. Furthermore, grid instability will corrupt data—irregular voltage and surges create noisy sensor readings.</p>
+            <p><strong>Mitigation:</strong> Sequence deployment starting with Smart Meter Analytics Engine (no hardware). Phase 0 asset inventory. Sensors spec'd for 80-300V tolerance with battery backup.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">Connectivity & Real-Time Assumptions</div>
+            <p>"Cloud-hosted" assumes reliable GSM/4G backhaul, which fails in many rural/peri-urban transformer locations.</p>
+            <p><strong>Mitigation:</strong> Edge-first architecture with 72-hour data buffering. Only flagged events pushed to cloud.</p>
+        </div>
+
+        <div class="callout callout-red">
+            <div class="callout-title">The Enforcement Gap & Training Data</div>
+            <p>Detecting theft is the easy half. Recovering losses requires enforcement will and legal frameworks. Additionally, AI requires 18-24 months of post-deployment data before delivering meaningful accuracy.</p>
+            <p><strong>Mitigation:</strong> Work order integration (F-10) and enforcement partnerships. Early detection relies on heuristics supplemented by ML, with quarterly retraining cadence.</p>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2>Section 13 — Broader Concerns</h2>
+    </div>
+    <div class="content-area">
+        <ul>
+            <li><strong>Donor Dependency:</strong> Grant share projected to decline from 56% (Y1) to 4% (Y5). Performance fees create revenue independent of grants.</li>
+            <li><strong>Vendor Lock-In:</strong> Must commit to open API standards and data portability.</li>
+            <li><strong>Currency Risk:</strong> Cloud costs in USD/EUR vs. local revenues. SaaS pricing indexed to FX.</li>
+            <li><strong>Political Losses:</strong> 41% outliers often stem from politically protected customers. GridIQ makes them visible; governance reform must address them.</li>
+        </ul>
+    </div>
+
+    <!-- PART III -->
+    <div class="part-title"><span>PART III</span> GAP ANALYSIS & RESPONSES</div>
+
+    <div class="section-header">
+        <h2>Section 14 — Ten Structural Gaps</h2>
+    </div>
+    <div class="content-area">
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 1: The Enforcement Gap</div>
+            <p>Detection without enforcement is a cost centre. Community institutions are sometimes better positioned to address bypassing than utility field agents.</p>
+            <p><strong>Response:</strong> Work order integration (F-10), formal enforcement protocols in deployment contracts, and community-based enforcement pilots.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 2: Internal Corruption</div>
+            <p>NTL often originates inside the utility. If compromised staff review alerts, the platform is neutered.</p>
+            <p><strong>Response:</strong> Internal Fraud Detection Layer (Sec 4.4), role-based alert access, senior-only routing for corruption cases, immutable audit trails.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 3: Data Strategy for Model Improvement</div>
+            <p>Models degrade if not retrained on confirmed field outcomes.</p>
+            <p><strong>Response:</strong> Structured feedback loop, quarterly retraining cadence, confidence scoring with adjustable thresholds.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 4: Tariff & Political Economy Risks</div>
+            <p>Revenue recovery assumes cost-reflective tariffs, which don't exist in most ECOWAS markets.</p>
+            <p><strong>Response:</strong> Financial model adjusted with explicit "tariff dampening" factor. GridIQ EIS data generates evidence for World Bank/DFI tariff reform conditionalities.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 5: Customer-Side Social Licence</div>
+            <p>"Theft" is often survival. Aggressive enforcement triggers backlash.</p>
+            <p><strong>Response:</strong> Regularisation Programme Portal (F-08) for transitioning informal connections, community engagement protocols, enforcement prioritisation rules.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gap 6: Cybersecurity & Data Integrity</div>
+            <p>Financial-grade data sent to regulators/DFIs must be tamper-proof.</p>
+            <p><strong>Response:</strong> AES-256/TLS 1.3 encryption, hardware tamper-evident seals, immutable audit trails, regional data sovereignty hosting.</p>
+        </div>
+
+        <div class="callout callout-navy">
+            <div class="callout-title">Gaps 7-10: Financial, Procurement, Pilot Exit, Competitors</div>
+            <p><strong>Responses:</strong> Full 5-year projections provided (Gap 7). DFI-funded technical assistance to bypass procurement (Gap 8). Backup pilot pipeline and data portability (Gap 9). First-mover utility relationships and token-stream data gravity defend against MTN/Orange/Huawei (Gap 10).</p>
+        </div>
+    </div>
+
+    <!-- PART IV -->
+    <div class="part-title"><span>PART IV</span> INVESTOR PITCH DECK STRUCTURE</div>
+
+    <div class="section-header">
+        <h2>Section 15 — 16-Slide Deck Summary</h2>
+    </div>
+    <div class="content-area">
+        <table>
+            <thead><tr><th>Slide</th><th>Title</th><th>Core Content</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td>Cover</td><td>Dark navy grid, amber bolt, 3 KPI anchors ($1.2B, 21%, 8)</td></tr>
+                <tr><td>2</td><td>Structural Paradox</td><td>3-column: Power unbilled → Leakage → Capital exit</td></tr>
+                <tr><td>3</td><td>Loss Landscape</td><td>Stacked bar chart, 8 ECOWAS utilities, 41% outlier</td></tr>
+                <tr><td>4</td><td>Why Others Failed</td><td>6-panel: Attribution, Silos, Collusion, Enforcement, Community, EIS</td></tr>
+                <tr><td>5</td><td>GridIQ Solution</td><td>Detect / Recover / Report framework</td></tr>
+                <tr><td>6</td><td>Architecture</td><td>System diagram: Sensors/Vending → AI → Dashboard/EIS</td></tr>
+                <tr><td>7</td><td>Solving the Unsolvable</td><td>Failure Mode → GridIQ Response table</td></tr>
+                <tr><td>8</td><td>Revenue Model</td><td>6 streams with indicative pricing</td></tr>
+                <tr><td>9</td><td>Financials</td><td>5-year stacked chart, Break-even Mo 28, 72% margin</td></tr>
+                <tr><td>10</td><td>Competitive Moat</td><td>5 advantages incl. enforcement/community model</td></tr>
+                <tr><td>11</td><td>Go-to-Market</td><td>4-phase column layout</td></tr>
+                <tr><td>12</td><td>Operational Plan</td><td>Y1 Gantt chart: Hiring → Integration → Install → Validate</td></tr>
+                <tr><td>13</td><td>Risk Register</td><td>7 risks with impact/likelihood/mitigations</td></tr>
+                <tr><td>14</td><td>Team</td><td>3 Partners + 6 Key Hires</td></tr>
+                <tr><td>15</td><td>Use of Funds</td><td>$1.5M Seed donut chart & breakdown</td></tr>
+                <tr><td>16</td><td>Close</td><td>"The revenue is already being generated. GridIQ makes it collectable."</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PART V -->
+    <div class="part-title"><span>PART V</span> BOTTOM LINE</div>
+
+    <div class="section-header">
+        <h2>Section 16 — Concluding Assessment</h2>
+    </div>
+    <div class="content-area">
+        <h3>What Has Been Resolved</h3>
+        <ul>
+            <li>The enforcement gap now has a structural response (work order integration, enforcement partnership model, community-based pilots).</li>
+            <li>Internal corruption now has a dedicated detection layer and access control architecture.</li>
+            <li>The AI model improvement lifecycle now has a defined feedback loop and retraining cadence.</li>
+            <li>The financial model now has projections, unit economics, and break-even analysis.</li>
+            <li>Cybersecurity, data integrity, social licence, and procurement barriers all have explicit specifications and strategies.</li>
+            <li>Competitive threats from telecoms and Chinese entrants are formally assessed.</li>
+        </ul>
+
+        <h3>What Remains a Structural Constraint</h3>
+        <ul>
+            <li><strong>Political losses</strong> from subsidised supply to protected customers cannot be stopped by technology.</li>
+            <li><strong>Below-cost tariffs</strong> dampen the financial value of recovered losses.</li>
+            <li><strong>Utility human capacity</strong> and institutional readiness vary. Managed services mitigate but do not eliminate this dependency.</li>
+        </ul>
+
+        <div class="callout callout-amber" style="text-align: center; margin-top: 40px;">
+            <div class="callout-title" style="font-size: 14pt;">The Bottom Line</div>
+            <p style="font-size: 12pt; margin-bottom: 0;">GridIQ acknowledges the constraints of governance, enforcement, and infrastructure explicitly — and shows how the platform is designed to work <em>within</em> them, not around them. The revenue is already being generated. GridIQ makes it collectable.</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridIQ West Africa — AI-Powered Grid Loss Intelligence Platform</title>
+    <style>
+        :root {
+            --primary: #1a5276;
+            --secondary: #2874a6;
+            --accent: #e67e22;
+            --critical: #c0392b;
+            --high: #d35400;
+            --moderate: #f39c12;
+            --best: #27ae60;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --text-light: #5d6d7e;
+            --border: #d5d8dc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(26, 82, 118, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .hero .target {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Sections */
+        section {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem 0;
+        }
+
+        h4 {
+            color: var(--text);
+            font-size: 1.05rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.25rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        /* Category badges */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-critical { background: #fdeaea; color: var(--critical); }
+        .badge-high { background: #fef3e2; color: var(--high); }
+        .badge-moderate { background: #fef9e7; color: var(--moderate); }
+        .badge-best { background: #e8f8f5; color: var(--best); }
+
+        /* Lists */
+        ul, ol {
+            margin: 0.75rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        /* Solution Cards */
+        .solution-trio {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent);
+        }
+
+        .solution-card h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .solution-card p {
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Component Cards */
+        .component {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--accent);
+        }
+
+        .component-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .component-number {
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .component-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #e8f4fd;
+            color: var(--secondary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Causal Chain */
+        .chain-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 1rem 0;
+        }
+
+        .chain-item {
+            display: flex;
+            align-items: stretch;
+            background: white;
+            border: 1px solid var(--border);
+        }
+
+        .chain-cause {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+            min-width: 220px;
+            display: flex;
+            align-items: center;
+        }
+
+        .chain-effect {
+            padding: 0.75rem 1rem;
+            color: var(--text-light);
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .chain-arrow {
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            padding: 0.25rem;
+        }
+
+        /* Code block */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .hero { padding: 2rem 1rem; }
+            .hero h1 { font-size: 1.5rem; }
+            section { padding: 1.25rem; }
+            th, td { padding: 0.6rem; font-size: 0.85rem; }
+            .chain-cause { min-width: 140px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <div class="hero">
+            <h1>GridIQ West Africa</h1>
+            <p class="subtitle">AI-Powered Grid Loss Intelligence and Real-Time Energy Data Platform</p>
+            <p class="target">for ECOWAS Distribution Utilities</p>
+        </div>
+
+        <!-- The Challenge -->
+        <section>
+            <h2>The Challenge</h2>
+            <p>West Africa's electricity sector faces a structural paradox. Despite a combined installed capacity of <strong>26.6 GW</strong> and a <strong>7.4%</strong> year-on-year growth in electricity generation (96,057 GWh in 2023), only <strong>57.7%</strong> of the region's 400 million people have access to electricity. The standard explanation focuses on generation capacity, transmission gaps, and financing costs — all real barriers. But a critical, under-addressed crisis sits upstream of all of them: <strong>West African utilities cannot account for, bill, and collect revenue from the electricity they already generate.</strong></p>
+
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <span class="value">26.6 GW</span>
+                    <span class="label">Installed Capacity</span>
+                </div>
+                <div class="stat-card">
+                    <span class="value">7.4%</span>
+                    <span class="label">YoY Growth</span>
+                </div>
+                <div class="stat-card">
+                    <span class="value">57.7%</span>
+                    <span class="label">Electrification Rate</span>
+                </div>
+                <div class="stat-card">
+                    <span class="value">400M</span>
+                    <span class="label">Population</span>
+                </div>
+            </div>
+
+            <p>This is the <strong>grid loss and data blindness crisis</strong> (Virtuous cycle). Without revenue, utilities cannot maintain infrastructure, cannot repay Power Purchase Agreements, DFIs cannot lend, and private investors cannot enter. The digital transformation required to break this cycle is precisely what this project delivers.</p>
+        </section>
+
+        <!-- Problem 1 -->
+        <section>
+            <h2>Problem 1: Grid Losses and Non-Technical Losses (NTL)</h2>
+            <p>The ECOWAS regional average for transmission and distribution losses stands at <strong>21.3%</strong>, more than double the international efficiency benchmark of 8–10%. This means that for every 10 units of electricity generated, more than 2 are lost, stolen, or unaccounted for before reaching a paying customer.</p>
+
+            <h3>Utility Loss Comparison</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Utility (Country)</th>
+                        <th>Total Losses</th>
+                        <th>Non-Technical Losses</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>EDG (Guinea)</strong></td>
+                        <td>41.0%</td>
+                        <td>31.9%</td>
+                        <td><span class="badge badge-critical">Critical</span></td>
+                    </tr>
+                    <tr style="background:#fff5f5;">
+                        <td><strong>EDSA (Sierra Leone)</strong></td>
+                        <td><strong>~38.0%</strong></td>
+                        <td><strong>~25%</strong></td>
+                        <td><span class="badge badge-critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td>ECG (Ghana) — Phase 2</td>
+                        <td>~28.4%</td>
+                        <td>~12–17%</td>
+                        <td><span class="badge badge-high">High — Phase 2</span></td>
+                    </tr>
+                    <tr>
+                        <td>NEDCO (Ghana) — Phase 2</td>
+                        <td>~26.5%</td>
+                        <td>~10–14%</td>
+                        <td><span class="badge badge-high">High — Phase 2</span></td>
+                    </tr>
+                    <tr>
+                        <td>NAWEC (Gambia)</td>
+                        <td>~22.7%</td>
+                        <td>~10%</td>
+                        <td><span class="badge badge-high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>SBEE (Benin)</td>
+                        <td>~22.2%</td>
+                        <td>~8%</td>
+                        <td><span class="badge badge-high">High</span></td>
+                    </tr>
+                    <tr>
+                        <td>SENELEC (Senegal)</td>
+                        <td>~17.4%</td>
+                        <td>~5%</td>
+                        <td><span class="badge badge-moderate">Moderate</span></td>
+                    </tr>
+                    <tr>
+                        <td>CIE (Côte d'Ivoire)</td>
+                        <td>8.7%</td>
+                        <td>~3%</td>
+                        <td><span class="badge badge-best">Best Practice</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Root Causes of High NTL Across ECOWAS Utilities</h3>
+            <ul>
+                <li><strong>No metering at feeder or distribution transformer level</strong> — losses are invisible until month-end billing reconciliation, by which time geographic attribution is impossible.</li>
+                <li><strong>Analogue and non-communicating meters</strong> — field agents are understaffed, access is difficult in informal settlements, and meter readings are frequently estimated.</li>
+                <li><strong>Most utilities have deployed Conlog/Hexing prepaid meters</strong>, but transaction data sits in vendor-proprietary systems with no integration into the utility's central GIS or loss-accounting framework.</li>
+                <li><strong>No spatial loss mapping</strong> — without IoT transformer monitoring, utilities cannot identify which feeder corridor or customer cluster is driving losses.</li>
+                <li><strong>Weak revenue protection enforcement</strong> — RISE indicator score of approximately 20/100 is a stark signal that regulatory and operational systems lag the country's development aspirations.</li>
+            </ul>
+        </section>
+
+        <!-- Problem 2 -->
+        <section>
+            <h2>Problem 2: Energy Data Blindness — The ECOWAS EIS Gap</h2>
+            <p>Even where losses are partially understood at utility level, this knowledge does not reach ECOWAS regulators, DFIs, or national planning ministries. The ECOWAS Energy Information System (EIS) relies on voluntary, manual reporting by national energy ministries and utilities. The consequences:</p>
+            <ul>
+                <li>Most ECOWAS members: reporting lags of <strong>2–8 years</strong> are the norm</li>
+                <li>DFIs conducting due diligence cannot obtain current, verified utility performance data — forcing higher risk premiums and, in some cases, declining to invest.</li>
+            </ul>
+
+            <h3>The Causal Chain</h3>
+            <div class="chain-container">
+                <div class="chain-item">
+                    <div class="chain-cause">No feeder-level metering</div>
+                    <div class="chain-effect">Losses are invisible — no geographic attribution possible</div>
+                </div>
+                <div class="chain-arrow">▼</div>
+                <div class="chain-item">
+                    <div class="chain-cause">Losses undetected</div>
+                    <div class="chain-effect">No targeted enforcement or investigation; NTL normalizes and scales</div>
+                </div>
+                <div class="chain-arrow">▼</div>
+                <div class="chain-item">
+                    <div class="chain-cause">Revenue shortfall</div>
+                    <div class="chain-effect">Non-cost-reflective tariffs + unrecovered NTL = utility insolvency risk</div>
+                </div>
+                <div class="chain-arrow">▼</div>
+                <div class="chain-item">
+                    <div class="chain-cause">Utility debt builds</div>
+                    <div class="chain-effect">Utilities cannot service PPA debt; cannot invest in grid maintenance</div>
+                </div>
+                <div class="chain-arrow">▼</div>
+                <div class="chain-item">
+                    <div class="chain-cause">Grid reliability falls</div>
+                    <div class="chain-effect">More customers self-generate on diesel; utility revenue base shrinks further</div>
+                </div>
+                <div class="chain-arrow">▼</div>
+                <div class="chain-item">
+                    <div class="chain-cause">Private capital exits</div>
+                    <div class="chain-effect">DFI lending constrained; energy access stagnates</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section>
+            <h2>The Solution</h2>
+            <p><strong>GridIQ West Africa</strong> is a cloud-hosted, IoT-enabled AI platform purpose-built for ECOWAS distribution utilities. It operates across three interconnected functions:</p>
+
+            <div class="solution-trio">
+                <div class="solution-card">
+                    <h4>🔍 Detect</h4>
+                    <p>IoT sensors at distribution transformer and feeder level generate continuous power flow data. An AI engine compares injected power against metered customer consumption to isolate loss zones in real time.</p>
+                </div>
+                <div class="solution-card">
+                    <h4>🛡️ Recover</h4>
+                    <p>Utility operators receive georeferenced alerts identifying specific transformers, feeders, or customer clusters with anomalous loss signatures — enabling targeted field investigation and enforcement.</p>
+                </div>
+                <div class="solution-card">
+                    <h4>📊 Report</h4>
+                    <p>Verified, structured grid performance data is automatically exported to the ECOWAS EIS via a standardized API, replacing manual reporting with a live data pipeline.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Architecture -->
+        <section>
+            <h2>Technical Architecture — Six Components</h2>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">1</div>
+                    <div class="component-title">Smart Meter Analytics Engine</div>
+                </div>
+                <span class="tech-tag">Technology: Supervised ML + time-series anomaly detection</span>
+                <p>AI/ML analysis of utility's Conlog/Hexing prepaid token transaction history. The engine compares consumption profiles against expected patterns to flag billing anomalies, meter bypassing, and theft. Critically, it is calibrated for token-purchase event streams — not monthly billing cycles — making it the first NTL detection engine adapted to the dominant ECOWAS metering paradigm.</p>
+            </div>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">2</div>
+                    <div class="component-title">IoT Grid Node Monitoring (Hardware Layer)</div>
+                </div>
+                <span class="tech-tag">Technology: IoT edge devices; 4G/LoRaWAN connectivity; IP65 enclosures</span>
+                <p>10 ruggedised smart sensors deployed at distribution transformers and primary feeder measurement points in the pilot zone. Each sensor captures voltage, current, active power, reactive power, and power factor at 15-minute intervals.</p>
+                <ul>
+                    <li><strong>Internet connectivity</strong> — Fallback: LoRaWAN gateway for enclosed substations</li>
+                    <li><strong>Battery backup:</strong> 48-hour minimum</li>
+                </ul>
+            </div>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">3</div>
+                    <div class="component-title">Real-Time GIS Loss Dashboard (User Interface)</div>
+                </div>
+                <span class="tech-tag">Technology: Responsive web app; English/French interface; 2G/3G-optimised</span>
+                <p>Six modules:</p>
+                <ol>
+                    <li><strong>Live Loss Map</strong> — feeders colour-coded by NTL level, updated every 15 minutes</li>
+                    <li><strong>Zone Drill-Down</strong> — injected vs. billed energy per zone, trend charts</li>
+                    <li><strong>Alert Feed</strong> — real-time theft signatures and tamper events</li>
+                    <li><strong>Investigation Queue</strong> — ranked customer account list with GPS coordinates</li>
+                    <li><strong>Monthly Performance Report</strong> — auto-generated PDF for utility management</li>
+                    <li><strong>EIS Export</strong> — one-click submission to ECOWAS EIS</li>
+                </ol>
+            </div>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">4</div>
+                    <div class="component-title">Automated ECOWAS EIS Reporting Pipeline</div>
+                </div>
+                <span class="tech-tag">Technology: REST API; standardized JSON schema; Utility co-validation</span>
+                <p>Structured monthly data feed from the Utility's GridIQ instance to the ECOWAS EIS — replacing the current manual, lagged, and frequently absent reporting process.</p>
+                <p><strong>Data fields:</strong> injected energy, technical vs. non-technical losses, revenue billed and collected, outage indicators (SAIDI/SAIFI), customer connections by tariff category, smart meter penetration. Utility co-validates data before each submission.</p>
+            </div>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">5</div>
+                    <div class="component-title">Predictive Maintenance Alert System</div>
+                </div>
+                <span class="tech-tag">Technology: ML anomaly detection on continuous sensor data</span>
+                <p>Identifies distribution transformers showing early degradation:</p>
+                <ul>
+                    <li>Persistent power factor below 0.85</li>
+                    <li>Voltage deviation outside ±5% of nominal</li>
+                    <li>Load factor consistently above 80%</li>
+                    <li>Asymmetric phase loading &gt;15%</li>
+                </ul>
+                <p><strong>Output:</strong> monthly maintenance priority ranking for the Utility's engineering team. Estimated to reduce unplanned outages by <strong>15–25%</strong> in the pilot zone by Year 2.</p>
+            </div>
+
+            <div class="component">
+                <div class="component-header">
+                    <div class="component-number">6</div>
+                    <div class="component-title">Impact ROI Tracker (Accountability Layer)</div>
+                </div>
+                <span class="tech-tag">Technology: Metrics dashboard; AfDB/EU reporting format</span>
+                <p>Transparent, auditable record of revenue recovered attributable to GridIQ interventions.</p>
+                <p><strong>Methodology:</strong></p>
+                <div class="code-block">
+(Baseline NTL kWh − Current NTL kWh) × utility tariff (NLE/kWh) = revenue recovered this month
+                </div>
+                <p>Cumulative tracker updated monthly. Exportable to PDF and Excel in AFD, AfDB, IFC, and EU reporting formats — making grant accountability automatic.</p>
+            </div>
+        </section>
+
+        <!-- Workflows -->
+        <section>
+            <h2>Workflows</h2>
+            <h3>Simplified Workflow</h3>
+            <p><em>Diagram placeholder — refer to original document for workflow diagrams.</em></p>
+
+            <h3>Detailed Workflow</h3>
+            <p><em>Diagram placeholder — refer to original document for workflow diagrams.</em></p>
+        </section>
+
+        <footer>
+            <p>Copyright © RenewBiz, AFCEN, Smart Innovation</p>
+        </footer>
+    </div>
+</body>
+</html>

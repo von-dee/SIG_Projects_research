@@ -1,0 +1,377 @@
+
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--font-sans); }
+  .wrap { padding: 1.5rem 0; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: .06em; color: var(--color-text-tertiary); text-transform: uppercase; margin: 0 0 8px; }
+  .layer { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); margin-bottom: 12px; overflow: hidden; }
+  .layer-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; user-select: none; }
+  .layer-header:hover { background: var(--color-background-secondary); }
+  .layer-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .layer-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .layer-subtitle { font-size: 12px; color: var(--color-text-tertiary); }
+  .chevron { font-size: 12px; color: var(--color-text-tertiary); transition: transform .2s; }
+  .chevron.open { transform: rotate(180deg); }
+  .layer-body { display: none; padding: 14px; }
+  .layer-body.open { display: block; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+  .card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; cursor: pointer; border: 0.5px solid transparent; transition: border-color .15s; }
+  .card:hover { border-color: var(--color-border-secondary); }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 3px; }
+  .card-desc { font-size: 12px; color: var(--color-text-secondary); margin: 0; line-height: 1.5; }
+  .detail-panel { margin-top: 12px; padding: 12px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); border-left: 2px solid var(--color-border-info); display: none; }
+  .detail-panel.open { display: block; }
+  .detail-panel p { margin: 0 0 6px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+  .detail-panel p:last-child { margin: 0; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-blue { background: var(--color-background-info); color: var(--color-text-info); }
+  .tag-green { background: var(--color-background-success); color: var(--color-text-success); }
+  .tag-amber { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .roadmap { margin-top: 16px; }
+  .phase { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+  .phase-dot-wrap { display: flex; flex-direction: column; align-items: center; }
+  .phase-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+  .phase-line { width: 1px; flex: 1; min-height: 20px; background: var(--color-border-tertiary); }
+  .phase-content { flex: 1; padding-bottom: 12px; }
+  .phase-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 3px 0 4px; }
+  .phase-detail { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .ask-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-secondary); cursor: pointer; margin-top: 8px; }
+  .ask-btn:hover { background: var(--color-background-secondary); }
+  .vs-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .vs-label { font-size: 12px; color: var(--color-text-tertiary); min-width: 80px; padding-top: 2px; }
+  .vs-wm { flex: 1; font-size: 12px; color: var(--color-text-secondary); background: var(--color-background-secondary); padding: 5px 8px; border-radius: 6px; }
+  .vs-you { flex: 1; font-size: 12px; color: var(--color-text-success); background: var(--color-background-success); padding: 5px 8px; border-radius: 6px; }
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .tab { font-size: 13px; padding: 6px 14px; cursor: pointer; color: var(--color-text-secondary); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+</style>
+
+<div class="wrap">
+  <h2 class="sr-only">Metals and Mining Intelligence Platform — Full Product Architecture and Roadmap</h2>
+
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab('arch')">Architecture</div>
+    <div class="tab" onclick="switchTab('vs')">vs Wood Mackenzie</div>
+    <div class="tab" onclick="switchTab('roadmap')">Roadmap</div>
+  </div>
+
+  <!-- ARCHITECTURE TAB -->
+  <div id="tab-arch" class="tab-content active">
+    <p class="section-label">Click any layer to explore</p>
+
+    <div class="layer" id="l1">
+      <div class="layer-header" onclick="toggle('l1')">
+        <div class="layer-dot" style="background:#378ADD"></div>
+        <span class="layer-title">1 — Data ingestion & agents</span>
+        <span class="layer-subtitle">Real-time feeds, web agents, filings</span>
+        <span class="chevron" id="l1-chev">▼</span>
+      </div>
+      <div class="layer-body" id="l1-body">
+        <div class="cards">
+          <div class="card" onclick="showDetail('d-prices')">
+            <p class="card-title">Price feeds</p>
+            <p class="card-desc">LME, CME, SHFE via APIs. Spot, futures, options chains.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-filings')">
+            <p class="card-title">Regulatory filings</p>
+            <p class="card-desc">EDGAR, SEDAR, ASX — AI-parsed quarterly & annual reports.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-satellite')">
+            <p class="card-title">Satellite & geo</p>
+            <p class="card-desc">Sentinel-2, Planet Labs — mine activity, stockpile monitoring.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-shipping')">
+            <p class="card-title">Trade flows</p>
+            <p class="card-desc">AIS vessel tracking, port data, export/import volumes.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-news')">
+            <p class="card-title">News & signals</p>
+            <p class="card-desc">Reuters, Bloomberg feeds, labor news, regulatory alerts.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-govt')">
+            <p class="card-title">Government data</p>
+            <p class="card-desc">USGS, World Bank, national mining ministries, royalty databases.</p>
+          </div>
+        </div>
+        <div id="d-prices" class="detail-panel">
+          <p><strong>Price agents</strong> poll LME REST API and CME DataMine every 15 minutes. A normalization agent maps tickers across exchanges and stores in TimescaleDB. Anomaly detection triggers alerts when spot diverges from 30-day moving average by &gt;2σ.</p>
+          <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-blue">Python scheduler</span><span class="tag tag-green">LME API</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I build a real-time metals price ingestion pipeline?')">How to build this ↗</button>
+        </div>
+        <div id="d-filings" class="detail-panel">
+          <p><strong>Filing agents</strong> watch EDGAR, SEDAR, and ASX RSS feeds. When a new filing appears from a tracked company, a Claude agent extracts: AISC/C1 cost guidance, production guidance, capex, key risk factors, and flags changes vs prior period. Stored as structured JSON + full-text in vector DB.</p>
+          <span class="tag tag-blue">Claude tool-use</span><span class="tag tag-blue">Playwright</span><span class="tag tag-green">PostgreSQL + pgvector</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I use Claude to extract structured data from mining company filings?')">How to build this ↗</button>
+        </div>
+        <div id="d-satellite" class="detail-panel">
+          <p><strong>Geospatial agents</strong> pull Sentinel-2 imagery (free, 10m resolution) for tracked mine sites. Computer vision models detect stockpile size changes, new construction, operational status. Planet Labs API for higher-cadence monitoring on tier-1 assets.</p>
+          <span class="tag tag-blue">Sentinel-2 API</span><span class="tag tag-blue">GDAL / rasterio</span><span class="tag tag-amber">Planet Labs (paid)</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How can I use satellite imagery to monitor mine activity?')">How to build this ↗</button>
+        </div>
+        <div id="d-shipping" class="detail-panel">
+          <p><strong>Trade flow agents</strong> use AIS vessel tracking APIs to monitor bulk carrier movements between key ports (Dampier, Richards Bay, Puerto Cortez). Correlate with UN Comtrade monthly export data for demand signal validation.</p>
+          <span class="tag tag-blue">MarineTraffic API</span><span class="tag tag-green">UN Comtrade</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I track commodity trade flows using vessel data?')">How to build this ↗</button>
+        </div>
+        <div id="d-news" class="detail-panel">
+          <p><strong>News agent</strong> monitors RSS + NewsAPI for keywords per commodity/company. Claude classifies each article: price-moving event, labor dispute, regulatory change, M&A signal, or noise. High-signal items are pushed to alert queue.</p>
+          <span class="tag tag-blue">NewsAPI</span><span class="tag tag-blue">Claude classifier</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I build a news classification agent for mining events?')">How to build this ↗</button>
+        </div>
+        <div id="d-govt" class="detail-panel">
+          <p><strong>Government data agents</strong> pull USGS Mineral Commodity Summaries (annual), World Bank commodity price data (monthly), and national mining ministry reports. Agents standardize units and map to internal asset/commodity taxonomy.</p>
+          <span class="tag tag-green">USGS API</span><span class="tag tag-green">World Bank API</span><span class="tag tag-green">Free</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer" id="l2">
+      <div class="layer-header" onclick="toggle('l2')">
+        <div class="layer-dot" style="background:#1D9E75"></div>
+        <span class="layer-title">2 — Data store & knowledge graph</span>
+        <span class="layer-subtitle">Structured, time-series, vector, graph</span>
+        <span class="chevron" id="l2-chev">▼</span>
+      </div>
+      <div class="layer-body" id="l2-body">
+        <div class="cards">
+          <div class="card" onclick="showDetail('d-ts')">
+            <p class="card-title">Time-series DB</p>
+            <p class="card-desc">All price, production, cost data with full history.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-pg')">
+            <p class="card-title">Asset database</p>
+            <p class="card-desc">Mine-level data: location, ownership, capacity, status.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-vec')">
+            <p class="card-title">Vector store</p>
+            <p class="card-desc">Semantic search over reports, filings, news.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-graph')">
+            <p class="card-title">Knowledge graph</p>
+            <p class="card-desc">Company → mine → commodity → country relationships.</p>
+          </div>
+        </div>
+        <div id="d-ts" class="detail-panel">
+          <p><strong>TimescaleDB</strong> (PostgreSQL extension) stores all time-series data: spot prices, futures curves, production volumes, cost indices. Enables fast range queries like "copper AISC trend for Chilean mines last 3 years".</p>
+          <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-green">Open source</span>
+        </div>
+        <div id="d-pg" class="detail-panel">
+          <p><strong>PostgreSQL asset registry</strong> stores every tracked mine: coordinates, owner, operator, commodity mix, nameplate capacity, current operational status, permit history. This is your equivalent of WoodMac's asset database — built from public JORC/NI 43-101 reports and company filings.</p>
+          <span class="tag tag-blue">PostgreSQL</span><span class="tag tag-green">PostGIS for geo queries</span>
+        </div>
+        <div id="d-vec" class="detail-panel">
+          <p><strong>pgvector</strong> (PostgreSQL extension) enables semantic search over the full document corpus — filings, reports, news. Users can ask "what have companies said about Chilean water scarcity risks?" and get relevant passages across thousands of documents.</p>
+          <span class="tag tag-blue">pgvector</span><span class="tag tag-blue">OpenAI embeddings</span>
+        </div>
+        <div id="d-graph" class="detail-panel">
+          <p><strong>Graph relationships</strong> power questions like "which lithium projects does Albemarle have exposure to, and what countries are they in?" — traversing company → equity stake → mine → commodity → country nodes. Can be implemented in PostgreSQL with foreign keys or Neo4j for complex traversals.</p>
+          <span class="tag tag-blue">Neo4j or PostgreSQL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer" id="l3">
+      <div class="layer-header" onclick="toggle('l3')">
+        <div class="layer-dot" style="background:#BA7517"></div>
+        <span class="layer-title">3 — AI & agentic intelligence</span>
+        <span class="layer-subtitle">Analysis, forecasting, alert agents</span>
+        <span class="chevron" id="l3-chev">▼</span>
+      </div>
+      <div class="layer-body" id="l3-body">
+        <div class="cards">
+          <div class="card" onclick="showDetail('d-rag')">
+            <p class="card-title">RAG Q&A engine</p>
+            <p class="card-desc">Natural language over all your data. Analyst on demand.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-forecast')">
+            <p class="card-title">Forecast engine</p>
+            <p class="card-desc">Supply/demand models, price outlooks, scenario builder.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-cost')">
+            <p class="card-title">Cost curve builder</p>
+            <p class="card-desc">AI-extracted C1/AISC curves, updated from filings.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-alerts')">
+            <p class="card-title">Alert agents</p>
+            <p class="card-desc">Proactive monitoring, user-defined triggers, push delivery.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-report')">
+            <p class="card-title">Report generator</p>
+            <p class="card-desc">On-demand AI research notes, grounded in citations.</p>
+          </div>
+        </div>
+        <div id="d-rag" class="detail-panel">
+          <p><strong>Retrieval-augmented generation</strong> is your core product differentiator. User asks a question → system retrieves relevant data from TimescaleDB (prices), pgvector (documents), and the asset registry → Claude synthesizes a cited answer. Replaces reading 40-page PDF reports.</p>
+          <p>Example: "What's the risk to cobalt supply from DRC political instability this year?" → retrieves recent news, company exposure data, historical precedents → answer with source citations.</p>
+          <span class="tag tag-blue">Claude API</span><span class="tag tag-blue">LangChain / custom</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I build a RAG pipeline over mining industry data with Claude?')">How to build this ↗</button>
+        </div>
+        <div id="d-forecast" class="detail-panel">
+          <p><strong>Forecast models</strong> combine statistical time-series models (ARIMA, Prophet) for price prediction with fundamental supply/demand balance sheets built from asset-level production data. Claude agents can stress-test scenarios: "What if Chilean copper output drops 15% due to water restrictions?"</p>
+          <span class="tag tag-blue">Prophet / statsforecast</span><span class="tag tag-blue">Claude scenario agent</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I build commodity price forecasting models combining statistical and AI approaches?')">How to build this ↗</button>
+        </div>
+        <div id="d-cost" class="detail-panel">
+          <p><strong>Cost curve automation</strong>: agent reads every mine's latest filing, extracts C1/AISC guidance, normalizes to USD/tonne, ranks all mines on a cost curve. This is WoodMac's core product. You can replicate ~80% of it from public data. Update quarterly when filings drop.</p>
+          <span class="tag tag-blue">Claude extraction agent</span><span class="tag tag-green">Public JORC/43-101 data</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I automate mining cost curve construction from public filings?')">How to build this ↗</button>
+        </div>
+        <div id="d-alerts" class="detail-panel">
+          <p><strong>Alert agents</strong> run continuously: price threshold breaches, new filings from tracked companies, satellite-detected stockpile changes, labor news at watchlisted mines. Users configure their own alert rules in plain English: "Notify me if lithium carbonate drops below $12,000/t" or "Alert on any new Chilean copper mine permit."</p>
+          <span class="tag tag-blue">Background workers</span><span class="tag tag-blue">Email / Slack / webhook</span>
+        </div>
+        <div id="d-report" class="detail-panel">
+          <p><strong>On-demand report generation</strong>: user selects commodity, geography, timeframe, and thesis. Agentic workflow gathers latest data, runs through models, and generates a structured research note — with citations to source data. Delivered in minutes, not weeks. This is the biggest UX leap over WoodMac.</p>
+          <span class="tag tag-blue">Claude + tools</span><span class="tag tag-amber">Differentiator</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I build an AI-powered on-demand research report generator for commodities?')">How to build this ↗</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layer" id="l4">
+      <div class="layer-header" onclick="toggle('l4')">
+        <div class="layer-dot" style="background:#D85A30"></div>
+        <span class="layer-title">4 — User-facing platform</span>
+        <span class="layer-subtitle">Dashboard, chat interface, API, alerts</span>
+        <span class="chevron" id="l4-chev">▼</span>
+      </div>
+      <div class="layer-body" id="l4-body">
+        <div class="cards">
+          <div class="card" onclick="showDetail('d-chat')">
+            <p class="card-title">Conversational UI</p>
+            <p class="card-desc">Chat with your data. No menus, no PDFs to read.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-dash')">
+            <p class="card-title">Dashboard</p>
+            <p class="card-desc">Price charts, cost curves, supply/demand balances.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-upload')">
+            <p class="card-title">Internal data layer</p>
+            <p class="card-desc">Upload your own models. Benchmark against public data.</p>
+          </div>
+          <div class="card" onclick="showDetail('d-api')">
+            <p class="card-title">Data API</p>
+            <p class="card-desc">Lens Direct equivalent. Programmatic access for quants.</p>
+          </div>
+        </div>
+        <div id="d-chat" class="detail-panel">
+          <p><strong>Conversational intelligence</strong> is your primary UX moat. Every user gets a persistent chat interface over the full data platform. Queries are routed to the right data source automatically. Answers are cited. Follow-up questions maintain context. This replaces navigating menus to find the right report.</p>
+          <span class="tag tag-amber">Key differentiator</span>
+          <br><button class="ask-btn" onclick="sendPrompt('What does a great conversational UI for a data platform look like?')">Design this ↗</button>
+        </div>
+        <div id="d-dash" class="detail-panel">
+          <p><strong>Dashboard</strong> surface the most important views: commodity price tracker, global cost curves (interactive, filterable by region/owner), supply/demand balance sheet, and an asset map. Built in React with Recharts or D3. Embeds live data from your TimescaleDB.</p>
+          <span class="tag tag-blue">React + Recharts</span><span class="tag tag-blue">Mapbox GL</span>
+        </div>
+        <div id="d-upload" class="detail-panel">
+          <p><strong>Internal data integration</strong> is the enterprise moat. Mining companies and funds can upload their own mine models or portfolio spreadsheets. The platform blends their private data with your public-data layer for benchmarking: "How does my mine's AISC compare to the global cost curve?" — a question WoodMac cannot answer with internal data.</p>
+          <span class="tag tag-amber">Enterprise differentiator</span>
+        </div>
+        <div id="d-api" class="detail-panel">
+          <p><strong>Programmatic API</strong> lets quantitative analysts and trading desks pull clean, structured data directly into their models. REST + websocket for real-time prices. This is WoodMac's Lens Direct, but accessible at a fraction of the cost and without a 6-month onboarding process.</p>
+          <span class="tag tag-blue">FastAPI</span><span class="tag tag-blue">REST + WebSocket</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VS TAB -->
+  <div id="tab-vs" class="tab-content">
+    <p class="section-label">Head-to-head comparison</p>
+    <div class="vs-row" style="margin-bottom:4px">
+      <div class="vs-label"></div>
+      <div style="flex:1;font-size:12px;font-weight:500;color:var(--color-text-secondary);padding:0 8px">Wood Mackenzie</div>
+      <div style="flex:1;font-size:12px;font-weight:500;color:var(--color-text-success);padding:0 8px">Your platform</div>
+    </div>
+    <div class="vs-row"><div class="vs-label">Updates</div><div class="vs-wm">Quarterly analyst cycle</div><div class="vs-you">Continuous (agents)</div></div>
+    <div class="vs-row"><div class="vs-label">Interface</div><div class="vs-wm">PDF reports, static dashboards</div><div class="vs-you">Conversational AI + live charts</div></div>
+    <div class="vs-row"><div class="vs-label">Alerts</div><div class="vs-wm">None</div><div class="vs-you">User-defined, real-time</div></div>
+    <div class="vs-row"><div class="vs-label">Internal data</div><div class="vs-wm">Not supported</div><div class="vs-you">Upload & benchmark your own models</div></div>
+    <div class="vs-row"><div class="vs-label">Cost</div><div class="vs-wm">$50k–$200k+/year</div><div class="vs-you">$5k–$30k/year target</div></div>
+    <div class="vs-row"><div class="vs-label">Custom reports</div><div class="vs-wm">Consulting engagement ($$$)</div><div class="vs-you">On-demand AI generation (minutes)</div></div>
+    <div class="vs-row"><div class="vs-label">API access</div><div class="vs-wm">Lens Direct (expensive add-on)</div><div class="vs-you">Included in higher tiers</div></div>
+    <div class="vs-row"><div class="vs-label">Satellite data</div><div class="vs-wm">None</div><div class="vs-you">Mine monitoring via Sentinel-2</div></div>
+    <button class="ask-btn" onclick="sendPrompt('What pricing model should I use for a metals and mining intelligence SaaS platform?')" style="margin-top:8px">Help me price this ↗</button>
+  </div>
+
+  <!-- ROADMAP TAB -->
+  <div id="tab-roadmap" class="tab-content">
+    <p class="section-label">Phased build plan</p>
+    <div class="roadmap">
+      <div class="phase">
+        <div class="phase-dot-wrap">
+          <div class="phase-dot" style="background:var(--color-background-info);color:var(--color-text-info)">1</div>
+          <div class="phase-line"></div>
+        </div>
+        <div class="phase-content">
+          <p class="phase-title">Months 1–3 · Data foundation</p>
+          <p class="phase-detail">Build ingestion agents for LME/CME prices, USGS data, and top-50 mining company filings. Stand up TimescaleDB + PostgreSQL asset registry + pgvector. Seed asset database with 200 tier-1 mines. No product yet — validate data quality.</p>
+          <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-blue">Claude filing agent</span><span class="tag tag-green">~$20k build cost</span>
+          <br><button class="ask-btn" onclick="sendPrompt('What are the most important public data sources for a metals and mining intelligence platform?')">Explore data sources ↗</button>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot-wrap">
+          <div class="phase-dot" style="background:var(--color-background-info);color:var(--color-text-info)">2</div>
+          <div class="phase-line"></div>
+        </div>
+        <div class="phase-content">
+          <p class="phase-title">Months 4–6 · MVP product</p>
+          <p class="phase-detail">Launch conversational Q&A over your data. Add price dashboard, basic cost curve builder, and filing-based corporate alerts. Target: 5 beta users (mining analysts or fund managers). Charge $500/month. Goal: validate willingness to pay and identify biggest gaps.</p>
+          <span class="tag tag-blue">React frontend</span><span class="tag tag-blue">RAG pipeline</span><span class="tag tag-amber">5 beta customers</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How do I validate product-market fit for a metals and mining data platform?')">Validate this ↗</button>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot-wrap">
+          <div class="phase-dot" style="background:var(--color-background-info);color:var(--color-text-info)">3</div>
+          <div class="phase-line"></div>
+        </div>
+        <div class="phase-content">
+          <p class="phase-title">Months 7–12 · Growth features</p>
+          <p class="phase-detail">Add agentic alerts, on-demand report generation, satellite monitoring for top mine sites, and the internal data upload layer. Expand to 200+ mines and all major commodities. Begin outbound sales to mining companies, trading desks, and PE funds. Target $10k MRR.</p>
+          <span class="tag tag-blue">Alert agents</span><span class="tag tag-blue">Sentinel-2 integration</span><span class="tag tag-amber">$10k MRR</span>
+          <br><button class="ask-btn" onclick="sendPrompt('What sales channels work best for selling B2B data products to mining companies?')">Sales strategy ↗</button>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-dot-wrap">
+          <div class="phase-dot" style="background:var(--color-background-success);color:var(--color-text-success)">4</div>
+        </div>
+        <div class="phase-content">
+          <p class="phase-title">Year 2 · Platform & API</p>
+          <p class="phase-detail">Launch programmatic API tier, scenario modelling tools, supply chain risk scoring, and ESG/water stress overlays. Build partnerships with commodity trading desks. Target WoodMac's underserved SME and emerging market clients (Africa, Southeast Asia). Target $100k MRR.</p>
+          <span class="tag tag-green">API product</span><span class="tag tag-green">$100k MRR target</span>
+          <br><button class="ask-btn" onclick="sendPrompt('How should I think about building a programmatic data API on top of my metals intelligence platform?')">Plan the API ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggle(id) {
+  const body = document.getElementById(id+'-body');
+  const chev = document.getElementById(id+'-chev');
+  const open = body.classList.toggle('open');
+  chev.classList.toggle('open', open);
+}
+
+function showDetail(id) {
+  const panel = document.getElementById(id);
+  const isOpen = panel.classList.contains('open');
+  document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) panel.classList.add('open');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    const names = ['arch','vs','roadmap'];
+    t.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+</script>

@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metals & Mining Intelligence Platform</title>
+  <meta name="description" content="Interactive architecture overview of the Metals and Mining Intelligence Platform. Explore data ingestion, storage, AI agents, and user-facing features.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --bg-elevated: #111827;
+      --bg-card: #1a2236;
+      --bg-card-hover: #222d45;
+      --border: #2a3655;
+      --border-hover: #3b4d75;
+      --text-primary: #f0f4f8;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #378add;
+      --accent-teal: #1d9e75;
+      --accent-amber: #ba7517;
+      --accent-coral: #d85a30;
+      --accent-purple: #7c3aed;
+      --accent-cyan: #06b6d4;
+      --glow-blue: rgba(55, 138, 221, 0.15);
+      --glow-teal: rgba(29, 158, 117, 0.15);
+      --glow-amber: rgba(186, 117, 23, 0.15);
+      --glow-coral: rgba(216, 90, 48, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.4);
+      --shadow-glow: 0 0 40px rgba(55, 138, 221, 0.08);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background mesh */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(55, 138, 221, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(29, 158, 117, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124, 58, 237, 0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Floating particles */
+    .particles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--accent-blue);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 20s infinite linear;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Header */
+    .hero {
+      text-align: center;
+      margin-bottom: 48px;
+      padding: 24px 0;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(55, 138, 221, 0.12);
+      border: 1px solid rgba(55, 138, 221, 0.25);
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent-blue);
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+    .hero-badge .pulse {
+      width: 6px; height: 6px;
+      background: var(--accent-teal);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #f0f4f8 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Tab Bar - Glassmorphism */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+      padding: 6px;
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      position: sticky;
+      top: 20px;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+    }
+    .tab {
+      flex: 1;
+      padding: 12px 20px;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-align: center;
+      transition: var(--transition);
+      border: none;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .tab::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      opacity: 0;
+      transition: var(--transition);
+      border-radius: inherit;
+    }
+    .tab:hover {
+      color: var(--text-primary);
+      background: rgba(255,255,255,0.05);
+    }
+    .tab.active {
+      color: #fff;
+      font-weight: 600;
+    }
+    .tab.active::before {
+      opacity: 1;
+    }
+    .tab span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    /* Architecture Layers */
+    .layer {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
+    }
+    .layer:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md), var(--shadow-glow);
+      transform: translateY(-1px);
+    }
+    .layer-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+    .layer-header:hover {
+      background: rgba(255,255,255,0.02);
+    }
+    .layer-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px currentColor;
+      transition: var(--transition);
+    }
+    .layer-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      flex: 1;
+    }
+    .layer-subtitle {
+      color: var(--text-muted);
+      font-size: 13px;
+      margin-right: 12px;
+    }
+    .chevron {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: var(--transition);
+      width: 24px; height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+    .chevron.open {
+      transform: rotate(180deg);
+      color: var(--accent-blue);
+    }
+
+    .layer-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease;
+      padding: 0 24px;
+    }
+    .layer-body.open {
+      max-height: 2000px;
+      padding: 0 24px 24px;
+    }
+
+    /* Cards Grid */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+    .card:hover::before {
+      opacity: 1;
+    }
+    .card-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Detail Panels */
+    .detail-panel {
+      background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(26, 34, 54, 0.9));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0;
+      margin-bottom: 12px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.3s ease, margin 0.3s ease;
+      opacity: 0;
+    }
+    .detail-panel.open {
+      max-height: 600px;
+      padding: 24px;
+      opacity: 1;
+      margin-bottom: 16px;
+    }
+    .detail-panel p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+    .detail-panel p strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* Tags */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      letter-spacing: 0.01em;
+    }
+    .tag-blue {
+      background: rgba(55, 138, 221, 0.12);
+      color: #6bb3ff;
+      border: 1px solid rgba(55, 138, 221, 0.2);
+    }
+    .tag-green {
+      background: rgba(29, 158, 117, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(29, 158, 117, 0.2);
+    }
+    .tag-amber {
+      background: rgba(186, 117, 23, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(186, 117, 23, 0.2);
+    }
+
+    /* Ask Button */
+    .ask-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(55, 138, 221, 0.1);
+      border: 1px solid rgba(55, 138, 221, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent-blue);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 8px;
+      font-family: inherit;
+    }
+    .ask-btn:hover {
+      background: rgba(55, 138, 221, 0.2);
+      border-color: var(--accent-blue);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(55, 138, 221, 0.15);
+    }
+
+    /* VS Tab */
+    .vs-grid {
+      display: grid;
+      gap: 8px;
+    }
+    .vs-header {
+      display: grid;
+      grid-template-columns: 160px 1fr 1fr;
+      gap: 16px;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .vs-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+    .vs-row:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+    }
+    .vs-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .vs-wm, .vs-you {
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+    .vs-wm {
+      color: var(--text-secondary);
+      background: rgba(148, 163, 184, 0.06);
+    }
+    .vs-you {
+      color: #34d399;
+      background: rgba(29, 158, 117, 0.08);
+      font-weight: 500;
+      position: relative;
+    }
+    .vs-you::before {
+      content: '✓';
+      margin-right: 8px;
+      color: var(--accent-teal);
+      font-weight: 700;
+    }
+
+    /* Roadmap */
+    .roadmap {
+      position: relative;
+      padding-left: 32px;
+    }
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent-blue), var(--accent-teal), var(--accent-amber), var(--accent-coral));
+      border-radius: 1px;
+    }
+    .phase {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .phase:last-child { margin-bottom: 0; }
+    .phase-dot-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+    .phase-dot {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      background: var(--bg-card);
+      border: 2px solid var(--accent-blue);
+      color: var(--accent-blue);
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 20px rgba(55, 138, 221, 0.3);
+    }
+    .phase:nth-child(2) .phase-dot { border-color: var(--accent-teal); color: var(--accent-teal); box-shadow: 0 0 20px rgba(29, 158, 117, 0.3); }
+    .phase:nth-child(3) .phase-dot { border-color: var(--accent-amber); color: var(--accent-amber); box-shadow: 0 0 20px rgba(186, 117, 23, 0.3); }
+    .phase:nth-child(4) .phase-dot { border-color: var(--accent-coral); color: var(--accent-coral); box-shadow: 0 0 20px rgba(216, 90, 48, 0.3); }
+    .phase-content {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      transition: var(--transition);
+    }
+    .phase-content:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-md);
+      transform: translateX(4px);
+    }
+    .phase-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .phase-detail {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .stat-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wrap { padding: 20px 16px 60px; }
+      .tab-bar { position: relative; top: 0; }
+      .cards { grid-template-columns: 1fr; }
+      .vs-header, .vs-row { grid-template-columns: 100px 1fr 1fr; gap: 8px; padding: 12px; }
+      .vs-label { font-size: 12px; }
+      .vs-wm, .vs-you { font-size: 12px; padding: 6px 8px; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .roadmap { padding-left: 24px; }
+      .phase { gap: 16px; }
+      .layer-subtitle { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .vs-header { display: none; }
+      .vs-row { grid-template-columns: 1fr; gap: 8px; }
+      .vs-row::before { content: attr(data-label); font-weight: 600; color: var(--text-primary); font-size: 13px; }
+      .stats-bar { grid-template-columns: 1fr; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  </style>
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        Live Architecture Preview
+      </div>
+      <h1>Metals &amp; Mining Intelligence Platform</h1>
+      <p>Real-time data ingestion, AI-powered analysis, and predictive intelligence for commodity markets</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-value">4</div>
+        <div class="stat-label">Architecture Layers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">200+</div>
+        <div class="stat-label">Tracked Mines</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">15m</div>
+        <div class="stat-label">Data Refresh</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">24/7</div>
+        <div class="stat-label">Agent Monitoring</div>
+      </div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('arch')"><span>Architecture</span></button>
+      <button class="tab" onclick="switchTab('vs')"><span>vs Wood Mackenzie</span></button>
+      <button class="tab" onclick="switchTab('roadmap')"><span>Roadmap</span></button>
+    </div>
+
+    <!-- ARCHITECTURE TAB -->
+    <div id="tab-arch" class="tab-content active">
+      <p class="section-label">Click any layer to explore</p>
+
+      <div class="layer" id="l1">
+        <div class="layer-header" onclick="toggle('l1')">
+          <div class="layer-dot" style="background:#378ADD;color:#378ADD"></div>
+          <span class="layer-title">1 — Data ingestion &amp; agents</span>
+          <span class="layer-subtitle">Real-time feeds, web agents, filings</span>
+          <span class="chevron" id="l1-chev">▼</span>
+        </div>
+        <div class="layer-body" id="l1-body">
+          <div class="cards">
+            <div class="card" onclick="showDetail('d-prices')">
+              <p class="card-title">Price feeds</p>
+              <p class="card-desc">LME, CME, SHFE via APIs. Spot, futures, options chains.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-filings')">
+              <p class="card-title">Regulatory filings</p>
+              <p class="card-desc">EDGAR, SEDAR, ASX — AI-parsed quarterly &amp; annual reports.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-satellite')">
+              <p class="card-title">Satellite &amp; geo</p>
+              <p class="card-desc">Sentinel-2, Planet Labs — mine activity, stockpile monitoring.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-shipping')">
+              <p class="card-title">Trade flows</p>
+              <p class="card-desc">AIS vessel tracking, port data, export/import volumes.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-news')">
+              <p class="card-title">News &amp; signals</p>
+              <p class="card-desc">Reuters, Bloomberg feeds, labor news, regulatory alerts.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-govt')">
+              <p class="card-title">Government data</p>
+              <p class="card-desc">USGS, World Bank, national mining ministries, royalty databases.</p>
+            </div>
+          </div>
+          <div id="d-prices" class="detail-panel">
+            <p><strong>Price agents</strong> poll LME REST API and CME DataMine every 15 minutes. A normalization agent maps tickers across exchanges and stores in TimescaleDB. Anomaly detection triggers alerts when spot diverges from 30-day moving average by &gt;2σ.</p>
+            <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-blue">Python scheduler</span><span class="tag tag-green">LME API</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I build a real-time metals price ingestion pipeline?')">How to build this ↗</button>
+          </div>
+          <div id="d-filings" class="detail-panel">
+            <p><strong>Filing agents</strong> watch EDGAR, SEDAR, and ASX RSS feeds. When a new filing appears from a tracked company, a Claude agent extracts: AISC/C1 cost guidance, production guidance, capex, key risk factors, and flags changes vs prior period. Stored as structured JSON + full-text in vector DB.</p>
+            <span class="tag tag-blue">Claude tool-use</span><span class="tag tag-blue">Playwright</span><span class="tag tag-green">PostgreSQL + pgvector</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I use Claude to extract structured data from mining company filings?')">How to build this ↗</button>
+          </div>
+          <div id="d-satellite" class="detail-panel">
+            <p><strong>Geospatial agents</strong> pull Sentinel-2 imagery (free, 10m resolution) for tracked mine sites. Computer vision models detect stockpile size changes, new construction, operational status. Planet Labs API for higher-cadence monitoring on tier-1 assets.</p>
+            <span class="tag tag-blue">Sentinel-2 API</span><span class="tag tag-blue">GDAL / rasterio</span><span class="tag tag-amber">Planet Labs (paid)</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How can I use satellite imagery to monitor mine activity?')">How to build this ↗</button>
+          </div>
+          <div id="d-shipping" class="detail-panel">
+            <p><strong>Trade flow agents</strong> use AIS vessel tracking APIs to monitor bulk carrier movements between key ports (Dampier, Richards Bay, Puerto Cortez). Correlate with UN Comtrade monthly export data for demand signal validation.</p>
+            <span class="tag tag-blue">MarineTraffic API</span><span class="tag tag-green">UN Comtrade</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I track commodity trade flows using vessel data?')">How to build this ↗</button>
+          </div>
+          <div id="d-news" class="detail-panel">
+            <p><strong>News agent</strong> monitors RSS + NewsAPI for keywords per commodity/company. Claude classifies each article: price-moving event, labor dispute, regulatory change, M&amp;A signal, or noise. High-signal items are pushed to alert queue.</p>
+            <span class="tag tag-blue">NewsAPI</span><span class="tag tag-blue">Claude classifier</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I build a news classification agent for mining events?')">How to build this ↗</button>
+          </div>
+          <div id="d-govt" class="detail-panel">
+            <p><strong>Government data agents</strong> pull USGS Mineral Commodity Summaries (annual), World Bank commodity price data (monthly), and national mining ministry reports. Agents standardize units and map to internal asset/commodity taxonomy.</p>
+            <span class="tag tag-green">USGS API</span><span class="tag tag-green">World Bank API</span><span class="tag tag-green">Free</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer" id="l2">
+        <div class="layer-header" onclick="toggle('l2')">
+          <div class="layer-dot" style="background:#1D9E75;color:#1D9E75"></div>
+          <span class="layer-title">2 — Data store &amp; knowledge graph</span>
+          <span class="layer-subtitle">Structured, time-series, vector, graph</span>
+          <span class="chevron" id="l2-chev">▼</span>
+        </div>
+        <div class="layer-body" id="l2-body">
+          <div class="cards">
+            <div class="card" onclick="showDetail('d-ts')">
+              <p class="card-title">Time-series DB</p>
+              <p class="card-desc">All price, production, cost data with full history.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-pg')">
+              <p class="card-title">Asset database</p>
+              <p class="card-desc">Mine-level data: location, ownership, capacity, status.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-vec')">
+              <p class="card-title">Vector store</p>
+              <p class="card-desc">Semantic search over reports, filings, news.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-graph')">
+              <p class="card-title">Knowledge graph</p>
+              <p class="card-desc">Company → mine → commodity → country relationships.</p>
+            </div>
+          </div>
+          <div id="d-ts" class="detail-panel">
+            <p><strong>TimescaleDB</strong> (PostgreSQL extension) stores all time-series data: spot prices, futures curves, production volumes, cost indices. Enables fast range queries like "copper AISC trend for Chilean mines last 3 years".</p>
+            <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-green">Open source</span>
+          </div>
+          <div id="d-pg" class="detail-panel">
+            <p><strong>PostgreSQL asset registry</strong> stores every tracked mine: coordinates, owner, operator, commodity mix, nameplate capacity, current operational status, permit history. This is your equivalent of WoodMac's asset database — built from public JORC/NI 43-101 reports and company filings.</p>
+            <span class="tag tag-blue">PostgreSQL</span><span class="tag tag-green">PostGIS for geo queries</span>
+          </div>
+          <div id="d-vec" class="detail-panel">
+            <p><strong>pgvector</strong> (PostgreSQL extension) enables semantic search over the full document corpus — filings, reports, news. Users can ask "what have companies said about Chilean water scarcity risks?" and get relevant passages across thousands of documents.</p>
+            <span class="tag tag-blue">pgvector</span><span class="tag tag-blue">OpenAI embeddings</span>
+          </div>
+          <div id="d-graph" class="detail-panel">
+            <p><strong>Graph relationships</strong> power questions like "which lithium projects does Albemarle have exposure to, and what countries are they in?" — traversing company → equity stake → mine → commodity → country nodes. Can be implemented in PostgreSQL with foreign keys or Neo4j for complex traversals.</p>
+            <span class="tag tag-blue">Neo4j or PostgreSQL</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer" id="l3">
+        <div class="layer-header" onclick="toggle('l3')">
+          <div class="layer-dot" style="background:#BA7517;color:#BA7517"></div>
+          <span class="layer-title">3 — AI &amp; agentic intelligence</span>
+          <span class="layer-subtitle">Analysis, forecasting, alert agents</span>
+          <span class="chevron" id="l3-chev">▼</span>
+        </div>
+        <div class="layer-body" id="l3-body">
+          <div class="cards">
+            <div class="card" onclick="showDetail('d-rag')">
+              <p class="card-title">RAG Q&amp;A engine</p>
+              <p class="card-desc">Natural language over all your data. Analyst on demand.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-forecast')">
+              <p class="card-title">Forecast engine</p>
+              <p class="card-desc">Supply/demand models, price outlooks, scenario builder.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-cost')">
+              <p class="card-title">Cost curve builder</p>
+              <p class="card-desc">AI-extracted C1/AISC curves, updated from filings.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-alerts')">
+              <p class="card-title">Alert agents</p>
+              <p class="card-desc">Proactive monitoring, user-defined triggers, push delivery.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-report')">
+              <p class="card-title">Report generator</p>
+              <p class="card-desc">On-demand AI research notes, grounded in citations.</p>
+            </div>
+          </div>
+          <div id="d-rag" class="detail-panel">
+            <p><strong>Retrieval-augmented generation</strong> is your core product differentiator. User asks a question → system retrieves relevant data from TimescaleDB (prices), pgvector (documents), and the asset registry → Claude synthesizes a cited answer. Replaces reading 40-page PDF reports.</p>
+            <p>Example: "What's the risk to cobalt supply from DRC political instability this year?" → retrieves recent news, company exposure data, historical precedents → answer with source citations.</p>
+            <span class="tag tag-blue">Claude API</span><span class="tag tag-blue">LangChain / custom</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I build a RAG pipeline over mining industry data with Claude?')">How to build this ↗</button>
+          </div>
+          <div id="d-forecast" class="detail-panel">
+            <p><strong>Forecast models</strong> combine statistical time-series models (ARIMA, Prophet) for price prediction with fundamental supply/demand balance sheets built from asset-level production data. Claude agents can stress-test scenarios: "What if Chilean copper output drops 15% due to water restrictions?"</p>
+            <span class="tag tag-blue">Prophet / statsforecast</span><span class="tag tag-blue">Claude scenario agent</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I build commodity price forecasting models combining statistical and AI approaches?')">How to build this ↗</button>
+          </div>
+          <div id="d-cost" class="detail-panel">
+            <p><strong>Cost curve automation</strong>: agent reads every mine's latest filing, extracts C1/AISC guidance, normalizes to USD/tonne, ranks all mines on a cost curve. This is WoodMac's core product. You can replicate ~80% of it from public data. Update quarterly when filings drop.</p>
+            <span class="tag tag-blue">Claude extraction agent</span><span class="tag tag-green">Public JORC/43-101 data</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I automate mining cost curve construction from public filings?')">How to build this ↗</button>
+          </div>
+          <div id="d-alerts" class="detail-panel">
+            <p><strong>Alert agents</strong> run continuously: price threshold breaches, new filings from tracked companies, satellite-detected stockpile changes, labor news at watchlisted mines. Users configure their own alert rules in plain English: "Notify me if lithium carbonate drops below $12,000/t" or "Alert on any new Chilean copper mine permit."</p>
+            <span class="tag tag-blue">Background workers</span><span class="tag tag-blue">Email / Slack / webhook</span>
+          </div>
+          <div id="d-report" class="detail-panel">
+            <p><strong>On-demand report generation</strong>: user selects commodity, geography, timeframe, and thesis. Agentic workflow gathers latest data, runs through models, and generates a structured research note — with citations to source data. Delivered in minutes, not weeks. This is the biggest UX leap over WoodMac.</p>
+            <span class="tag tag-blue">Claude + tools</span><span class="tag tag-amber">Differentiator</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I build an AI-powered on-demand research report generator for commodities?')">How to build this ↗</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layer" id="l4">
+        <div class="layer-header" onclick="toggle('l4')">
+          <div class="layer-dot" style="background:#D85A30;color:#D85A30"></div>
+          <span class="layer-title">4 — User-facing platform</span>
+          <span class="layer-subtitle">Dashboard, chat interface, API, alerts</span>
+          <span class="chevron" id="l4-chev">▼</span>
+        </div>
+        <div class="layer-body" id="l4-body">
+          <div class="cards">
+            <div class="card" onclick="showDetail('d-chat')">
+              <p class="card-title">Conversational UI</p>
+              <p class="card-desc">Chat with your data. No menus, no PDFs to read.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-dash')">
+              <p class="card-title">Dashboard</p>
+              <p class="card-desc">Price charts, cost curves, supply/demand balances.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-upload')">
+              <p class="card-title">Internal data layer</p>
+              <p class="card-desc">Upload your own models. Benchmark against public data.</p>
+            </div>
+            <div class="card" onclick="showDetail('d-api')">
+              <p class="card-title">Data API</p>
+              <p class="card-desc">Lens Direct equivalent. Programmatic access for quants.</p>
+            </div>
+          </div>
+          <div id="d-chat" class="detail-panel">
+            <p><strong>Conversational intelligence</strong> is your primary UX moat. Every user gets a persistent chat interface over the full data platform. Queries are routed to the right data source automatically. Answers are cited. Follow-up questions maintain context. This replaces navigating menus to find the right report.</p>
+            <span class="tag tag-amber">Key differentiator</span>
+            <br><button class="ask-btn" onclick="sendPrompt('What does a great conversational UI for a data platform look like?')">Design this ↗</button>
+          </div>
+          <div id="d-dash" class="detail-panel">
+            <p><strong>Dashboard</strong> surface the most important views: commodity price tracker, global cost curves (interactive, filterable by region/owner), supply/demand balance sheet, and an asset map. Built in React with Recharts or D3. Embeds live data from your TimescaleDB.</p>
+            <span class="tag tag-blue">React + Recharts</span><span class="tag tag-blue">Mapbox GL</span>
+          </div>
+          <div id="d-upload" class="detail-panel">
+            <p><strong>Internal data integration</strong> is the enterprise moat. Mining companies and funds can upload their own mine models or portfolio spreadsheets. The platform blends their private data with your public-data layer for benchmarking: "How does my mine's AISC compare to the global cost curve?" — a question WoodMac cannot answer with internal data.</p>
+            <span class="tag tag-amber">Enterprise differentiator</span>
+          </div>
+          <div id="d-api" class="detail-panel">
+            <p><strong>Programmatic API</strong> lets quantitative analysts and trading desks pull clean, structured data directly into their models. REST + websocket for real-time prices. This is WoodMac's Lens Direct, but accessible at a fraction of the cost and without a 6-month onboarding process.</p>
+            <span class="tag tag-blue">FastAPI</span><span class="tag tag-blue">REST + WebSocket</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VS TAB -->
+    <div id="tab-vs" class="tab-content">
+      <p class="section-label">Head-to-head comparison</p>
+      <div class="vs-grid">
+        <div class="vs-header">
+          <div></div>
+          <div>Wood Mackenzie</div>
+          <div>Your Platform</div>
+        </div>
+        <div class="vs-row" data-label="Updates">
+          <div class="vs-label">Updates</div>
+          <div class="vs-wm">Quarterly analyst cycle</div>
+          <div class="vs-you">Continuous (agents)</div>
+        </div>
+        <div class="vs-row" data-label="Interface">
+          <div class="vs-label">Interface</div>
+          <div class="vs-wm">PDF reports, static dashboards</div>
+          <div class="vs-you">Conversational AI + live charts</div>
+        </div>
+        <div class="vs-row" data-label="Alerts">
+          <div class="vs-label">Alerts</div>
+          <div class="vs-wm">None</div>
+          <div class="vs-you">User-defined, real-time</div>
+        </div>
+        <div class="vs-row" data-label="Internal data">
+          <div class="vs-label">Internal data</div>
+          <div class="vs-wm">Not supported</div>
+          <div class="vs-you">Upload &amp; benchmark your own models</div>
+        </div>
+        <div class="vs-row" data-label="Cost">
+          <div class="vs-label">Cost</div>
+          <div class="vs-wm">$50k–$200k+/year</div>
+          <div class="vs-you">$5k–$30k/year target</div>
+        </div>
+        <div class="vs-row" data-label="Custom reports">
+          <div class="vs-label">Custom reports</div>
+          <div class="vs-wm">Consulting engagement ($$$)</div>
+          <div class="vs-you">On-demand AI generation (minutes)</div>
+        </div>
+        <div class="vs-row" data-label="API access">
+          <div class="vs-label">API access</div>
+          <div class="vs-wm">Lens Direct (expensive add-on)</div>
+          <div class="vs-you">Included in higher tiers</div>
+        </div>
+        <div class="vs-row" data-label="Satellite data">
+          <div class="vs-label">Satellite data</div>
+          <div class="vs-wm">None</div>
+          <div class="vs-you">Mine monitoring via Sentinel-2</div>
+        </div>
+      </div>
+      <button class="ask-btn" onclick="sendPrompt('What pricing model should I use for a metals and mining intelligence SaaS platform?')" style="margin-top:16px">Help me price this ↗</button>
+    </div>
+
+    <!-- ROADMAP TAB -->
+    <div id="tab-roadmap" class="tab-content">
+      <p class="section-label">Phased build plan</p>
+      <div class="roadmap">
+        <div class="phase">
+          <div class="phase-dot-wrap">
+            <div class="phase-dot">1</div>
+          </div>
+          <div class="phase-content">
+            <p class="phase-title">Months 1–3 · Data foundation</p>
+            <p class="phase-detail">Build ingestion agents for LME/CME prices, USGS data, and top-50 mining company filings. Stand up TimescaleDB + PostgreSQL asset registry + pgvector. Seed asset database with 200 tier-1 mines. No product yet — validate data quality.</p>
+            <span class="tag tag-blue">TimescaleDB</span><span class="tag tag-blue">Claude filing agent</span><span class="tag tag-green">~$20k build cost</span>
+            <br><button class="ask-btn" onclick="sendPrompt('What are the most important public data sources for a metals and mining intelligence platform?')">Explore data sources ↗</button>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-dot-wrap">
+            <div class="phase-dot">2</div>
+          </div>
+          <div class="phase-content">
+            <p class="phase-title">Months 4–6 · MVP product</p>
+            <p class="phase-detail">Launch conversational Q&amp;A over your data. Add price dashboard, basic cost curve builder, and filing-based corporate alerts. Target: 5 beta users (mining analysts or fund managers). Charge $500/month. Goal: validate willingness to pay and identify biggest gaps.</p>
+            <span class="tag tag-blue">React frontend</span><span class="tag tag-blue">RAG pipeline</span><span class="tag tag-amber">5 beta customers</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How do I validate product-market fit for a metals and mining data platform?')">Validate this ↗</button>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-dot-wrap">
+            <div class="phase-dot">3</div>
+          </div>
+          <div class="phase-content">
+            <p class="phase-title">Months 7–12 · Growth features</p>
+            <p class="phase-detail">Add agentic alerts, on-demand report generation, satellite monitoring for top mine sites, and the internal data upload layer. Expand to 200+ mines and all major commodities. Begin outbound sales to mining companies, trading desks, and PE funds. Target $10k MRR.</p>
+            <span class="tag tag-blue">Alert agents</span><span class="tag tag-blue">Sentinel-2 integration</span><span class="tag tag-amber">$10k MRR</span>
+            <br><button class="ask-btn" onclick="sendPrompt('What sales channels work best for selling B2B data products to mining companies?')">Sales strategy ↗</button>
+          </div>
+        </div>
+        <div class="phase">
+          <div class="phase-dot-wrap">
+            <div class="phase-dot">4</div>
+          </div>
+          <div class="phase-content">
+            <p class="phase-title">Year 2 · Platform &amp; API</p>
+            <p class="phase-detail">Launch programmatic API tier, scenario modelling tools, supply chain risk scoring, and ESG/water stress overlays. Build partnerships with commodity trading desks. Target WoodMac's underserved SME and emerging market clients (Africa, Southeast Asia). Target $100k MRR.</p>
+            <span class="tag tag-green">API product</span><span class="tag tag-green">$100k MRR target</span>
+            <br><button class="ask-btn" onclick="sendPrompt('How should I think about building a programmatic data API on top of my metals intelligence platform?')">Plan the API ↗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Generate floating particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 20 + 's';
+      p.style.animationDuration = (15 + Math.random() * 15) + 's';
+      const colors = ['#378add', '#1d9e75', '#ba7517', '#7c3aed', '#06b6d4'];
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      particlesContainer.appendChild(p);
+    }
+
+    function toggle(id) {
+      const body = document.getElementById(id + '-body');
+      const chev = document.getElementById(id + '-chev');
+      const isOpen = body.classList.contains('open');
+
+      // Close all other layers for cleaner UX
+      document.querySelectorAll('.layer-body.open').forEach(b => {
+        if (b !== body) {
+          b.classList.remove('open');
+          const otherId = b.id.replace('-body', '');
+          document.getElementById(otherId + '-chev').classList.remove('open');
+        }
+      });
+
+      body.classList.toggle('open', !isOpen);
+      chev.classList.toggle('open', !isOpen);
+    }
+
+    function showDetail(id) {
+      const panel = document.getElementById(id);
+      const isOpen = panel.classList.contains('open');
+      document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
+      if (!isOpen) {
+        panel.classList.add('open');
+        // Smooth scroll to panel
+        setTimeout(() => {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.closest('.tab').classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      // Close all detail panels when switching tabs
+      document.querySelectorAll('.detail-panel.open').forEach(p => p.classList.remove('open'));
+    }
+
+    function sendPrompt(prompt) {
+      // Placeholder — wire this to your actual chat interface
+      console.log('Prompt:', prompt);
+      alert('Prompt sent: ' + prompt);
+    }
+  </script>
+</body>
+</html>

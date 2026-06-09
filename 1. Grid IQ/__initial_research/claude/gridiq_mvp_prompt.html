@@ -1,0 +1,602 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+
+.prompt-doc {
+  max-width: 660px;
+  padding: 0 0 2rem;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-primary);
+}
+
+.doc-header {
+  padding: 1.5rem 0 1rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+  margin-bottom: 1.5rem;
+}
+.doc-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-bottom: 6px;
+}
+.doc-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.prompt-block {
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  white-space: pre-wrap;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--color-text-primary);
+}
+
+.prompt-block .section-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 0.5px solid var(--color-border-tertiary);
+}
+
+.copy-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: var(--border-radius-md);
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.15s;
+}
+.copy-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.copy-btn.copied { color: #0D9E75; border-color: #0D9E75; }
+
+.toc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 2rem;
+}
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  padding: 4px 0;
+}
+.toc-num {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--color-text-tertiary);
+  min-width: 28px;
+  text-align: center;
+}
+.toc-label { color: var(--color-text-primary); font-weight: 500; }
+.toc-desc { color: var(--color-text-secondary); font-size: 12px; }
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 1.75rem 0 1rem;
+}
+.section-num-badge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: #0D9E75;
+  background: #E1F5EE;
+  border-radius: var(--border-radius-md);
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+.section-title-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+.section-line {
+  flex: 1;
+  height: 0.5px;
+  background: var(--color-border-tertiary);
+}
+</style>
+
+<div class="prompt-doc">
+  <h2 class="sr-only">GridIQ West Africa — MVP Build Prompt for AI Coding Agent</h2>
+
+  <div class="doc-header">
+    <div class="doc-eyebrow">AI Build Prompt — Full Specification</div>
+    <div class="doc-title">GridIQ West Africa — MVP Build Prompt</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-item"><span class="toc-num">§1</span><span><span class="toc-label">Role & context</span> — who the AI is and what it's building</span></div>
+    <div class="toc-item"><span class="toc-num">§2</span><span><span class="toc-label">MVP scope</span> — what is and isn't included</span></div>
+    <div class="toc-item"><span class="toc-num">§3</span><span><span class="toc-label">Data model</span> — schemas, entities, relationships</span></div>
+    <div class="toc-item"><span class="toc-num">§4</span><span><span class="toc-label">Tech stack</span> — exact libraries and tooling</span></div>
+    <div class="toc-item"><span class="toc-num">§5</span><span><span class="toc-label">Feature specs</span> — screen-by-screen, module-by-module</span></div>
+    <div class="toc-item"><span class="toc-num">§6</span><span><span class="toc-label">Seed data</span> — realistic demo data to ship with</span></div>
+    <div class="toc-item"><span class="toc-num">§7</span><span><span class="toc-label">Constraints & non-negotiables</span> — hard rules</span></div>
+    <div class="toc-item"><span class="toc-num">§8</span><span><span class="toc-label">Deliverables</span> — what to produce at the end</span></div>
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§1</span>
+    <span class="section-title-text">Role & context</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block1">
+    <button class="copy-btn" onclick="copyBlock('block1', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§1 — Role & context</span>You are a senior full-stack engineer building a production-quality MVP for GridIQ West Africa — an AI-powered grid loss intelligence platform for ECOWAS electricity distribution utilities.
+
+The platform helps utilities detect non-technical losses (NTL) — electricity that is stolen, meter-bypassed, or administratively lost. It does this by ingesting prepaid meter token-purchase data, comparing it against IoT sensor readings at distribution transformer level, and surfacing anomalies as georeferenced field investigation alerts.
+
+The primary users are:
+- Utility operations staff (view the live loss map, triage alerts, dispatch field teams)
+- Utility management (monthly performance reports, ROI tracking)
+- ECOWAS regulators / DFI partners (read-only data export and EIS reporting)
+
+Build the MVP as if it will be demonstrated to EDSA (Electricity Distribution and Supply Authority) in Sierra Leone as a funded pilot. It must look and work like real enterprise software — not a prototype. Every screen must be functional with realistic seed data.
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§2</span>
+    <span class="section-title-text">MVP scope</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block2">
+    <button class="copy-btn" onclick="copyBlock('block2', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§2 — MVP scope (build these, nothing else)</span>
+INCLUDE in MVP:
+1. Auth — login / logout with role-based access (operations, management, auditor)
+2. Live Loss Map — interactive map showing feeder zones colour-coded by NTL severity
+3. Zone Drill-Down — injected vs billed energy per zone, 12-month trend chart
+4. Alert Feed — real-time-style list of NTL anomaly alerts with confidence scores
+5. Investigation Queue — ranked account list with GPS coordinates and field dispatch status
+6. Monthly Performance Report — auto-generated summary page with key metrics
+7. Impact ROI Tracker — cumulative revenue recovery dashboard
+8. Internal Audit Log — access-controlled view (auditor role only)
+9. EIS Export — one-click structured data export (JSON + PDF preview)
+10. Settings — user management, utility profile, notification preferences
+
+DO NOT build in MVP:
+- Live IoT sensor ingestion (simulate with seed data + 60-second polling simulation)
+- Real ML model training pipeline (use pre-scored anomaly data in seed)
+- Mobile app
+- Multi-language toggle (ship English only, French strings commented in code)
+- Payment processing
+- External API integrations beyond mock EIS endpoint
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§3</span>
+    <span class="section-title-text">Data model</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block3">
+    <button class="copy-btn" onclick="copyBlock('block3', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§3 — Data model (PostgreSQL schemas)</span>
+-- UTILITIES
+utilities: id, name, country, region, currency_code, tariff_rate_per_kwh, baseline_ntl_pct, created_at
+
+-- FEEDER ZONES (distribution transformer / feeder segments)
+feeder_zones: id, utility_id, name, feeder_code, lat, lng, geojson_polygon,
+  injected_kwh_current, billed_kwh_current, ntl_pct_current,
+  ntl_severity (enum: normal | elevated | high | critical),
+  last_updated_at
+
+-- METERS (customer accounts)
+meters: id, utility_id, feeder_zone_id, account_number, meter_serial,
+  vendor (enum: conlog | hexing), customer_name, address, lat, lng,
+  tariff_category (enum: residential | commercial | industrial | agricultural),
+  anomaly_score FLOAT (0.0–1.0), anomaly_type (enum: none | bypass | reconnection | token_fraud | phase_tap),
+  last_purchase_at, avg_monthly_kwh, created_at
+
+-- TOKEN TRANSACTIONS (prepaid purchase events)
+token_transactions: id, meter_id, purchased_at, token_amount_kwh,
+  purchase_value_currency, vending_agent_id, transaction_ref
+
+-- ALERTS (NTL anomaly detections)
+alerts: id, utility_id, feeder_zone_id, meter_id,
+  alert_type (enum: meter_bypass | illegal_reconnection | token_fraud | phase_tap | internal_fraud),
+  confidence_score FLOAT, estimated_monthly_loss_kwh, estimated_monthly_loss_currency,
+  status (enum: new | assigned | investigating | confirmed_theft | false_positive | resolved),
+  assigned_to_user_id, created_at, updated_at
+
+-- INVESTIGATIONS (field dispatch records)
+investigations: id, alert_id, assigned_user_id, dispatched_at,
+  arrived_at, outcome (enum: pending | confirmed | false_positive | inconclusive),
+  notes, photo_url, resolved_at
+
+-- MONTHLY SNAPSHOTS (aggregated performance per zone per month)
+monthly_snapshots: id, utility_id, feeder_zone_id, snapshot_month DATE,
+  injected_kwh, billed_kwh, ntl_kwh, ntl_pct,
+  revenue_billed, revenue_collected, revenue_lost_ntl,
+  ntl_reduction_vs_baseline_kwh, revenue_recovered_currency,
+  saidi_minutes, saifi_count, active_meters, new_connections
+
+-- AUDIT LOG (immutable)
+audit_log: id, user_id, action, resource_type, resource_id,
+  ip_address, user_agent, created_at
+
+-- USERS
+users: id, utility_id, email, password_hash, full_name,
+  role (enum: operations | management | auditor | field_agent | admin),
+  last_login_at, is_active, created_at
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§4</span>
+    <span class="section-title-text">Tech stack</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block4">
+    <button class="copy-btn" onclick="copyBlock('block4', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§4 — Tech stack (use exactly these, no substitutions)</span>
+BACKEND:
+- Runtime: Node.js 20 + TypeScript
+- Framework: Fastify (not Express — Fastify for performance)
+- ORM: Prisma with PostgreSQL
+- Auth: JWT (access token 15min, refresh token 7d) + bcrypt
+- Background jobs: node-cron (simulated sensor polling every 60s)
+- PDF generation: Puppeteer (for monthly reports and EIS export)
+- Validation: Zod
+- Testing: Vitest
+
+FRONTEND:
+- Framework: React 18 + TypeScript + Vite
+- Routing: React Router v6
+- State: Zustand (global) + React Query (server state)
+- Map: Mapbox GL JS (free tier) — fallback to Leaflet + OpenStreetMap if no API key
+- Charts: Recharts
+- UI components: shadcn/ui + Tailwind CSS
+- Icons: Lucide React
+- Forms: React Hook Form + Zod resolver
+- Table: TanStack Table v8
+
+INFRA (local dev):
+- Docker Compose: postgres, redis (for session store), app, nginx
+- Environment: .env with documented variables
+- Seed script: npm run seed (populates full demo dataset)
+
+FILE STRUCTURE:
+/apps
+  /api          (Fastify backend)
+  /web          (React frontend)
+/packages
+  /shared       (Zod schemas, TypeScript types shared between api and web)
+/docker-compose.yml
+/README.md      (setup in under 5 commands)
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§5</span>
+    <span class="section-title-text">Feature specs — screen by screen</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block5">
+    <button class="copy-btn" onclick="copyBlock('block5', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§5 — Feature specs</span>
+── SCREEN 1: LOGIN ──────────────────────────────────────────
+- Email + password fields. JWT auth. Remember me (7d refresh token).
+- Role-based redirect on login:
+  operations → /map
+  management → /dashboard
+  auditor    → /audit-log
+  field_agent → /queue
+- Show "GridIQ West Africa" wordmark + utility name after login.
+- Seed 5 demo accounts (one per role) shown on login page as quick-fill buttons.
+
+── SCREEN 2: LIVE LOSS MAP (/map) ────────────────────────────
+- Full-viewport Mapbox/Leaflet map centred on Freetown, Sierra Leone.
+- Feeder zones rendered as filled polygons. Colour by ntl_severity:
+  normal   → green  (#10B981)
+  elevated → amber  (#F59E0B)
+  high     → orange (#F97316)
+  critical → red    (#EF4444)
+- Hover tooltip: zone name, current NTL%, injected vs billed kWh, last updated.
+- Click zone → opens side panel (Zone Drill-Down) without leaving map.
+- Top-left: summary bar showing total zones by severity (e.g. 2 critical, 4 high).
+- Top-right: legend + last-refresh timestamp. Auto-refreshes every 60 seconds.
+- Pulsing red dot animation on critical zones.
+
+── SCREEN 3: ZONE DRILL-DOWN (side panel or /zones/:id) ──────
+- Zone header: name, feeder code, severity badge.
+- Two stat cards: Injected kWh (current period) | Billed kWh | NTL% | NTL kWh.
+- Area chart (Recharts): 12-month injected vs billed kWh trend. Shaded gap = NTL.
+- Alert count for this zone (link to filtered alert feed).
+- Top 5 anomalous accounts in zone (account number, anomaly score, type, estimated loss).
+- Button: "View all alerts for this zone" → filtered alert feed.
+- Button: "Download zone report (PDF)".
+
+── SCREEN 4: ALERT FEED (/alerts) ───────────────────────────
+- Table (TanStack): columns = created_at, zone, meter/account, alert_type,
+  confidence (colour-coded bar), est. monthly loss, status, assigned_to, actions.
+- Filters: zone, alert_type, status, confidence threshold (slider), date range.
+- Row click → alert detail modal: full account history, token purchase timeline,
+  anomaly explanation ("Consumption 340% above zone peer median for 3 consecutive
+  purchase cycles"), recommended action, assign button.
+- Bulk actions: assign selected to field agent, mark as false positive.
+- Status badge colours: new=blue, assigned=amber, investigating=purple,
+  confirmed_theft=red, false_positive=gray, resolved=green.
+- Export CSV button.
+
+── SCREEN 5: INVESTIGATION QUEUE (/queue) ────────────────────
+- Card list view (not table) — each card shows:
+  Account number | Zone | Alert type | Confidence score | Est. loss/month
+  GPS coordinates (tap to open in Maps) | Assigned agent | Status | Time since alert
+- Sortable by: confidence desc, revenue impact desc, time in queue asc.
+- Filter by: assigned agent, zone, status.
+- Field agents see only their own assigned cards.
+- Card actions: "Mark as arrived", "Record outcome" (opens form: outcome dropdown,
+  notes textarea, photo upload placeholder), "Escalate".
+- Outcome recording updates alert status and feeds the audit log.
+
+── SCREEN 6: MONTHLY PERFORMANCE REPORT (/reports) ──────────
+- Month picker (default: current month).
+- Summary section:
+  - Total NTL this month (kWh + % + vs baseline)
+  - Revenue recovered (currency)
+  - Alerts generated | Investigations completed | Confirmed thefts
+  - Outage indicators: SAIDI (minutes) | SAIFI (count)
+- Zone breakdown table: each zone's NTL%, trend arrow vs last month.
+- Alert resolution funnel chart (Recharts): generated → assigned → investigated → confirmed.
+- Auto-generated narrative paragraph: "In [Month], the GridIQ platform detected
+  [N] anomalies across [Z] feeder zones in the EDSA pilot area, resulting in
+  [K] confirmed theft cases and an estimated [$$] in recovered revenue..."
+- "Download PDF" button → Puppeteer-rendered PDF version.
+- "Submit to ECOWAS EIS" button → triggers EIS export workflow.
+
+── SCREEN 7: IMPACT ROI TRACKER (/roi) ──────────────────────
+- Header: cumulative recovered revenue since deployment start (large number, green).
+- Line chart: monthly recovered revenue (bars) + cumulative total (line).
+- Comparison: current NTL% vs baseline NTL% (large stat cards).
+- Recovery formula shown explicitly:
+  (Baseline NTL kWh − Current NTL kWh) × tariff rate = recovered this month
+- Breakdown table: month | baseline_ntl | current_ntl | delta_kwh | tariff | recovered.
+- Export button: PDF in AfDB format | EU format | IFC format (same data, different cover).
+
+── SCREEN 8: INTERNAL AUDIT LOG (/audit-log) ────────────────
+- Accessible only to users with role = 'auditor'.
+- Attempt by any other role → 403 page with reason.
+- Table: timestamp | user | action | resource | IP address | user agent.
+- Filter: user, action type, date range, resource type.
+- Actions include: LOGIN, ALERT_VIEWED, ALERT_ASSIGNED, INVESTIGATION_RECORDED,
+  REPORT_DOWNLOADED, EIS_SUBMITTED, USER_SETTINGS_CHANGED, AUDIT_LOG_VIEWED.
+- Cannot be deleted, modified, or exported by any user (display only).
+- Each row immutable — no edit/delete controls anywhere.
+
+── SCREEN 9: EIS EXPORT (/eis) ──────────────────────────────
+- Month selector + utility co-validation checklist (5 checkboxes the utility
+  management must tick before export is enabled):
+  □ Injected energy figures verified against metering records
+  □ NTL calculation methodology confirmed
+  □ Revenue figures reconciled with billing system
+  □ Outage indicators (SAIDI/SAIFI) confirmed
+  □ Authorised by [Utility Name] management
+- Once all 5 checked, "Submit to ECOWAS EIS" button activates.
+- On submit: POST to mock /api/eis/submit endpoint, log to audit_log,
+  show confirmation modal with submission ID and timestamp.
+- "Preview JSON" button: shows the structured payload in a code block.
+- "Download PDF summary" button.
+
+── SCREEN 10: SETTINGS (/settings) ──────────────────────────
+- Tabs: Profile | Users | Utility | Notifications
+- Profile: name, email, password change, last login info.
+- Users (admin only): user table, invite new user (email + role), deactivate.
+- Utility: utility name, country, currency, tariff rate (editable), baseline NTL %.
+- Notifications: toggle email alerts for new critical alerts, weekly digest, EIS reminder.
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§6</span>
+    <span class="section-title-text">Seed data</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block6">
+    <button class="copy-btn" onclick="copyBlock('block6', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§6 — Seed data (npm run seed must populate all of this)</span>
+UTILITY: EDSA (Electricity Distribution and Supply Authority)
+  Country: Sierra Leone | Currency: SLL | Tariff: 0.085 USD/kWh
+  Baseline NTL: 38% | Pilot start: 12 months ago
+
+FEEDER ZONES: 12 zones across Freetown
+  Names: Wilberforce, Aberdeen, Murray Town, Lumley, Hill Station,
+         Kissy, Wellington, Cline Town, Congo Town, Goderich,
+         Charlotte, Waterloo
+  Spread of severity: 2 critical, 3 high, 4 elevated, 3 normal
+  Each zone: realistic polygon GeoJSON centred on actual Freetown coordinates
+  Each zone: 12 months of monthly_snapshots with realistic NTL trend data
+    (showing gradual improvement from ~38% baseline toward ~28% current)
+
+METERS: 850 total across all zones
+  Mix: 60% Conlog, 40% Hexing
+  Tariff mix: 70% residential, 20% commercial, 8% industrial, 2% agricultural
+  Anomaly distribution: ~15% of meters have anomaly_score > 0.6
+  Each meter: 12 months of token_transactions (realistic purchase patterns,
+    frequency varying by tariff category)
+
+ALERTS: 180 alerts total
+  Status mix: 30 new, 45 assigned, 35 investigating, 40 confirmed_theft,
+              20 false_positive, 10 resolved
+  Realistic confidence scores, revenue estimates, creation timestamps
+
+INVESTIGATIONS: 85 records (for assigned/investigating/resolved alerts)
+
+USERS (5 demo accounts — passwords all "gridiq2025"):
+  ops@edsa.sl         role: operations
+  management@edsa.sl  role: management
+  auditor@edsa.sl     role: auditor
+  agent@edsa.sl       role: field_agent
+  admin@edsa.sl       role: admin
+
+AUDIT LOG: 500 pre-seeded log entries across the past 12 months
+  covering all action types with realistic timestamps and user distribution
+
+SENSOR SIMULATION: A cron job runs every 60 seconds and:
+  - Slightly randomises ntl_pct_current for 2–3 random zones (±0.5%)
+  - Creates 1–3 new alerts with realistic data
+  - Updates feeder_zones.last_updated_at
+  This simulates live IoT data without real sensors.
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§7</span>
+    <span class="section-title-text">Constraints & non-negotiables</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block7">
+    <button class="copy-btn" onclick="copyBlock('block7', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§7 — Hard constraints (never compromise these)</span>
+SECURITY:
+- All routes authenticated except /login and /health.
+- Role-based middleware on every protected route — not just the frontend.
+  Backend must enforce roles independently of what the UI shows.
+- Audit log writes are append-only. No DELETE or UPDATE on audit_log table.
+  Enforce via Postgres row-level security + application-level prohibition.
+- Passwords hashed with bcrypt (cost factor 12 minimum).
+- JWT secrets in env vars, never hardcoded.
+- Rate limiting on /login (5 attempts per 15 minutes per IP).
+
+DATA INTEGRITY:
+- All monetary values stored as integers (smallest currency unit — cents/leones).
+  Never store floats for money.
+- All timestamps in UTC. Display in local time (Africa/Freetown, UTC+0) on frontend.
+- NTL percentages computed server-side only — never trust client-sent NTL values.
+- EIS submissions logged with immutable submission_id before any external call.
+
+UI / UX:
+- The app must be usable at 1024px width minimum (utility laptop screens).
+- Every data table must have: sorting, filtering, pagination (25 rows default).
+- Every loading state must show a skeleton — no blank screens or spinners alone.
+- Every form must show validation errors inline, not as alerts.
+- Empty states must be meaningful (e.g. "No alerts in this zone" not just blank).
+- The map must render correctly in Chrome and Firefox. No Safari-only features.
+- Colour-coded NTL severity must also show text labels (not colour alone — accessibility).
+
+CODE QUALITY:
+- TypeScript strict mode throughout. Zero 'any' types — use 'unknown' if needed.
+- Every API endpoint must have a corresponding Zod schema for request + response.
+- Every Prisma query must handle errors explicitly — no unhandled promise rejections.
+- Environment variables documented in .env.example with descriptions for every key.
+- README must include: prerequisites, setup steps, demo account credentials,
+  architecture overview, and a note on the sensor simulation cron job.
+
+PERFORMANCE:
+- Map must render 12 feeder zones in under 2 seconds on localhost.
+- Alert feed table must render 180 rows with filters in under 500ms.
+- API responses must include Cache-Control headers where appropriate.
+- Seed script must complete in under 3 minutes.
+  </div>
+
+  <div class="section-divider">
+    <span class="section-num-badge">§8</span>
+    <span class="section-title-text">Deliverables</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="prompt-block" id="block8">
+    <button class="copy-btn" onclick="copyBlock('block8', this)"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+    <span class="section-label">§8 — Deliverables checklist</span>
+Produce the following, in this order:
+
+1. PLAN FIRST — before writing any code, output:
+   a. Complete file tree for the entire project
+   b. All Prisma schema definitions
+   c. All API route definitions (METHOD /path → handler name → auth required → roles)
+   d. Component tree for the frontend (page → layout → component hierarchy)
+   Pause after the plan and ask: "Ready to build? Any changes before I start?"
+
+2. BACKEND — build in this sequence:
+   a. Docker Compose + environment setup
+   b. Prisma schema + migrations
+   c. Auth routes + JWT middleware + role middleware
+   d. Core CRUD routes (utilities, zones, meters, alerts, investigations)
+   e. Report generation routes (monthly snapshot aggregation)
+   f. EIS export route + PDF generation
+   g. Audit log middleware (auto-logs all state-changing operations)
+   h. Cron job (sensor simulation)
+   i. Seed script
+
+3. FRONTEND — build in this sequence:
+   a. Vite + React + Tailwind + shadcn/ui setup
+   b. Auth flow (login, token refresh, protected routes, role redirect)
+   c. Layout shell (sidebar nav, header, breadcrumbs)
+   d. Live Loss Map
+   e. Zone Drill-Down panel
+   f. Alert Feed + detail modal
+   g. Investigation Queue
+   h. Monthly Performance Report
+   i. Impact ROI Tracker
+   j. Internal Audit Log
+   k. EIS Export
+   l. Settings
+
+4. INTEGRATION TEST — after building:
+   - Run the seed script and confirm all 10 screens load with data
+   - Confirm role restrictions work (try auditor route as operations user)
+   - Confirm the cron job produces new alerts visible in the feed
+   - Confirm PDF generation works for at least one report
+
+5. FINAL README — complete setup documentation
+
+When complete, output:
+"GridIQ MVP complete. Run: docker-compose up --build then npm run seed
+Demo at http://localhost:3000 — credentials in README."
+  </div>
+
+</div>
+
+<script>
+function copyBlock(id, btn) {
+  const block = document.getElementById(id);
+  const text = block.innerText
+    .replace(/^Copy\n/, '')
+    .replace(/^§\d+ — .+\n/, '');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copied';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<i class="ti ti-copy" aria-hidden="true"></i> Copy';
+    }, 2000);
+  });
+}
+</script>

@@ -1,0 +1,473 @@
+{
+  "app_overview": {
+    "app_name": "CES 2026 Official App",
+    "package_id": "com.cta.cestech",
+    "publisher": "Consumer Technology Association (CTA)",
+    "platform": "Android (Google Play Store)",
+    "category": "Business / Events",
+    "event": "CES 2026 (Consumer Electronics Show)",
+    "event_dates": "January 6-9, 2026",
+    "event_location": "Las Vegas, Nevada, USA",
+    "venue": "Las Vegas Convention Center (LVCC) + Venetian Expo + Aria + Mandalay Bay",
+    "description": "The official mobile companion for CES 2026, the world's most influential technology event. Built on Eventbase platform technology.",
+    "app_store_url": "https://play.google.com/store/apps/details?id=com.cta.cestech"
+  },
+  "site_map_and_navigation": {
+    "primary_navigation": [
+      {
+        "section": "HOME / DASHBOARD",
+        "description": "Personalized landing screen with quick access to saved sessions, upcoming meetings, and real-time event updates",
+        "sub_pages": [
+          "Daily Schedule Overview",
+          "Personalized Recommendations",
+          "Breaking News & Announcements",
+          "Featured Exhibitors & Products",
+          "Quick Action Buttons (Scan Badge, Message, Schedule)"
+        ]
+      },
+      {
+        "section": "SCHEDULE / AGENDA",
+        "description": "Complete conference programming with personal calendar integration",
+        "sub_pages": [
+          "My Schedule (Personal Calendar)",
+          "All Sessions (Browse by Day/Time)",
+          "Keynotes & Featured Speakers",
+          "Conference Sessions by Track",
+          "SuperSessions & Special Events",
+          "Session Details (Speaker bios, descriptions, locations)",
+          "Add to Calendar / Set Reminders",
+          "Waitlist Management"
+        ]
+      },
+      {
+        "section": "EXHIBITORS",
+        "description": "Comprehensive exhibitor directory with search and filtering",
+        "sub_pages": [
+          "Exhibitor Directory (A-Z)",
+          "Search by Company Name",
+          "Filter by Product Category",
+          "Filter by Country/Region",
+          "Filter by Booth Location",
+          "Exhibitor Profiles (Company info, products, booth number)",
+          "Product Showcases",
+          "Innovation Awards Honorees",
+          "Eureka Park Startups"
+        ]
+      },
+      {
+        "section": "ATTENDEES / NETWORKING",
+        "description": "Peer-to-peer networking and professional connection tools",
+        "sub_pages": [
+          "Attendee Directory",
+          "Advanced Search & Filters",
+          "My Connections",
+          "Connection Requests (Send/Receive)",
+          "Direct Messaging (1:1 Chat)",
+          "Meeting Scheduling",
+          "Digital Business Card Exchange",
+          "Badge Scanning (QR/Barcode)",
+          "Profile Visibility Settings"
+        ]
+      },
+      {
+        "section": "MAP / NAVIGATION",
+        "description": "Interactive venue maps and wayfinding",
+        "sub_pages": [
+          "Interactive Floor Plans (LVCC, Venetian, Aria, Mandalay Bay)",
+          "Booth Locator",
+          "Session Room Finder",
+          "Points of Interest (Restrooms, Food, Charging Stations)",
+          "Turn-by-Turn Indoor Navigation",
+          "My Location Indicator",
+          "Route Planning Between Venues"
+        ]
+      },
+      {
+        "section": "NEWS / CONTENT",
+        "description": "Real-time event coverage and curated content",
+        "sub_pages": [
+          "Live Updates & Announcements",
+          "Press Releases",
+          "Keynote Livestreams",
+          "Session Recordings (On-Demand)",
+          "Photo Galleries",
+          "Video Content",
+          "Social Media Integration (#CES2026)",
+          "CTA Research & Reports"
+        ]
+      },
+      {
+        "section": "MY PROFILE / ACCOUNT",
+        "description": "User account management and preferences",
+        "sub_pages": [
+          "Edit Profile (Photo, Bio, Company, Title)",
+          "Privacy Settings",
+          "Notification Preferences",
+          "My Tickets / Registration Info",
+          "My Favorites (Sessions, Exhibitors, Products)",
+          "My Notes",
+          "Account Settings",
+          "Logout"
+        ]
+      },
+      {
+        "section": "MORE / SETTINGS",
+        "description": "Additional tools and app configuration",
+        "sub_pages": [
+          "App Settings",
+          "Language Selection",
+          "Accessibility Options",
+          "Help & Support",
+          "FAQs",
+          "Feedback",
+          "About CES / CTA",
+          "Terms of Use / Privacy Policy"
+        ]
+      }
+    ]
+  },
+  "key_features_detailed": {
+    "networking_capabilities": [
+      "Attendee Connect: AI-powered networking recommendations based on interests, industry, and goals",
+      "Smart Badge Scanning: Exchange contact info by scanning attendee badges",
+      "In-App Messaging: Direct 1:1 chat between attendees",
+      "Meeting Scheduler: Book bilateral meetings with suggested time slots",
+      "Digital Business Cards: Create and share virtual business cards",
+      "Connection Management: Track pending and accepted connections"
+    ],
+    "scheduling_tools": [
+      "Personal Agenda Builder: Create custom schedule from 1,000+ sessions",
+      "Calendar Sync: Export to Google Calendar, Outlook, Apple Calendar",
+      "Session Reminders: Push notifications 15 min before sessions",
+      "Waitlist Alerts: Get notified if waitlisted session opens up",
+      "Conflict Detection: Warns of overlapping session bookings",
+      "Add to Schedule: One-tap session enrollment"
+    ],
+    "exhibitor_engagement": [
+      "Booth Locator: Find exact location on interactive maps",
+      "Product Search: Search 4,000+ exhibitor product listings",
+      "Favorites: Save exhibitors and products for later",
+      "Notes: Take notes on specific exhibitors/products",
+      "Contact Request: Request follow-up from exhibitors",
+      "Demo Scheduling: Book product demonstrations"
+    ],
+    "navigation_features": [
+      "Multi-Venue Maps: LVCC North/South/Central, Venetian Expo, Aria, Mandalay Bay",
+      "Indoor Positioning: Blue-dot navigation inside venues",
+      "Booth-to-Booth Routing: Get walking directions between exhibitors",
+      "Venue Transit Info: Shuttle schedules between venues",
+      "Accessibility Routes: ADA-compliant pathfinding",
+      "Real-Time Crowd Density: See busy areas to avoid"
+    ],
+    "content_delivery": [
+      "Live Streaming: Watch keynotes and select sessions remotely",
+      "On-Demand Library: Access recorded sessions post-event",
+      "Downloadable Resources: Whitepapers, presentations, press kits",
+      "Social Sharing: Share sessions/products to LinkedIn, Twitter, etc.",
+      "Personal Notes: Attach notes to any session or exhibitor"
+    ]
+  },
+  "business_model": {
+    "overview": "The CES 2026 Official App is NOT a direct revenue-generating product. It is a value-add service bundled into CTA membership and event registration fees. The app serves as a strategic enabler for CTA's core revenue streams.",
+    "cta_organization": {
+      "name": "Consumer Technology Association (CTA)",
+      "type": "US-based trade association (501(c)(6) non-profit)",
+      "membership": "~2,200 member companies",
+      "annual_revenue": "~$130-150 million (estimated, primarily from CES operations)",
+      "primary_mission": "Promote the consumer technology industry through advocacy, standards, research, and events"
+    },
+    "revenue_streams": {
+      "1_exhibitor_booth_fees": {
+        "description": "Primary revenue driver - booth space rental",
+        "pricing_tiers": [
+          {
+            "tier": "Standard Inline Booth (10x10)",
+            "price": "$5,500 - $6,500"
+          },
+          {
+            "tier": "Standard Inline Booth (10x20)",
+            "price": "$11,000 - $13,000"
+          },
+          {
+            "tier": "Island Booth (20x20)",
+            "price": "$22,000 - $26,000"
+          },
+          {
+            "tier": "Island Booth (30x30)",
+            "price": "$49,500 - $58,500"
+          },
+          {
+            "tier": "Large Island (40x40+)",
+            "price": "$88,000+"
+          },
+          {
+            "tier": "Premium Locations (Central Hall, Tech East)",
+            "price": "20-50% premium"
+          },
+          {
+            "tier": "LVCC West Hall (Automotive)",
+            "price": "$7,500 - $12,000 (10x10)"
+          },
+          {
+            "tier": "Eureka Park (Startups)",
+            "price": "$1,000 - $2,500"
+          }
+        ],
+        "additional_costs": [
+          "Booth construction and design: $50,000 - $500,000+",
+          "Furniture, AV, internet: $10,000 - $100,000",
+          "Shipping and drayage: $5,000 - $50,000",
+          "Show services (electrical, cleaning): $5,000 - $30,000",
+          "Staff travel and accommodation: $20,000 - $100,000+"
+        ],
+        "total_estimated_cost": "Major exhibitors spend $500,000 - $2,000,000+ per show",
+        "revenue_contribution": "~60-70% of total CES revenue"
+      },
+      "2_attendee_registration_fees": {
+        "description": "Conference pass sales for non-exhibitor attendees",
+        "pricing_tiers": [
+          {
+            "pass_type": "Exhibits Plus Pass (Show Floor Only)",
+            "early_bird": "$350",
+            "standard": "$500",
+            "onsite": "$600"
+          },
+          {
+            "pass_type": "Conference Pass (Sessions + Floor)",
+            "early_bird": "$1,100",
+            "standard": "$1,700",
+            "onsite": "$2,000"
+          },
+          {
+            "pass_type": "Deluxe Conference Pass (All Access)",
+            "early_bird": "$1,700",
+            "standard": "$2,500",
+            "onsite": "$3,000"
+          },
+          {
+            "pass_type": "Academic/Government Pass",
+            "early_bird": "$300",
+            "standard": "$500",
+            "onsite": "$600"
+          },
+          {
+            "pass_type": "Press/Media Pass",
+            "price": "Complimentary (verified media only)"
+          },
+          {
+            "pass_type": "Student Pass",
+            "price": "$100 - $200"
+          }
+        ],
+        "attendee_volume": "~130,000 - 150,000 attendees annually",
+        "revenue_contribution": "~15-20% of total CES revenue"
+      },
+      "3_cta_membership_dues": {
+        "description": "Annual membership fees from technology companies",
+        "membership_tiers": [
+          {
+            "tier": "Startup Member",
+            "annual_dues": "$1,500 - $3,000",
+            "benefits": "Basic advocacy, CES discounts, networking"
+          },
+          {
+            "tier": "Standard Member",
+            "annual_dues": "$5,000 - $15,000",
+            "benefits": "Full advocacy, research access, CES priority"
+          },
+          {
+            "tier": "Premier Member",
+            "annual_dues": "$25,000 - $50,000",
+            "benefits": "Board access, policy input, exclusive events"
+          },
+          {
+            "tier": "Executive Member",
+            "annual_dues": "$75,000 - $150,000",
+            "benefits": "C-suite forums, strategic advisory, maximum CES benefits"
+          }
+        ],
+        "member_count": "~2,200 member companies",
+        "revenue_contribution": "~10-15% of total CTA revenue"
+      },
+      "4_sponsorships_and_advertising": {
+        "description": "Official event sponsorships and in-app advertising",
+        "sponsorship_packages": [
+          {
+            "package": "Title Sponsor (CES Official Partner)",
+            "price": "$5,000,000 - $10,000,000",
+            "benefits": "Naming rights, keynote presence, exclusive branding"
+          },
+          {
+            "package": "Platinum Sponsor",
+            "price": "$1,000,000 - $3,000,000",
+            "benefits": "Logo prominence, VIP access, speaking slots"
+          },
+          {
+            "package": "Gold Sponsor",
+            "price": "$500,000 - $1,000,000",
+            "benefits": "Booth premium placement, marketing inclusion"
+          },
+          {
+            "package": "Silver Sponsor",
+            "price": "$250,000 - $500,000",
+            "benefits": "Digital presence, session sponsorship"
+          },
+          {
+            "package": "Session Sponsor",
+            "price": "$50,000 - $150,000",
+            "benefits": "Logo on session, intro speaking opportunity"
+          },
+          {
+            "package": "App Sponsor / In-App Advertising",
+            "price": "$100,000 - $500,000",
+            "benefits": "Splash screen ads, banner ads, push notification sponsorships, featured listings"
+          }
+        ],
+        "in_app_advertising_options": [
+          "Home Screen Banner Ads",
+          "Sponsored Session Listings",
+          "Featured Exhibitor Placements",
+          "Push Notification Sponsorships",
+          "Welcome Screen Takeover",
+          "Sponsored Search Results",
+          "Branded Navigation Icons"
+        ],
+        "revenue_contribution": "~10-15% of total CES revenue"
+      },
+      "5_ancillary_services": {
+        "description": "Additional paid services during the event",
+        "services": [
+          {
+            "service": "Meeting Room Rentals",
+            "price": "$5,000 - $25,000 per room"
+          },
+          {
+            "service": "Press Conference Facilities",
+            "price": "$10,000 - $50,000"
+          },
+          {
+            "service": "Lead Retrieval Systems",
+            "price": "$500 - $2,000 per unit"
+          },
+          {
+            "service": "Wi-Fi Upgrades (Exhibitors)",
+            "price": "$1,000 - $10,000"
+          },
+          {
+            "service": "VIP Hospitality Suites",
+            "price": "$25,000 - $100,000"
+          },
+          {
+            "service": "Official CES Party/Event Hosting",
+            "price": "$50,000 - $250,000"
+          },
+          {
+            "service": "Matchmaking Services",
+            "price": "$5,000 - $15,000"
+          }
+        ],
+        "revenue_contribution": "~5-10% of total CES revenue"
+      },
+      "6_research_and_publications": {
+        "description": "CTA produces industry research sold to members and non-members",
+        "products": [
+          {
+            "product": "U.S. Consumer Technology Sales and Forecasts",
+            "price": "$2,500 - $5,000"
+          },
+          {
+            "product": "Industry Sector Reports",
+            "price": "$1,500 - $3,000 each"
+          },
+          {
+            "product": "Market Research Subscriptions",
+            "price": "$10,000 - $25,000 annually"
+          },
+          {
+            "product": "Custom Research Projects",
+            "price": "$50,000 - $200,000"
+          }
+        ],
+        "revenue_contribution": "~3-5% of total CTA revenue"
+      }
+    },
+    "app_monetization_model": {
+      "direct_revenue": "NONE - App is free to all registered attendees and exhibitors",
+      "indirect_revenue_streams": [
+        {
+          "stream": "Sponsored Placements",
+          "description": "Featured exhibitor listings, sponsored search results, banner advertisements within app",
+          "estimated_revenue": "$500,000 - $1,500,000 annually"
+        },
+        {
+          "stream": "Premium Features for Exhibitors",
+          "description": "Enhanced exhibitor profiles, push notification campaigns, lead retrieval integration",
+          "estimated_revenue": "$200,000 - $500,000 annually"
+        },
+        {
+          "stream": "Data & Analytics",
+          "description": "Aggregated attendee behavior data sold to exhibitors (anonymized), foot traffic analytics, session popularity reports",
+          "estimated_revenue": "$100,000 - $300,000 annually"
+        },
+        {
+          "stream": "Meeting Room Booking Integration",
+          "description": "In-app booking of CTA meeting rooms with commission",
+          "estimated_revenue": "$50,000 - $150,000 annually"
+        }
+      ],
+      "total_estimated_app_revenue": "$850,000 - $2,450,000 (indirect, through sponsorships and premium features)"
+    },
+    "strategic_value_of_app": {
+      "attendee_retention": "Increases perceived value of registration, justifying $1,700-$3,000 conference passes",
+      "exhibitor_roi": "Lead retrieval and meeting scheduling prove ROI, encouraging $500K-$2M booth investments",
+      "data_collection": "Rich behavioral data on 130K+ attendees informs future programming and pricing",
+      "operational_efficiency": "Reduces need for printed materials, staff wayfinding, manual scheduling",
+      "network_effects": "Better networking = higher satisfaction = higher renewal rates for both attendees and exhibitors",
+      "competitive_moat": "Official app creates lock-in; third-party apps cannot replicate CTA's data access",
+      "sponsorship_value": "Digital sponsorships in app command premium prices due to captive audience"
+    }
+  },
+  "event_scale_2026": {
+    "expected_attendees": "130,000 - 150,000",
+    "exhibitors": "4,000 - 4,500 companies",
+    "exhibit_space": "2.9+ million net square feet",
+    "countries_represented": "150+",
+    "media_attendees": "4,000 - 5,000",
+    "keynote_speakers": "Major CEOs (NVIDIA, Samsung, Sony, etc.)",
+    "session_count": "1,000+ conference sessions",
+    "startup_exhibitors": "1,200+ in Eureka Park",
+    "economic_impact": "$500+ million to Las Vegas economy"
+  },
+  "technology_stack": {
+    "platform": "Eventbase (now part of Tripleseat) - leading event app platform",
+    "features": [
+      "AI-powered networking (Attendee Connect)",
+      "Real-time sync across devices",
+      "Offline mode for poor connectivity",
+      "Beacon technology for indoor positioning",
+      "CRM integrations (Salesforce, HubSpot)",
+      "Social media APIs",
+      "Push notification infrastructure",
+      "Analytics and reporting dashboard"
+    ]
+  },
+  "comparative_analysis": {
+    "vs_forum_live_wef": {
+      "similarities": [
+        "Both are official event apps for major global conferences",
+        "Both use invitation/registration-gated access",
+        "Both focus on networking, scheduling, and navigation",
+        "Neither generates direct consumer revenue",
+        "Both serve as strategic enablers for parent organization revenue"
+      ],
+      "differences": [
+        "CES: Open to 130K+ attendees; WEF: ~3,000 ultra-elite invitees",
+        "CES: Mass-market tech focus; WEF: Policy/economic elite focus",
+        "CES: $350-$3,000 passes; WEF: $19,000-$35,000+ badges",
+        "CES: Heavy exhibitor/sponsorship model; WEF: Membership dues model",
+        "CES: Public-facing with media coverage; WEF: Closed-door Chatham House",
+        "CES: In-app advertising accepted; WEF: No advertising, pure utility"
+      ]
+    }
+  }
+}

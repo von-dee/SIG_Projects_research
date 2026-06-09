@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Africa Grid Analytics — Competitive Landscape & Opportunity Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a0f;
+    --surface: #0d1520;
+    --surface2: #111d2e;
+    --border: #1e3048;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #7fff6e;
+    --accent4: #ffd166;
+    --text: #d4e8f5;
+    --muted: #6a8ba0;
+    --danger: #ff4757;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(0,229,255,0.05) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,107,53,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 100px);
+    line-height: 0.92;
+    letter-spacing: 2px;
+    color: #fff;
+    max-width: 900px;
+    position: relative;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    margin-top: 24px;
+    max-width: 640px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+  }
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  /* Layout */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 60px; }
+  section { padding: 60px 60px; border-bottom: 1px solid var(--border); }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 36px;
+    line-height: 1;
+  }
+
+  /* Competitor cards */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .comp-card:hover { border-color: var(--accent); }
+  .comp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .comp-card.tier-global::before { background: var(--accent); }
+  .comp-card.tier-africa::before { background: var(--accent3); }
+  .comp-card.tier-adjacent::before { background: var(--accent4); }
+
+  .comp-tier {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .tier-global .comp-tier { color: var(--accent); }
+  .tier-africa .comp-tier { color: var(--accent3); }
+  .tier-adjacent .comp-tier { color: var(--accent4); }
+
+  .comp-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: #fff;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .comp-desc { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+
+  .tag-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tag {
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.15);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.5px;
+  }
+  .tag.green { background: rgba(127,255,110,0.07); border-color: rgba(127,255,110,0.15); color: var(--accent3); }
+  .tag.orange { background: rgba(255,107,53,0.07); border-color: rgba(255,107,53,0.15); color: var(--accent2); }
+  .tag.yellow { background: rgba(255,209,102,0.07); border-color: rgba(255,209,102,0.15); color: var(--accent4); }
+
+  .strength-weak {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .sw-box {
+    background: var(--surface2);
+    border-radius: 3px;
+    padding: 10px 12px;
+  }
+  .sw-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .sw-label.s { color: var(--accent3); }
+  .sw-label.w { color: var(--danger); }
+  .sw-box ul { list-style: none; padding: 0; }
+  .sw-box li { color: var(--muted); font-size: 12.5px; margin-bottom: 3px; }
+  .sw-box li::before { content: '→ '; color: var(--accent); }
+  .sw-box.weak li::before { color: var(--danger); }
+
+  /* Gaps */
+  .gaps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .gap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    border-left: 3px solid var(--danger);
+  }
+  .gap-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    color: rgba(255,71,87,0.15);
+    line-height: 1;
+    margin-bottom: -8px;
+  }
+  .gap-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .gap-desc { color: var(--muted); font-size: 13px; }
+
+  /* Ideas */
+  .ideas-section { background: var(--bg); }
+  .idea-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .idea-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 28px 28px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .idea-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .idea-icon.hw { background: rgba(255,107,53,0.12); }
+  .idea-icon.sw { background: rgba(0,229,255,0.1); }
+  .idea-icon.hybrid { background: rgba(127,255,110,0.1); }
+
+  .idea-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .idea-type.hw { color: var(--accent2); }
+  .idea-type.sw { color: var(--accent); }
+  .idea-type.hybrid { color: var(--accent3); }
+
+  .idea-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    color: #fff;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .idea-tagline { color: var(--muted); font-size: 13.5px; }
+
+  .idea-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+  .idea-col {
+    padding: 20px 24px;
+    border-right: 1px solid var(--border);
+  }
+  .idea-col:last-child { border-right: none; }
+  .idea-col-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .idea-col ul { list-style: none; padding: 0; }
+  .idea-col li { font-size: 13px; color: var(--text); margin-bottom: 6px; padding-left: 14px; position: relative; }
+  .idea-col li::before { content: '◆'; position: absolute; left: 0; color: var(--accent); font-size: 7px; top: 4px; }
+
+  .revenue-badge {
+    display: inline-block;
+    background: rgba(255,209,102,0.1);
+    border: 1px solid rgba(255,209,102,0.25);
+    color: var(--accent4);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-top: 8px;
+  }
+  .impact-badge {
+    display: inline-block;
+    background: rgba(127,255,110,0.08);
+    border: 1px solid rgba(127,255,110,0.2);
+    color: var(--accent3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-top: 6px;
+    margin-left: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .hero, section { padding: 40px 24px; }
+    .idea-body { grid-template-columns: 1fr; }
+    .idea-col { border-right: none; border-bottom: 1px solid var(--border); }
+    .comp-grid, .gaps-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 24px; }
+  }
+
+  /* Matrix table */
+  .matrix-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .matrix-table th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+  }
+  .matrix-table tr:hover td { background: var(--surface); }
+  .matrix-table td:first-child { color: #fff; font-weight: 600; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .dot.yes { background: var(--accent3); }
+  .dot.no { background: var(--danger); }
+  .dot.partial { background: var(--accent4); }
+
+  .callout {
+    background: linear-gradient(135deg, rgba(0,229,255,0.05), rgba(127,255,110,0.03));
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-top: 32px;
+  }
+  .callout-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .callout p { color: var(--text); font-size: 14px; line-height: 1.8; }
+
+  footer {
+    padding: 32px 60px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="grid-lines"></div>
+  <div class="hero-tag">// Research Report · Africa Energy Intelligence · June 2026</div>
+  <h1>AFRICA GRID<br><span>ANALYTICS</span><br>LANDSCAPE</h1>
+  <p class="hero-sub">A deep competitive analysis of global and African grid analytics players — with identified market gaps and actionable hardware & software opportunities for the next wave of energy infrastructure investment.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-val">600M</div>
+      <div class="stat-label">Africans without electricity</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">49.5%</div>
+      <div class="stat-label">Avg ATC&C losses, Nigeria</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">$10B</div>
+      <div class="stat-label">Potential annual savings by 2030</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">$65B</div>
+      <div class="stat-label">Mini-grid investment needed</div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPETITOR PROFILES -->
+<section>
+  <div class="section-tag">// 01 — Competitive Landscape</div>
+  <div class="section-title">COMPETITOR PROFILES</div>
+
+  <div class="comp-grid">
+
+    <!-- Schneider -->
+    <div class="comp-card tier-global">
+      <div class="comp-tier">Global Enterprise Tier</div>
+      <div class="comp-name">Schneider Electric</div>
+      <div class="comp-desc">Operates the One Digital Grid Platform (launched 2025) with EcoStruxure ADMS, DERMS, and Net Zero Dashboard. Middle East & Africa segment grew 19% in 2024. Targeting grid resilience, DER integration, and sustainability metrics.</div>
+      <div class="tag-row">
+        <span class="tag">ADMS</span>
+        <span class="tag">DERMS</span>
+        <span class="tag">IoT</span>
+        <span class="tag">Digital Twin</span>
+        <span class="tag green">Africa Active</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Proven global deployment</li>
+            <li>40% outage reduction claimed</li>
+            <li>DER interconnection tools</li>
+            <li>Enterprise-grade security</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS IN AFRICA</div>
+          <ul>
+            <li>High licensing costs</li>
+            <li>Not tailored to LV networks</li>
+            <li>Requires stable connectivity</li>
+            <li>Enterprise sales cycle too slow</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Siemens -->
+    <div class="comp-card tier-global">
+      <div class="comp-tier">Global Enterprise Tier</div>
+      <div class="comp-name">Siemens Grid Software</div>
+      <div class="comp-desc">Enterprise-grade digital twin and predictive analytics for massive utility networks. Partners with renewable energy companies (wind, solar) to integrate grid management at scale. Global standard for transmission-level analytics.</div>
+      <div class="tag-row">
+        <span class="tag">Digital Twin</span>
+        <span class="tag">Predictive AI</span>
+        <span class="tag">Transmission</span>
+        <span class="tag orange">Limited Africa</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Transmission-scale analytics</li>
+            <li>Deep simulation capability</li>
+            <li>Established global partnerships</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS IN AFRICA</div>
+          <ul>
+            <li>Minimal distribution-level tools</li>
+            <li>Near-zero rural/mini-grid play</li>
+            <li>Data requirements impractical</li>
+            <li>No local language/currency support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- BPS -->
+    <div class="comp-card tier-africa">
+      <div class="comp-tier">Africa-Native Tier</div>
+      <div class="comp-name">Beacon Power Services</div>
+      <div class="comp-desc">Accra-based energy tech. CAIMS (GIS/asset mapping) and ADORA (real-time grid monitoring). Raised Series A in Nov 2024 led by Partech. Active in Ghana (ECG), Nigeria, Tanzania, Zambia, Togo. Won 2025 PMI State Organization Project of the Year.</div>
+      <div class="tag-row">
+        <span class="tag green">GIS Mapping</span>
+        <span class="tag green">Real-time SCADA</span>
+        <span class="tag green">Revenue Protection</span>
+        <span class="tag green">Ghana/Nigeria/Togo</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Built for Africa's realities</li>
+            <li>Boots-on-ground approach</li>
+            <li>Proven ECG digitization</li>
+            <li>In-house development</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS</div>
+          <ul>
+            <li>No hardware manufacturing</li>
+            <li>No mini-grid/off-grid product</li>
+            <li>Limited renewable forecasting</li>
+            <li>No consumer-facing tools</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Awesense -->
+    <div class="comp-card tier-africa">
+      <div class="comp-tier">Africa-Adjacent Tier</div>
+      <div class="comp-name">Awesense</div>
+      <div class="comp-desc">Canadian grid intelligence company with Africa market positioning. Focuses on LV network analytics, loss detection, and grid visibility for utilities. Positioned alongside BPS as a market leader for localized loss reduction.</div>
+      <div class="tag-row">
+        <span class="tag green">LV Analytics</span>
+        <span class="tag green">Loss Detection</span>
+        <span class="tag orange">Non-native</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Strong LV network analytics</li>
+            <li>Non-technical loss detection</li>
+            <li>Modular deployment</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS</div>
+          <ul>
+            <li>Foreign pricing model</li>
+            <li>Limited local ecosystem</li>
+            <li>Needs existing metering infra</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hitachi -->
+    <div class="comp-card tier-adjacent">
+      <div class="comp-tier">Platform / Adjacent Tier</div>
+      <div class="comp-name">Hitachi Energy (Lumada)</div>
+      <div class="comp-desc">Lumada IoT platform with grid analytics, transformer monitoring, and AI-driven efficiency tools. Showcased Africa-specific solutions at ADIPEC 2024. Strong in ME&A on hardware (transformers) but analytics are platform-heavy.</div>
+      <div class="tag-row">
+        <span class="tag yellow">IoT Platform</span>
+        <span class="tag yellow">Transformer Monitoring</span>
+        <span class="tag yellow">Edge AI (2025)</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Hardware + software play</li>
+            <li>Edge AI development (2025)</li>
+            <li>Established Africa hardware</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS</div>
+          <ul>
+            <li>Platform lock-in risk</li>
+            <li>Not distribution-utility focused</li>
+            <li>Expensive integration overhead</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- AEMP -->
+    <div class="comp-card tier-adjacent">
+      <div class="comp-tier">Finance / Infrastructure Tier</div>
+      <div class="comp-name">Africa Energy Mgmt Platform (AEMP)</div>
+      <div class="comp-desc">Develops, finances, and operates utility-scale renewable and hybrid energy assets. Not a software analytics company — focuses on capital allocation and project finance for clean energy. Different value chain position.</div>
+      <div class="tag-row">
+        <span class="tag yellow">Project Finance</span>
+        <span class="tag yellow">Renewable Assets</span>
+        <span class="tag yellow">Hybrid Systems</span>
+      </div>
+      <div class="strength-weak">
+        <div class="sw-box">
+          <div class="sw-label s">STRENGTHS</div>
+          <ul>
+            <li>Capital + operations combined</li>
+            <li>Utility-scale renewable focus</li>
+          </ul>
+        </div>
+        <div class="sw-box weak">
+          <div class="sw-label w">GAPS</div>
+          <ul>
+            <li>Not a software/analytics player</li>
+            <li>No real-time grid visibility</li>
+            <li>No distribution utility tools</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Feature Matrix -->
+  <div class="section-tag" style="margin-top:40px;"># Capability Matrix</div>
+  <table class="matrix-table">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>LV Network Analytics</th>
+        <th>Mini-Grid Support</th>
+        <th>Africa-native Data</th>
+        <th>Offline/Edge Mode</th>
+        <th>Consumer Tools</th>
+        <th>Hardware</th>
+        <th>Revenue Model</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Schneider Electric</td>
+        <td><span class="dot partial"></span>Partial</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot partial"></span>Limited</td>
+        <td><span class="dot partial"></span>DERMS only</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td>SaaS + Hardware</td>
+      </tr>
+      <tr>
+        <td>Siemens Grid Software</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td>Enterprise License</td>
+      </tr>
+      <tr>
+        <td>Beacon Power Services</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td><span class="dot partial"></span>Partial</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td>SaaS + Data Services</td>
+      </tr>
+      <tr>
+        <td>Awesense</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot partial"></span>Partial</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td>SaaS</td>
+      </tr>
+      <tr>
+        <td>Hitachi Lumada</td>
+        <td><span class="dot partial"></span>Partial</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot yes"></span>Edge AI 2025</td>
+        <td><span class="dot no"></span>No</td>
+        <td><span class="dot yes"></span>Yes</td>
+        <td>Platform + Hardware</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- GAPS -->
+<section>
+  <div class="section-tag">// 02 — Market Gaps</div>
+  <div class="section-title">CRITICAL GAPS IDENTIFIED</div>
+
+  <div class="gaps-grid">
+    <div class="gap-card">
+      <div class="gap-num">01</div>
+      <div class="gap-title">No Offline-First Analytics</div>
+      <div class="gap-desc">All major platforms assume reliable internet. In 2025, most African utilities still manually operate analog systems. None of the profiled players offer a grid analytics stack that works meaningfully offline or on low-bandwidth GPRS connections.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">02</div>
+      <div class="gap-title">Mini-Grid Intelligence Vacuum</div>
+      <div class="gap-desc">Africa needs 20,000–40,000 new mini-grids per year to hit SDG7. Yet not one of the profiled competitors has a purpose-built analytics product for mini-grid operators. Mini-grids are managed with spreadsheets and guesswork.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">03</div>
+      <div class="gap-title">No Affordable Smart Meter Hardware</div>
+      <div class="gap-desc">Smart metering hardware in Africa still requires import financing and international supply chains. No African company manufactures locally adapted, solar-powered, tamper-resistant meters at volume. BPS itself relies on imported devices.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">04</div>
+      <div class="gap-title">Revenue Leakage Goes Unmeasured</div>
+      <div class="gap-desc">Nigeria's ATC&C losses run 40–50%. Collection efficiency at 76.3% means utilities bill but don't collect. No platform currently combines GIS mapping, smart metering, and AI payment prediction to proactively identify and close collection gaps.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">05</div>
+      <div class="gap-title">No Consumer-Facing Energy Apps</div>
+      <div class="gap-desc">Electricity customers in Africa have zero visibility into their own usage, bill predictions, or outage schedules. In markets with prepaid meters, consumers need real-time balance, consumption alerts, and credit top-up integrations — none exist at scale.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">06</div>
+      <div class="gap-title">Renewable Intermittency Management</div>
+      <div class="gap-desc">Africa's renewable share is growing rapidly — 76% of electricity from renewables projected by 2040. But no Africa-native tool forecasts solar/wind intermittency at the distribution level or automates battery dispatch for hybrid mini-grids in real time.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">07</div>
+      <div class="gap-title">No Grid Asset Lifecycle Platform</div>
+      <div class="gap-desc">Aging transformer banks, overhead lines, and switchgear fail unpredictably across the continent. Global players offer predictive maintenance only for high-value transmission assets. Distribution-level asset health monitoring for African conditions doesn't exist locally.</div>
+    </div>
+    <div class="gap-card">
+      <div class="gap-num">08</div>
+      <div class="gap-title">Fragmented Data, No Interoperability</div>
+      <div class="gap-desc">Utilities in the same country use incompatible SCADA, billing, and GIS systems. There is no Africa-specific grid data standard or interoperability layer. Utilities cannot benchmark against peers or aggregate national grid performance intelligence.</div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEAS -->
+<section class="ideas-section">
+  <div class="section-tag">// 03 — Opportunities</div>
+  <div class="section-title">HARDWARE & SOFTWARE IDEAS</div>
+
+  <!-- HW 1 -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon hw">⚡</div>
+      <div>
+        <div class="idea-type hw">Hardware Idea — H1</div>
+        <div class="idea-name">GRIDPULSE NODE</div>
+        <div class="idea-tagline">Low-cost, solar-powered distribution monitoring unit built for African LV networks — works offline, communicates via SMS/GPRS</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Clamps onto transformer feeders, LV busbar, or service drops</li>
+          <li>Measures voltage, current, power factor, harmonics every 15 min</li>
+          <li>On-device edge AI flags fault signatures and theft patterns</li>
+          <li>Solar-charged battery, 30-day autonomy</li>
+          <li>SMS-based reporting when no data connection available</li>
+          <li>Tamper-evident casing with GPS tag</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>Hardware sale to utilities: $80–$120/unit at volume</li>
+          <li>$5/unit/month cloud data subscription</li>
+          <li>Integration fee with BPS ADORA or ECG SCADA: $50k/utility</li>
+          <li>Carbon credit revenue via measurable loss reduction</li>
+          <li>DFI/grant funding as first-mover cost recovery</li>
+        </ul>
+        <div class="revenue-badge">TAM: ~500k transformer feeders across sub-Saharan Africa</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>Reduces outage detection time from hours to minutes</li>
+          <li>Identifies 20–35% of non-technical losses at the feeder level</li>
+          <li>Enables revenue recovery of $200k–$1M/utility/year</li>
+          <li>Works without smartphones or reliable internet</li>
+          <li>Designed and assembled locally — creates manufacturing jobs</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #1, #3, #4</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HW 2 -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon hw">🔌</div>
+      <div>
+        <div class="idea-type hw">Hardware Idea — H2</div>
+        <div class="idea-name">AFRIMETER PRO</div>
+        <div class="idea-tagline">Africa-first prepaid smart meter with built-in mobile money integration and tamper-resistant NB-IoT communication</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Prepaid meter with NB-IoT + fallback SMS</li>
+          <li>Direct integration with MTN MoMo, M-PESA, Airtel Money for top-up</li>
+          <li>Customer balance alerts via USSD (no smartphone needed)</li>
+          <li>Tamper sensor with auto-alert and remote disconnect</li>
+          <li>Local display shows balance, usage, and tariff</li>
+          <li>Anti-bypass housing — key gap in current meter designs</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>Hardware: $35–$55/unit to utilities (vs $80–$120 for imports)</li>
+          <li>Mobile money payment processing fee: 0.3–0.5% per transaction</li>
+          <li>SaaS meter data management platform: $2/meter/month</li>
+          <li>White-label sales to private landlords and industrial parks</li>
+          <li>IFC/USAID subsidy programs eligible</li>
+        </ul>
+        <div class="revenue-badge">Market: 60M+ un-metered connections in SSA</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>Directly closes billing & collection efficiency gap</li>
+          <li>Mobile money integration boosts payment rates 25–40%</li>
+          <li>Reduces meter reading cost by 100% (automated)</li>
+          <li>Localizes a $1B+ import market into African manufacturing</li>
+          <li>Empowers customers with real-time usage data via USSD</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #3, #4, #5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SW 1 -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon sw">🧠</div>
+      <div>
+        <div class="idea-type sw">Software Idea — S1</div>
+        <div class="idea-name">VOLTIQ — AI LOSS INTELLIGENCE PLATFORM</div>
+        <div class="idea-tagline">Africa-native SaaS that turns raw meter, SCADA, and GIS data into revenue recovery actions — with built-in offline sync</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Ingests data from any meter brand, SCADA, or manual reading</li>
+          <li>AI engine classifies each loss event: technical vs commercial vs theft</li>
+          <li>Generates field crew dispatch orders ranked by revenue impact</li>
+          <li>Offline-first PWA: field agents work without internet, syncs on reconnect</li>
+          <li>Benchmarks feeder-level performance against national peers</li>
+          <li>Multilingual: English, French, Swahili, Hausa, Twi</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>SaaS: $0.50/customer/month (typical utility = 200k customers = $100k ARR)</li>
+          <li>Performance-based tier: 10% of recovered revenue in Year 1</li>
+          <li>Data insights API: sell anonymized grid health data to DFIs & regulators</li>
+          <li>Training & change management services: $20–$50k/engagement</li>
+          <li>Carbon credit accounting module (premium): $15k/year/utility</li>
+        </ul>
+        <div class="revenue-badge">Potential ARR: $5–20M across 20 utilities</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>10–20% ATC&C loss reduction in first 12 months</li>
+          <li>$1–5M revenue recovery per mid-size utility per year</li>
+          <li>Reduces dependence on expensive international consultants</li>
+          <li>Works on 2G/3G and fully offline for rural substations</li>
+          <li>Creates data-driven accountability between utilities and regulators</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #1, #4, #8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SW 2 -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon sw">☀️</div>
+      <div>
+        <div class="idea-type sw">Software Idea — S2</div>
+        <div class="idea-name">MINIOPS — MINI-GRID OPERATING SYSTEM</div>
+        <div class="idea-tagline">The first purpose-built management platform for Africa's 200,000+ planned mini-grids: generation forecasting, battery dispatch, and community billing</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Real-time solar PV generation forecasting (15-min intervals)</li>
+          <li>Battery energy storage automated dispatch AI</li>
+          <li>Community energy budget management — allocate fairly across households</li>
+          <li>Mobile money billing with USSD interface for customers</li>
+          <li>Technician app for fault logging and maintenance scheduling</li>
+          <li>Investor dashboard: remote financial performance monitoring</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>$200/mini-grid/month SaaS subscription</li>
+          <li>Transaction fee: 0.2% on all mobile money payments processed</li>
+          <li>Carbon credit MRV (measurement, reporting, verification): $5k/site/year</li>
+          <li>Sell anonymized demand data to solar manufacturers and DFIs</li>
+          <li>White-label for World Bank / AfDB mini-grid programs</li>
+        </ul>
+        <div class="revenue-badge">TAM: 110,000 planned mini-grids by 2030 = $264M ARR</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>Cuts mini-grid O&M cost by 30% via predictive scheduling</li>
+          <li>Improves battery asset life by 15–20% via optimal dispatch</li>
+          <li>Unlocks carbon credit revenues for mini-grid operators</li>
+          <li>Provides investors with real-time project performance data</li>
+          <li>Bridges the $65B mini-grid investment gap with data credibility</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #2, #6</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SW 3 -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon sw">📱</div>
+      <div>
+        <div class="idea-type sw">Software Idea — S3</div>
+        <div class="idea-name">POWERPAL — CONSUMER ENERGY APP</div>
+        <div class="idea-tagline">Africa's first consumer-facing electricity intelligence app: usage tracking, outage alerts, bill prediction, and peer-to-peer energy sharing</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Real-time electricity balance and usage tracking via smart meter API</li>
+          <li>Hyperlocal outage forecasting based on utility data + crowd reports</li>
+          <li>Bill prediction: "you'll need to top up $8 by Thursday"</li>
+          <li>Tariff comparison across zones and time-of-use options</li>
+          <li>Appliance energy audit: AI estimates usage by appliance type</li>
+          <li>P2P rooftop solar credit marketplace (prosumer model)</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>Freemium app: free basic, $1.5/month premium</li>
+          <li>Utility white-label: $50k/year per utility for branded version</li>
+          <li>Embedded mobile money top-up: 0.5% transaction fee</li>
+          <li>Appliance brand advertising: "your fridge uses 40kWh/month; upgrade here"</li>
+          <li>Energy efficiency lending partner referrals: $10–$30/conversion</li>
+        </ul>
+        <div class="revenue-badge">Target: 5M users in 3 years = $7.5–15M ARR</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>First product to give 100M African customers grid visibility</li>
+          <li>Demand response enablement at consumer scale</li>
+          <li>Reduces peak-load-related outages via behavioral nudges</li>
+          <li>Creates data layer for utilities to understand real demand patterns</li>
+          <li>Enables prosumer participation — democratizes the energy transition</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hybrid -->
+  <div class="idea-block">
+    <div class="idea-header">
+      <div class="idea-icon hybrid">🔗</div>
+      <div>
+        <div class="idea-type hybrid">Hardware + Software Idea — HS1</div>
+        <div class="idea-name">GRIDBRIDGE — INTEROPERABILITY HUB</div>
+        <div class="idea-tagline">A plug-in hardware gateway + open API middleware that connects legacy SCADA, imported meters, and GIS databases into a single standardized African grid data layer</div>
+      </div>
+    </div>
+    <div class="idea-body">
+      <div class="idea-col">
+        <div class="idea-col-label">What It Does</div>
+        <ul>
+          <li>Hardware gateway: connects to any RS485, Modbus, or DLMS meter protocol</li>
+          <li>Translates incompatible data formats into IEC 61968/61970 standard</li>
+          <li>Open API layer: BPS, Awesense, or custom dashboards can connect</li>
+          <li>National-level grid intelligence aggregation without replacing existing systems</li>
+          <li>Regulators can access benchmarks without utility vendor access</li>
+        </ul>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Revenue Model</div>
+        <ul>
+          <li>Hardware gateway: $500–$1,500 per substation</li>
+          <li>API subscription: $2,000/month per utility</li>
+          <li>National regulator data dashboard: $100k/year contract</li>
+          <li>Data marketplace for energy researchers and DFIs: $50k/year</li>
+          <li>System integration services: $200–$500k per large utility rollout</li>
+        </ul>
+        <div class="revenue-badge">B2B SaaS + Regulatory contracts</div>
+      </div>
+      <div class="idea-col">
+        <div class="idea-col-label">Impact</div>
+        <ul>
+          <li>Unlocks data trapped in 20+ incompatible legacy systems</li>
+          <li>Enables continent-wide grid benchmarking for the first time</li>
+          <li>Reduces vendor lock-in for African utilities</li>
+          <li>Creates an open standard — network effects grow the ecosystem</li>
+          <li>Powers evidence-based energy regulation across Africa</li>
+        </ul>
+        <div class="impact-badge">Addresses Gap #7, #8</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">// Strategic Synthesis</div>
+    <p>The dominant pattern across all profiled competitors is a <strong>top-down, enterprise-first model</strong> designed for well-capitalized Western utilities. Africa's energy crisis — 600M unconnected, 40–50% losses, analog grid operations, and 600M people paying for backup generators — is fundamentally a <strong>distribution and data problem</strong>, not a generation problem. The highest-impact opportunity is a vertically integrated Africa-native company that combines <strong>affordable locally-manufactured hardware</strong> (GridPulse Node, AfriMeter Pro) with <strong>offline-capable, AI-powered analytics software</strong> (Voltiq, MiniOps) and a <strong>consumer-facing energy intelligence layer</strong> (PowerPal) — creating a full-stack grid intelligence ecosystem that none of the current competitors has built for this market.</p>
+  </div>
+</section>
+
+<footer>
+  <span>Africa Grid Analytics Research Report · Compiled June 2026</span>
+  <span>Sources: RMI, IEA, World Bank, Proparco, BPS, Schneider Electric, NERC</span>
+</footer>
+
+</body>
+</html>

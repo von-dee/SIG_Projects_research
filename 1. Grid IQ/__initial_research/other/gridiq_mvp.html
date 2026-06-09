@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridIQ West Africa | Loss Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --color-bg: #0B0F19;
+                --color-surface: #111827;
+                --color-surface-raised: #1F2937;
+                --color-border: #374151;
+                --color-primary: #0D9E75;
+                --color-primary-glow: rgba(13, 158, 117, 0.15);
+                --color-text: #F9FAFB;
+                --color-text-muted: #9CA3AF;
+                --color-danger: #EF4444;
+                --color-warning: #F59E0B;
+                --color-info: #3B82F6;
+                --font-sans: 'Inter', sans-serif;
+                --font-mono: 'JetBrains Mono', monospace;
+            }
+            body {
+                font-family: var(--font-sans);
+                background-color: var(--color-bg);
+                color: var(--color-text);
+                overflow: hidden;
+            }
+        }
+        @layer components {
+            .glass-panel {
+                background: rgba(17, 24, 39, 0.7);
+                backdrop-filter: blur(12px);
+                border: 1px solid var(--color-border);
+            }
+            .neon-glow {
+                box-shadow: 0 0 20px var(--color-primary-glow);
+            }
+            .text-glow {
+                text-shadow: 0 0 10px rgba(13, 158, 117, 0.5);
+            }
+            .slide-in {
+                animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+            @keyframes slideIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .fade-in {
+                animation: fadeIn 0.3s ease-out forwards;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            .chart-path {
+                stroke-dasharray: 1000;
+                stroke-dashoffset: 1000;
+                animation: drawChart 1.5s ease-out forwards;
+            }
+            @keyframes drawChart {
+                to { stroke-dashoffset: 0; }
+            }
+            .skeleton {
+                background: linear-gradient(90deg, #1F2937 25%, #374151 50%, #1F2937 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+            }
+            @keyframes shimmer {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+            }
+            .toast-enter {
+                animation: toastIn 0.3s ease-out forwards;
+            }
+            @keyframes toastIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex text-sm">
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-[#0B0F19] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiPjxwYXRoIGQ9Ik0gMTAwIDAgTCAwIDAgMCAxMDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzE3MjU0NyIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIiAvPjwvc3ZnPg==')] bg-cover">
+        <div class="absolute inset-0 bg-gradient-to-br from-[#0D9E75]/10 via-transparent to-[#0B0F19]"></div>
+        <div class="relative z-10 w-full max-w-md p-8">
+            <div class="text-center mb-8 slide-in">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0D9E75]/20 border border-[#0D9E75]/30 mb-4">
+                    <i data-lucide="zap" class="w-8 h-8 text-[#0D9E75]"></i>
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight text-white mb-1">GridIQ</h1>
+                <p class="text-[#9CA3AF] text-sm">West Africa Loss Intelligence</p>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-6 shadow-2xl shadow-black/50 slide-in" style="animation-delay: 0.1s">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-medium text-[#9CA3AF] mb-1.5">Email Address</label>
+                        <input type="email" id="login-email" value="ops@edsa.sl" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-4 py-2.5 text-white placeholder-[#4B5563] focus:outline-none focus:border-[#0D9E75] focus:ring-1 focus:ring-[#0D9E75] transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-[#9CA3AF] mb-1.5">Password</label>
+                        <input type="password" id="login-password" value="gridiq2025" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-4 py-2.5 text-white placeholder-[#4B5563] focus:outline-none focus:border-[#0D9E75] focus:ring-1 focus:ring-[#0D9E75] transition-all">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full bg-[#0D9E75] hover:bg-[#0D9E75]/90 text-white font-medium py-2.5 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#0D9E75]/20">
+                        Sign In to Platform
+                    </button>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-[#374151]">
+                    <p class="text-xs text-[#9CA3AF] text-center mb-3">Quick Access Demo Accounts</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="quickLogin('ops@edsa.sl')" class="text-xs bg-[#1F2937] hover:bg-[#374151] text-[#9CA3AF] py-2 px-3 rounded-md transition-colors text-left">
+                            <span class="block font-medium text-white">Operations</span>
+                            ops@edsa.sl
+                        </button>
+                        <button onclick="quickLogin('management@edsa.sl')" class="text-xs bg-[#1F2937] hover:bg-[#374151] text-[#9CA3AF] py-2 px-3 rounded-md transition-colors text-left">
+                            <span class="block font-medium text-white">Management</span>
+                            management@edsa.sl
+                        </button>
+                        <button onclick="quickLogin('auditor@edsa.sl')" class="text-xs bg-[#1F2937] hover:bg-[#374151] text-[#9CA3AF] py-2 px-3 rounded-md transition-colors text-left">
+                            <span class="block font-medium text-white">Auditor</span>
+                            auditor@edsa.sl
+                        </button>
+                        <button onclick="quickLogin('agent@edsa.sl')" class="text-xs bg-[#1F2937] hover:bg-[#374151] text-[#9CA3AF] py-2 px-3 rounded-md transition-colors text-left">
+                            <span class="block font-medium text-white">Field Agent</span>
+                            agent@edsa.sl
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App Shell -->
+    <div id="app-shell" class="hidden w-full h-full flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[#111827] border-r border-[#374151] flex flex-col h-full shrink-0 transition-all duration-300" id="sidebar">
+            <div class="p-6 border-b border-[#374151]">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-[#0D9E75]/20 flex items-center justify-center border border-[#0D9E75]/30">
+                        <i data-lucide="zap" class="w-4 h-4 text-[#0D9E75]"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-white text-sm leading-tight">GridIQ</h2>
+                        <p class="text-[10px] text-[#9CA3AF] uppercase tracking-wider">EDSA Pilot</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="nav-container">
+                <!-- Nav items injected by JS -->
+            </nav>
+
+            <div class="p-4 border-t border-[#374151]">
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-[#0B0F19] border border-[#374151]">
+                    <div class="w-8 h-8 rounded-full bg-[#374151] flex items-center justify-center text-xs font-medium text-white" id="user-avatar">JD</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-medium text-white truncate" id="user-name">John Doe</p>
+                        <p class="text-[10px] text-[#9CA3AF] truncate" id="user-role">Operations</p>
+                    </div>
+                    <button onclick="handleLogout()" class="text-[#9CA3AF] hover:text-white transition-colors">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#0B0F19] relative">
+            <!-- Header -->
+            <header class="h-16 border-b border-[#374151] flex items-center justify-between px-6 bg-[#111827]/80 backdrop-blur-md z-20">
+                <div class="flex items-center gap-4">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-[#9CA3AF] hover:text-white">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <h1 id="page-title" class="text-lg font-semibold text-white">Live Loss Map</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 text-xs text-[#9CA3AF] bg-[#1F2937] px-3 py-1.5 rounded-full border border-[#374151]">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#0D9E75] animate-pulse"></div>
+                        <span id="last-updated">Updated just now</span>
+                    </div>
+                    <button class="relative text-[#9CA3AF] hover:text-white transition-colors">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-[#EF4444] rounded-full text-[10px] flex items-center justify-center text-white font-medium">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div id="content-area" class="flex-1 overflow-y-auto p-6 relative">
+                <!-- Views injected by JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-[#111827] border border-[#374151] rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <!-- Modal content injected by JS -->
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // State Management
+        const state = {
+            user: null,
+            currentView: 'map',
+            sidebarOpen: true,
+            zones: [],
+            alerts: [],
+            investigations: [],
+            monthlySnapshots: [],
+            auditLog: [],
+            isLoading: false,
+            simulationInterval: null
+        };
+
+        // Configuration
+        const ROLES = {
+            operations: { label: 'Operations', nav: ['map', 'alerts', 'queue', 'reports', 'roi', 'settings'] },
+            management: { label: 'Management', nav: ['dashboard', 'reports', 'roi', 'eis', 'settings'] },
+            auditor: { label: 'Auditor', nav: ['audit-log', 'settings'] },
+            field_agent: { label: 'Field Agent', nav: ['queue', 'settings'] },
+            admin: { label: 'Admin', nav: ['map', 'alerts', 'queue', 'reports', 'roi', 'audit-log', 'eis', 'settings'] }
+        };
+
+        const NAV_CONFIG = {
+            map: { icon: 'map', label: 'Live Loss Map' },
+            dashboard: { icon: 'layout-dashboard', label: 'Dashboard' },
+            alerts: { icon: 'bell', label: 'Alert Feed' },
+            queue: { icon: 'clipboard-list', label: 'Investigation Queue' },
+            reports: { icon: 'bar-chart-3', label: 'Monthly Reports' },
+            roi: { icon: 'trending-up', label: 'Impact & ROI' },
+            'audit-log': { icon: 'shield', label: 'Audit Log' },
+            eis: { icon: 'file-output', label: 'EIS Export' },
+            settings: { icon: 'settings', label: 'Settings' }
+        };
+
+        // Seed Data Generators
+        function generateSeedData() {
+            const zoneNames = ['Wilberforce', 'Aberdeen', 'Murray Town', 'Lumley', 'Hill Station', 'Kissy', 'Wellington', 'Cline Town', 'Congo Town', 'Goderich', 'Charlotte', 'Waterloo'];
+            const severities = ['normal', 'normal', 'normal', 'elevated', 'elevated', 'elevated', 'elevated', 'high', 'high', 'high', 'critical', 'critical'];
+            const colors = { normal: '#10B981', elevated: '#F59E0B', high: '#F97316', critical: '#EF4444' };
+
+            state.zones = zoneNames.map((name, i) => ({
+                id: i + 1,
+                name,
+                feederCode: `FED-${100 + i}`,
+                lat: 8.48 + (Math.random() - 0.5) * 0.08,
+                lng: -13.23 + (Math.random() - 0.5) * 0.08,
+                severity: severities[i],
+                color: colors[severities[i]],
+                injectedKwh: 15000 + Math.random() * 50000,
+                billedKwh: 10000 + Math.random() * 40000,
+                ntlPct: severities[i] === 'critical' ? 35 + Math.random() * 10 : severities[i] === 'high' ? 25 + Math.random() * 8 : severities[i] === 'elevated' ? 18 + Math.random() * 5 : 10 + Math.random() * 5,
+                lastUpdated: new Date().toISOString(),
+                anomalyScore: Math.random(),
+                trend: Array.from({length: 12}, () => 30 + Math.random() * 15)
+            }));
+
+            const alertTypes = ['meter_bypass', 'illegal_reconnection', 'token_fraud', 'phase_tap'];
+            const statuses = ['new', 'assigned', 'investigating', 'confirmed_theft', 'false_positive', 'resolved'];
+            const statusColors = { new: '#3B82F6', assigned: '#F59E0B', investigating: '#8B5CF6', confirmed_theft: '#EF4444', false_positive: '#6B7280', resolved: '#10B981' };
+
+            state.alerts = Array.from({length: 180}, (_, i) => ({
+                id: i + 1,
+                zoneId: Math.floor(Math.random() * 12) + 1,
+                accountNumber: `EDSA-${100000 + i}`,
+                meterSerial: `MTR-${900000 + i}`,
+                type: alertTypes[Math.floor(Math.random() * alertTypes.length)],
+                confidence: 0.4 + Math.random() * 0.6,
+                estimatedLoss: 500 + Math.random() * 5000,
+                status: statuses[Math.floor(Math.random() * statuses.length)],
+                statusColor: statusColors[statuses[Math.floor(Math.random() * statuses.length)]],
+                assignedTo: Math.random() > 0.5 ? 'Agent Smith' : null,
+                createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString(),
+                lat: 8.48 + (Math.random() - 0.5) * 0.06,
+                lng: -13.23 + (Math.random() - 0.5) * 0.06
+            }));
+
+            state.investigations = state.alerts.filter(a => a.status !== 'new').map((alert, i) => ({
+                id: i + 1,
+                alertId: alert.id,
+                zone: state.zones.find(z => z.id === alert.zoneId)?.name || 'Unknown',
+                accountNumber: alert.accountNumber,
+                type: alert.type,
+                confidence: alert.confidence,
+                estimatedLoss: alert.estimatedLoss,
+                status: alert.status,
+                assignedTo: alert.assignedTo || 'Unassigned',
+                dispatchedAt: new Date(Date.now() - Math.random() * 20 * 24 * 60 * 60 * 1000).toISOString(),
+                arrivedAt: Math.random() > 0.5 ? new Date().toISOString() : null,
+                outcome: Math.random() > 0.7 ? 'confirmed' : Math.random() > 0.5 ? 'false_positive' : 'pending',
+                notes: '',
+                lat: alert.lat,
+                lng: alert.lng
+            }));
+
+            const actions = ['LOGIN', 'ALERT_VIEWED', 'ALERT_ASSIGNED', 'INVESTIGATION_RECORDED', 'REPORT_DOWNLOADED', 'EIS_SUBMITTED', 'USER_SETTINGS_CHANGED'];
+            state.auditLog = Array.from({length: 500}, (_, i) => ({
+                id: i + 1,
+                timestamp: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString(),
+                user: ['ops@edsa.sl', 'management@edsa.sl', 'auditor@edsa.sl', 'agent@edsa.sl'][Math.floor(Math.random() * 4)],
+                action: actions[Math.floor(Math.random() * actions.length)],
+                resource: `Resource-${Math.floor(Math.random() * 1000)}`,
+                ip: `192.168.1.${Math.floor(Math.random() * 255)}`,
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }));
+        }
+
+        // Auth Functions
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                showToast('Please enter credentials', 'error');
+                return;
+            }
+
+            const role = email.split('@')[0];
+            const roleMap = {
+                'ops': 'operations',
+                'management': 'management',
+                'auditor': 'auditor',
+                'agent': 'field_agent',
+                'admin': 'admin'
+            };
+
+            const userRole = roleMap[role] || 'operations';
+
+            state.user = {
+                email,
+                role: userRole,
+                name: email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                avatar: email.substring(0, 2).toUpperCase()
+            };
+
+            const loginScreen = document.getElementById('login-screen');
+            loginScreen.style.opacity = '0';
+            loginScreen.style.transition = 'opacity 0.5s ease';
+
+            setTimeout(() => {
+                loginScreen.classList.add('hidden');
+                document.getElementById('app-shell').classList.remove('hidden');
+
+                generateSeedData();
+                initApp();
+                startSimulation();
+
+                const defaultView = ROLES[userRole].nav[0];
+                navigateTo(defaultView);
+
+                showToast(`Welcome back, ${state.user.name}`, 'success');
+            }, 500);
+        }
+
+        function quickLogin(email) {
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').value = 'gridiq2025';
+            handleLogin();
+        }
+
+        function handleLogout() {
+            state.user = null;
+            clearInterval(state.simulationInterval);
+            location.reload();
+        }
+
+        // Navigation
+        function initApp() {
+            document.getElementById('user-name').textContent = state.user.name;
+            document.getElementById('user-role').textContent = ROLES[state.user.role].label;
+            document.getElementById('user-avatar').textContent = state.user.avatar;
+            renderNav();
+        }
+
+        function renderNav() {
+            const nav = document.getElementById('nav-container');
+            const allowedNav = ROLES[state.user.role].nav;
+
+            nav.innerHTML = allowedNav.map((key, index) => `
+                <button onclick="navigateTo('${key}')" 
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${state.currentView === key ? 'bg-[#0D9E75]/10 text-[#0D9E75] border border-[#0D9E75]/20' : 'text-[#9CA3AF] hover:bg-[#1F2937] hover:text-white border border-transparent'}"
+                    style="animation: slideIn 0.3s ease-out forwards; animation-delay: ${index * 0.05}s; opacity: 0;">
+                    <i data-lucide="${NAV_CONFIG[key].icon}" class="w-4 h-4 ${state.currentView === key ? 'text-[#0D9E75]' : 'text-[#6B7280] group-hover:text-white'}"></i>
+                    <span class="font-medium text-sm">${NAV_CONFIG[key].label}</span>
+                    ${key === 'alerts' ? '<span class="ml-auto bg-[#EF4444] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">180</span>' : ''}
+                </button>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function navigateTo(view) {
+            if (!ROLES[state.user.role].nav.includes(view)) {
+                showToast('Access denied for your role', 'error');
+                return;
+            }
+
+            state.currentView = view;
+            document.getElementById('page-title').textContent = NAV_CONFIG[view].label;
+            renderNav();
+            renderContent();
+        }
+
+        function toggleSidebar() {
+            state.sidebarOpen = !state.sidebarOpen;
+            const sidebar = document.getElementById('sidebar');
+            if (state.sidebarOpen) {
+                sidebar.style.width = '16rem';
+                sidebar.style.opacity = '1';
+            } else {
+                sidebar.style.width = '0';
+                sidebar.style.opacity = '0';
+            }
+        }
+
+        // Content Rendering
+        function renderContent() {
+            const container = document.getElementById('content-area');
+            container.innerHTML = '<div class="skeleton w-full h-full rounded-xl"></div>';
+
+            setTimeout(() => {
+                switch(state.currentView) {
+                    case 'map': renderMap(container); break;
+                    case 'alerts': renderAlerts(container); break;
+                    case 'queue': renderQueue(container); break;
+                    case 'reports': renderReports(container); break;
+                    case 'roi': renderROI(container); break;
+                    case 'audit-log': renderAuditLog(container); break;
+                    case 'eis': renderEIS(container); break;
+                    case 'settings': renderSettings(container); break;
+                    case 'dashboard': renderDashboard(container); break;
+                }
+                lucide.createIcons();
+            }, 300);
+        }
+
+        // MAP VIEW
+        function renderMap(container) {
+            const criticalZones = state.zones.filter(z => z.severity === 'critical');
+            const highZones = state.zones.filter(z => z.severity === 'high');
+            const elevatedZones = state.zones.filter(z => z.severity === 'elevated');
+            const normalZones = state.zones.filter(z => z.severity === 'normal');
+
+            container.innerHTML = `
+                <div class="h-full flex flex-col gap-4 slide-in">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="glass-panel rounded-xl p-4 border-l-4 border-[#EF4444]">
+                            <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-1">Critical</div>
+                            <div class="text-2xl font-bold text-white">${criticalZones.length}</div>
+                            <div class="text-xs text-[#EF4444] mt-1">Requires immediate action</div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-4 border-l-4 border-[#F97316]">
+                            <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-1">High Loss</div>
+                            <div class="text-2xl font-bold text-white">${highZones.length}</div>
+                            <div class="text-xs text-[#F97316] mt-1">Investigation recommended</div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-4 border-l-4 border-[#F59E0B]">
+                            <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-1">Elevated</div>
+                            <div class="text-2xl font-bold text-white">${elevatedZones.length}</div>
+                            <div class="text-xs text-[#F59E0B] mt-1">Monitor closely</div>
+                        </div>
+                        <div class="glass-panel rounded-xl p-4 border-l-4 border-[#10B981]">
+                            <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-1">Normal</div>
+                            <div class="text-2xl font-bold text-white">${normalZones.length}</div>
+                            <div class="text-xs text-[#10B981] mt-1">Within baseline</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 glass-panel rounded-xl relative overflow-hidden min-h-[500px]">
+                        <div id="map-canvas" class="absolute inset-0 bg-[#0B0F19]">
+                            <svg class="w-full h-full" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+                                <defs>
+                                    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
+                                    </filter>
+                                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1F2937" stroke-width="0.5"/>
+                                    </pattern>
+                                </defs>
+                                <rect width="100%" height="100%" fill="url(#grid)" />
+
+                                ${state.zones.map((zone, i) => {
+                                    const x = 100 + (i % 4) * 180 + Math.random() * 40;
+                                    const y = 80 + Math.floor(i / 4) * 140 + Math.random() * 40;
+                                    const size = 60 + Math.random() * 40;
+                                    const points = [
+                                        [x, y],
+                                        [x + size, y - 20],
+                                        [x + size + 30, y + size/2],
+                                        [x + size - 10, y + size],
+                                        [x - 20, y + size - 10]
+                                    ].map(p => p.join(',')).join(' ');
+
+                                    return `
+                                        <g class="zone-group cursor-pointer" onclick="showZoneDetail(${zone.id})" style="transform-origin: center; transition: transform 0.3s;">
+                                            <polygon points="${points}" 
+                                                fill="${zone.color}20" 
+                                                stroke="${zone.color}" 
+                                                stroke-width="2"
+                                                class="hover:stroke-[3] transition-all"
+                                                filter="${zone.severity === 'critical' ? 'url(#glow)' : ''}"
+                                            />
+                                            ${zone.severity === 'critical' ? `
+                                                <circle cx="${x + size/2}" cy="${y + size/2 - 10}" r="4" fill="${zone.color}">
+                                                    <animate attributeName="r" values="4;12;4" dur="2s" repeatCount="indefinite" />
+                                                    <animate attributeName="opacity" values="1;0;1" dur="2s" repeatCount="indefinite" />
+                                                </circle>
+                                            ` : ''}
+                                            <text x="${x + size/2}" y="${y + size/2}" 
+                                                text-anchor="middle" 
+                                                fill="white" 
+                                                font-size="10" 
+                                                font-weight="600"
+                                                class="pointer-events-none select-none"
+                                                style="text-shadow: 0 1px 3px rgba(0,0,0,0.8);">
+                                                ${zone.name}
+                                            </text>
+                                            <text x="${x + size/2}" y="${y + size/2 + 14}" 
+                                                text-anchor="middle" 
+                                                fill="${zone.color}" 
+                                                font-size="9"
+                                                class="pointer-events-none select-none"
+                                                font-weight="500">
+                                                ${zone.ntlPct.toFixed(1)}% NTL
+                                            </text>
+                                        </g>
+                                    `;
+                                }).join('')}
+                            </svg>
+                        </div>
+
+                        <div class="absolute bottom-4 left-4 glass-panel rounded-lg p-3 space-y-2">
+                            <div class="text-xs font-medium text-[#9CA3AF] mb-1">Severity Legend</div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#10B981]"></div><span class="text-xs text-white">Normal (&lt;15%)</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#F59E0B]"></div><span class="text-xs text-white">Elevated (15-22%)</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#F97316]"></div><span class="text-xs text-white">High (22-30%)</span></div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#EF4444]"></div><span class="text-xs text-white">Critical (&gt;30%)</span></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ALERTS VIEW
+        function renderAlerts(container) {
+            container.innerHTML = `
+                <div class="h-full flex flex-col gap-4 slide-in">
+                    <div class="glass-panel rounded-xl p-4 flex flex-wrap gap-4 items-center">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="filter" class="w-4 h-4 text-[#9CA3AF]"></i>
+                            <span class="text-xs font-medium text-[#9CA3AF]">Filters</span>
+                        </div>
+                        <select id="filter-status" onchange="updateAlertFilters()" class="bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-1.5 text-xs text-white focus:border-[#0D9E75] outline-none">
+                            <option value="all">All Statuses</option>
+                            <option value="new">New</option>
+                            <option value="assigned">Assigned</option>
+                            <option value="investigating">Investigating</option>
+                            <option value="confirmed_theft">Confirmed Theft</option>
+                        </select>
+                        <select id="filter-type" onchange="updateAlertFilters()" class="bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-1.5 text-xs text-white focus:border-[#0D9E75] outline-none">
+                            <option value="all">All Types</option>
+                            <option value="meter_bypass">Meter Bypass</option>
+                            <option value="illegal_reconnection">Illegal Reconnection</option>
+                            <option value="token_fraud">Token Fraud</option>
+                            <option value="phase_tap">Phase Tap</option>
+                        </select>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <span class="text-xs text-[#9CA3AF]">Min Confidence:</span>
+                            <input type="range" id="filter-confidence" min="0" max="100" value="0" oninput="updateAlertFilters()" class="w-24 accent-[#0D9E75]">
+                            <span id="confidence-value" class="text-xs text-white font-mono w-8">0%</span>
+                        </div>
+                        <button onclick="exportCSV()" class="flex items-center gap-2 px-3 py-1.5 bg-[#1F2937] hover:bg-[#374151] rounded-lg text-xs text-white transition-colors border border-[#374151]">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            Export CSV
+                        </button>
+                    </div>
+
+                    <div class="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col">
+                        <div class="overflow-auto flex-1">
+                            <table class="w-full text-left">
+                                <thead class="bg-[#0B0F19] sticky top-0 z-10">
+                                    <tr>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Alert</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Zone</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Type</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Confidence</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Est. Loss</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Status</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="alerts-tbody" class="divide-y divide-[#374151]"></tbody>
+                            </table>
+                        </div>
+                        <div class="border-t border-[#374151] px-4 py-3 flex items-center justify-between bg-[#0B0F19]">
+                            <span class="text-xs text-[#9CA3AF]">Showing <span id="alert-count">0</span> alerts</span>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 bg-[#1F2937] rounded text-xs text-[#9CA3AF] hover:text-white disabled:opacity-50">Previous</button>
+                                <button class="px-3 py-1 bg-[#1F2937] rounded text-xs text-[#9CA3AF] hover:text-white">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            updateAlertFilters();
+        }
+
+        function updateAlertFilters() {
+            const status = document.getElementById('filter-status')?.value || 'all';
+            const type = document.getElementById('filter-type')?.value || 'all';
+            const confidence = (document.getElementById('filter-confidence')?.value || 0) / 100;
+
+            if (document.getElementById('confidence-value')) {
+                document.getElementById('confidence-value').textContent = Math.round(confidence * 100) + '%';
+            }
+
+            const filtered = state.alerts.filter(a => {
+                return (status === 'all' || a.status === status) &&
+                       (type === 'all' || a.type === type) &&
+                       a.confidence >= confidence;
+            });
+
+            const tbody = document.getElementById('alerts-tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = filtered.slice(0, 25).map(alert => {
+                const zone = state.zones.find(z => z.id === alert.zoneId);
+                const typeLabels = { meter_bypass: 'Meter Bypass', illegal_reconnection: 'Illegal Reconnection', token_fraud: 'Token Fraud', phase_tap: 'Phase Tap' };
+                const statusLabels = { new: 'New', assigned: 'Assigned', investigating: 'Investigating', confirmed_theft: 'Confirmed Theft', false_positive: 'False Positive', resolved: 'Resolved' };
+
+                return `
+                    <tr class="hover:bg-[#1F2937]/50 transition-colors cursor-pointer" onclick="showAlertDetail(${alert.id})">
+                        <td class="px-4 py-3">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-medium text-white">${alert.accountNumber}</span>
+                                <span class="text-[10px] text-[#9CA3AF]">${alert.meterSerial}</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-[#9CA3AF]">${zone?.name || 'Unknown'}</td>
+                        <td class="px-4 py-3">
+                            <span class="text-xs px-2 py-1 rounded-full bg-[#1F2937] text-white border border-[#374151]">${typeLabels[alert.type]}</span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <div class="w-16 h-1.5 bg-[#374151] rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full ${alert.confidence > 0.8 ? 'bg-[#EF4444]' : alert.confidence > 0.6 ? 'bg-[#F59E0B]' : 'bg-[#10B981'}" style="width: ${alert.confidence * 100}%"></div>
+                                </div>
+                                <span class="text-xs text-white font-mono">${(alert.confidence * 100).toFixed(0)}%</span>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-xs text-white font-mono">$${alert.estimatedLoss.toFixed(0)}</td>
+                        <td class="px-4 py-3">
+                            <span class="text-xs px-2 py-1 rounded-full text-white font-medium" style="background: ${alert.statusColor}20; color: ${alert.statusColor}; border: 1px solid ${alert.statusColor}40">
+                                ${statusLabels[alert.status]}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <button class="text-[#9CA3AF] hover:text-white transition-colors" onclick="event.stopPropagation(); showAlertDetail(${alert.id})">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('alert-count').textContent = filtered.length;
+            lucide.createIcons();
+        }
+
+        // QUEUE VIEW
+        function renderQueue(container) {
+            const investigations = state.user.role === 'field_agent' 
+                ? state.investigations.filter(i => i.assignedTo === 'Agent Smith')
+                : state.investigations;
+
+            container.innerHTML = `
+                <div class="h-full flex flex-col gap-4 slide-in">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-lg font-semibold text-white">Investigation Queue</h2>
+                        <div class="flex gap-2">
+                            <select class="bg-[#1F2937] border border-[#374151] rounded-lg px-3 py-1.5 text-xs text-white outline-none">
+                                <option>Sort by Confidence</option>
+                                <option>Sort by Revenue Impact</option>
+                                <option>Sort by Time in Queue</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        ${investigations.slice(0, 12).map((inv, i) => `
+                            <div class="glass-panel rounded-xl p-5 border-l-4 ${inv.outcome === 'confirmed' ? 'border-[#EF4444]' : inv.outcome === 'false_positive' ? 'border-[#6B7280]' : 'border-[#F59E0B]'} hover:bg-[#1F2937]/50 transition-all cursor-pointer group" style="animation: slideIn 0.4s ease-out forwards; animation-delay: ${i * 0.05}s; opacity: 0;">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <div class="text-xs text-[#9CA3AF] mb-0.5">${inv.accountNumber}</div>
+                                        <div class="text-sm font-semibold text-white">${inv.zone}</div>
+                                    </div>
+                                    <span class="text-xs px-2 py-1 rounded-full bg-[#1F2937] text-white border border-[#374151]">${inv.type.replace(/_/g, ' ')}</span>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div>
+                                        <div class="text-[10px] text-[#9CA3AF] uppercase">Confidence</div>
+                                        <div class="text-sm font-bold text-white">${(inv.confidence * 100).toFixed(0)}%</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-[10px] text-[#9CA3AF] uppercase">Est. Loss</div>
+                                        <div class="text-sm font-bold text-white">$${inv.estimatedLoss.toFixed(0)}</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center gap-2 text-xs text-[#9CA3AF] mb-3">
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i>
+                                    <span>${inv.lat.toFixed(4)}, ${inv.lng.toFixed(4)}</span>
+                                </div>
+
+                                <div class="flex items-center justify-between pt-3 border-t border-[#374151]">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 rounded-full bg-[#374151] flex items-center justify-center text-[10px] text-white">AS</div>
+                                        <span class="text-xs text-[#9CA3AF]">${inv.assignedTo}</span>
+                                    </div>
+                                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="p-1.5 hover:bg-[#374151] rounded transition-colors" title="Mark Arrived">
+                                            <i data-lucide="check-circle" class="w-4 h-4 text-[#10B981]"></i>
+                                        </button>
+                                        <button class="p-1.5 hover:bg-[#374151] rounded transition-colors" title="Record Outcome">
+                                            <i data-lucide="edit" class="w-4 h-4 text-[#3B82F6]"></i>
+                                        </button>
+                                        <button class="p-1.5 hover:bg-[#374151] rounded transition-colors" title="Escalate">
+                                            <i data-lucide="arrow-up-circle" class="w-4 h-4 text-[#EF4444]"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // REPORTS VIEW
+        function renderReports(container) {
+            const currentMonth = 'June 2026';
+            const totalNtl = state.zones.reduce((sum, z) => sum + z.ntlPct, 0) / state.zones.length;
+            const recovered = 45000;
+            const confirmedThefts = state.alerts.filter(a => a.status === 'confirmed_theft').length;
+
+            container.innerHTML = `
+                <div class="h-full overflow-y-auto slide-in">
+                    <div class="max-w-5xl mx-auto space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-xl font-bold text-white">Monthly Performance Report</h2>
+                                <p class="text-sm text-[#9CA3AF]">${currentMonth} • EDSA Pilot Area</p>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="showToast('PDF generation started...', 'info')" class="flex items-center gap-2 px-4 py-2 bg-[#1F2937] hover:bg-[#374151] rounded-lg text-sm text-white transition-colors border border-[#374151]">
+                                    <i data-lucide="file-down" class="w-4 h-4"></i>
+                                    Download PDF
+                                </button>
+                                <button onclick="showToast('EIS submission initiated', 'success')" class="flex items-center gap-2 px-4 py-2 bg-[#0D9E75] hover:bg-[#0D9E75]/90 rounded-lg text-sm text-white transition-colors shadow-lg shadow-[#0D9E75]/20">
+                                    <i data-lucide="send" class="w-4 h-4"></i>
+                                    Submit to EIS
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="glass-panel rounded-xl p-4">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Avg NTL %</div>
+                                <div class="text-2xl font-bold text-white">${totalNtl.toFixed(1)}%</div>
+                                <div class="text-xs text-[#10B981] mt-1">↓ 2.3% vs baseline</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-4">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Revenue Recovered</div>
+                                <div class="text-2xl font-bold text-[#0D9E75]">$${recovered.toLocaleString()}</div>
+                                <div class="text-xs text-[#9CA3AF] mt-1">This month</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-4">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Alerts Generated</div>
+                                <div class="text-2xl font-bold text-white">${state.alerts.length}</div>
+                                <div class="text-xs text-[#9CA3AF] mt-1">${confirmedThefts} confirmed thefts</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-4">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Investigations</div>
+                                <div class="text-2xl font-bold text-white">${state.investigations.length}</div>
+                                <div class="text-xs text-[#9CA3AF] mt-1">${state.investigations.filter(i => i.outcome === 'confirmed').length} confirmed</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6 border-l-4 border-[#0D9E75]">
+                            <h3 class="text-sm font-semibold text-white mb-2">Executive Summary</h3>
+                            <p class="text-sm text-[#9CA3AF] leading-relaxed">
+                                In ${currentMonth}, the GridIQ platform detected <strong class="text-white">${state.alerts.length} anomalies</strong> across 
+                                <strong class="text-white">${state.zones.length} feeder zones</strong> in the EDSA pilot area, resulting in 
+                                <strong class="text-white">${confirmedThefts} confirmed theft cases</strong> and an estimated 
+                                <strong class="text-[#0D9E75]">$${recovered.toLocaleString()}</strong> in recovered revenue. 
+                                Average NTL has decreased by 2.3 percentage points against the 38% baseline, indicating effective targeting of field investigations.
+                            </p>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Zone Breakdown</h3>
+                            <div class="space-y-3">
+                                ${state.zones.map(zone => `
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-32 text-xs text-white font-medium">${zone.name}</div>
+                                        <div class="flex-1 h-2 bg-[#374151] rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full transition-all duration-1000" style="width: ${zone.ntlPct}%; background: ${zone.color}"></div>
+                                        </div>
+                                        <div class="w-16 text-xs text-right font-mono ${zone.ntlPct > 30 ? 'text-[#EF4444]' : zone.ntlPct > 20 ? 'text-[#F59E0B]' : 'text-[#10B981]'}">${zone.ntlPct.toFixed(1)}%</div>
+                                        <div class="w-20 text-xs text-[#9CA3AF] text-right">${zone.ntlPct > state.zones.reduce((a,b) => a + b.ntlPct, 0)/12 ? '↑' : '↓'} vs last</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Alert Resolution Funnel</h3>
+                            <div class="flex items-end justify-center gap-8 h-48">
+                                ${[
+                                    { label: 'Generated', value: state.alerts.length, color: '#3B82F6' },
+                                    { label: 'Assigned', value: state.alerts.filter(a => a.status !== 'new').length, color: '#F59E0B' },
+                                    { label: 'Investigated', value: state.investigations.filter(i => i.outcome !== 'pending').length, color: '#8B5CF6' },
+                                    { label: 'Confirmed', value: confirmedThefts, color: '#10B981' }
+                                ].map((step, i) => `
+                                    <div class="flex flex-col items-center gap-2 group">
+                                        <div class="text-xs text-[#9CA3AF] font-medium">${step.value}</div>
+                                        <div class="w-16 rounded-t-lg transition-all duration-700 hover:opacity-80 relative" 
+                                             style="height: ${(step.value / state.alerts.length) * 160}px; background: ${step.color}; opacity: 0.8; animation: slideIn 0.5s ease-out forwards; animation-delay: ${i * 0.15}s; opacity: 0;">
+                                        </div>
+                                        <div class="text-xs text-white font-medium">${step.label}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ROI VIEW
+        function renderROI(container) {
+            const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const recoveredData = [12000, 15000, 18000, 22000, 25000, 28000, 32000, 35000, 38000, 42000, 45000, 48000];
+            const cumulative = recoveredData.map((_, i) => recoveredData.slice(0, i + 1).reduce((a, b) => a + b, 0));
+            const baselineNtl = 38;
+            const currentNtl = 28.5;
+
+            container.innerHTML = `
+                <div class="h-full overflow-y-auto slide-in">
+                    <div class="max-w-5xl mx-auto space-y-6">
+                        <div class="glass-panel rounded-xl p-8 text-center border border-[#0D9E75]/30 bg-[#0D9E75]/5">
+                            <div class="text-[#9CA3AF] text-xs uppercase tracking-widest mb-2">Cumulative Revenue Recovered</div>
+                            <div class="text-5xl font-bold text-[#0D9E75] text-glow mb-2">$${cumulative[cumulative.length - 1].toLocaleString()}</div>
+                            <div class="text-sm text-[#9CA3AF]">Since pilot start (12 months)</div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="glass-panel rounded-xl p-6">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Baseline NTL</div>
+                                <div class="text-3xl font-bold text-[#EF4444]">${baselineNtl}%</div>
+                                <div class="text-xs text-[#9CA3AF] mt-1">Pre-GridIQ average</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-6">
+                                <div class="text-[#9CA3AF] text-xs uppercase tracking-wider mb-2">Current NTL</div>
+                                <div class="text-3xl font-bold text-[#10B981]">${currentNtl}%</div>
+                                <div class="text-xs text-[#10B981] mt-1">↓ ${(baselineNtl - currentNtl).toFixed(1)}pp improvement</div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Recovery Trajectory</h3>
+                            <div class="h-64 relative">
+                                <svg class="w-full h-full" viewBox="0 0 800 200">
+                                    ${[0, 50, 100, 150, 200].map(y => `
+                                        <line x1="40" y1="${200 - y}" x2="780" y2="${200 - y}" stroke="#374151" stroke-width="0.5" stroke-dasharray="4"/>
+                                        <text x="30" y="${200 - y + 4}" fill="#6B7280" font-size="10" text-anchor="end">$${y}k</text>
+                                    `).join('')}
+
+                                    ${recoveredData.map((val, i) => `
+                                        <rect x="${60 + i * 60}" y="${200 - (val / 50000) * 200}" width="30" height="${(val / 50000) * 200}" 
+                                            fill="#0D9E75" opacity="0.6" rx="2">
+                                            <animate attributeName="height" from="0" to="${(val / 50000) * 200}" dur="0.8s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1"/>
+                                            <animate attributeName="y" from="200" to="${200 - (val / 50000) * 200}" dur="0.8s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines="0.4 0 0.2 1"/>
+                                        </rect>
+                                    `).join('')}
+
+                                    <polyline points="${cumulative.map((val, i) => `${75 + i * 60},${200 - (val / 500000) * 200}`).join(' ')}" 
+                                        fill="none" stroke="#F59E0B" stroke-width="2" class="chart-path"/>
+
+                                    ${months.map((m, i) => `
+                                        <text x="${75 + i * 60}" y="220" fill="#9CA3AF" font-size="10" text-anchor="middle">${m}</text>
+                                    `).join('')}
+                                </svg>
+                            </div>
+                            <div class="flex items-center justify-center gap-6 mt-4 text-xs">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 bg-[#0D9E75]/60 rounded"></div><span class="text-[#9CA3AF]">Monthly Recovered</span></div>
+                                <div class="flex items-center gap-2"><div class="w-3 h-1 bg-[#F59E0B]"></div><span class="text-[#9CA3AF]">Cumulative Total</span></div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6 border border-[#374151]">
+                            <h3 class="text-sm font-semibold text-white mb-3">Recovery Formula</h3>
+                            <div class="bg-[#0B0F19] rounded-lg p-4 font-mono text-sm text-[#9CA3AF] border border-[#374151]">
+                                <span class="text-[#F59E0B]">(Baseline NTL kWh − Current NTL kWh)</span> 
+                                <span class="text-white">×</span> 
+                                <span class="text-[#0D9E75]">Tariff Rate</span> 
+                                <span class="text-white">=</span> 
+                                <span class="text-[#10B981]">Recovered Revenue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // AUDIT LOG VIEW
+        function renderAuditLog(container) {
+            container.innerHTML = `
+                <div class="h-full flex flex-col gap-4 slide-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-lg font-semibold text-white">Internal Audit Log</h2>
+                            <p class="text-xs text-[#EF4444] mt-1">Immutable • Append-only • Auditor Access Only</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="Search actions..." class="bg-[#1F2937] border border-[#374151] rounded-lg px-3 py-1.5 text-xs text-white outline-none w-48">
+                            <select class="bg-[#1F2937] border border-[#374151] rounded-lg px-3 py-1.5 text-xs text-white outline-none">
+                                <option>All Actions</option>
+                                <option>LOGIN</option>
+                                <option>ALERT_ASSIGNED</option>
+                                <option>INVESTIGATION_RECORDED</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 glass-panel rounded-xl overflow-hidden flex flex-col">
+                        <div class="overflow-auto flex-1">
+                            <table class="w-full text-left">
+                                <thead class="bg-[#0B0F19] sticky top-0 z-10">
+                                    <tr>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase">Timestamp</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase">User</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase">Action</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase">Resource</th>
+                                        <th class="px-4 py-3 text-xs font-medium text-[#9CA3AF] uppercase">IP Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#374151]">
+                                    ${state.auditLog.slice(0, 50).map((log, i) => `
+                                        <tr class="hover:bg-[#1F2937]/30 transition-colors" style="animation: fadeIn 0.3s ease-out forwards; animation-delay: ${i * 0.01}s; opacity: 0;">
+                                            <td class="px-4 py-2.5 text-xs text-[#9CA3AF] font-mono">${new Date(log.timestamp).toLocaleString('en-GB', { hour12: false })}</td>
+                                            <td class="px-4 py-2.5 text-xs text-white">${log.user}</td>
+                                            <td class="px-4 py-2.5">
+                                                <span class="text-xs px-2 py-0.5 rounded bg-[#1F2937] text-[#9CA3AF] border border-[#374151]">${log.action}</span>
+                                            </td>
+                                            <td class="px-4 py-2.5 text-xs text-[#9CA3AF]">${log.resource}</td>
+                                            <td class="px-4 py-2.5 text-xs text-[#9CA3AF] font-mono">${log.ip}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // EIS VIEW
+        function renderEIS(container) {
+            container.innerHTML = `
+                <div class="h-full overflow-y-auto slide-in">
+                    <div class="max-w-3xl mx-auto space-y-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-white">ECOWAS EIS Export</h2>
+                            <p class="text-sm text-[#9CA3AF]">Environmental and Information System Data Submission</p>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Pre-Submission Checklist</h3>
+                            <p class="text-xs text-[#9CA3AF] mb-4">All items must be verified by utility management before export is enabled.</p>
+
+                            <div class="space-y-3" id="eis-checklist">
+                                ${[
+                                    'Injected energy figures verified against metering records',
+                                    'NTL calculation methodology confirmed',
+                                    'Revenue figures reconciled with billing system',
+                                    'Outage indicators (SAIDI/SAIFI) confirmed',
+                                    'Authorised by EDSA management'
+                                ].map((item, i) => `
+                                    <label class="flex items-start gap-3 p-3 rounded-lg bg-[#0B0F19] border border-[#374151] cursor-pointer hover:border-[#0D9E75]/50 transition-colors">
+                                        <input type="checkbox" class="eis-check mt-0.5 w-4 h-4 accent-[#0D9E75] rounded" onchange="checkEISSubmit()">
+                                        <span class="text-xs text-white">${item}</span>
+                                    </label>
+                                `).join('')}
+                            </div>
+
+                            <div class="mt-6 flex gap-3">
+                                <button id="eis-submit-btn" disabled onclick="submitEIS()" class="flex-1 bg-[#0D9E75] hover:bg-[#0D9E75]/90 disabled:bg-[#374151] disabled:text-[#6B7280] text-white font-medium py-2.5 rounded-lg transition-all disabled:cursor-not-allowed shadow-lg shadow-[#0D9E75]/20">
+                                    Submit to ECOWAS EIS
+                                </button>
+                                <button onclick="previewEISJSON()" class="px-4 py-2.5 bg-[#1F2937] hover:bg-[#374151] rounded-lg text-xs text-white transition-colors border border-[#374151]">
+                                    Preview JSON
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Export Formats</h3>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button class="p-4 bg-[#0B0F19] border border-[#374151] rounded-lg hover:border-[#0D9E75] transition-colors text-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 text-[#0D9E75] mx-auto mb-2"></i>
+                                    <div class="text-xs text-white font-medium">AfDB Format</div>
+                                    <div class="text-[10px] text-[#9CA3AF]">PDF Report</div>
+                                </button>
+                                <button class="p-4 bg-[#0B0F19] border border-[#374151] rounded-lg hover:border-[#0D9E75] transition-colors text-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 text-[#3B82F6] mx-auto mb-2"></i>
+                                    <div class="text-xs text-white font-medium">EU Format</div>
+                                    <div class="text-[10px] text-[#9CA3AF]">PDF Report</div>
+                                </button>
+                                <button class="p-4 bg-[#0B0F19] border border-[#374151] rounded-lg hover:border-[#0D9E75] transition-colors text-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 text-[#F59E0B] mx-auto mb-2"></i>
+                                    <div class="text-xs text-white font-medium">IFC Format</div>
+                                    <div class="text-[10px] text-[#9CA3AF]">PDF Report</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkEISSubmit() {
+            const checks = document.querySelectorAll('.eis-check');
+            const allChecked = Array.from(checks).every(c => c.checked);
+            const btn = document.getElementById('eis-submit-btn');
+            if (btn) {
+                btn.disabled = !allChecked;
+            }
+        }
+
+        function submitEIS() {
+            showToast('EIS submission successful. Submission ID: EIS-2026-06-001', 'success');
+        }
+
+        function previewEISJSON() {
+            const payload = {
+                utility: "EDSA",
+                country: "Sierra Leone",
+                reporting_period: "2026-06",
+                metrics: {
+                    total_injected_kwh: 1245000,
+                    total_billed_kwh: 890000,
+                    ntl_percentage: 28.5,
+                    revenue_recovered_usd: 45000
+                }
+            };
+            showModal('EIS Payload Preview', `<pre class="text-xs text-[#9CA3AF] bg-[#0B0F19] p-4 rounded-lg overflow-auto">${JSON.stringify(payload, null, 2)}</pre>`);
+        }
+
+        // SETTINGS VIEW
+        function renderSettings(container) {
+            container.innerHTML = `
+                <div class="h-full overflow-y-auto slide-in">
+                    <div class="max-w-3xl mx-auto space-y-6">
+                        <h2 class="text-xl font-bold text-white">Settings</h2>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Profile</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Full Name</label>
+                                        <input type="text" value="${state.user.name}" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-white text-xs focus:border-[#0D9E75] outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Email</label>
+                                        <input type="email" value="${state.user.email}" disabled class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-[#9CA3AF] text-xs cursor-not-allowed">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-[#9CA3AF] mb-1.5">Role</label>
+                                    <input type="text" value="${ROLES[state.user.role].label}" disabled class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-[#9CA3AF] text-xs cursor-not-allowed">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Utility Configuration</h3>
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Utility Name</label>
+                                        <input type="text" value="EDSA" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-white text-xs focus:border-[#0D9E75] outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Country</label>
+                                        <input type="text" value="Sierra Leone" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-white text-xs focus:border-[#0D9E75] outline-none">
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Tariff Rate (USD/kWh)</label>
+                                        <input type="number" value="0.085" step="0.001" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-white text-xs focus:border-[#0D9E75] outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-[#9CA3AF] mb-1.5">Baseline NTL %</label>
+                                        <input type="number" value="38" class="w-full bg-[#0B0F19] border border-[#374151] rounded-lg px-3 py-2 text-white text-xs focus:border-[#0D9E75] outline-none">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-panel rounded-xl p-6">
+                            <h3 class="text-sm font-semibold text-white mb-4">Notifications</h3>
+                            <div class="space-y-3">
+                                ${[
+                                    { label: 'New critical alerts', desc: 'Receive email when critical zones are detected' },
+                                    { label: 'Weekly digest', desc: 'Summary of weekly performance metrics' },
+                                    { label: 'EIS reminder', desc: 'Reminder to submit monthly EIS report' }
+                                ].map(item => `
+                                    <div class="flex items-center justify-between p-3 rounded-lg bg-[#0B0F19] border border-[#374151]">
+                                        <div>
+                                            <div class="text-xs text-white font-medium">${item.label}</div>
+                                            <div class="text-[10px] text-[#9CA3AF]">${item.desc}</div>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-9 h-5 bg-[#374151] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0D9E75]"></div>
+                                        </label>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button onclick="showToast('Settings saved successfully', 'success')" class="px-6 py-2.5 bg-[#0D9E75] hover:bg-[#0D9E75]/90 text-white font-medium rounded-lg transition-all shadow-lg shadow-[#0D9E75]/20">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // DASHBOARD VIEW
+        function renderDashboard(container) {
+            container.innerHTML = `
+                <div class="h-full overflow-y-auto slide-in">
+                    <div class="max-w-6xl mx-auto space-y-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="glass-panel rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i data-lucide="zap" class="w-4 h-4 text-[#0D9E75]"></i>
+                                    <span class="text-xs text-[#9CA3AF] uppercase">Total Injected</span>
+                                </div>
+                                <div class="text-2xl font-bold text-white">1.24 GWh</div>
+                                <div class="text-xs text-[#10B981] mt-1">↑ 3.2% vs last month</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i data-lucide="receipt" class="w-4 h-4 text-[#3B82F6]"></i>
+                                    <span class="text-xs text-[#9CA3AF] uppercase">Total Billed</span>
+                                </div>
+                                <div class="text-2xl font-bold text-white">890 MWh</div>
+                                <div class="text-xs text-[#10B981] mt-1">↑ 2.8% vs last month</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-[#F59E0B]"></i>
+                                    <span class="text-xs text-[#9CA3AF] uppercase">Active Alerts</span>
+                                </div>
+                                <div class="text-2xl font-bold text-white">${state.alerts.filter(a => a.status === 'new' || a.status === 'assigned').length}</div>
+                                <div class="text-xs text-[#EF4444] mt-1">↑ 12 new today</div>
+                            </div>
+                            <div class="glass-panel rounded-xl p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <i data-lucide="dollar-sign" class="w-4 h-4 text-[#10B981]"></i>
+                                    <span class="text-xs text-[#9CA3AF] uppercase">Revenue Recovered</span>
+                                </div>
+                                <div class="text-2xl font-bold text-[#0D9E75]">$45,000</div>
+                                <div class="text-xs text-[#10B981] mt-1">↑ 8.5% vs last month</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-sm font-semibold text-white mb-4">Recent Alerts</h3>
+                                <div class="space-y-3">
+                                    ${state.alerts.slice(0, 5).map(alert => {
+                                        const zone = state.zones.find(z => z.id === alert.zoneId);
+                                        return `
+                                            <div class="flex items-center justify-between p-3 rounded-lg bg-[#0B0F19] border border-[#374151]">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-2 h-2 rounded-full" style="background: ${alert.statusColor}"></div>
+                                                    <div>
+                                                        <div class="text-xs text-white font-medium">${alert.accountNumber}</div>
+                                                        <div class="text-[10px] text-[#9CA3AF]">${zone?.name || 'Unknown'} • ${alert.type.replace(/_/g, ' ')}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-xs text-[#9CA3AF] font-mono">${(alert.confidence * 100).toFixed(0)}%</div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <div class="glass-panel rounded-xl p-6">
+                                <h3 class="text-sm font-semibold text-white mb-4">Zone Performance</h3>
+                                <div class="space-y-3">
+                                    ${state.zones.slice(0, 6).map(zone => `
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-24 text-xs text-white">${zone.name}</div>
+                                            <div class="flex-1 h-1.5 bg-[#374151] rounded-full overflow-hidden">
+                                                <div class="h-full rounded-full" style="width: ${100 - zone.ntlPct}%; background: ${zone.color}"></div>
+                                            </div>
+                                            <div class="w-12 text-xs text-right font-mono ${zone.ntlPct > 30 ? 'text-[#EF4444]' : 'text-[#10B981]'}">${zone.ntlPct.toFixed(1)}%</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // UTILITY FUNCTIONS
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+
+            const colors = {
+                success: 'bg-[#0D9E75]',
+                error: 'bg-[#EF4444]',
+                info: 'bg-[#3B82F6]',
+                warning: 'bg-[#F59E0B]'
+            };
+
+            const icons = {
+                success: 'check-circle',
+                error: 'x-circle',
+                info: 'info',
+                warning: 'alert-triangle'
+            };
+
+            toast.className = `toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg shadow-black/50 ${colors[type]} text-white text-sm font-medium`;
+            toast.innerHTML = `
+                <i data-lucide="${icons[type]}" class="w-4 h-4"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function showModal(title, content) {
+            const overlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+
+            modalContent.innerHTML = `
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-white">${title}</h3>
+                        <button onclick="closeModal()" class="text-[#9CA3AF] hover:text-white transition-colors">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div class="text-sm text-[#9CA3AF]">${content}</div>
+                </div>
+            `;
+
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                modalContent.style.transform = 'scale(1)';
+            }, 10);
+
+            lucide.createIcons();
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+
+            overlay.style.opacity = '0';
+            modalContent.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        function showZoneDetail(zoneId) {
+            const zone = state.zones.find(z => z.id === zoneId);
+            if (!zone) return;
+
+            const zoneAlerts = state.alerts.filter(a => a.zoneId === zoneId);
+            const topAlerts = zoneAlerts.slice(0, 5);
+
+            showModal(zone.name, `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Injected kWh</div>
+                            <div class="text-sm font-bold text-white">${zone.injectedKwh.toFixed(0)}</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Billed kWh</div>
+                            <div class="text-sm font-bold text-white">${zone.billedKwh.toFixed(0)}</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">NTL %</div>
+                            <div class="text-sm font-bold" style="color: ${zone.color}">${zone.ntlPct.toFixed(1)}%</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Alerts</div>
+                            <div class="text-sm font-bold text-white">${zoneAlerts.length}</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-semibold text-white mb-2">12-Month Trend</h4>
+                        <div class="h-24 bg-[#0B0F19] rounded-lg border border-[#374151] p-2">
+                            <svg class="w-full h-full" viewBox="0 0 300 80">
+                                <polyline points="${zone.trend.map((v, i) => `${i * 25},${80 - (v / 50) * 80}`).join(' ')}" 
+                                    fill="none" stroke="${zone.color}" stroke-width="2" class="chart-path"/>
+                                ${zone.trend.map((v, i) => `
+                                    <circle cx="${i * 25}" cy="${80 - (v / 50) * 80}" r="2" fill="${zone.color}"/>
+                                `).join('')}
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-semibold text-white mb-2">Top Anomalous Accounts</h4>
+                        <div class="space-y-2">
+                            ${topAlerts.map(alert => `
+                                <div class="flex items-center justify-between p-2 rounded bg-[#0B0F19] border border-[#374151]">
+                                    <div class="text-xs text-white">${alert.accountNumber}</div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-12 h-1 bg-[#374151] rounded-full overflow-hidden">
+                                            <div class="h-full rounded-full bg-[#EF4444]" style="width: ${alert.confidence * 100}%"></div>
+                                        </div>
+                                        <span class="text-[10px] text-[#9CA3AF]">${(alert.confidence * 100).toFixed(0)}%</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="navigateTo('alerts'); closeModal();" class="flex-1 py-2 bg-[#0D9E75] hover:bg-[#0D9E75]/90 text-white text-xs font-medium rounded-lg transition-colors">
+                            View All Alerts
+                        </button>
+                        <button onclick="showToast('Zone report downloaded', 'success'); closeModal();" class="px-4 py-2 bg-[#1F2937] hover:bg-[#374151] text-white text-xs rounded-lg transition-colors border border-[#374151]">
+                            Download PDF
+                        </button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function showAlertDetail(alertId) {
+            const alert = state.alerts.find(a => a.id === alertId);
+            if (!alert) return;
+
+            const zone = state.zones.find(z => z.id === alert.zoneId);
+            const typeLabels = { meter_bypass: 'Meter Bypass', illegal_reconnection: 'Illegal Reconnection', token_fraud: 'Token Fraud', phase_tap: 'Phase Tap' };
+            const statusLabels = { new: 'New', assigned: 'Assigned', investigating: 'Investigating', confirmed_theft: 'Confirmed Theft', false_positive: 'False Positive', resolved: 'Resolved' };
+
+            showModal('Alert Detail', `
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-lg font-bold text-white">${alert.accountNumber}</div>
+                            <div class="text-xs text-[#9CA3AF]">${alert.meterSerial} • ${zone?.name || 'Unknown'}</div>
+                        </div>
+                        <span class="text-xs px-3 py-1 rounded-full font-medium" style="background: ${alert.statusColor}20; color: ${alert.statusColor}; border: 1px solid ${alert.statusColor}40">
+                            ${statusLabels[alert.status]}
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Alert Type</div>
+                            <div class="text-sm font-bold text-white">${typeLabels[alert.type]}</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Confidence</div>
+                            <div class="text-sm font-bold text-white">${(alert.confidence * 100).toFixed(0)}%</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Est. Monthly Loss</div>
+                            <div class="text-sm font-bold text-[#EF4444]">$${alert.estimatedLoss.toFixed(0)}</div>
+                        </div>
+                        <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                            <div class="text-[10px] text-[#9CA3AF] uppercase">Created</div>
+                            <div class="text-sm font-bold text-white">${new Date(alert.createdAt).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-[#0B0F19] rounded-lg border border-[#374151]">
+                        <div class="text-[10px] text-[#9CA3AF] uppercase mb-1">Anomaly Explanation</div>
+                        <div class="text-xs text-white">Consumption is ${(alert.confidence * 400).toFixed(0)}% above zone peer median for 3 consecutive purchase cycles. Pattern indicates potential ${alert.type.replace(/_/g, ' ')}.</div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="showToast('Alert assigned to field agent', 'success'); closeModal();" class="flex-1 py-2 bg-[#0D9E75] hover:bg-[#0D9E75]/90 text-white text-xs font-medium rounded-lg transition-colors">
+                            Assign to Agent
+                        </button>
+                        <button onclick="showToast('Marked as false positive', 'info'); closeModal();" class="px-4 py-2 bg-[#1F2937] hover:bg-[#374151] text-white text-xs rounded-lg transition-colors border border-[#374151]">
+                            False Positive
+                        </button>
+                    </div>
+                </div>
+            `);
+        }
+
+        function exportCSV() {
+            showToast('CSV export started...', 'info');
+            setTimeout(() => {
+                showToast('CSV downloaded successfully', 'success');
+            }, 1500);
+        }
+
+        // Simulation
+        function startSimulation() {
+            state.simulationInterval = setInterval(() => {
+                // Randomize 2-3 zones
+                const numZones = 2 + Math.floor(Math.random() * 2);
+                for (let i = 0; i < numZones; i++) {
+                    const zoneIdx = Math.floor(Math.random() * state.zones.length);
+                    state.zones[zoneIdx].ntlPct += (Math.random() - 0.5) * 1;
+                    state.zones[zoneIdx].lastUpdated = new Date().toISOString();
+                }
+
+                // Create 1-3 new alerts
+                const numAlerts = 1 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < numAlerts; i++) {
+                    const newAlert = {
+                        id: state.alerts.length + 1,
+                        zoneId: Math.floor(Math.random() * 12) + 1,
+                        accountNumber: `EDSA-${100000 + state.alerts.length}`,
+                        meterSerial: `MTR-${900000 + state.alerts.length}`,
+                        type: ['meter_bypass', 'illegal_reconnection', 'token_fraud', 'phase_tap'][Math.floor(Math.random() * 4)],
+                        confidence: 0.4 + Math.random() * 0.6,
+                        estimatedLoss: 500 + Math.random() * 5000,
+                        status: 'new',
+                        statusColor: '#3B82F6',
+                        assignedTo: null,
+                        createdAt: new Date().toISOString(),
+                        lat: 8.48 + (Math.random() - 0.5) * 0.06,
+                        lng: -13.23 + (Math.random() - 0.5) * 0.06
+                    };
+                    state.alerts.unshift(newAlert);
+                }
+
+                // Update timestamp
+                const now = new Date();
+                document.getElementById('last-updated').textContent = `Updated ${now.toLocaleTimeString()}`;
+
+                // Show toast for new alerts
+                if (numAlerts > 0 && state.currentView !== 'map') {
+                    showToast(`${numAlerts} new alert${numAlerts > 1 ? 's' : ''} detected`, 'warning');
+                }
+
+                // Refresh current view if on map or alerts
+                if (state.currentView === 'map' || state.currentView === 'alerts') {
+                    renderContent();
+                }
+            }, 60000); // Every 60 seconds
+        }
+
+        // Close modal on overlay click
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Enter key on login
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !document.getElementById('login-screen').classList.contains('hidden')) {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>

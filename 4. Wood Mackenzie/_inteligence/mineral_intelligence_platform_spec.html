@@ -1,0 +1,654 @@
+
+<style>
+  :root {
+    --accent: #1D9E75;
+    --accent-light: #E1F5EE;
+    --accent-mid: #0F6E56;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --purple: #534AB7;
+    --purple-light: #EEEDFE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--color-text-primary); }
+
+  .page { padding: 2rem 0; }
+  .hero { margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+  .hero-title { font-size: 26px; font-weight: 500; line-height: 1.2; color: var(--color-text-primary); margin-bottom: 0.5rem; }
+  .hero-sub { font-size: 14px; color: var(--color-text-secondary); line-height: 1.6; max-width: 600px; }
+
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 2rem; }
+  .nav-btn { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+  .nav-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+  .nav-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-title { font-size: 18px; font-weight: 500; margin-bottom: 0.25rem; }
+  .section-desc { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .card-accent { border-left: 3px solid var(--accent); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+  .card-amber { border-left: 3px solid var(--amber); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+  .card-blue { border-left: 3px solid var(--blue); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+  .card-coral { border-left: 3px solid var(--coral); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+  .card-purple { border-left: 3px solid var(--purple); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+
+  .card-head { font-size: 13px; font-weight: 500; margin-bottom: 0.4rem; }
+  .card-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 0.6rem; }
+
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 500; }
+  .tag-teal { background: #E1F5EE; color: #0F6E56; }
+  .tag-amber { background: #FAEEDA; color: #854F0B; }
+  .tag-blue { background: #E6F1FB; color: #185FA5; }
+  .tag-coral { background: #FAECE7; color: #993C1D; }
+  .tag-purple { background: #EEEDFE; color: #3C3489; }
+  .tag-gray { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.8rem 1rem; }
+  .metric-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .metric-val { font-size: 20px; font-weight: 500; }
+  .metric-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+
+  .layer-row { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+  .layer { display: flex; align-items: flex-start; gap: 12px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 0.75rem 1rem; }
+  .layer-num { font-size: 11px; font-weight: 500; min-width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .layer-content { flex: 1; }
+  .layer-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .layer-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+  .layer-tech { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; font-family: var(--font-mono); }
+
+  .persona-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .persona { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .persona-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; margin-bottom: 0.7rem; }
+  .persona-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .persona-role { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 0.6rem; }
+  .persona-need { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; margin-bottom: 0.5rem; }
+  .persona-pain { font-size: 11px; padding: 4px 8px; background: #FCEBEB; color: #A32D2D; border-radius: var(--border-radius-md); margin-bottom: 4px; display: inline-block; }
+  .persona-gain { font-size: 11px; padding: 4px 8px; background: #E1F5EE; color: #0F6E56; border-radius: var(--border-radius-md); display: inline-block; }
+
+  .biz-section { margin-bottom: 1.5rem; }
+  .biz-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary); margin-bottom: 0.6rem; }
+
+  .tier-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .tier { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem; }
+  .tier.featured { border: 2px solid var(--accent); }
+  .tier-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .tier-price { font-size: 22px; font-weight: 500; line-height: 1; margin-bottom: 2px; }
+  .tier-cadence { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 0.7rem; }
+  .tier-features { list-style: none; }
+  .tier-features li { font-size: 11px; color: var(--color-text-secondary); padding: 3px 0; display: flex; gap: 6px; align-items: flex-start; }
+  .tier-features li::before { content: "–"; color: var(--accent); flex-shrink: 0; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; background: #E1F5EE; color: #0F6E56; display: inline-block; margin-bottom: 6px; }
+
+  .roadmap-row { display: flex; flex-direction: column; gap: 0; }
+  .rm-phase { display: flex; gap: 16px; align-items: stretch; padding: 0.75rem 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .rm-phase:last-child { border-bottom: none; }
+  .rm-time { font-size: 11px; font-weight: 500; min-width: 80px; color: var(--color-text-secondary); padding-top: 2px; }
+  .rm-content { flex: 1; }
+  .rm-title { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .rm-items { display: flex; flex-wrap: wrap; gap: 4px; }
+
+  .divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1.5rem 0; }
+</style>
+
+<div class="page">
+  <div class="hero">
+    <div class="hero-eyebrow">Product Blueprint</div>
+    <div class="hero-title">Strata — AI-native metals & mining intelligence</div>
+    <div class="hero-sub">A full-stack product specification: architecture, personas, use cases, and business model for a next-generation alternative to Wood Mackenzie.</div>
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="nav-btn active" onclick="show('vision')">Vision</button>
+    <button class="nav-btn" onclick="show('personas')">Personas</button>
+    <button class="nav-btn" onclick="show('usecases')">Use cases</button>
+    <button class="nav-btn" onclick="show('architecture')">Architecture</button>
+    <button class="nav-btn" onclick="show('data')">Data layer</button>
+    <button class="nav-btn" onclick="show('ai')">AI layer</button>
+    <button class="nav-btn" onclick="show('business')">Business model</button>
+    <button class="nav-btn" onclick="show('roadmap')">Roadmap</button>
+  </div>
+
+  <!-- VISION -->
+  <div class="section active" id="vision">
+    <div class="section-title">The core proposition</div>
+    <div class="section-desc">Wood Mackenzie is a $2B+ intelligence business built on expensive analyst labour and slow publication cycles. Strata replaces the model with continuous agentic data collection, real-time AI synthesis, and a conversational interface — at a fraction of the cost.</div>
+
+    <div class="metric-row">
+      <div class="metric"><div class="metric-label">WoodMac subscription</div><div class="metric-val">$80–300k</div><div class="metric-sub">per year, enterprise</div></div>
+      <div class="metric"><div class="metric-label">Strata target price</div><div class="metric-val">$12–60k</div><div class="metric-sub">per year, full access</div></div>
+      <div class="metric"><div class="metric-label">Data freshness</div><div class="metric-val">Real-time</div><div class="metric-sub">vs WoodMac quarterly cycle</div></div>
+      <div class="metric"><div class="metric-label">Launch vertical</div><div class="metric-val">Battery metals</div><div class="metric-sub">Li, Co, Ni, Mn</div></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="card-head">What Strata is</div>
+        <div class="card-body">An AI-native research and analytics platform that aggregates public mining data, synthesizes it continuously with LLM agents, and lets users query it conversationally — with their own private data blended in.</div>
+      </div>
+      <div class="card card-coral">
+        <div class="card-head">What Wood Mackenzie is not</div>
+        <div class="card-body">Interactive, real-time, or integrable. It sells analyst PDFs and static dashboards updated on human schedules. Zero conversational interface. No private data upload. High switching costs by design.</div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem">Strategic wedge</div>
+    <div class="section-desc">Start narrow, expand fast. Battery metals are undercovered relative to their market growth and have the most urgent demand for real-time data (EV supply chains, government incentive tracking, exchange pricing).</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-head">Phase 1 — wedge</div><div class="card-body">Lithium, cobalt, nickel, manganese. Battery supply chain focus. Fastest-growing data demand.</div><div class="card-tags"><span class="tag tag-teal">launch market</span></div></div>
+      <div class="card"><div class="card-head">Phase 2 — expand</div><div class="card-body">Copper, zinc, aluminium. Add energy transition angle. Cross-sell to existing users.</div><div class="card-tags"><span class="tag tag-amber">Year 2</span></div></div>
+      <div class="card"><div class="card-head">Phase 3 — full stack</div><div class="card-body">Gold, iron ore, coking coal, potash. Full WoodMac coverage parity. M&A candidate or IPO.</div><div class="card-tags"><span class="tag tag-blue">Year 3–4</span></div></div>
+    </div>
+  </div>
+
+  <!-- PERSONAS -->
+  <div class="section" id="personas">
+    <div class="section-title">User personas</div>
+    <div class="section-desc">Six primary personas with distinct workflows, pain points, and value drivers. Each requires different product surfaces and pricing anchors.</div>
+    <div class="persona-grid">
+      <div class="persona">
+        <div class="persona-avatar" style="background:#E1F5EE;color:#0F6E56">RA</div>
+        <div class="persona-name">Resource analyst</div>
+        <div class="persona-role">Mining company — corporate development or strategy</div>
+        <div class="persona-need">Needs cost benchmarking vs peers, supply/demand modelling, and M&A target screening. Spends hours manually extracting data from AISC disclosures.</div>
+        <div class="persona-pain">Pain: slow, manual data extraction</div><br>
+        <div class="persona-gain">Gain: instant peer benchmarking</div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background:#E6F1FB;color:#185FA5">PM</div>
+        <div class="persona-name">Portfolio manager</div>
+        <div class="persona-role">Commodity hedge fund or resource-focused long-only</div>
+        <div class="persona-need">Tracks price catalysts, mine disruptions, geopolitical risk. Needs fast, sourced intelligence — not a 40-page analyst report published 3 weeks after the event.</div>
+        <div class="persona-pain">Pain: latency on market-moving data</div><br>
+        <div class="persona-gain">Gain: real-time signal feeds</div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background:#FAEEDA;color:#854F0B">BC</div>
+        <div class="persona-name">Battery supply chain lead</div>
+        <div class="persona-role">EV manufacturer or battery cell maker</div>
+        <div class="persona-need">Forecasts raw material availability and cost trajectories across lithium, nickel, cobalt. Needs to model procurement scenarios 3–5 years out and track supplier concentration risk.</div>
+        <div class="persona-pain">Pain: siloed data across 4 vendors</div><br>
+        <div class="persona-gain">Gain: unified supply chain view</div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background:#FAECE7;color:#993C1D">PE</div>
+        <div class="persona-name">PE/infra investor</div>
+        <div class="persona-role">Private equity, infrastructure, or project finance</div>
+        <div class="persona-need">Evaluates greenfield and brownfield mine investments. Needs commodity price scenarios, capex benchmarking, and regional risk profiles to build financial models.</div>
+        <div class="persona-pain">Pain: no integrated deal-room data</div><br>
+        <div class="persona-gain">Gain: AI-powered investment memos</div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background:#EEEDFE;color:#3C3489">GP</div>
+        <div class="persona-name">Government policymaker</div>
+        <div class="persona-role">Energy ministry, central bank, strategic reserve agency</div>
+        <div class="persona-need">Tracks critical mineral supply security, import dependency ratios, and price volatility for strategic planning and tariff modelling.</div>
+        <div class="persona-pain">Pain: expensive WoodMac licences for public sector</div><br>
+        <div class="persona-gain">Gain: affordable, explainable forecasts</div>
+      </div>
+      <div class="persona">
+        <div class="persona-avatar" style="background:#E1F5EE;color:#0F6E56">MR</div>
+        <div class="persona-name">Mining researcher / journalist</div>
+        <div class="persona-role">Academic, think tank, or specialist press</div>
+        <div class="persona-need">Needs sourced, citable data on production volumes, cost curves, and market structure. Can't afford WoodMac. Currently stitches together USGS + company reports manually.</div>
+        <div class="persona-pain">Pain: no affordable professional source</div><br>
+        <div class="persona-gain">Gain: low-cost access tier</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="section" id="usecases">
+    <div class="section-title">Core use cases</div>
+    <div class="section-desc">Twelve primary use cases across four workflow categories. Each maps to a specific product capability and user persona.</div>
+
+    <div class="biz-label">Research & intelligence</div>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="card-head">On-demand commodity reports</div>
+        <div class="card-body">User defines commodity, region, and timeframe. Agentic workflow fetches latest data, runs price model, and generates a structured report with citations. Replaces quarterly analyst PDFs.</div>
+        <div class="card-tags"><span class="tag tag-teal">Portfolio mgr</span><span class="tag tag-blue">Analyst</span></div>
+      </div>
+      <div class="card card-accent">
+        <div class="card-head">Conversational data queries</div>
+        <div class="card-body">"What is the marginal cost of lithium production in the Atacama given current brine grades and water restrictions?" Natural language over structured data + document corpus.</div>
+        <div class="card-tags"><span class="tag tag-teal">All personas</span></div>
+      </div>
+      <div class="card card-accent">
+        <div class="card-head">Regulatory & news monitoring</div>
+        <div class="card-body">Continuous agent scans regulatory filings, mining ministry announcements, and financial news. Surfaces relevant events with impact scoring and plain-language summaries.</div>
+        <div class="card-tags"><span class="tag tag-amber">Supply chain</span><span class="tag tag-blue">Portfolio mgr</span></div>
+      </div>
+      <div class="card card-accent">
+        <div class="card-head">Geopolitical risk scoring</div>
+        <div class="card-body">Country-level risk scores updated from political event data, ESG incident feeds, and labour dispute monitoring. Drill into specific assets at risk.</div>
+        <div class="card-tags"><span class="tag tag-coral">PE investor</span><span class="tag tag-purple">Government</span></div>
+      </div>
+    </div>
+
+    <div class="biz-label" style="margin-top:1rem">Cost & asset analytics</div>
+    <div class="grid-2">
+      <div class="card card-blue">
+        <div class="card-head">Cost curve builder</div>
+        <div class="card-body">Interactive cost curves for any commodity. Pulls AISC/C1 data from public filings, enriched with AI-extracted cost component detail. Users stress-test assumptions — energy prices, labour rates, FX.</div>
+        <div class="card-tags"><span class="tag tag-blue">Analyst</span><span class="tag tag-coral">PE investor</span></div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-head">Asset-level benchmarking</div>
+        <div class="card-body">Upload your mine's financial model or cost data. Instantly benchmark AISC, sustaining capex, and productivity metrics against the global peer set. Shows percentile position on industry cost curve.</div>
+        <div class="card-tags"><span class="tag tag-blue">Mining company</span></div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-head">Project NPV scenarios</div>
+        <div class="card-body">Input project parameters; AI generates base/bull/bear NPV scenarios with commodity price assumptions sourced from Strata's own forecast model. Exportable to Excel with full assumptions.</div>
+        <div class="card-tags"><span class="tag tag-coral">PE investor</span><span class="tag tag-blue">Analyst</span></div>
+      </div>
+      <div class="card card-blue">
+        <div class="card-head">Supply disruption tracker</div>
+        <div class="card-body">Live monitoring of mine curtailments, force majeures, and production guidance cuts. Calculates displaced production impact on global supply balance in real time.</div>
+        <div class="card-tags"><span class="tag tag-amber">Supply chain</span><span class="tag tag-teal">Portfolio mgr</span></div>
+      </div>
+    </div>
+
+    <div class="biz-label" style="margin-top:1rem">Forecasting & modelling</div>
+    <div class="grid-2">
+      <div class="card card-amber">
+        <div class="card-head">Price forecast engine</div>
+        <div class="card-body">Quantitative supply/demand model continuously updated from ingested data. Shows 1/3/5-year price forecasts with confidence intervals. Users can override assumptions and see model re-run live.</div>
+        <div class="card-tags"><span class="tag tag-amber">All personas</span></div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-head">Demand scenario modelling</div>
+        <div class="card-body">Model EV penetration curves, grid storage rollout, and green hydrogen demand scenarios and their impact on battery metal demand. Essential for battery supply chain planning.</div>
+        <div class="card-tags"><span class="tag tag-amber">Supply chain</span><span class="tag tag-purple">Government</span></div>
+      </div>
+    </div>
+
+    <div class="biz-label" style="margin-top:1rem">Agentic alerts & workflows</div>
+    <div class="grid-2">
+      <div class="card card-coral">
+        <div class="card-head">Personalised alert engine</div>
+        <div class="card-body">Users configure threshold and event-based alerts. AI monitors continuously and sends notifications via email, Slack, or webhook when conditions are met — with a plain-language explanation of what happened and why it matters.</div>
+        <div class="card-tags"><span class="tag tag-teal">Portfolio mgr</span><span class="tag tag-amber">Supply chain</span></div>
+      </div>
+      <div class="card card-coral">
+        <div class="card-head">Automated due diligence packs</div>
+        <div class="card-body">User uploads target asset documents (NI 43-101, feasibility study, historical financials). AI cross-references against Strata's data to produce a structured DD summary: resource quality, cost position, comparable transactions.</div>
+        <div class="card-tags"><span class="tag tag-coral">PE investor</span><span class="tag tag-blue">Analyst</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <div class="section" id="architecture">
+    <div class="section-title">Full application architecture</div>
+    <div class="section-desc">Seven-layer stack from raw data ingestion through to user-facing interfaces. Each layer is independently scalable and replaceable.</div>
+
+    <div class="layer-row">
+      <div class="layer">
+        <div class="layer-num" style="background:#E1F5EE;color:#0F6E56">1</div>
+        <div class="layer-content">
+          <div class="layer-title">Data ingestion layer — agentic crawlers</div>
+          <div class="layer-desc">Scheduled and event-triggered agents collect from public filings (EDGAR, SEDAR, ASX), government databases (USGS, World Bank, national ministries), exchange APIs (LME, CME, SHFE), vessel tracking, and news feeds. Each agent is specialised per source type.</div>
+          <div class="layer-tech">Python · Playwright · BeautifulSoup · APScheduler · AIS API · Planet Labs satellite API · Kafka (event bus)</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#E6F1FB;color:#185FA5">2</div>
+        <div class="layer-content">
+          <div class="layer-title">Data normalisation & enrichment</div>
+          <div class="layer-desc">Raw data is cleaned, normalised, and enriched. LLM-powered extraction pulls cost components from unstructured annual reports. A knowledge graph maps relationships between companies, assets, regions, and commodities. Entity resolution deduplicates across sources.</div>
+          <div class="layer-tech">Claude API (extraction) · dbt · Apache Spark · Neo4j (knowledge graph) · OpenStreetMap (geospatial)</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#FAEEDA;color:#854F0B">3</div>
+        <div class="layer-content">
+          <div class="layer-title">Storage layer — multi-model</div>
+          <div class="layer-desc">Time-series price data in TimescaleDB. Structured asset/company data in PostgreSQL. Document corpus (filings, reports) in a vector database for semantic retrieval. Knowledge graph in Neo4j. Geospatial mine and deposit data in PostGIS.</div>
+          <div class="layer-tech">PostgreSQL · TimescaleDB · Pinecone (vectors) · Neo4j · PostGIS · S3 (raw file archive)</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#FAECE7;color:#993C1D">4</div>
+        <div class="layer-content">
+          <div class="layer-title">AI orchestration layer — agents + RAG</div>
+          <div class="layer-desc">The core intelligence layer. A multi-agent system with specialised sub-agents (price forecaster, filing extractor, news synthesiser, alert evaluator, report generator). A supervisor agent routes queries, assembles context from all data stores, and manages tool use. RAG retrieval is hybrid: semantic + keyword + structured SQL.</div>
+          <div class="layer-tech">Claude API (claude-sonnet-4) · LangGraph (agent orchestration) · pgvector + Pinecone (retrieval) · MCP tool servers</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#E1F5EE;color:#085041">5</div>
+        <div class="layer-content">
+          <div class="layer-title">Quantitative models layer</div>
+          <div class="layer-desc">Parameterised supply/demand models per commodity. Cost curve engine that re-renders in real time as input data updates. Monte Carlo simulation for price scenarios. Models are transparent: users can inspect assumptions and override inputs.</div>
+          <div class="layer-tech">Python · NumPy · SciPy · Pandas · Statsmodels · custom supply/demand model modules</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#EEEDFE;color:#534AB7">6</div>
+        <div class="layer-content">
+          <div class="layer-title">API & backend services</div>
+          <div class="layer-desc">REST + GraphQL API serving all data to the frontend and third-party integrations. Background worker pool for agentic alert evaluation, scheduled report generation, and data refresh jobs. Auth, multi-tenancy, and private data isolation at this layer.</div>
+          <div class="layer-tech">FastAPI · GraphQL (Strawberry) · Celery · Redis (queue + cache) · Auth0 · PostgreSQL RLS (row-level security)</div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-num" style="background:#E6F1FB;color:#0C447C">7</div>
+        <div class="layer-content">
+          <div class="layer-title">Frontend — dashboard + conversational UI</div>
+          <div class="layer-desc">React SPA with three primary surfaces: a data dashboard (charts, cost curves, price feeds), a conversational research interface (chat over data with citations), and an alerts/workflow management console. Mobile-responsive. White-label option for enterprise.</div>
+          <div class="layer-tech">React · TypeScript · Recharts / D3 · Tailwind · Vercel · WebSockets (live price feeds)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Infra & DevOps</div>
+    <div class="grid-3" style="margin-top:1rem">
+      <div class="card"><div class="card-head">Cloud</div><div class="card-body">AWS primary. ECS (containerised agents), RDS (Postgres), ElastiCache (Redis), S3. Multi-region from year 2.</div></div>
+      <div class="card"><div class="card-head">Observability</div><div class="card-body">Datadog for infra metrics, Sentry for errors, LangSmith for LLM trace logging and prompt performance monitoring.</div></div>
+      <div class="card"><div class="card-head">Security & compliance</div><div class="card-body">SOC 2 Type II from year 1 (critical for enterprise). Data encrypted at rest + in transit. Private data tenancy isolation enforced at DB layer.</div></div>
+    </div>
+  </div>
+
+  <!-- DATA LAYER -->
+  <div class="section" id="data">
+    <div class="section-title">Data sources & ingestion strategy</div>
+    <div class="section-desc">Every data source is public, API-accessible, or scrapeable. No expensive data licences required at launch. The moat is the collection infrastructure, normalisation quality, and historical depth — not the raw source.</div>
+
+    <div class="biz-label">Price & exchange data</div>
+    <div class="grid-3">
+      <div class="card card-accent"><div class="card-head">LME / CME / SHFE</div><div class="card-body">Official spot and futures prices for base metals. LME has a free delayed API; real-time via Quandl or direct LME data subscription (~$2k/yr).</div></div>
+      <div class="card card-accent"><div class="card-head">Fastmarkets / Benchmark</div><div class="card-body">Battery-grade lithium, cobalt, and nickel spot assessments. Most critical price series for Phase 1 coverage.</div></div>
+      <div class="card card-accent"><div class="card-head">World Bank commodities</div><div class="card-body">Free long-run price series going back 30+ years. Essential for historical model calibration.</div></div>
+    </div>
+
+    <div class="biz-label" style="margin-top:1rem">Production & company filings</div>
+    <div class="grid-3">
+      <div class="card card-blue"><div class="card-head">EDGAR / SEDAR / ASX</div><div class="card-body">Quarterly and annual production reports, MD&A sections, cost guidance. The primary source for AISC and C1 extraction. Fully free and API-accessible.</div></div>
+      <div class="card card-blue"><div class="card-head">NI 43-101 / JORC reports</div><div class="card-body">Resource/reserve technical reports. AI extracts ore grade, strip ratio, recovery rates, capital cost estimates from PDF.</div></div>
+      <div class="card card-blue"><div class="card-head">Mining ministry databases</div><div class="card-body">Production permit databases from Chile (SERNAGEOMIN), DRC, Australia (Geoscience), Indonesia (ESDM). Country-level production volumes.</div></div>
+    </div>
+
+    <div class="biz-label" style="margin-top:1rem">Alternative & signal data</div>
+    <div class="grid-3">
+      <div class="card card-amber"><div class="card-head">Satellite imagery</div><div class="card-body">Sentinel-2 (free, ESA) for mine activity monitoring, stockpile change detection. Planet Labs for higher-res commercial upgrade.</div></div>
+      <div class="card card-amber"><div class="card-head">AIS vessel tracking</div><div class="card-body">Trade flow intelligence — shipping routes for ore and refined metal. MarineTraffic API for port-level loading/unloading signals.</div></div>
+      <div class="card card-amber"><div class="card-head">News & regulatory feeds</div><div class="card-body">Factiva API, Mining.com, S&P Global Commodity Insights RSS for ESG incidents, labour disputes, permit approvals, force majeures.</div></div>
+    </div>
+  </div>
+
+  <!-- AI LAYER -->
+  <div class="section" id="ai">
+    <div class="section-title">AI agent architecture</div>
+    <div class="section-desc">A supervisor-worker multi-agent system built on LangGraph. Each specialist agent has a defined scope, tool access, and output contract. The supervisor routes incoming queries and assembles responses from multiple agents.</div>
+
+    <div class="grid-2">
+      <div class="card card-purple">
+        <div class="card-head">Supervisor agent</div>
+        <div class="card-body">Receives user queries. Classifies intent (research / data query / alert / report). Decomposes into subtasks. Fans out to specialist agents. Assembles and cites the final response. Handles clarification turns.</div>
+        <div class="card-tags"><span class="tag tag-purple">claude-sonnet-4</span><span class="tag tag-gray">LangGraph orchestration</span></div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-head">Retrieval agent (RAG)</div>
+        <div class="card-body">Hybrid retrieval across vector store (filings, reports), SQL (structured price/production data), and knowledge graph (asset relationships). Reranks and packages context for the synthesis agent.</div>
+        <div class="card-tags"><span class="tag tag-purple">Pinecone + pgvector</span><span class="tag tag-gray">BM25 + semantic</span></div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-head">Filing extraction agent</div>
+        <div class="card-body">Specialised in parsing mining company filings. Extracts structured cost data, production volumes, guidance changes, and capex from PDFs. Uses chain-of-thought to handle inconsistent reporting formats.</div>
+        <div class="card-tags"><span class="tag tag-purple">claude-sonnet-4</span><span class="tag tag-gray">Continuous background job</span></div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-head">Price forecast agent</div>
+        <div class="card-body">Interfaces with the quantitative S/D model layer. Runs scenarios when asked, explains model drivers, and flags when price is trading significantly above or below model fair value.</div>
+        <div class="card-tags"><span class="tag tag-purple">Tool use + Python REPL</span></div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-head">Alert evaluation agent</div>
+        <div class="card-body">Runs as a background job against all subscribed user alert conditions. When triggered, generates a plain-language explanation of what happened, the data evidence, and suggested next steps.</div>
+        <div class="card-tags"><span class="tag tag-purple">Celery worker</span><span class="tag tag-gray">Runs every 15 min</span></div>
+      </div>
+      <div class="card card-purple">
+        <div class="card-head">Report generation agent</div>
+        <div class="card-body">On-demand or scheduled structured report creation. Follows a configurable template (executive summary, supply analysis, demand outlook, price forecast, risk factors). All claims grounded with citations to source data.</div>
+        <div class="card-tags"><span class="tag tag-purple">claude-sonnet-4</span><span class="tag tag-gray">PDF/DOCX export</span></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Private data integration</div>
+    <div class="section-desc">The most defensible enterprise feature. Users upload their own data — mine financial models, portfolio spreadsheets, internal cost assumptions. It is stored in a fully isolated tenant partition, never used to train models, and blended into AI responses only when relevant.</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-head">Supported formats</div><div class="card-body">Excel (.xlsx), CSV, PDF (technical reports, board packs), structured JSON via API.</div></div>
+      <div class="card"><div class="card-head">Isolation model</div><div class="card-body">Row-level security in Postgres. Separate vector namespaces per tenant in Pinecone. Private data never leaves the tenant context.</div></div>
+      <div class="card"><div class="card-head">Blended queries</div><div class="card-body">"How does our Atacama asset's AISC compare to the industry cost curve?" merges private + public data in one AI response.</div></div>
+    </div>
+  </div>
+
+  <!-- BUSINESS MODEL -->
+  <div class="section" id="business">
+    <div class="section-title">Business model</div>
+    <div class="section-desc">SaaS subscription as the primary revenue engine, with three secondary revenue streams that emerge naturally from the platform's capabilities.</div>
+
+    <div class="biz-label">Subscription tiers</div>
+    <div class="tier-row">
+      <div class="tier">
+        <div class="tier-name">Explorer</div>
+        <div class="tier-price">$299</div>
+        <div class="tier-cadence">per month</div>
+        <ul class="tier-features">
+          <li>1 commodity vertical</li>
+          <li>Price feeds + basic charts</li>
+          <li>50 AI queries/month</li>
+          <li>Community alerts</li>
+          <li>No private data upload</li>
+        </ul>
+      </div>
+      <div class="tier featured">
+        <div class="badge">Most popular</div>
+        <div class="tier-name">Professional</div>
+        <div class="tier-price">$999</div>
+        <div class="tier-cadence">per month</div>
+        <ul class="tier-features">
+          <li>All battery metals</li>
+          <li>Unlimited AI queries</li>
+          <li>Cost curve access</li>
+          <li>Custom alert engine</li>
+          <li>5GB private data upload</li>
+          <li>Report generation (20/mo)</li>
+          <li>Excel / API export</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="tier-name">Enterprise</div>
+        <div class="tier-price">$5k+</div>
+        <div class="tier-cadence">per month</div>
+        <ul class="tier-features">
+          <li>All commodities</li>
+          <li>Unlimited everything</li>
+          <li>SSO + user management</li>
+          <li>Custom data integrations</li>
+          <li>Dedicated analyst support</li>
+          <li>White-label option</li>
+          <li>SLA + priority support</li>
+        </ul>
+      </div>
+      <div class="tier">
+        <div class="tier-name">Academic / Gov</div>
+        <div class="tier-price">$199</div>
+        <div class="tier-cadence">per month</div>
+        <ul class="tier-features">
+          <li>Verified institutions only</li>
+          <li>Full data access</li>
+          <li>Research query mode</li>
+          <li>Citation export</li>
+          <li>No private data</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="biz-label">Secondary revenue streams</div>
+    <div class="grid-3">
+      <div class="card card-amber">
+        <div class="card-head">API access</div>
+        <div class="card-body">Metered API for price feeds, cost curve data, and production data. Priced per call or via bulk data packages. Targets quant funds, software vendors embedding commodity intelligence.</div>
+        <div class="card-tags"><span class="tag tag-amber">$0.01–$0.05/call</span></div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-head">Custom research</div>
+        <div class="card-body">AI-assisted bespoke research projects (M&A DD, greenfield assessment, regulatory impact analysis) delivered as consulting engagements. High margin, builds brand, informs product roadmap.</div>
+        <div class="card-tags"><span class="tag tag-amber">$10–50k/project</span></div>
+      </div>
+      <div class="card card-amber">
+        <div class="card-head">Data licensing</div>
+        <div class="card-body">Sell normalised, AI-enriched mining asset data as bulk datasets to financial data vendors (Bloomberg, Refinitiv, FactSet) who currently license from WoodMac at enormous margins.</div>
+        <div class="card-tags"><span class="tag tag-amber">$50–500k/yr deals</span></div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="biz-label">Unit economics targets (Year 3)</div>
+    <div class="metric-row">
+      <div class="metric"><div class="metric-label">Target ARR</div><div class="metric-val">$12M</div><div class="metric-sub">~600 Pro + ~20 Enterprise</div></div>
+      <div class="metric"><div class="metric-label">Gross margin</div><div class="metric-val">75%</div><div class="metric-sub">SaaS + API blend</div></div>
+      <div class="metric"><div class="metric-label">Target CAC</div><div class="metric-val">&lt;$8k</div><div class="metric-sub">content-led, PLG motion</div></div>
+      <div class="metric"><div class="metric-label">Target NRR</div><div class="metric-val">120%</div><div class="metric-sub">expansion via commodity adds</div></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="biz-label">Go-to-market motion</div>
+    <div class="grid-2">
+      <div class="card card-accent">
+        <div class="card-head">Content-led inbound</div>
+        <div class="card-body">Publish free weekly commodity intelligence briefings powered by the platform. Builds brand, SEO, and a direct audience in the target ICP before hard sales. The platform demonstrates itself.</div>
+      </div>
+      <div class="card card-accent">
+        <div class="card-head">Product-led growth</div>
+        <div class="card-body">Explorer tier at $299/mo removes friction for individual analysts. Convert to Pro when they hit query limits or need private data. Enterprise motion is top-down after bottom-up adoption within a firm.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div class="section" id="roadmap">
+    <div class="section-title">Build roadmap</div>
+    <div class="section-desc">24-month roadmap from prototype to full-stack platform. Phased to generate revenue before completing the full feature set.</div>
+
+    <div class="roadmap-row">
+      <div class="rm-phase">
+        <div class="rm-time">Month 1–2</div>
+        <div class="rm-content">
+          <div class="rm-title">Foundation — data + MVP AI</div>
+          <div class="rm-items">
+            <span class="tag tag-teal">LME/CME price ingestion</span>
+            <span class="tag tag-teal">EDGAR/SEDAR filing crawlers</span>
+            <span class="tag tag-teal">USGS + World Bank feeds</span>
+            <span class="tag tag-teal">PostgreSQL + TimescaleDB setup</span>
+            <span class="tag tag-teal">Basic conversational query (RAG)</span>
+            <span class="tag tag-teal">Simple React dashboard</span>
+          </div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-time">Month 3–4</div>
+        <div class="rm-content">
+          <div class="rm-title">Alpha — battery metals vertical</div>
+          <div class="rm-items">
+            <span class="tag tag-blue">Li/Co/Ni/Mn full coverage</span>
+            <span class="tag tag-blue">Filing extraction agent v1</span>
+            <span class="tag tag-blue">Cost curve MVP</span>
+            <span class="tag tag-blue">Alert engine (threshold-based)</span>
+            <span class="tag tag-blue">10 paying alpha customers</span>
+          </div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-time">Month 5–6</div>
+        <div class="rm-content">
+          <div class="rm-title">Beta launch — private data + report gen</div>
+          <div class="rm-items">
+            <span class="tag tag-amber">Private data upload + isolation</span>
+            <span class="tag tag-amber">Blended private/public queries</span>
+            <span class="tag tag-amber">Report generation agent</span>
+            <span class="tag tag-amber">Stripe billing + subscription tiers</span>
+            <span class="tag tag-amber">Public beta, 50+ paying users</span>
+          </div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-time">Month 7–9</div>
+        <div class="rm-content">
+          <div class="rm-title">Enterprise track + copper expansion</div>
+          <div class="rm-items">
+            <span class="tag tag-coral">Copper + zinc coverage</span>
+            <span class="tag tag-coral">SSO + team management</span>
+            <span class="tag tag-coral">Price forecast model v1</span>
+            <span class="tag tag-coral">Satellite imagery signals</span>
+            <span class="tag tag-coral">First 3 enterprise contracts</span>
+          </div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-time">Month 10–14</div>
+        <div class="rm-content">
+          <div class="rm-title">Scale — API product + data licensing</div>
+          <div class="rm-items">
+            <span class="tag tag-purple">Public data API launch</span>
+            <span class="tag tag-purple">Knowledge graph v1 (asset relationships)</span>
+            <span class="tag tag-purple">AIS trade flow signals</span>
+            <span class="tag tag-purple">Due diligence pack feature</span>
+            <span class="tag tag-purple">Series A fundraise</span>
+          </div>
+        </div>
+      </div>
+      <div class="rm-phase">
+        <div class="rm-time">Month 15–24</div>
+        <div class="rm-content">
+          <div class="rm-title">Full coverage — WoodMac parity</div>
+          <div class="rm-items">
+            <span class="tag tag-gray">Gold, iron ore, coking coal</span>
+            <span class="tag tag-gray">Potash + fertilisers</span>
+            <span class="tag tag-gray">Full supply chain graph</span>
+            <span class="tag tag-gray">White-label enterprise offering</span>
+            <span class="tag tag-gray">Bloomberg / Refinitiv data deals</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-title">Team requirements</div>
+    <div class="grid-3">
+      <div class="card"><div class="card-head">Founding team (0–6 months)</div><div class="card-body">1 technical co-founder (backend/AI), 1 domain co-founder (mining industry background), 1 frontend engineer. Total: 3 people.</div></div>
+      <div class="card"><div class="card-head">Seed hires (6–12 months)</div><div class="card-body">Data engineer (ingestion infra), commodity analyst (content + QA), sales/GTM lead. Total team: 6–7 people.</div></div>
+      <div class="card"><div class="card-head">Series A (12–24 months)</div><div class="card-body">Expand to 15–20: 2 more AI/ML engineers, 3 commodity analysts (by vertical), enterprise sales reps, customer success.</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>

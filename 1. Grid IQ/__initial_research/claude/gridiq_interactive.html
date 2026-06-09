@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GridIQ West Africa — Interactive Platform Brief</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --amber: #EF9F27;
+      --amber-dark: #633806;
+      --amber-light: #FAEEDA;
+      --teal: #1D9E75;
+      --teal-dark: #085041;
+      --teal-light: #E1F5EE;
+      --coral: #D85A30;
+      --coral-light: #FAECE7;
+      --gray-light: #F1EFE8;
+      --gray-mid: #888780;
+      --text: #1a1a1a;
+      --text-muted: #666660;
+      --border: #e0ddd4;
+      --surface: #faf9f6;
+      --border-radius-md: 10px;
+      --border-radius-lg: 14px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      background: #f5f4f0;
+      overflow-x: hidden;
+    }
+
+    #particle-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .nav-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(250, 249, 246, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transform: translateY(-100%);
+      animation: slideDown 0.6s ease-out 0.3s forwards;
+    }
+    @keyframes slideDown {
+      to { transform: translateY(0); }
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--amber); }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    .nav-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--amber);
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--amber);
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 6px 14px;
+      background: var(--amber);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.06em;
+    }
+    .nav-cta:hover {
+      background: var(--amber-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 159, 39, 0.3);
+    }
+
+    .progress-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      z-index: 1001;
+      background: transparent;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--teal));
+      transition: width 0.1s ease-out;
+    }
+
+    .doc {
+      position: relative;
+      z-index: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.06);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero {
+      padding: 5rem 0 2rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.75rem;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out 0.5s forwards;
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.7s forwards;
+    }
+    .hero-title span { color: var(--amber); }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin-top: 0.75rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 0.9s forwards;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 1.25rem;
+      opacity: 0;
+      animation: fadeInUp 0.7s ease-out 1.1s forwards;
+    }
+    .tag {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
+      color: var(--text-muted);
+      background: rgba(255,255,255,0.6);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .tag:hover {
+      background: var(--amber-light);
+      border-color: var(--amber);
+      color: var(--amber-dark);
+      transform: translateY(-2px);
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 80px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 0.5px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .section-header:hover {
+      border-bottom-color: var(--amber);
+    }
+    .section-header:hover .section-num {
+      color: var(--amber);
+      transform: scale(1.1);
+    }
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+      min-width: 28px;
+      transition: all 0.3s ease;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+    .section-header:hover .section-title {
+      color: var(--amber-dark);
+    }
+    .section-content {
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      max-height: 5000px;
+      opacity: 1;
+    }
+    .section.collapsed .section-content {
+      max-height: 0;
+      opacity: 0;
+    }
+    .section-toggle {
+      margin-left: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      transition: transform 0.3s ease;
+    }
+    .section.collapsed .section-toggle {
+      transform: rotate(-90deg);
+    }
+
+    .body { font-size: 15px; color: var(--text); line-height: 1.75; margin-bottom: 1rem; }
+    .body strong { font-weight: 500; }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 1.25rem 0;
+    }
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--border-radius-md);
+      padding: 0.875rem 1rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--amber);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      border-color: var(--border);
+    }
+    .stat-label {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+    .stat-card:hover .stat-value {
+      color: var(--amber);
+    }
+    .stat-value.amber { color: var(--amber); }
+    .stat-value.teal { color: var(--teal); }
+    .stat-value.coral { color: var(--coral); }
+    .counter { display: inline-block; }
+
+    .loss-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 1.25rem 0;
+    }
+    .loss-table th {
+      text-align: left;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .loss-table td {
+      padding: 8px 10px;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text);
+      transition: background 0.3s ease;
+    }
+    .loss-table tr {
+      transition: all 0.3s ease;
+    }
+    .loss-table tr:hover td {
+      background: var(--surface);
+    }
+    .loss-table tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      padding: 2px 8px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    .badge.critical { background: #FCEBEB; color: #A32D2D; }
+    .badge.high { background: #FAEEDA; color: #854F0B; }
+    .badge.moderate { background: #E1F5EE; color: #0F6E56; }
+    .badge.best { background: #EAF3DE; color: #3B6D11; }
+    .loss-table tr:hover .badge {
+      transform: scale(1.05);
+    }
+
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar-bg { flex: 1; height: 6px; background: var(--surface); border-radius: 3px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 3px; width: 0%; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .bar-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); min-width: 38px; text-align: right; }
+
+    .arch-stack { display: flex; flex-direction: column; gap: 10px; margin: 1.25rem 0; }
+    .arch-item {
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 0.875rem 1rem;
+      background: var(--surface);
+      border-radius: var(--border-radius-md);
+      border-left: 3px solid var(--amber);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .arch-item::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 0; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(239, 159, 39, 0.04));
+      transition: width 0.4s ease;
+    }
+    .arch-item:hover::after {
+      width: 100%;
+    }
+    .arch-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      border-left-width: 5px;
+    }
+    .arch-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+    .arch-item:hover .arch-name {
+      color: var(--amber-dark);
+    }
+    .arch-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .arch-tech {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--amber);
+      background: var(--amber-light);
+      padding: 3px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+    }
+    .arch-item:hover .arch-tech {
+      background: var(--amber);
+      color: white;
+    }
+
+    .chain { display: flex; flex-direction: column; gap: 0; margin: 1.25rem 0; }
+    .chain-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 0.5px solid var(--border);
+      border-bottom: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .chain-item:hover {
+      background: var(--surface);
+      border-color: var(--amber);
+      z-index: 2;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .chain-item:first-child { border-radius: var(--border-radius-md) var(--border-radius-md) 0 0; }
+    .chain-item:last-child { border-bottom: 0.5px solid var(--border); border-radius: 0 0 var(--border-radius-md) var(--border-radius-md); }
+    .chain-cause {
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      border-right: 0.5px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .chain-item:hover .chain-cause {
+      color: var(--amber-dark);
+    }
+    .chain-cause::before {
+      content: '→';
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--amber);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .chain-item:hover .chain-cause::before {
+      opacity: 1;
+    }
+    .chain-effect {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+    .chain-item:hover .chain-effect {
+      color: var(--text);
+    }
+
+    .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+    .ai-card {
+      padding: 1rem 1.1rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--border-radius-lg);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .ai-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .ai-card:hover::before {
+      transform: scaleX(1);
+    }
+    .ai-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+      border-color: var(--teal);
+    }
+    .ai-icon { font-size: 20px; margin-bottom: 8px; color: var(--teal); transition: transform 0.4s ease; }
+    .ai-card:hover .ai-icon {
+      transform: scale(1.2) rotate(-5deg);
+    }
+    .ai-name { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .ai-body { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+
+    .revenue-list { display: flex; flex-direction: column; gap: 8px; margin: 1.25rem 0; }
+    .rev-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--border-radius-md);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .rev-item:hover {
+      transform: translateX(6px);
+      border-color: var(--teal);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .rev-name { font-size: 13.5px; font-weight: 500; color: var(--text); margin-bottom: 2px; transition: color 0.3s ease; }
+    .rev-item:hover .rev-name { color: var(--teal-dark); }
+    .rev-desc { font-size: 12px; color: var(--text-muted); }
+    .rev-model {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--teal-dark);
+      background: var(--teal-light);
+      padding: 3px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+      align-self: start;
+      transition: all 0.3s ease;
+    }
+    .rev-item:hover .rev-model {
+      background: var(--teal);
+      color: white;
+    }
+
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+    .feat-card {
+      padding: 0.875rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--border-radius-md);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .feat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--amber);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .feat-card:hover::after {
+      transform: scaleX(1);
+    }
+    .feat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+    }
+    .feat-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--amber);
+      margin-bottom: 4px;
+    }
+    .feat-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; transition: color 0.3s ease; }
+    .feat-card:hover .feat-title { color: var(--amber-dark); }
+    .feat-body { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+    .gtm-phases { display: flex; flex-direction: column; gap: 8px; margin: 1.25rem 0; }
+    .phase {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 14px;
+      padding: 0.875rem 1rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--border-radius-md);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+    }
+    .phase::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--amber);
+      border-radius: var(--border-radius-md) 0 0 var(--border-radius-md);
+      transform: scaleY(0);
+      transition: transform 0.4s ease;
+    }
+    .phase:hover::before {
+      transform: scaleY(1);
+    }
+    .phase:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      border-color: var(--amber);
+    }
+    .phase-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--amber);
+      font-weight: 500;
+      align-self: center;
+      transition: color 0.3s ease;
+    }
+    .phase:hover .phase-label {
+      color: var(--amber-dark);
+    }
+    .phase-body { font-size: 13px; color: var(--text); }
+    .phase-body strong { font-weight: 500; display: block; margin-bottom: 2px; transition: color 0.3s ease; }
+    .phase:hover .phase-body strong { color: var(--amber-dark); }
+    .phase-body span { font-size: 12px; color: var(--text-muted); }
+
+    .stack-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+    .stack-block {
+      padding: 0.875rem 1rem;
+      background: var(--surface);
+      border-radius: var(--border-radius-md);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .stack-block:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.06);
+      background: white;
+    }
+    .stack-cat {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+    .stack-block:hover .stack-cat {
+      color: var(--amber);
+    }
+    .stack-items { display: flex; flex-wrap: wrap; gap: 5px; }
+    .stack-pill {
+      font-size: 12px;
+      font-family: 'DM Mono', monospace;
+      padding: 3px 9px;
+      border-radius: 10px;
+      border: 0.5px solid var(--border);
+      color: var(--text);
+      transition: all 0.3s ease;
+      cursor: default;
+    }
+    .stack-pill:hover {
+      background: var(--amber);
+      color: white;
+      border-color: var(--amber);
+      transform: translateY(-2px);
+    }
+
+    .team-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin: 1.25rem 0; }
+    .team-card {
+      padding: 0.875rem;
+      border: 0.5px solid var(--border);
+      border-radius: var(--border-radius-md);
+      background: rgba(255,255,255,0.7);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--amber);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .team-card:hover::before {
+      transform: scaleX(1);
+    }
+    .team-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.08);
+      border-color: var(--amber);
+    }
+    .team-role {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+    .team-name { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 3px; transition: color 0.3s ease; }
+    .team-card:hover .team-name { color: var(--amber-dark); }
+    .team-org { font-size: 11.5px; color: var(--text-muted); }
+
+    .moat-list { display: flex; flex-direction: column; gap: 8px; margin: 1.25rem 0; }
+    .moat-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 0.875rem 1rem;
+      border-left: 3px solid var(--teal);
+      background: var(--teal-light);
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .moat-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(29, 158, 117, 0.12);
+      border-left-width: 5px;
+    }
+    .moat-ico { color: var(--teal-dark); font-size: 18px; flex-shrink: 0; margin-top: 1px; transition: transform 0.4s ease; }
+    .moat-item:hover .moat-ico {
+      transform: scale(1.2) rotate(10deg);
+    }
+    .moat-text { font-size: 13.5px; color: var(--teal-dark); line-height: 1.55; }
+    .moat-text strong { display: block; font-weight: 500; margin-bottom: 2px; font-size: 13.5px; color: var(--teal-dark); }
+
+    .callout {
+      padding: 1rem 1.25rem;
+      border: 0.5px solid var(--border);
+      border-left: 3px solid var(--amber);
+      border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0;
+      margin: 1.25rem 0;
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      background: rgba(250, 238, 218, 0.3);
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+    .callout:hover {
+      border-left-width: 5px;
+      box-shadow: 0 8px 24px rgba(239, 159, 39, 0.08);
+      transform: translateX(4px);
+    }
+    .callout strong { color: var(--text); font-weight: 500; }
+
+    .divider { height: 0.5px; background: var(--border); margin: 2rem 0; }
+
+    .scroll-top {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      width: 44px; height: 44px;
+      background: var(--amber);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 999;
+      box-shadow: 0 4px 16px rgba(239, 159, 39, 0.3);
+    }
+    .scroll-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .scroll-top:hover {
+      transform: translateY(-4px) scale(1.1);
+      box-shadow: 0 8px 24px rgba(239, 159, 39, 0.4);
+    }
+
+    .tooltip {
+      position: fixed;
+      background: var(--text);
+      color: white;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10000;
+      white-space: nowrap;
+    }
+    .tooltip.visible { opacity: 1; }
+
+    @media (max-width: 640px) {
+      .doc { padding: 0 1rem 2rem; }
+      .hero-title { font-size: 28px; }
+      .hero { padding: 4rem 0 1.5rem; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+      .ai-grid { grid-template-columns: 1fr; }
+      .stack-cols { grid-template-columns: 1fr; }
+      .arch-item { grid-template-columns: 1fr; gap: 6px; }
+      .phase { grid-template-columns: 1fr; gap: 6px; }
+      .rev-item { grid-template-columns: 1fr; gap: 6px; }
+      .nav-links { display: none; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .chain-item { grid-template-columns: 1fr; }
+      .chain-cause { border-right: none; border-bottom: 0.5px solid var(--border); }
+    }
+
+    *:focus-visible {
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #faf9f6;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loading-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .loading-logo span { color: var(--amber); }
+    .loading-bar {
+      width: 200px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .loading-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--teal));
+      animation: loadingFill 1.5s ease-out forwards;
+    }
+    @keyframes loadingFill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    .loading-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-logo">GridIQ<span> West Africa</span></div>
+    <div class="loading-bar">
+      <div class="loading-bar-fill"></div>
+    </div>
+    <div class="loading-text">INITIALIZING PLATFORM BRIEF...</div>
+  </div>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+
+  <nav class="nav-bar" id="nav-bar">
+    <div class="nav-logo">GridIQ<span> WA</span></div>
+    <div class="nav-links">
+      <a class="nav-link active" data-target="opportunity">Opportunity</a>
+      <a class="nav-link" data-target="problem">Problem</a>
+      <a class="nav-link" data-target="architecture">Architecture</a>
+      <a class="nav-link" data-target="ai">AI Engine</a>
+      <a class="nav-link" data-target="revenue">Revenue</a>
+      <a class="nav-link" data-target="features">Features</a>
+      <a class="nav-link" data-target="moat">Moat</a>
+      <a class="nav-link" data-target="gtm">GTM</a>
+      <a class="nav-link" data-target="tech">Tech</a>
+      <a class="nav-link" data-target="team">Team</a>
+    </div>
+    <button class="nav-cta" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top</button>
+  </nav>
+
+  <div class="tooltip" id="tooltip"></div>
+
+  <div class="doc">
+    <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden">GridIQ West Africa</h2>
+
+    <div class="hero">
+      <div class="hero-eyebrow">Platform Intelligence Brief — Confidential</div>
+      <div class="hero-title">GridIQ<span> West Africa</span></div>
+      <div class="hero-sub">AI-powered grid loss intelligence and real-time energy data infrastructure for ECOWAS distribution utilities.</div>
+      <div class="hero-tags">
+        <span class="tag">ECOWAS</span>
+        <span class="tag">IoT + AI</span>
+        <span class="tag">NTL Detection</span>
+        <span class="tag">Energy Access</span>
+        <span class="tag">DFI-Ready</span>
+        <span class="tag">RenewBiz · AFCEN · Smart Innovation</span>
+      </div>
+    </div>
+
+    <!-- 1. THE OPPORTUNITY -->
+    <div class="section reveal" id="opportunity">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">01</span>
+        <span class="section-title">The Opportunity</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">West Africa sits at an inflection point in its energy transition. Generation capacity is growing — yet the infrastructure to convert that capacity into commercial revenue remains broken. The opportunity is not to build more power; it is to capture the value from what is already being generated.</p>
+        <div class="stat-row">
+          <div class="stat-card" data-tooltip="Total installed generation capacity across ECOWAS member states">
+            <div class="stat-label">Installed Capacity</div>
+            <div class="stat-value amber"><span class="counter" data-target="26.6">0</span> GW</div>
+          </div>
+          <div class="stat-card" data-tooltip="Annual electricity generation in 2023">
+            <div class="stat-label">Generation (2023)</div>
+            <div class="stat-value teal"><span class="counter" data-target="96057">0</span> GWh</div>
+          </div>
+          <div class="stat-card" data-tooltip="Year-over-year growth rate">
+            <div class="stat-label">YoY Growth</div>
+            <div class="stat-value"><span class="counter" data-target="7.4">0</span>%</div>
+          </div>
+          <div class="stat-card" data-tooltip="People without electricity access across the region">
+            <div class="stat-label">Population Without Access</div>
+            <div class="stat-value coral">~<span class="counter" data-target="170">0</span>M</div>
+          </div>
+        </div>
+        <p class="body">Despite a 57.7% electrification rate across a population of 400 million, the region's utilities are trapped in a structural paradox: the more electricity they produce, the larger their unrecovered losses become. GridIQ breaks this cycle by transforming invisible loss into measurable, recoverable revenue — and by turning siloed utility data into a live, credible signal for DFIs, regulators, and investors.</p>
+        <div class="callout" data-tooltip="Click to highlight this key insight">
+          <strong>The core market thesis:</strong> Revenue recovery from existing generation is faster, cheaper, and less risky than adding new generation capacity. A utility recovering just 5 percentage points of NTL recaptures millions of dollars annually — without a single new megawatt installed.
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. THE PROBLEM -->
+    <div class="section reveal" id="problem">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">02</span>
+        <span class="section-title">The Problem Being Solved</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">Two crises compound each other across the ECOWAS grid: runaway non-technical losses and near-total energy data blindness. Neither can be solved without the other.</p>
+
+        <p class="body" style="font-weight:500; margin-bottom: 0.5rem;">Grid Loss Crisis</p>
+        <p class="body">The ECOWAS regional average for transmission and distribution losses stands at 21.3% — more than double the international benchmark of 8–10%. For every 10 units generated, more than 2 are lost, stolen, or unaccounted for before reaching a paying customer.</p>
+
+        <table class="loss-table">
+          <thead>
+            <tr>
+              <th>Utility</th>
+              <th>Total Losses</th>
+              <th style="text-align:right">NTL Bar</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-tooltip="EDG Guinea: Highest losses in region">
+              <td>EDG (Guinea)</td>
+              <td>41.0%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="100" style="width:0%;background:#E24B4A;"></div></div><span class="bar-label">31.9%</span></div></td>
+              <td><span class="badge critical">Critical</span></td>
+            </tr>
+            <tr data-tooltip="EDSA Sierra Leone: Second highest losses">
+              <td>EDSA (Sierra Leone)</td>
+              <td>~38.0%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="78" style="width:0%;background:#E24B4A;"></div></div><span class="bar-label">~25%</span></div></td>
+              <td><span class="badge critical">Critical</span></td>
+            </tr>
+            <tr data-tooltip="ECG Ghana: Major distribution utility">
+              <td>ECG (Ghana)</td>
+              <td>~28.4%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="53" style="width:0%;background:#EF9F27;"></div></div><span class="bar-label">~17%</span></div></td>
+              <td><span class="badge high">High</span></td>
+            </tr>
+            <tr data-tooltip="NEDCO Ghana: Northern distribution zone">
+              <td>NEDCO (Ghana)</td>
+              <td>~26.5%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="44" style="width:0%;background:#EF9F27;"></div></div><span class="bar-label">~14%</span></div></td>
+              <td><span class="badge high">High</span></td>
+            </tr>
+            <tr data-tooltip="NAWEC Gambia: National utility">
+              <td>NAWEC (Gambia)</td>
+              <td>~22.7%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="31" style="width:0%;background:#EF9F27;"></div></div><span class="bar-label">~10%</span></div></td>
+              <td><span class="badge high">High</span></td>
+            </tr>
+            <tr data-tooltip="SENELEC Senegal: Moderate losses">
+              <td>SENELEC (Senegal)</td>
+              <td>~17.4%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="16" style="width:0%;background:#1D9E75;"></div></div><span class="bar-label">~5%</span></div></td>
+              <td><span class="badge moderate">Moderate</span></td>
+            </tr>
+            <tr data-tooltip="CIE Cote d'Ivoire: Best practice benchmark">
+              <td>CIE (Cote d'Ivoire)</td>
+              <td>8.7%</td>
+              <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" data-width="9" style="width:0%;background:#639922;"></div></div><span class="bar-label">~3%</span></div></td>
+              <td><span class="badge best">Best Practice</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="body" style="font-weight:500; margin-bottom: 0.5rem;">The ECOWAS EIS Data Blindness Gap</p>
+        <p class="body">Even where losses are partially understood at utility level, this knowledge does not reach ECOWAS regulators, DFIs, or national planning ministries. The ECOWAS Energy Information System relies on voluntary, manual reporting, with lags of 2–8 years across most member states. DFIs conducting due diligence cannot obtain current, verified utility performance data — forcing higher risk premiums and, in some cases, declining to invest altogether.</p>
+
+        <p class="body" style="font-weight:500; margin-bottom: 0.5rem; margin-top: 1rem;">The Causal Chain</p>
+        <div class="chain">
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">No feeder-level metering</div>
+            <div class="chain-effect">Losses invisible — no geographic attribution possible</div>
+          </div>
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">Losses undetected</div>
+            <div class="chain-effect">No targeted enforcement; NTL normalises and scales</div>
+          </div>
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">Revenue shortfall</div>
+            <div class="chain-effect">Non-cost-reflective tariffs + unrecovered NTL = insolvency risk</div>
+          </div>
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">Utility debt builds</div>
+            <div class="chain-effect">Cannot service PPA debt; cannot invest in grid maintenance</div>
+          </div>
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">Grid reliability falls</div>
+            <div class="chain-effect">More self-generation on diesel; utility revenue base shrinks</div>
+          </div>
+          <div class="chain-item" data-tooltip="Click to see downstream effects">
+            <div class="chain-cause">Private capital exits</div>
+            <div class="chain-effect">DFI lending constrained; energy access stagnates</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. PLATFORM ARCHITECTURE -->
+    <div class="section reveal" id="architecture">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">03</span>
+        <span class="section-title">Platform Architecture — The Full Stack</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ is a cloud-hosted, IoT-enabled AI platform operating across three integrated functions — Detect, Recover, Report — delivered through six technical components that together form the region's first purpose-built grid intelligence stack.</p>
+
+        <div class="arch-stack">
+          <div class="arch-item" data-tooltip="AI-powered prepaid meter analytics">
+            <div class="arch-name">Smart Meter Analytics Engine</div>
+            <div class="arch-desc">AI/ML analysis of Conlog/Hexing prepaid token transaction histories. Flags billing anomalies, meter bypassing, and theft — calibrated for token-purchase event streams, not monthly billing cycles.</div>
+            <div class="arch-tech">Supervised ML</div>
+          </div>
+          <div class="arch-item" data-tooltip="Rugged IoT sensor network">
+            <div class="arch-name">IoT Grid Node Monitoring</div>
+            <div class="arch-desc">10 ruggedised smart sensors at distribution transformers and primary feeders. Captures voltage, current, active/reactive power, and power factor at 15-minute intervals with 48-hour battery backup.</div>
+            <div class="arch-tech">4G / LoRaWAN</div>
+          </div>
+          <div class="arch-item" data-tooltip="Real-time GIS dashboard">
+            <div class="arch-name">Real-Time GIS Dashboard</div>
+            <div class="arch-desc">Six-module responsive web app — live loss map, zone drill-down, alert feed, investigation queue, monthly PDF reports, and one-click EIS export. English/French, 2G/3G-optimised.</div>
+            <div class="arch-tech">Responsive Web</div>
+          </div>
+          <div class="arch-item" data-tooltip="Automated ECOWAS reporting">
+            <div class="arch-name">Automated EIS Reporting Pipeline</div>
+            <div class="arch-desc">Structured monthly data feed from each utility's GridIQ instance to the ECOWAS EIS via REST API — replacing manual, lagged, and frequently absent reporting with a live, co-validated pipeline.</div>
+            <div class="arch-tech">REST API / JSON</div>
+          </div>
+          <div class="arch-item" data-tooltip="Predictive maintenance ML">
+            <div class="arch-name">Predictive Maintenance Alerts</div>
+            <div class="arch-desc">ML anomaly detection on continuous sensor data identifies transformers showing early degradation — power factor below 0.85, voltage deviation outside ±5%, load factor above 80%, asymmetric phase loading.</div>
+            <div class="arch-tech">ML Anomaly Detection</div>
+          </div>
+          <div class="arch-item" data-tooltip="DFI-format impact tracking">
+            <div class="arch-name">Impact ROI Tracker</div>
+            <div class="arch-desc">Transparent, auditable revenue recovery accounting. Exportable to PDF and Excel in AFD, AfDB, IFC, and EU reporting formats. Makes grant accountability automatic rather than retrospective.</div>
+            <div class="arch-tech">AfDB/EU Formats</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. AI OPPORTUNITY ENGINE -->
+    <div class="section reveal" id="ai">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">04</span>
+        <span class="section-title">The AI Opportunity Engine — Core Differentiator</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ's competitive core is its AI intelligence layer — the set of machine learning capabilities that transform raw sensor and meter data into actionable commercial intelligence. Four distinct AI functions work in concert.</p>
+
+        <div class="ai-grid">
+          <div class="ai-card" data-tooltip="Prepaid token anomaly detection">
+            <div class="ai-icon"><i class="ti ti-cpu" aria-hidden="true"></i></div>
+            <div class="ai-name">Token-stream NTL detection</div>
+            <div class="ai-body">The only NTL engine in the region calibrated for prepaid token-purchase event streams — the dominant metering paradigm across ECOWAS. Detects meter bypass, illegal reconnection, and billing manipulation without requiring monthly cycle data.</div>
+          </div>
+          <div class="ai-card" data-tooltip="Geographic loss attribution">
+            <div class="ai-icon"><i class="ti ti-map-pin" aria-hidden="true"></i></div>
+            <div class="ai-name">Georeferenced loss attribution</div>
+            <div class="ai-body">Compares injected power against metered consumption at feeder and transformer level. AI engine isolates loss zones in real time and generates georeferenced alerts identifying specific clusters for field investigation.</div>
+          </div>
+          <div class="ai-card" data-tooltip="Predictive maintenance ranking">
+            <div class="ai-icon"><i class="ti ti-tool" aria-hidden="true"></i></div>
+            <div class="ai-name">Predictive maintenance ranking</div>
+            <div class="ai-body">Continuous monitoring of voltage deviation, power factor, load factor, and phase asymmetry across all instrumented transformers. Monthly maintenance priority rankings sent to engineering teams — estimated to reduce unplanned outages by 15–25% by Year 2.</div>
+          </div>
+          <div class="ai-card" data-tooltip="Revenue recovery quantification">
+            <div class="ai-icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div>
+            <div class="ai-name">Revenue recovery quantification</div>
+            <div class="ai-body">Real-time calculation of recovered revenue attributable to platform interventions: (Baseline NTL kWh − Current NTL kWh) × utility tariff. Cumulative monthly tracker with DFI-formatted export — creating an auditable accountability record for donors and lenders.</div>
+          </div>
+        </div>
+        <div class="callout" data-tooltip="Key competitive barrier">
+          <strong>What makes this hard to replicate:</strong> The AI models are trained on the specific token-purchase event structures of Conlog and Hexing prepaid systems — the two dominant meter vendors in the ECOWAS market. Adapting generic anomaly detection to this paradigm requires proprietary training data and deep utility integration that cannot be acquired quickly.
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. REVENUE MODEL -->
+    <div class="section reveal" id="revenue">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">05</span>
+        <span class="section-title">Revenue Model — All Monetisation Streams</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ is structured to generate revenue across multiple streams, combining platform subscriptions with performance-linked recovery fees and grant-funded deployment tranches — creating a resilient, multi-layer commercial model suited to both public utility clients and development finance cycles.</p>
+
+        <div class="revenue-list">
+          <div class="rev-item" data-tooltip="Annual platform subscription">
+            <div>
+              <div class="rev-name">Utility SaaS Subscription</div>
+              <div class="rev-desc">Annual platform licence per utility — covering dashboard access, AI analytics, EIS reporting pipeline, and platform maintenance. Scales with feeder count and zone coverage.</div>
+            </div>
+            <div class="rev-model">SaaS / Annual</div>
+          </div>
+          <div class="rev-item" data-tooltip="IoT hardware deployment">
+            <div>
+              <div class="rev-name">IoT Hardware Deployment</div>
+              <div class="rev-desc">One-time or leased provision of ruggedised smart sensors, LoRaWAN gateways, and installation services. Optionally bundled with platform licence in a capex-lite model for constrained utilities.</div>
+            </div>
+            <div class="rev-model">Hardware / Lease</div>
+          </div>
+          <div class="rev-item" data-tooltip="Performance-based revenue share">
+            <div>
+              <div class="rev-name">Revenue Recovery Share</div>
+              <div class="rev-desc">Performance-based fee tied to verified NTL reduction. A percentage of auditable recovered revenue flows to GridIQ — aligning platform incentives directly with utility commercial outcomes.</div>
+            </div>
+            <div class="rev-model">Performance %</div>
+          </div>
+          <div class="rev-item" data-tooltip="Grant-funded project fees">
+            <div>
+              <div class="rev-name">Grant & DFI Project Fees</div>
+              <div class="rev-desc">Implementation and technical assistance fees embedded in AfDB, EU, AFD, and IFC-funded energy access programmes. The ROI Tracker's DFI-format reporting makes GridIQ a natural fit for grant-funded pilots that require impact accountability.</div>
+            </div>
+            <div class="rev-model">Grant / TA Fees</div>
+          </div>
+          <div class="rev-item" data-tooltip="Regional data intelligence">
+            <div>
+              <div class="rev-name">ECOWAS EIS Data Services</div>
+              <div class="rev-desc">Aggregated, anonymised regional grid performance data offered as a subscription intelligence feed to ECOWAS regulators, energy ministries, researchers, and private investors — with GridIQ as the region's primary real-time EIS provider.</div>
+            </div>
+            <div class="rev-model">Data Licence</div>
+          </div>
+          <div class="rev-item" data-tooltip="Ongoing managed services">
+            <div>
+              <div class="rev-name">Maintenance & Managed Services</div>
+              <div class="rev-desc">Ongoing sensor calibration, firmware updates, field support contracts, and quarterly performance reviews. Particularly relevant for utilities with limited in-house technical capacity.</div>
+            </div>
+            <div class="rev-model">Recurring Services</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. PLATFORM FEATURES -->
+    <div class="section reveal" id="features">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">06</span>
+        <span class="section-title">Platform & Product Features</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">The GridIQ dashboard delivers six integrated modules, each purpose-built for the operational realities of ECOWAS utilities — designed for 2G/3G connectivity, bilingual interfaces, and field-first workflows.</p>
+
+        <div class="feature-grid">
+          <div class="feat-card" data-tooltip="Real-time loss visualization">
+            <div class="feat-num">F-01</div>
+            <div class="feat-title">Live Loss Map</div>
+            <div class="feat-body">Feeders colour-coded by NTL severity, refreshed every 15 minutes. Geographic view of the entire pilot zone.</div>
+          </div>
+          <div class="feat-card" data-tooltip="Drill into zone-level data">
+            <div class="feat-num">F-02</div>
+            <div class="feat-title">Zone Drill-Down</div>
+            <div class="feat-body">Injected vs. billed energy per zone with trend charts. Enables root-cause analysis at feeder and transformer level.</div>
+          </div>
+          <div class="feat-card" data-tooltip="Priority theft alerts">
+            <div class="feat-num">F-03</div>
+            <div class="feat-title">Alert Feed</div>
+            <div class="feat-body">Real-time theft signatures and tamper events surfaced as prioritised alerts — with time-stamp, location, and account ID.</div>
+          </div>
+          <div class="feat-card" data-tooltip="Field investigation queue">
+            <div class="feat-num">F-04</div>
+            <div class="feat-title">Investigation Queue</div>
+            <div class="feat-body">Ranked customer account list with GPS coordinates, ready to assign to field teams for physical verification and enforcement.</div>
+          </div>
+          <div class="feat-card" data-tooltip="Auto-generated reports">
+            <div class="feat-num">F-05</div>
+            <div class="feat-title">Monthly PDF Reports</div>
+            <div class="feat-body">Auto-generated performance reports for utility management — covering NTL trends, revenue recovery, and maintenance priorities.</div>
+          </div>
+          <div class="feat-card" data-tooltip="One-click ECOWAS EIS export">
+            <div class="feat-num">F-06</div>
+            <div class="feat-title">EIS One-Click Export</div>
+            <div class="feat-body">Structured submission to the ECOWAS EIS in standardised JSON schema. Utility co-validates before each submission.</div>
+          </div>
+          <div class="feat-card" data-tooltip="Transformer maintenance ranking">
+            <div class="feat-num">F-07</div>
+            <div class="feat-title">Maintenance Rankings</div>
+            <div class="feat-body">Monthly priority list of transformers showing degradation signals — delivered to engineering teams for pre-failure intervention.</div>
+          </div>
+          <div class="feat-card" data-tooltip="DFI-format impact tracking">
+            <div class="feat-num">F-08</div>
+            <div class="feat-title">Impact ROI Tracker</div>
+            <div class="feat-body">Live cumulative revenue recovery accounting in AfDB, IFC, AFD, and EU export formats — making grant reporting automatic.</div>
+          </div>
+          <div class="feat-card" data-tooltip="English/French interface">
+            <div class="feat-num">F-09</div>
+            <div class="feat-title">Bilingual Interface</div>
+            <div class="feat-body">Full English/French interface. 2G/3G-optimised rendering for use in network-constrained utility environments across the region.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. COMPETITIVE LANDSCAPE -->
+    <div class="section reveal" id="moat">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">07</span>
+        <span class="section-title">Competitive Landscape & Moat</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ competes in a market where the main alternatives are expensive Western smart grid platforms built for fully-metered, digitised utilities — a profile that describes almost no ECOWAS utility today. Generic platforms require deep AMI infrastructure that does not exist; they are also not built for the token-purchase metering paradigm. GridIQ's moat is structural, not just technological.</p>
+
+        <div class="moat-list">
+          <div class="moat-item" data-tooltip="Proprietary prepaid token analytics">
+            <i class="ti ti-database moat-ico" aria-hidden="true"></i>
+            <div class="moat-text">
+              <strong>Prepaid token-stream AI</strong>
+              The only NTL detection engine adapted to Conlog/Hexing token-purchase event streams — the dominant meter paradigm across ECOWAS. Competitors require monthly AMI data that most utilities do not have.
+            </div>
+          </div>
+          <div class="moat-item" data-tooltip="Direct ECOWAS EIS integration">
+            <i class="ti ti-plug-connected moat-ico" aria-hidden="true"></i>
+            <div class="moat-text">
+              <strong>ECOWAS EIS integration</strong>
+              GridIQ is the only platform with a direct, standardised API connection to the ECOWAS Energy Information System — making it the path of least resistance for any ECOWAS member utility seeking to meet reporting obligations.
+            </div>
+          </div>
+          <div class="moat-item" data-tooltip="Purpose-built for West Africa">
+            <i class="ti ti-radar moat-ico" aria-hidden="true"></i>
+            <div class="moat-text">
+              <strong>Context-specific hardware stack</strong>
+              IP65 ruggedised sensors with LoRaWAN fallback and 48-hour battery backup are designed specifically for West African substation environments — not repurposed from European or North American deployments.
+            </div>
+          </div>
+          <div class="moat-item" data-tooltip="Built-in DFI reporting">
+            <i class="ti ti-chart-bar moat-ico" aria-hidden="true"></i>
+            <div class="moat-text">
+              <strong>DFI reporting as a native feature</strong>
+              The Impact ROI Tracker generates grant accountability reports in AfDB, IFC, AFD, and EU formats as a built-in platform function — a capability no other grid analytics platform has engineered for this market.
+            </div>
+          </div>
+          <div class="moat-item" data-tooltip="Designed for local constraints">
+            <i class="ti ti-world moat-ico" aria-hidden="true"></i>
+            <div class="moat-text">
+              <strong>Low-bandwidth, bilingual design</strong>
+              The platform is 2G/3G-optimised with a full English/French interface — two design constraints that eliminate all major Western competitors from realistic deployment consideration.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. GO-TO-MARKET -->
+    <div class="section reveal" id="gtm">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">08</span>
+        <span class="section-title">Go-to-Market Strategy</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ enters the market through a pilot-anchor strategy, using a single high-visibility utility deployment to generate verified loss reduction data, DFI relationships, and regional credibility — then scaling across the ECOWAS corridor on the strength of audited outcomes.</p>
+
+        <div class="gtm-phases">
+          <div class="phase" data-tooltip="Year 1: Sierra Leone pilot">
+            <div class="phase-label">Phase 1 · Yr 1</div>
+            <div class="phase-body">
+              <strong>Pilot Deployment — EDSA (Sierra Leone)</strong>
+              <span>Single utility pilot zone. 10 IoT sensors deployed. Baseline NTL measurement established. AI model calibrated to utility's Hexing/Conlog token data. First live EIS report generated. Recovery ROI documented for DFI reporting.</span>
+            </div>
+          </div>
+          <div class="phase" data-tooltip="Year 2: Ghana expansion">
+            <div class="phase-label">Phase 2 · Yr 2</div>
+            <div class="phase-body">
+              <strong>Expansion — ECG & NEDCO (Ghana)</strong>
+              <span>Leverage Sierra Leone outcomes data to onboard Ghana's two distribution utilities. Expand sensor network. Refine AI models on a second national metering dataset. Scale DFI grant pipeline through AfDB and EU Energy Access programmes.</span>
+            </div>
+          </div>
+          <div class="phase" data-tooltip="Years 3-4: Regional rollout">
+            <div class="phase-label">Phase 3 · Yr 3–4</div>
+            <div class="phase-body">
+              <strong>ECOWAS Regional Rollout</strong>
+              <span>Target NAWEC (Gambia), SBEE (Benin), SENELEC (Senegal). Position GridIQ as the de facto ECOWAS utility intelligence standard. Monetise regional EIS data feed as standalone subscription product for ECOWAS Secretariat and DFIs.</span>
+            </div>
+          </div>
+          <div class="phase" data-tooltip="Year 5+: Continental licensing">
+            <div class="phase-label">Phase 4 · Yr 5+</div>
+            <div class="phase-body">
+              <strong>Continental Platform Licensing</strong>
+              <span>License platform and AI models to utilities in East and Southern Africa (EAPP/SAPP corridors). Partner with major DFIs to embed GridIQ as a standard component of energy access financing covenants.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout" data-tooltip="DFI as channel strategy">
+          <strong>DFI as channel, not just funder:</strong> By building DFI-format reporting natively into the platform, GridIQ makes itself a procurement preference for any AfDB, IFC, or EU-funded utility modernisation programme. Each grant-funded deployment is also a sales case study for the next.
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. TECHNOLOGY STACK -->
+    <div class="section reveal" id="tech">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">09</span>
+        <span class="section-title">Technology Stack</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ's architecture spans hardware edge, cloud data processing, AI/ML modelling, and standards-based API integration — designed from the ground up for the infrastructure constraints of West African utility environments.</p>
+
+        <div class="stack-cols">
+          <div class="stack-block" data-tooltip="Edge hardware layer">
+            <div class="stack-cat">Hardware / Edge</div>
+            <div class="stack-items">
+              <span class="stack-pill">IoT Smart Sensors</span>
+              <span class="stack-pill">IP65 Enclosures</span>
+              <span class="stack-pill">4G Cellular</span>
+              <span class="stack-pill">LoRaWAN</span>
+              <span class="stack-pill">48hr Battery Backup</span>
+              <span class="stack-pill">15-min Sampling</span>
+            </div>
+          </div>
+          <div class="stack-block" data-tooltip="Machine learning models">
+            <div class="stack-cat">AI / ML</div>
+            <div class="stack-items">
+              <span class="stack-pill">Supervised ML</span>
+              <span class="stack-pill">Time-Series Anomaly</span>
+              <span class="stack-pill">Token-Stream Models</span>
+              <span class="stack-pill">Predictive Maintenance</span>
+            </div>
+          </div>
+          <div class="stack-block" data-tooltip="Cloud infrastructure">
+            <div class="stack-cat">Cloud / Data</div>
+            <div class="stack-items">
+              <span class="stack-pill">Cloud Hosting</span>
+              <span class="stack-pill">Time-Series DB</span>
+              <span class="stack-pill">Real-Time Streaming</span>
+              <span class="stack-pill">Auto PDF Generation</span>
+            </div>
+          </div>
+          <div class="stack-block" data-tooltip="API and integrations">
+            <div class="stack-cat">Integration / API</div>
+            <div class="stack-items">
+              <span class="stack-pill">REST API</span>
+              <span class="stack-pill">JSON Schema (EIS)</span>
+              <span class="stack-pill">GIS / Mapping</span>
+              <span class="stack-pill">Conlog / Hexing SDK</span>
+              <span class="stack-pill">Excel / PDF Export</span>
+            </div>
+          </div>
+          <div class="stack-block" data-tooltip="Frontend application">
+            <div class="stack-cat">Frontend</div>
+            <div class="stack-items">
+              <span class="stack-pill">Responsive Web App</span>
+              <span class="stack-pill">English / French</span>
+              <span class="stack-pill">2G / 3G Optimised</span>
+              <span class="stack-pill">Progressive Load</span>
+            </div>
+          </div>
+          <div class="stack-block" data-tooltip="Compliance reporting">
+            <div class="stack-cat">Compliance / Reporting</div>
+            <div class="stack-items">
+              <span class="stack-pill">AfDB Format</span>
+              <span class="stack-pill">IFC Format</span>
+              <span class="stack-pill">AFD Format</span>
+              <span class="stack-pill">EU Format</span>
+              <span class="stack-pill">ECOWAS EIS Schema</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. TEAM -->
+    <div class="section reveal" id="team">
+      <div class="section-header" onclick="toggleSection(this)">
+        <span class="section-num">10</span>
+        <span class="section-title">Team & Organisation</span>
+        <span class="section-toggle">▼</span>
+      </div>
+      <div class="section-content">
+        <p class="body">GridIQ West Africa is a joint venture between three complementary organisations, combining deep West African utility relationships, energy sector technical expertise, and AI/software engineering capability.</p>
+
+        <div class="team-grid">
+          <div class="team-card" data-tooltip="Utility partnerships lead">
+            <div class="team-role">Co-Founder</div>
+            <div class="team-name">RenewBiz</div>
+            <div class="team-org">West Africa energy business development and utility partnership lead. Primary interface with ECOWAS member utilities and DFI programme teams.</div>
+          </div>
+          <div class="team-card" data-tooltip="Regulatory and technical advisory">
+            <div class="team-role">Co-Founder</div>
+            <div class="team-name">AFCEN</div>
+            <div class="team-org">African Centre for Energy and Natural resources. Technical advisory, regulatory engagement, and ECOWAS Secretariat relationships.</div>
+          </div>
+          <div class="team-card" data-tooltip="AI/IoT engineering">
+            <div class="team-role">Co-Founder</div>
+            <div class="team-name">Smart Innovation</div>
+            <div class="team-org">AI/ML development, IoT hardware integration, cloud platform engineering, and software product delivery.</div>
+          </div>
+        </div>
+
+        <p class="body">Key functional roles required across the venture include: Platform Engineering Lead, AI/ML Data Scientist (NTL specialisation), IoT Hardware Engineer, GIS & Geospatial Analyst, Utility Partnerships Manager (Francophone West Africa), and DFI Grants & Reporting Specialist.</p>
+
+        <div class="callout" data-tooltip="Three-partner competitive advantage">
+          <strong>Organisational advantage:</strong> The three-partner structure deliberately combines what no single organisation in the market currently offers — deep utility-side relationships (RenewBiz), ECOWAS regulatory access (AFCEN), and the AI/IoT engineering capability to actually build and maintain the platform (Smart Innovation). This coalition is itself a competitive barrier.
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-size: 12px; color: var(--text-muted); font-family: 'DM Mono', monospace; text-align: center;">Copyright &copy; RenewBiz &middot; AFCEN &middot; Smart Innovation — Confidential &amp; Proprietary</p>
+
+  </div>
+
+  <button class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="ti ti-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <script>
+    // ===== LOADING SCREEN =====
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading-screen').classList.add('hidden');
+      }, 1800);
+    });
+
+    // ===== PARTICLE CANVAS =====
+    (function() {
+      const canvas = document.getElementById('particle-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+      const PARTICLE_COUNT = 60;
+      const CONNECTION_DISTANCE = 120;
+      const MAX_CONNECTIONS = 3;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = (Math.random() - 0.5) * 0.4;
+          this.radius = Math.random() * 2 + 1;
+          this.opacity = Math.random() * 0.3 + 0.1;
+        }
+        update() {
+          this.x += this.vx;
+          this.y += this.vy;
+          if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+          if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(239, 159, 39, ${this.opacity})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
+      }
+
+      function drawConnections() {
+        for (let i = 0; i < particles.length; i++) {
+          let connections = 0;
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CONNECTION_DISTANCE && connections < MAX_CONNECTIONS) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(239, 159, 39, ${0.08 * (1 - dist / CONNECTION_DISTANCE)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+              connections++;
+            }
+          }
+        }
+      }
+
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          // Gentle mouse repulsion
+          const dx = p.x - mouseX;
+          const dy = p.y - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 150) {
+            p.vx += dx / dist * 0.02;
+            p.vy += dy / dist * 0.02;
+          }
+          // Damping
+          p.vx *= 0.99;
+          p.vy *= 0.99;
+          // Min speed
+          if (Math.abs(p.vx) < 0.1) p.vx += (Math.random() - 0.5) * 0.05;
+          if (Math.abs(p.vy) < 0.1) p.vy += (Math.random() - 0.5) * 0.05;
+          p.update();
+          p.draw();
+        });
+        drawConnections();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ===== SCROLL REVEAL =====
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Trigger counter animation
+          entry.target.querySelectorAll('.counter').forEach(counter => {
+            animateCounter(counter);
+          });
+          // Trigger bar fills
+          entry.target.querySelectorAll('.bar-fill').forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            if (width) {
+              setTimeout(() => {
+                bar.style.width = width + '%';
+              }, 300);
+            }
+          });
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ===== COUNTER ANIMATION =====
+    function animateCounter(el) {
+      const target = parseFloat(el.getAttribute('data-target'));
+      const isDecimal = target % 1 !== 0;
+      const duration = 2000;
+      const start = performance.now();
+      const startVal = 0;
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+        const current = startVal + (target - startVal) * eased;
+        el.textContent = isDecimal ? current.toFixed(1) : Math.round(current).toLocaleString();
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      progressBar.style.width = progress + '%';
+    });
+
+    // ===== NAV ACTIVE STATE =====
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
+    const navObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('data-target') === entry.target.id) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(section => navObserver.observe(section));
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('data-target');
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===== SECTION TOGGLE =====
+    function toggleSection(header) {
+      const section = header.closest('.section');
+      section.classList.toggle('collapsed');
+      const toggle = header.querySelector('.section-toggle');
+      toggle.textContent = section.classList.contains('collapsed') ? '▶' : '▼';
+    }
+
+    // ===== SCROLL TO TOP =====
+    const scrollTopBtn = document.getElementById('scroll-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 600) {
+        scrollTopBtn.classList.add('visible');
+      } else {
+        scrollTopBtn.classList.remove('visible');
+      }
+    });
+
+    // ===== TOOLTIP =====
+    const tooltip = document.getElementById('tooltip');
+    document.querySelectorAll('[data-tooltip]').forEach(el => {
+      el.addEventListener('mouseenter', (e) => {
+        const text = el.getAttribute('data-tooltip');
+        tooltip.textContent = text;
+        tooltip.classList.add('visible');
+      });
+      el.addEventListener('mousemove', (e) => {
+        tooltip.style.left = (e.clientX + 12) + 'px';
+        tooltip.style.top = (e.clientY - 30) + 'px';
+      });
+      el.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('visible');
+      });
+    });
+
+    // ===== CHAIN ITEM INTERACTION =====
+    document.querySelectorAll('.chain-item').forEach((item, index) => {
+      item.addEventListener('click', () => {
+        // Highlight this and all subsequent items briefly
+        const allItems = document.querySelectorAll('.chain-item');
+        allItems.forEach((other, i) => {
+          if (i >= index) {
+            other.style.background = 'rgba(239, 159, 39, 0.08)';
+            setTimeout(() => {
+              other.style.background = '';
+            }, 800);
+          }
+        });
+      });
+    });
+
+    // ===== STAT CARD CLICK =====
+    document.querySelectorAll('.stat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          card.style.transform = '';
+        }, 300);
+      });
+    });
+
+    // ===== PARALLAX HERO =====
+    const hero = document.querySelector('.hero');
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      if (scrollY < 500) {
+        hero.style.transform = `translateY(${scrollY * 0.15}px)`;
+        hero.style.opacity = 1 - (scrollY / 600);
+      }
+    });
+
+    // ===== KEYBOARD NAVIGATION =====
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Home') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      if (e.key === 'End') {
+        e.preventDefault();
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }
+    });
+
+    // ===== MOAT ITEM PULSE ON HOVER =====
+    document.querySelectorAll('.moat-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        const icon = item.querySelector('.moat-ico');
+        icon.style.animation = 'none';
+        icon.offsetHeight; // trigger reflow
+        icon.style.animation = 'pulse 0.6s ease';
+      });
+    });
+
+    // Add pulse keyframes dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // ===== REVENUE ITEM INTERACTION =====
+    document.querySelectorAll('.rev-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const model = item.querySelector('.rev-model');
+        model.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          model.style.transform = '';
+        }, 300);
+      });
+    });
+
+    // ===== PHASE INTERACTION =====
+    document.querySelectorAll('.phase').forEach((phase, index) => {
+      phase.addEventListener('click', () => {
+        // Expand all phases when any is clicked
+        document.querySelectorAll('.phase').forEach((p, i) => {
+          if (i <= index) {
+            p.style.borderLeft = '3px solid var(--amber)';
+            setTimeout(() => {
+              p.style.borderLeft = '';
+            }, 600);
+          }
+        });
+      });
+    });
+
+    // ===== FEATURE CARD INTERACTION =====
+    document.querySelectorAll('.feat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.transform = 'translateY(-8px) scale(1.02)';
+        setTimeout(() => {
+          card.style.transform = '';
+        }, 400);
+      });
+    });
+
+    // ===== TEAM CARD INTERACTION =====
+    document.querySelectorAll('.team-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.style.transform = 'translateY(-10px) rotate(1deg)';
+        setTimeout(() => {
+          card.style.transform = '';
+        }, 400);
+      });
+    });
+
+    // ===== AI CARD INTERACTION =====
+    document.querySelectorAll('.ai-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const icon = card.querySelector('.ai-icon');
+        icon.style.transform = 'scale(1.4) rotate(15deg)';
+        setTimeout(() => {
+          icon.style.transform = '';
+        }, 500);
+      });
+    });
+
+    // ===== ARCH ITEM INTERACTION =====
+    document.querySelectorAll('.arch-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const tech = item.querySelector('.arch-tech');
+        tech.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+          tech.style.transform = '';
+        }, 300);
+      });
+    });
+
+    // ===== TAG INTERACTION =====
+    document.querySelectorAll('.tag').forEach((tag, index) => {
+      tag.addEventListener('click', () => {
+        tag.style.background = 'var(--amber)';
+        tag.style.color = 'white';
+        tag.style.borderColor = 'var(--amber)';
+        setTimeout(() => {
+          tag.style.background = '';
+          tag.style.color = '';
+          tag.style.borderColor = '';
+        }, 600);
+      });
+      // Staggered entrance animation
+      tag.style.animation = `fadeInUp 0.5s ease-out ${1.1 + index * 0.1}s both`;
+    });
+
+    // ===== CALLOUT INTERACTION =====
+    document.querySelectorAll('.callout').forEach(callout => {
+      callout.addEventListener('click', () => {
+        callout.style.background = 'rgba(239, 159, 39, 0.15)';
+        setTimeout(() => {
+          callout.style.background = '';
+        }, 600);
+      });
+    });
+
+    // ===== STACK PILL INTERACTION =====
+    document.querySelectorAll('.stack-pill').forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.stopPropagation();
+        pill.style.transform = 'translateY(-4px) scale(1.1)';
+        setTimeout(() => {
+          pill.style.transform = '';
+        }, 300);
+      });
+    });
+
+    // ===== LOSS TABLE ROW INTERACTION =====
+    document.querySelectorAll('.loss-table tbody tr').forEach(row => {
+      row.addEventListener('click', () => {
+        row.style.background = 'rgba(239, 159, 39, 0.08)';
+        setTimeout(() => {
+          row.style.background = '';
+        }, 500);
+      });
+    });
+
+    // ===== SMOOTH SCROLL FOR ANCHOR LINKS =====
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===== INITIAL STAT CARD ANIMATION =====
+    document.querySelectorAll('.stat-card').forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      setTimeout(() => {
+        card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 1500 + index * 150);
+    });
+  </script>
+</body>
+</html>
