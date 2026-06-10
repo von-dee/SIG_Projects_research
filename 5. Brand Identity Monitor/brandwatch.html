@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrandWatch Africa: AI-Powered Brand Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #f59e0b; /* Amber/Gold for Mining/Africa */
+            --secondary: #06b6d4; /* Cyan for Tech/AI */
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html {
+            scroll-behavior: smooth;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .float-anim-delay { animation: float 6s ease-in-out 2s infinite; }
+
+        /* Hero Background Elements */
+        .hero-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            animation: pulse-ring 4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Nav active link */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Tabs & Accordion */
+        .tab-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+            background: rgba(245, 158, 11, 0.1);
+        }
+        .tab-content { display: none; animation: fadeEffect 0.5s; }
+        .tab-content.active { display: block; }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+        }
+        .accordion-btn.open + .accordion-content {
+            max-height: 500px;
+        }
+        .accordion-btn.open i { transform: rotate(180deg); }
+
+        @keyframes fadeEffect { from {opacity: 0; transform: translateY(10px);} to {opacity: 1; transform: translateY(0);} }
+
+        /* Roadmap Line */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 40px;
+            bottom: 0;
+            width: 2px;
+            background: #334155;
+        }
+        .timeline-item:last-child::before { display: none; }
+
+        /* Flowchart Arrows */
+        .flow-arrow {
+            font-size: 24px;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-broadcast-tower text-amber-500"></i>
+                <span class="text-white">BrandWatch</span><span class="text-amber-500">Africa</span>
+            </a>
+            <div class="hidden md:flex gap-8 text-sm font-medium">
+                <a href="#problem" class="nav-link text-slate-300 hover:text-white transition">Problem</a>
+                <a href="#personas" class="nav-link text-slate-300 hover:text-white transition">Personas</a>
+                <a href="#architecture" class="nav-link text-slate-300 hover:text-white transition">Architecture</a>
+                <a href="#pricing" class="nav-link text-slate-300 hover:text-white transition">Pricing</a>
+                <a href="#financials" class="nav-link text-slate-300 hover:text-white transition">Financials</a>
+                <a href="#roadmap" class="nav-link text-slate-300 hover:text-white transition">Roadmap</a>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-white text-2xl"><i class="fas fa-bars"></i></button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur pb-4">
+            <a href="#problem" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Problem</a>
+            <a href="#personas" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Personas</a>
+            <a href="#architecture" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Architecture</a>
+            <a href="#pricing" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Pricing</a>
+            <a href="#financials" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Financials</a>
+            <a href="#roadmap" class="block px-6 py-2 text-slate-300 hover:text-amber-500">Roadmap</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
+        <!-- Animated Background Elements -->
+        <div class="hero-circle w-64 h-64 top-20 left-10 absolute"></div>
+        <div class="hero-circle w-96 h-96 bottom-10 right-10 absolute" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/4 left-1/4 w-4 h-4 bg-amber-500 rounded-full float-anim opacity-40"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-6 h-6 bg-cyan-500 rounded-full float-anim-delay opacity-40"></div>
+        
+        <div class="text-center z-10 max-w-4xl">
+            <div class="inline-block px-4 py-1 border border-amber-500/50 rounded-full text-amber-400 text-sm mb-6 tracking-wider">
+                AI-POWERED MONITORING FOR AFRICAN EXTRACTIVES
+            </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                Close the <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-amber-600">Reputation Blind Spot</span> in African Mining
+            </h1>
+            <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto">
+                BrandWatch Africa monitors what global tools miss: Radio, local languages, and offline community discourse in Ghana & Sub-Saharan Africa.
+            </p>
+            <a href="#problem" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 px-8 rounded-full transition transform hover:scale-105">
+                Explore The Vision <i class="fas fa-arrow-down"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Problem Section -->
+    <section id="problem" class="py-20 px-6 bg-slate-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">01 — THE CORE PROBLEM</span>
+                <h2 class="text-4xl font-bold mt-4">The Disconnect</h2>
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto">Global tools monitor 25M+ online sources, but fundamentally miss how African communities actually communicate.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-10 mb-16">
+                <div class="reveal">
+                    <h3 class="text-2xl font-bold mb-4 text-cyan-400">Why Existing Solutions Fail</h3>
+                    <div class="space-y-4">
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-amber-500 hover:bg-slate-700 transition">
+                            <h4 class="font-bold text-amber-400"><i class="fas fa-radio mr-2"></i>Radio is Primary</h4>
+                            <p class="text-slate-400 text-sm mt-1">Ghana has 500+ licensed stations. Call-in shows are the primary forum for grievance expression. Global tools: <span class="text-red-400">Not available</span>.</p>
+                        </div>
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-amber-500 hover:bg-slate-700 transition">
+                            <h4 class="font-bold text-amber-400"><i class="fas fa-language mr-2"></i>Language Barriers</h4>
+                            <p class="text-slate-400 text-sm mt-1">Global tools miss Twi, Ga, Ewe, Dagbani. They fail to interpret sarcasm, proverbs, and culturally specific expressions.</p>
+                        </div>
+                        <div class="bg-slate-800 p-5 rounded-lg border-l-4 border-amber-500 hover:bg-slate-700 transition">
+                            <h4 class="font-bold text-amber-400"><i class="fas fa-users-slash mr-2"></i>Offline Discourse Missed</h4>
+                            <p class="text-slate-400 text-sm mt-1">Town hall meetings, chief's courts, and market gossip are completely invisible to social listening tools.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal flex flex-col justify-center bg-gradient-to-br from-slate-800 to-slate-900 p-8 rounded-2xl border border-slate-700">
+                    <h3 class="text-2xl font-bold mb-6 text-amber-400">The Stakes are Higher</h3>
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-handshake text-amber-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Social License to Operate (SLO)</h4>
+                                <p class="text-slate-400 text-sm">Without community buy-in, operations face protests, blockades, and regulatory shutdowns.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-chart-line text-amber-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">ESG Investor Scrutiny</h4>
+                                <p class="text-slate-400 text-sm">Lenders now build community engagement requirements into loan covenants.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                                <i class="fas fa-gavel text-amber-500"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Regulatory Pressure</h4>
+                                <p class="text-slate-400 text-sm">Ghana's Minerals Commission is intensifying enforcement of local content regulations.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personas Section -->
+    <section id="personas" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">02 — USER PERSONAS</span>
+                <h2 class="text-4xl font-bold mt-4">Who We Serve</h2>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4 mb-8 reveal">
+                <button class="tab-btn active px-6 py-2 border border-slate-600 rounded-full font-semibold transition" data-tab="kwame">Kwame</button>
+                <button class="tab-btn px-6 py-2 border border-slate-600 rounded-full font-semibold transition" data-tab="ama">Ama</button>
+                <button class="tab-btn px-6 py-2 border border-slate-600 rounded-full font-semibold transition" data-tab="kofi">Kofi</button>
+            </div>
+
+            <div class="reveal max-w-4xl mx-auto bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 shadow-2xl">
+                <!-- Kwame -->
+                <div id="kwame" class="tab-content active p-8 md:p-12">
+                    <div class="md:flex gap-8">
+                        <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
+                            <div class="w-32 h-32 bg-amber-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-amber-500">
+                                <i class="fas fa-user-tie text-5xl text-amber-500"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Kwame</h3>
+                            <p class="text-slate-400 text-sm text-center">Community Relations Manager</p>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h4 class="text-amber-400 font-bold mb-2">Pain Points:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>Relies on outdated quarterly surveys; misses real-time pulse.</li>
+                                <li>Hears about issues only after they escalate to protests or radio headlines.</li>
+                            </ul>
+                            <h4 class="text-cyan-400 font-bold mb-2">Goals:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>Detect grievances before they become public crises.</li>
+                                <li>Generate automated ESG-aligned reports.</li>
+                            </ul>
+                            <blockquote class="italic text-slate-400 border-l-4 border-slate-600 pl-4 text-sm">
+                                "By the time I hear about a community issue from my field officers, it's already on the radio. I need to know before it becomes a headline."
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <!-- Ama -->
+                <div id="ama" class="tab-content p-8 md:p-12">
+                    <div class="md:flex gap-8">
+                        <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
+                            <div class="w-32 h-32 bg-cyan-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-cyan-500">
+                                <i class="fas fa-seedling text-5xl text-cyan-500"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Ama</h3>
+                            <p class="text-slate-400 text-sm text-center">Sustainability & ESG Director</p>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h4 class="text-amber-400 font-bold mb-2">Pain Points:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>Current reporting is manual, anecdotal, and lacks quantitative rigor.</li>
+                                <li>Cannot connect community engagement metrics to operational risk.</li>
+                            </ul>
+                            <h4 class="text-cyan-400 font-bold mb-2">Goals:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>Quantify social license to operate as a measurable KPI.</li>
+                                <li>Identify emerging issues before they affect share price.</li>
+                            </ul>
+                            <blockquote class="italic text-slate-400 border-l-4 border-slate-600 pl-4 text-sm">
+                                "Investors ask me every quarter: 'How's your social license in Ghana?' Right now, I give them stories. I need to give them numbers."
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kofi -->
+                <div id="kofi" class="tab-content p-8 md:p-12">
+                    <div class="md:flex gap-8">
+                        <div class="md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
+                            <div class="w-32 h-32 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4 border-2 border-emerald-500">
+                                <i class="fas fa-newspaper text-5xl text-emerald-500"></i>
+                            </div>
+                            <h3 class="text-xl font-bold">Kofi</h3>
+                            <p class="text-slate-400 text-sm text-center">Comms Director, Chamber of Mines</p>
+                        </div>
+                        <div class="md:w-2/3">
+                            <h4 class="text-amber-400 font-bold mb-2">Pain Points:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>When one company errs, the whole industry suffers reputationally.</li>
+                                <li>Lacks tools to monitor radio and local community discussions.</li>
+                            </ul>
+                            <h4 class="text-cyan-400 font-bold mb-2">Goals:</h4>
+                            <ul class="text-slate-300 space-y-2 mb-6 text-sm list-disc list-inside">
+                                <li>Identify and counter misinformation about the mining sector.</li>
+                                <li>Generate industry-wide sentiment reports for government engagement.</li>
+                            </ul>
+                            <blockquote class="italic text-slate-400 border-l-4 border-slate-600 pl-4 text-sm">
+                                "When there's a galamsey incident, the entire industry suffers. I need to know what's being said across every channel."
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section id="architecture" class="py-20 px-6 bg-slate-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">03 — ARCHITECTURE</span>
+                <h2 class="text-4xl font-bold mt-4">The BrandWatch Africa Engine</h2>
+            </div>
+
+            <div class="reveal grid md:grid-cols-3 gap-8 mb-12">
+                <!-- Digital Media -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300">
+                    <div class="w-14 h-14 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-globe text-2xl text-cyan-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Digital Media Monitoring</h3>
+                    <ul class="text-slate-400 space-y-2 text-sm">
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>Social, News, Forums, Reviews</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>African Platform Coverage (Jumia, GhanaWeb)</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>Code-switching Detection</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>WhatsApp Business API</li>
+                    </ul>
+                </div>
+
+                <!-- Traditional Media (Key Innovation) -->
+                <div class="bg-gradient-to-br from-amber-500/10 to-slate-800 rounded-xl p-6 border-2 border-amber-500 shadow-lg shadow-amber-500/10 transform md:-translate-y-4">
+                    <div class="w-14 h-14 bg-amber-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-radio text-2xl text-amber-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Traditional Media <span class="text-amber-500 text-xs">(Innovation)</span></h3>
+                    <ul class="text-slate-400 space-y-2 text-sm">
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>FM/Streaming/Satellite Radio Capture</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>Whisper ASR (African-accented)</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>Local News & Print-to-Digital OCR</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>Community Reporter Network</li>
+                    </ul>
+                </div>
+
+                <!-- AI Intelligence -->
+                <div class="bg-slate-800 rounded-xl p-6 border border-slate-700 hover:border-cyan-500 transition duration-300">
+                    <div class="w-14 h-14 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-2xl text-cyan-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI Intelligence Layer</h3>
+                    <ul class="text-slate-400 space-y-2 text-sm">
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>Conversational Brand Assistant</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>AI Visibility (LLM Tracking)</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>Anomaly & Emotion Detection</li>
+                        <li><i class="fas fa-check text-cyan-500 mr-2"></i>Social License to Operate (SLO) Score</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Flow Chart Visualization -->
+            <div class="reveal bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+                <h3 class="text-center text-lg font-bold mb-6 text-slate-300">Radio Monitoring Data Pipeline</h3>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center text-sm">
+                    <div class="bg-slate-700 px-4 py-3 rounded-lg w-full md:w-auto">
+                        <i class="fas fa-satellite-dish text-amber-500 block mb-1"></i>
+                        Capture (FM/Online/Sat)
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500 hidden md:block flow-arrow"></i>
+                    <i class="fas fa-arrow-down text-slate-500 md:hidden flow-arrow"></i>
+                    <div class="bg-slate-700 px-4 py-3 rounded-lg w-full md:w-auto">
+                        <i class="fas fa-volume-mute text-cyan-500 block mb-1"></i>
+                        Audio Processing & Filtering
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500 hidden md:block flow-arrow"></i>
+                    <i class="fas fa-arrow-down text-slate-500 md:hidden flow-arrow"></i>
+                    <div class="bg-slate-700 px-4 py-3 rounded-lg w-full md:w-auto">
+                        <i class="fas fa-closed-captioning text-cyan-500 block mb-1"></i>
+                        Speech-to-Text (Twi/Ga/Ewe)
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500 hidden md:block flow-arrow"></i>
+                    <i class="fas fa-arrow-down text-slate-500 md:hidden flow-arrow"></i>
+                    <div class="bg-slate-700 px-4 py-3 rounded-lg w-full md:w-auto">
+                        <i class="fas fa-chart-pie text-amber-500 block mb-1"></i>
+                        AI Content Analysis
+                    </div>
+                    <i class="fas fa-arrow-right text-slate-500 hidden md:block flow-arrow"></i>
+                    <i class="fas fa-arrow-down text-slate-500 md:hidden flow-arrow"></i>
+                    <div class="bg-gradient-to-r from-amber-600 to-cyan-600 px-4 py-3 rounded-lg w-full md:w-auto font-bold">
+                        <i class="fas fa-bell block mb-1"></i>
+                        Real-time Alerts & Dashboards
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">04 — PRICING</span>
+                <h2 class="text-4xl font-bold mt-4">Tiered for Impact</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 reveal">
+                <!-- Starter -->
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-slate-500 transition duration-300 flex flex-col">
+                    <h3 class="text-xl font-bold text-slate-300">Community Pulse</h3>
+                    <p class="text-slate-500 text-sm mb-6">Starter Tier</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-extrabold">$499</span>
+                        <span class="text-slate-400">/month</span>
+                    </div>
+                    <ul class="text-slate-400 space-y-3 mb-8 flex-grow text-sm">
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>Digital media monitoring</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>3 keyword projects</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>5,000 mentions/month</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>English sentiment only</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>1 user seat</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-500 text-slate-300 rounded-lg hover:bg-slate-700 transition">Get Started</button>
+                </div>
+
+                <!-- Professional (Highlighted) -->
+                <div class="bg-slate-800 rounded-2xl p-8 border-2 border-amber-500 shadow-xl shadow-amber-500/10 flex flex-col transform md:scale-105">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-bold text-white">Catchment Monitor</h3>
+                        <span class="bg-amber-500 text-slate-900 text-xs font-bold px-2 py-1 rounded">POPULAR</span>
+                    </div>
+                    <p class="text-amber-400 text-sm mb-6">Professional Tier</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-extrabold">$1,499</span>
+                        <span class="text-slate-400">/month</span>
+                    </div>
+                    <ul class="text-slate-300 space-y-3 mb-8 flex-grow text-sm">
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>Everything in Starter</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>10 projects & 50k mentions</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>English + 2 Local Languages</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>20 Radio Stations</li>
+                        <li><i class="fas fa-check text-amber-500 mr-2"></i>AI Insights & 5 user seats</li>
+                    </ul>
+                    <button class="w-full py-3 bg-amber-500 text-slate-900 font-bold rounded-lg hover:bg-amber-600 transition">Get Started</button>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="bg-slate-800 rounded-2xl p-8 border border-slate-700 hover:border-slate-500 transition duration-300 flex flex-col">
+                    <h3 class="text-xl font-bold text-slate-300">Social License Command</h3>
+                    <p class="text-slate-500 text-sm mb-6">Enterprise Tier</p>
+                    <div class="mb-6">
+                        <span class="text-4xl font-extrabold">$4,999</span>
+                        <span class="text-slate-400">/month</span>
+                    </div>
+                    <ul class="text-slate-400 space-y-3 mb-8 flex-grow text-sm">
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>Unlimited projects & mentions</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>100+ Radio & Print Coverage</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>Brand Assistant (AI Chat)</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>SLO Score & ESG Integration</li>
+                        <li><i class="fas fa-check text-slate-500 mr-2"></i>GIS Mapping & 25 seats</li>
+                    </ul>
+                    <button class="w-full py-3 border border-slate-500 text-slate-300 rounded-lg hover:bg-slate-700 transition">Contact Sales</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financials Section -->
+    <section id="financials" class="py-20 px-6 bg-slate-900">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">05 — FINANCIALS</span>
+                <h2 class="text-4xl font-bold mt-4">Growth & Projections</h2>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 reveal">
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 text-center">
+                    <p class="text-slate-400 text-sm mb-2">Month 24 ARR</p>
+                    <h3 class="text-3xl font-extrabold text-amber-400 counter" data-target="3.75">0</h3>
+                    <p class="text-slate-500 text-xs mt-1">Million USD</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 text-center">
+                    <p class="text-slate-400 text-sm mb-2">Month 24 MRR</p>
+                    <h3 class="text-3xl font-extrabold text-cyan-400 counter" data-target="312">0</h3>
+                    <p class="text-slate-500 text-xs mt-1">Thousand USD</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 text-center">
+                    <p class="text-slate-400 text-sm mb-2">Month 24 Customers</p>
+                    <h3 class="text-3xl font-extrabold text-white counter" data-target="60">0</h3>
+                    <p class="text-slate-500 text-xs mt-1">Paying Accounts</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 text-center">
+                    <p class="text-slate-400 text-sm mb-2">Gross Margin</p>
+                    <h3 class="text-3xl font-extrabold text-emerald-400 counter" data-target="72">0</h3>
+                    <p class="text-slate-500 text-xs mt-1">Percent Target</p>
+                </div>
+            </div>
+
+            <div class="reveal text-center bg-gradient-to-r from-amber-500/10 to-cyan-500/10 p-8 rounded-2xl border border-slate-700">
+                <h3 class="text-2xl font-bold mb-4">Path to Profitability</h3>
+                <p class="text-slate-300 max-w-2xl mx-auto mb-6">
+                    BrandWatch Africa reaches cash-flow positivity by <span class="text-amber-400 font-bold">Month 18</span> and achieves cumulative profitability by <span class="text-cyan-400 font-bold">Month 28</span>, requiring an initial total funding of <span class="text-white font-bold">$2.15M</span>.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="bg-slate-900/50 px-4 py-2 rounded-lg border border-slate-600">
+                        <p class="text-xs text-slate-400">Pre-Seed</p>
+                        <p class="font-bold">$150k</p>
+                    </div>
+                    <div class="bg-slate-900/50 px-4 py-2 rounded-lg border border-slate-600">
+                        <p class="text-xs text-slate-400">Seed</p>
+                        <p class="font-bold">$500k</p>
+                    </div>
+                    <div class="bg-slate-900/50 px-4 py-2 rounded-lg border border-slate-600">
+                        <p class="text-xs text-slate-400">Series A</p>
+                        <p class="font-bold">$1.5M</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section id="roadmap" class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">06 — ROADMAP</span>
+                <h2 class="text-4xl font-bold mt-4">24-Month Build Plan</h2>
+            </div>
+
+            <div class="relative reveal">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item relative pl-16 pb-12">
+                    <div class="absolute left-0 top-0 w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center z-10 border-4 border-slate-900">
+                        <span class="font-bold text-slate-900">1</span>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-amber-500 transition">
+                        <h3 class="text-xl font-bold text-amber-400 mb-1">Phase 1: Foundation</h3>
+                        <p class="text-slate-500 text-sm mb-4">Months 1-6</p>
+                        <p class="text-slate-300 text-sm">Team assembly, core platform scaffolding, social media monitoring MVP, beta launch with 5 paying customers.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item relative pl-16 pb-12">
+                    <div class="absolute left-0 top-0 w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center z-10 border-4 border-slate-900">
+                        <span class="font-bold text-slate-900">2</span>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-amber-500 transition">
+                        <h3 class="text-xl font-bold text-amber-400 mb-1">Phase 2: Traditional Media</h3>
+                        <p class="text-slate-500 text-sm mb-4">Months 7-12</p>
+                        <p class="text-slate-300 text-sm">Radio infrastructure deployment, African-accented Whisper ASR, Twi/Ga NLP models, Enterprise tier launch.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item relative pl-16 pb-12">
+                    <div class="absolute left-0 top-0 w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center z-10 border-4 border-slate-900">
+                        <span class="font-bold text-slate-900">3</span>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-cyan-500 transition">
+                        <h3 class="text-xl font-bold text-cyan-400 mb-1">Phase 3: AI & ESG</h3>
+                        <p class="text-slate-500 text-sm mb-4">Months 13-18</p>
+                        <p class="text-slate-300 text-sm">Conversational Brand Assistant, SLO Score algorithm, GIS catchment mapping, ESG reporting integration. Cash-flow positive.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4 -->
+                <div class="timeline-item relative pl-16">
+                    <div class="absolute left-0 top-0 w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center z-10 border-4 border-slate-900">
+                        <span class="font-bold text-slate-900">4</span>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 hover:border-emerald-500 transition">
+                        <h3 class="text-xl font-bold text-emerald-400 mb-1">Phase 4: Expansion</h3>
+                        <p class="text-slate-500 text-sm mb-4">Months 19-24</p>
+                        <p class="text-slate-300 text-sm">Nigeria launch (Lagos hub), mobile app release, Pan-African Intelligence tier, 60 customers, $312K MRR.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risks Section -->
+    <section id="risks" class="py-20 px-6 bg-slate-900">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <span class="text-amber-500 font-bold tracking-wider">07 — RISK FACTORS</span>
+                <h2 class="text-4xl font-bold mt-4">Mitigations & Moorings</h2>
+            </div>
+
+            <div class="reveal space-y-4">
+                <!-- Risk 1 -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700">
+                    <button class="accordion-btn w-full text-left p-5 flex justify-between items-center hover:bg-slate-700/50 transition rounded-lg">
+                        <span class="font-semibold flex items-center gap-3"><i class="fas fa-language text-amber-500"></i> African Language NLP Accuracy</span>
+                        <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-400 text-sm mb-3"><span class="text-red-400 font-bold">Risk:</span> Limited training data, tonal variations, and code-switching make accurate NLP challenging.</p>
+                        <p class="text-slate-400 text-sm"><span class="text-emerald-400 font-bold">Mitigation:</span> Partner with KNUST & UG linguistics, crowdsource via reporters, use transfer learning, and implement human-in-the-loop validation for 12 months.</p>
+                    </div>
+                </div>
+
+                <!-- Risk 2 -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700">
+                    <button class="accordion-btn w-full text-left p-5 flex justify-between items-center hover:bg-slate-700/50 transition rounded-lg">
+                        <span class="font-semibold flex items-center gap-3"><i class="fas fa-satellite-dish text-amber-500"></i> Radio Capture Quality</span>
+                        <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-400 text-sm mb-3"><span class="text-red-400 font-bold">Risk:</span> Poor signal quality, power outages, and equipment failure in remote mining areas.</p>
+                        <p class="text-slate-400 text-sm"><span class="text-emerald-400 font-bold">Mitigation:</span> Redundant capture hardware (2 tuners/location), solar-powered off-grid equipment, direct audio feed partnerships, and 20% station overlap.</p>
+                    </div>
+                </div>
+
+                <!-- Risk 3 -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700">
+                    <button class="accordion-btn w-full text-left p-5 flex justify-between items-center hover:bg-slate-700/50 transition rounded-lg">
+                        <span class="font-semibold flex items-center gap-3"><i class="fas fa-users-slash text-amber-500"></i> Low Digital Maturity of Clients</span>
+                        <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-400 text-sm mb-3"><span class="text-red-400 font-bold">Risk:</span> Mining companies may not see value in AI monitoring, leading to longer sales cycles.</p>
+                        <p class="text-slate-400 text-sm"><span class="text-emerald-400 font-bold">Mitigation:</span> Extensive onboarding/training, ROI calculators (cost of conflict vs. monitoring), 30-day free trials, and leveraging ESG compliance as an urgent sales driver.</p>
+                    </div>
+                </div>
+                
+                <!-- Risk 4 -->
+                <div class="bg-slate-800 rounded-lg border border-slate-700">
+                    <button class="accordion-btn w-full text-left p-5 flex justify-between items-center hover:bg-slate-700/50 transition rounded-lg">
+                        <span class="font-semibold flex items-center gap-3"><i class="fas fa-shield-halved text-amber-500"></i> Data Privacy & Compliance</span>
+                        <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300"></i>
+                    </button>
+                    <div class="accordion-content px-5 pb-5">
+                        <p class="text-slate-400 text-sm mb-3"><span class="text-red-400 font-bold">Risk:</span> Monitoring community conversations raises privacy and regulatory concerns under Ghana's Data Protection Act.</p>
+                        <p class="text-slate-400 text-sm"><span class="text-emerald-400 font-bold">Mitigation:</span> Monitor only public sources (radio, public social media), strict retention policies, privacy-by-design architecture, and transparency with communities.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <a href="#" class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fas fa-broadcast-tower text-amber-500"></i>
+                    <span class="text-white">BrandWatch</span><span class="text-amber-500">Africa</span>
+                </a>
+                <p class="text-slate-500 text-sm mt-2">AI-Powered Brand Identity Monitoring for Extractive Industries</p>
+            </div>
+            <div class="flex gap-4 text-slate-400">
+                <a href="#" class="hover:text-amber-500 transition"><i class="fab fa-linkedin text-xl"></i></a>
+                <a href="#" class="hover:text-amber-500 transition"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="hover:text-amber-500 transition"><i class="fas fa-globe text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Scroll Reveal Animation ---
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            reveals.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+
+        // --- Navbar Background on Scroll ---
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-slate-900/90', 'backdrop-blur', 'shadow-lg');
+                navbar.classList.remove('bg-transparent');
+            } else {
+                navbar.classList.remove('bg-slate-900/90', 'backdrop-blur', 'shadow-lg');
+                navbar.classList.add('bg-transparent');
+            }
+        });
+
+        // --- Mobile Menu ---
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        // Close menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // --- Tab Functionality (Personas) ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active from all buttons
+                tabBtns.forEach(b => b.classList.remove('active'));
+                // Add active to clicked button
+                btn.classList.add('active');
+
+                // Hide all tab contents
+                tabContents.forEach(content => content.classList.remove('active'));
+                // Show target content
+                const targetTab = btn.getAttribute('data-tab');
+                document.getElementById(targetTab).classList.add('active');
+            });
+        });
+
+        // --- Accordion Functionality (Risks) ---
+        const accBtns = document.querySelectorAll('.accordion-btn');
+        accBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Toggle current one
+                btn.classList.toggle('open');
+                
+                // Close others if wanted (optional, currently allows multiple open)
+                // accBtns.forEach(otherBtn => {
+                //     if (otherBtn !== btn) otherBtn.classList.remove('open');
+                // });
+            });
+        });
+
+        // --- Animated Counter ---
+        const counters = document.querySelectorAll('.counter');
+        let counterStarted = false;
+
+        const startCounting = () => {
+            const financialsSection = document.getElementById('financials');
+            const sectionTop = financialsSection.getBoundingClientRect().top;
+            
+            if (sectionTop < window.innerHeight && !counterStarted) {
+                counterStarted = true;
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const duration = 2000; // 2 seconds
+                    const startTime = performance.now();
+
+                    const updateCounter = (currentTime) => {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        // Ease out quad
+                        const value = 1 - (1 - progress) * (1 - progress);
+                        const currentNumber = value * target;
+                        
+                        // Handle decimals vs integers
+                        if (target % 1 !== 0) {
+                            counter.innerText = currentNumber.toFixed(2);
+                        } else {
+                            counter.innerText = Math.floor(currentNumber);
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                             if (target % 1 !== 0) {
+                                counter.innerText = target.toFixed(2);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        }
+                    };
+                    requestAnimationFrame(updateCounter);
+                });
+            }
+        };
+
+        window.addEventListener('scroll', startCounting);
+
+    </script>
+</body>
+</html>

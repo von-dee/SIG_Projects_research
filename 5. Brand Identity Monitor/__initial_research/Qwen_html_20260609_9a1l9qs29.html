@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrandWatch Africa | AI-Powered Brand Identity Monitoring</title>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --accent-red: #ef4444;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-green); border-radius: 4px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:hover { color: var(--accent-green); }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            background: radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .hero .tagline {
+            max-width: 700px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .cta-button {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.9s forwards;
+            text-decoration: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            animation: bounce 2s infinite;
+            color: var(--text-secondary);
+        }
+
+        /* Sections General */
+        section {
+            padding: 6rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Problem Section */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Personas */
+        .persona-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--accent-green);
+            color: white;
+            border-color: var(--accent-green);
+        }
+
+        .persona-content {
+            display: none;
+            background: var(--bg-secondary);
+            padding: 3rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-gold);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .persona-content.active { display: block; }
+
+        .persona-content h3 { color: var(--accent-gold); margin-bottom: 0.5rem; }
+        .persona-content .role { color: var(--accent-green); font-weight: 600; margin-bottom: 1.5rem; display: block; }
+        .persona-content .quote { font-style: italic; color: var(--text-secondary); border-left: 2px solid var(--accent-green); padding-left: 1rem; margin-top: 1.5rem; }
+
+        /* Architecture */
+        .arch-diagram {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .arch-layers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .arch-layer {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .arch-layer::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent-green);
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .pricing-card {
+            background: var(--bg-secondary);
+            padding: 2.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent-gold);
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.1);
+        }
+
+        .pricing-card.featured::after {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .price {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 1.5rem 0;
+            color: var(--text-primary);
+        }
+
+        .price span { font-size: 1rem; color: var(--text-secondary); font-weight: 400; }
+
+        .feature-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Financials */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label { color: var(--text-secondary); }
+
+        /* Roadmap */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: var(--bg-card);
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+            width: 50%;
+            padding: 0 2rem;
+        }
+
+        .timeline-item:nth-child(odd) { left: 0; text-align: right; }
+        .timeline-item:nth-child(even) { left: 50%; text-align: left; }
+
+        .timeline-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            top: 0;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-dot { right: -10px; }
+        .timeline-item:nth-child(even) .timeline-dot { left: -10px; }
+
+        .timeline-content {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .timeline-month {
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Risks */
+        .risk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .risk-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .risk-card.medium { border-left-color: var(--accent-gold); }
+        .risk-card.low { border-left-color: var(--accent-green); }
+
+        .risk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .risk-badge {
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+        }
+
+        .risk-badge.medium { background: rgba(245, 158, 11, 0.2); color: var(--accent-gold); }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .data-table th {
+            background: var(--bg-card);
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        .data-table tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            padding: 4rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 4rem;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .timeline::before { left: 20px; }
+            .timeline-item { width: 100%; left: 0 !important; padding-left: 3rem; text-align: left !important; }
+            .timeline-dot { left: 10px !important; right: auto !important; }
+            .pricing-card.featured { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">BrandWatch Africa</div>
+        <ul class="nav-links">
+            <li><a href="#problem">The Problem</a></li>
+            <li><a href="#personas">Personas</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#financials">Financials</a></li>
+            <li><a href="#roadmap">Roadmap</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>AI-Powered Brand Identity Monitoring</h1>
+        <div class="subtitle">For Extractive Industries in Ghana & Sub-Saharan Africa</div>
+        <p class="tagline">Closing the reputation blind spot. We monitor the conversations that matter: from community radio in Twi and Ga to global ESG compliance metrics.</p>
+        <a href="#problem" class="cta-button">Explore the Platform</a>
+        <div class="scroll-indicator">↓ Scroll to Explore</div>
+    </section>
+
+    <!-- The Core Problem -->
+    <section id="problem">
+        <h2 class="section-title reveal">01 — The Core Problem</h2>
+        <p class="section-subtitle reveal">Global tools miss the most critical conversations happening in Africa's unique media landscape.</p>
+        
+        <div class="problem-grid">
+            <div class="card reveal">
+                <div class="card-icon">📻</div>
+                <h3>The Radio Reality</h3>
+                <p>Over 500 licensed radio stations in Ghana. Community radio is the primary source of news and grievance expression in mining catchment areas, yet global tools offer zero radio monitoring.</p>
+            </div>
+            <div class="card reveal">
+                <div class="card-icon">🗣️</div>
+                <h3>Language Blindness</h3>
+                <p>Global NLP prioritizes English. We miss Twi, Ga, Ewe, Dagbani, and Hausa, failing to interpret sarcasm, proverbs, and culturally specific expressions common in African discourse.</p>
+            </div>
+            <div class="card reveal">
+                <div class="card-icon">⚖️</div>
+                <h3>ESG & SLO Stakes</h3>
+                <p>Without community buy-in, operations face protests and shutdowns. Investors now require quantifiable Social License to Operate (SLO) metrics, not just anecdotal stories.</p>
+            </div>
+            <div class="card reveal">
+                <div class="card-icon">📰</div>
+                <h3>The Offline Gap</h3>
+                <p>District-level newspapers, community bulletins, and chief's court discussions capture critical sentiment that never makes it to the digital internet.</p>
+            </div>
+        </div>
+
+        <div class="reveal" style="margin-top: 4rem; overflow-x: auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Challenge</th>
+                        <th>Global Tool Response</th>
+                        <th>African Reality</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Radio monitoring</td>
+                        <td>Not available</td>
+                        <td>Primary communication channel in rural areas</td>
+                    </tr>
+                    <tr>
+                        <td>Local language NLP</td>
+                        <td>108 languages claimed; African poorly represented</td>
+                        <td>Twi, Ga, Ewe, Dagbani, Hausa are critical</td>
+                    </tr>
+                    <tr>
+                        <td>Offline community discourse</td>
+                        <td>Completely missed</td>
+                        <td>Town hall meetings, chief's courts, market gossip</td>
+                    </tr>
+                    <tr>
+                        <td>Cultural sentiment analysis</td>
+                        <td>Trained on Western corpora</td>
+                        <td>Requires understanding of proverbs & indirect speech</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- User Personas -->
+    <section id="personas" style="background: var(--bg-secondary);">
+        <h2 class="section-title reveal">02 — User Personas</h2>
+        <p class="section-subtitle reveal">Built for the stakeholders who hold the social license to operate.</p>
+
+        <div class="persona-tabs reveal">
+            <button class="tab-btn active" onclick="showPersona('kwame')">Kwame (Community Relations)</button>
+            <button class="tab-btn" onclick="showPersona('ama')">Ama (ESG Director)</button>
+            <button class="tab-btn" onclick="showPersona('kofi')">Kofi (Chamber of Mines)</button>
+            <button class="tab-btn" onclick="showPersona('abena')">Abena (Telco CSR)</button>
+        </div>
+
+        <div id="kwame" class="persona-content active reveal">
+            <h3>Kwame</h3>
+            <span class="role">Community Relations Manager, Large Mining Company (Obuasi/Tarkwa)</span>
+            <p><strong>Pain Points:</strong> Struggles to get real-time pulse of community sentiment. Relies on outdated quarterly surveys. Misses early warning signals until they escalate to protests.</p>
+            <p><strong>Goals:</strong> Detect grievances before they become public crises. Generate automated ESG-aligned reports for investors.</p>
+            <div class="quote">"By the time I hear about a community issue from my field officers, it's already on the radio. I need to know what's being said before it becomes a headline."</div>
+        </div>
+
+        <div id="ama" class="persona-content reveal">
+            <h3>Ama</h3>
+            <span class="role">Sustainability & ESG Director, International Mining Company (LSE/NYSE listed)</span>
+            <p><strong>Pain Points:</strong> Investor calls demand real-time data. Current reporting is manual, anecdotal, and lacks quantitative rigor. Cannot benchmark against industry peers.</p>
+            <p><strong>Goals:</strong> Quantify social license to operate as a measurable KPI. Automate ESG reporting with data-driven community sentiment metrics.</p>
+            <div class="quote">"Investors ask me every quarter: 'How's your social license in Ghana?' Right now, I give them stories. I need to give them numbers."</div>
+        </div>
+
+        <div id="kofi" class="persona-content reveal">
+            <h3>Kofi</h3>
+            <span class="role">Communications Director, Ghana Chamber of Mines</span>
+            <p><strong>Pain Points:</strong> Needs to monitor industry-wide reputation and counter negative narratives. Lacks tools to monitor how the industry is discussed on radio and in local communities.</p>
+            <p><strong>Goals:</strong> Monitor industry reputation across all media channels. Track sentiment trends around mining policy and regulation.</p>
+            <div class="quote">"When there's a galamsey incident or an environmental issue, the entire industry suffers. I need to know what's being said across every channel."</div>
+        </div>
+
+        <div id="abena" class="persona-content reveal">
+            <h3>Abena</h3>
+            <span class="role">CSR Manager, Telecommunications Company</span>
+            <p><strong>Pain Points:</strong> Community resistance to tower installations. Negative sentiment about service quality in rural regions. Limited visibility into offline community conversations.</p>
+            <p><strong>Goals:</strong> Track brand perception vs. competitors (MTN, Vodafone, AirtelTigo) and understand rural sentiment.</p>
+            <div class="quote">"We need to know why a community is rejecting our new tower, and it's usually discussed at the local market, not on Twitter."</div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture">
+        <h2 class="section-title reveal">03 — Platform Architecture</h2>
+        <p class="section-subtitle reveal">A cloud-native, AI-powered platform combining traditional social listening with innovative offline media coverage.</p>
+
+        <div class="arch-diagram reveal">
+            <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">Unified Monitoring Dashboard</h3>
+            <div class="arch-layers">
+                <div class="arch-layer">
+                    <h4>Digital Media</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Social Media, News, Blogs, Forums, Jumia, WhatsApp Business</p>
+                </div>
+                <div class="arch-layer">
+                    <h4>Traditional Media</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Radio Transcription (ASR), Local News Aggregation, Community Reports</p>
+                </div>
+                <div class="arch-layer">
+                    <h4>AI Intelligence</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Sentiment Analysis, Topic Detection, SLO Scoring, Anomaly Detection</p>
+                </div>
+            </div>
+            <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px; border: 1px dashed var(--accent-green);">
+                <strong>African NLP & Language Engine:</strong> Twi • Ga • Ewe • Dagbani • Hausa • Akan • English • French
+            </div>
+        </div>
+
+        <div class="reveal">
+            <h3 style="text-align: center; margin-bottom: 2rem; color: var(--accent-green);">Key Innovation: Radio Monitoring Pipeline</h3>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; text-align: center;">
+                <div class="card" style="flex: 1; min-width: 200px;">
+                    <h4>1. Capture</h4>
+                    <p style="font-size: 0.9rem;">FM/AM Tuner Network & Streaming Capture</p>
+                </div>
+                <div style="align-self: center; font-size: 1.5rem;">→</div>
+                <div class="card" style="flex: 1; min-width: 200px;">
+                    <h4>2. Process</h4>
+                    <p style="font-size: 0.9rem;">Noise Reduction & Speaker Diarization</p>
+                </div>
+                <div style="align-self: center; font-size: 1.5rem;">→</div>
+                <div class="card" style="flex: 1; min-width: 200px;">
+                    <h4>3. Transcribe</h4>
+                    <p style="font-size: 0.9rem;">Whisper ASR + Custom Twi/Ga/Ewe Models</p>
+                </div>
+                <div style="align-self: center; font-size: 1.5rem;">→</div>
+                <div class="card" style="flex: 1; min-width: 200px;">
+                    <h4>4. Analyze</h4>
+                    <p style="font-size: 0.9rem;">Keyword Matching & Sentiment Analysis</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" style="background: var(--bg-secondary);">
+        <h2 class="section-title reveal">04 — Pricing Philosophy</h2>
+        <p class="section-subtitle reveal">Accessible to mid-tier operators while capturing value from large multinationals.</p>
+
+        <div class="pricing-grid reveal">
+            <div class="pricing-card">
+                <h3>Community Pulse</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">For small mining ops & local NGOs</p>
+                <div class="price">$499<span>/month</span></div>
+                <ul class="feature-list">
+                    <li>Digital media monitoring</li>
+                    <li>3 keyword projects</li>
+                    <li>5,000 mentions/month</li>
+                    <li>Basic sentiment (English)</li>
+                    <li>1 user seat</li>
+                </ul>
+                <button class="cta-button" style="width: 100%; padding: 0.8rem; font-size: 1rem;">Get Started</button>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Catchment Monitor</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">For mid-tier mining, telco, FMCG</p>
+                <div class="price">$1,499<span>/month</span></div>
+                <ul class="feature-list">
+                    <li>Everything in Starter, plus:</li>
+                    <li>10 keyword projects, 50k mentions</li>
+                    <li>Advanced sentiment (English + 2 local)</li>
+                    <li>Radio monitoring (20 stations)</li>
+                    <li>AI Insights (weekly automated reports)</li>
+                    <li>5 user seats + API access</li>
+                </ul>
+                <button class="cta-button" style="width: 100%; padding: 0.8rem; font-size: 1rem;">Get Started</button>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Social License Command</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">For multinationals & regulators</p>
+                <div class="price">$4,999<span>/month</span></div>
+                <ul class="feature-list">
+                    <li>Everything in Professional, plus:</li>
+                    <li>Unlimited projects & mentions</li>
+                    <li>Full radio monitoring (100+ stations)</li>
+                    <li>Brand Assistant (Conversational AI)</li>
+                    <li>ESG reporting & SLO Score</li>
+                    <li>25 user seats + Dedicated manager</li>
+                </ul>
+                <button class="cta-button" style="width: 100%; padding: 0.8rem; font-size: 1rem;">Contact Sales</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Financial Projections -->
+    <section id="financials">
+        <h2 class="section-title reveal">05 — Financial Projections</h2>
+        <p class="section-subtitle reveal">Targeting $3.75M ARR by Month 24 with strong unit economics.</p>
+
+        <div class="metrics-grid reveal">
+            <div class="metric-card">
+                <div class="metric-value" data-target="3750000">$0</div>
+                <div class="metric-label">Target ARR (Month 24)</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" data-target="60">0</div>
+                <div class="metric-label">Enterprise Customers</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" data-target="72">0%</div>
+                <div class="metric-label">Gross Margin Target</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" data-target="14.7">0</div>
+                <div class="metric-label">LTV:CAC Ratio</div>
+            </div>
+        </div>
+
+        <div class="reveal" style="overflow-x: auto;">
+            <h3 style="margin-bottom: 1rem; color: var(--accent-gold);">Revenue Growth Trajectory</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Month 6</th>
+                        <th>Month 12</th>
+                        <th>Month 18</th>
+                        <th>Month 24</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Customers</td>
+                        <td>5</td>
+                        <td>15</td>
+                        <td>35</td>
+                        <td>60</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly Recurring Revenue (MRR)</td>
+                        <td>$12,495</td>
+                        <td>$52,485</td>
+                        <td>$162,455</td>
+                        <td>$312,430</td>
+                    </tr>
+                    <tr>
+                        <td>Annual Recurring Revenue (ARR)</td>
+                        <td>$149,940</td>
+                        <td>$629,820</td>
+                        <td>$1,949,460</td>
+                        <td>$3,749,160</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly Net Profit</td>
+                        <td style="color: var(--accent-red);">-$24,505</td>
+                        <td style="color: var(--accent-red);">-$28,515</td>
+                        <td style="color: var(--accent-green);">+$3,455</td>
+                        <td style="color: var(--accent-green);">+$57,430</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Roadmap -->
+    <section id="roadmap" style="background: var(--bg-secondary);">
+        <h2 class="section-title reveal">06 — 24-Month Build Roadmap</h2>
+        <p class="section-subtitle reveal">From MVP to Pan-African Market Leadership.</p>
+
+        <div class="timeline reveal">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-month">Months 1-6: Foundation</div>
+                    <h4>MVP & Beta Launch</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Core platform scaffolding, basic sentiment (English), beta testing with 3 pilot mining customers, streaming radio capture (20 stations).</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-month">Months 7-12: Traditional Media</div>
+                    <h4>Radio & Local Language NLP</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Deploy FM tuner hardware, Whisper ASR fine-tuning, Twi/Ga sentiment models, code-switching detection, expand to 50 radio stations.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-month">Months 13-18: AI & ESG</div>
+                    <h4>Intelligence & Compliance</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Brand Assistant (conversational AI), Social License to Operate (SLO) Score algorithm, GRI/IFC reporting templates, cash-flow positive.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <div class="timeline-month">Months 19-24: Expansion</div>
+                    <h4>Pan-African Scale</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary);">Launch Nigeria operations (Pidgin, Yoruba, Igbo), mobile app launch, expand to Côte d'Ivoire & South Africa, 60+ customers, $312K MRR.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Factors -->
+    <section id="risks">
+        <h2 class="section-title reveal">07 — Risk Factors & Mitigations</h2>
+        <p class="section-subtitle reveal">Proactive strategies to ensure operational resilience.</p>
+
+        <div class="risk-grid reveal">
+            <div class="risk-card">
+                <div class="risk-header">
+                    <h4>African Language NLP Accuracy</h4>
+                    <span class="risk-badge">High Priority</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Mitigation:</strong> Partner with KNUST/UG linguistics departments, crowdsource training data via community reporters, and implement human-in-the-loop validation for the first 12 months.</p>
+            </div>
+
+            <div class="risk-card medium">
+                <div class="risk-header">
+                    <h4>Radio Capture Quality</h4>
+                    <span class="risk-badge medium">Medium Priority</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Mitigation:</strong> Deploy redundant capture hardware, use solar-powered equipment for off-grid locations, and partner directly with stations for audio feeds.</p>
+            </div>
+
+            <div class="risk-card medium">
+                <div class="risk-header">
+                    <h4>Low Digital Maturity of Customers</h4>
+                    <span class="risk-badge medium">Medium Priority</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Mitigation:</strong> Offer extensive onboarding, ROI calculators showing cost of conflict vs. monitoring, and leverage urgent ESG compliance requirements as a sales driver.</p>
+            </div>
+
+            <div class="risk-card">
+                <div class="risk-header">
+                    <h4>Data Privacy & Compliance</h4>
+                    <span class="risk-badge">High Priority</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);"><strong>Mitigation:</strong> Monitor only publicly available sources, implement strict data retention policies, ensure Ghana Data Protection Act (Act 843) compliance, and build privacy-by-design.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appendices -->
+    <section id="appendices" style="background: var(--bg-secondary);">
+        <h2 class="section-title reveal">Appendices</h2>
+        
+        <div class="reveal" style="margin-top: 2rem;">
+            <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">Competitive Landscape</h3>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Competitor</th>
+                        <th>Strengths</th>
+                        <th>Weaknesses</th>
+                        <th>Our Advantage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Brand24</td>
+                        <td>Comprehensive digital, AI features, affordable</td>
+                        <td>No African focus, no radio, limited local languages</td>
+                        <td>Radio + local languages + African context</td>
+                    </tr>
+                    <tr>
+                        <td>Meltwater</td>
+                        <td>Global reach, media database</td>
+                        <td>Expensive, no African specialization, no offline media</td>
+                        <td>Price, African expertise, radio coverage</td>
+                    </tr>
+                    <tr>
+                        <td>Local Ghanaian Agencies</td>
+                        <td>Cultural understanding, local relationships</td>
+                        <td>Manual processes, no AI, no scale</td>
+                        <td>AI automation, real-time monitoring, scalability</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="reveal" style="margin-top: 3rem;">
+            <h3 style="color: var(--accent-gold); margin-bottom: 1rem;">Key Technology Stack</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">React / TypeScript</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">Python (FastAPI)</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">PostgreSQL / MongoDB</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">Elasticsearch</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">PyTorch / Hugging Face</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">Whisper ASR</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">AWS / Azure Africa</span>
+                <span style="background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem;">Kubernetes</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-logo">BrandWatch Africa</div>
+        <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 2rem auto;">
+            Because What Communities Say Matters.<br>
+            AI-Powered Brand Identity Monitoring for Extractive Industries in Ghana & Sub-Saharan Africa.
+        </p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">© 2026 BrandWatch Africa. Document Version 1.0. Prepared for Stakeholders & Investors.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Trigger counter animation if it's a metric card
+                    if (entry.target.querySelector('.metric-value')) {
+                        animateCounters(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Persona Tab Switching
+        function showPersona(personaId) {
+            // Hide all contents
+            document.querySelectorAll('.persona-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected content and activate button
+            document.getElementById(personaId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Counter Animation
+        function animateCounters(container) {
+            const counters = container.querySelectorAll('.metric-value');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const isDecimal = target % 1 !== 0;
+                const isPercentage = counter.innerText.includes('%');
+                const isCurrency = counter.innerText.includes('$');
+                
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    
+                    let displayValue = isDecimal ? current.toFixed(1) : Math.floor(current);
+                    if (isCurrency && target > 1000) {
+                        displayValue = '$' + (current / 1000000).toFixed(2) + 'M';
+                    } else if (isCurrency) {
+                        displayValue = '$' + Math.floor(current).toLocaleString();
+                    } else if (isPercentage) {
+                        displayValue = Math.floor(current) + '%';
+                    }
+                    
+                    counter.innerText = displayValue;
+                }, 30);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GridOS — Unified Grid Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b829dd;
+            --neon-green: #00ff88;
+            --neon-orange: #ff6b35;
+            --dark-bg: #0a0e1a;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --grid-line: rgba(0, 240, 255, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 50px 50px; pointer-events: none; z-index: 0;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+        @keyframes gridPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        #particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .glitch { position: relative; animation: glitch-skew 3s infinite; }
+        .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .glitch::before { animation: glitch-anim-1 2s infinite linear alternate-reverse; color: var(--neon-cyan); z-index: -1; }
+        .glitch::after { animation: glitch-anim-2 3s infinite linear alternate-reverse; color: var(--neon-purple); z-index: -2; }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 0); }
+            20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 0); }
+            40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 0); }
+            60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, 0); }
+            80% { clip-path: inset(10% 0 70% 0); transform: translate(-2px, 0); }
+            100% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); transform: translate(2px, 0); }
+            20% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 0); }
+            40% { clip-path: inset(30% 0 20% 0); transform: translate(2px, 0); }
+            60% { clip-path: inset(15% 0 80% 0); transform: translate(-2px, 0); }
+            80% { clip-path: inset(55% 0 10% 0); transform: translate(2px, 0); }
+            100% { clip-path: inset(40% 0 30% 0); transform: translate(-2px, 0); }
+        }
+        @keyframes glitch-skew { 0% { transform: skew(0deg); } 10% { transform: skew(-2deg); } 20% { transform: skew(2deg); } 30% { transform: skew(0deg); } 100% { transform: skew(0deg); } }
+        .scan-line { position: fixed; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent); animation: scanMove 8s linear infinite; z-index: 100; pointer-events: none; opacity: 0.5; }
+        @keyframes scanMove { 0% { top: 0; } 100% { top: 100vh; } }
+        .tech-card { background: var(--panel-bg); border: 1px solid rgba(0, 240, 255, 0.15); backdrop-filter: blur(12px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .tech-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.05), transparent); transition: left 0.6s; }
+        .tech-card:hover::before { left: 100%; }
+        .tech-card:hover { border-color: var(--neon-cyan); box-shadow: 0 0 30px rgba(0, 240, 255, 0.15), inset 0 0 20px rgba(0, 240, 255, 0.05); transform: translateY(-4px); }
+        .data-pulse { animation: dataPulse 2s ease-in-out infinite; }
+        @keyframes dataPulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+        .typing-cursor::after { content: '|'; animation: blink 1s step-end infinite; color: var(--neon-cyan); }
+        @keyframes blink { 50% { opacity: 0; } }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; animation: statusPulse 2s infinite; }
+        .status-active { background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
+        .status-warn { background: var(--neon-orange); box-shadow: 0 0 8px var(--neon-orange); }
+        @keyframes statusPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .progress-fill { transition: width 2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-btn.active { background: rgba(0, 240, 255, 0.1); border-color: var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0e1a; }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 240, 255, 0.5); }
+        #three-container { width: 100%; height: 400px; position: relative; overflow: hidden; }
+        #neuralCanvas { width: 100%; height: 300px; }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .circuit-bg { background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10h30v30h-30z' fill='none' stroke='rgba(0,240,255,0.03)' stroke-width='1'/%3E%3Cpath d='M60 10h30v30h-30z' fill='none' stroke='rgba(0,240,255,0.03)' stroke-width='1'/%3E%3Cpath d='M10 60h30v30h-30z' fill='none' stroke='rgba(0,240,255,0.03)' stroke-width='1'/%3E%3Cpath d='M60 60h30v30h-30z' fill='none' stroke='rgba(0,240,255,0.03)' stroke-width='1'/%3E%3Ccircle cx='25' cy='25' r='2' fill='rgba(0,240,255,0.05)'/%3E%3Ccircle cx='75' cy='25' r='2' fill='rgba(0,240,255,0.05)'/%3E%3Ccircle cx='25' cy='75' r='2' fill='rgba(0,240,255,0.05)'/%3E%3Ccircle cx='75' cy='75' r='2' fill='rgba(0,240,255,0.05)'/%3E%3C/svg%3E"); }
+        @media (max-width: 768px) { .glitch { font-size: 2.5rem !important; } }
+    </style>
+</head>
+<body class="circuit-bg">
+    <div class="bg-grid"></div>
+    <canvas id="particleCanvas"></canvas>
+    <div class="scan-line"></div>
+
+    <nav class="fixed top-0 w-full z-50 border-b border-cyan-500/10 bg-slate-950/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <span class="text-xl font-bold tracking-wider text-white">GRID<span class="text-cyan-400">OS</span></span>
+                <span class="mono text-xs text-cyan-400/60 ml-2 px-2 py-0.5 border border-cyan-500/20 rounded">v2.6.0</span>
+            </div>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="#hardware" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Hardware</a>
+                <a href="#software" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Software</a>
+                <a href="#ai" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors">AI Engine</a>
+                <a href="#digital-twin" class="text-sm text-slate-400 hover:text-cyan-400 transition-colors">Digital Twin</a>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                    <span class="status-dot status-active"></span>
+                    <span class="mono text-xs text-green-400">SYSTEM ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 z-0"><div id="three-container"></div></div>
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+            <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/20 bg-cyan-500/5">
+                <span class="status-dot status-active"></span>
+                <span class="mono text-xs text-cyan-400 tracking-widest">UNIFIED GRID INTELLIGENCE PLATFORM</span>
+            </div>
+            <h1 class="glitch text-6xl md:text-8xl font-black text-white mb-6 tracking-tight" data-text="GRID INTELLIGENCE">GRID INTELLIGENCE</h1>
+            <p class="text-xl md:text-2xl text-slate-400 mb-4 max-w-3xl mx-auto leading-relaxed">
+                Disrupting <span class="text-cyan-400 font-semibold">Awesense</span> &amp; <span class="text-purple-400 font-semibold">BPS Africa</span> with AI-native infrastructure at <span class="text-green-400 font-bold">1/4th the cost</span>
+            </p>
+            <div class="mono text-sm text-slate-500 mb-10 typing-cursor" id="typing-text"></div>
+            <div class="flex flex-wrap justify-center gap-4 mb-16">
+                <button onclick="scrollToSection('hardware')" class="group px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg transition-all hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] flex items-center gap-2">
+                    <span>Explore Architecture</span>
+                    <svg class="w-5 h-5 group-hover:translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+                </button>
+                <button onclick="toggleSimulation()" class="px-8 py-4 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 font-semibold rounded-lg transition-all hover:bg-cyan-500/10 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Live Simulation</span>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="tech-card rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-cyan-400 mb-1" id="stat-cost">80%</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Cost Reduction</div>
+                </div>
+                <div class="tech-card rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-purple-400 mb-1" id="stat-speed">10x</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Faster Deploy</div>
+                </div>
+                <div class="tech-card rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-green-400 mb-1" id="stat-accuracy">95%</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">AI Accuracy</div>
+                </div>
+                <div class="tech-card rounded-xl p-4 text-center">
+                    <div class="text-3xl font-black text-orange-400 mb-1" id="stat-sensors">1M+</div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wider">Sensor Capacity</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hardware" class="relative py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-white">Nexus Hardware Series</h2>
+                    <p class="text-slate-400 mt-1">Ultra-low-cost multi-protocol grid sensors</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <button onclick="switchSensor('nexus-1')" id="tab-nexus-1" class="tab-btn active px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium transition-all whitespace-nowrap">Nexus-1 Line Sensor</button>
+                <button onclick="switchSensor('nexus-2')" id="tab-nexus-2" class="tab-btn px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium transition-all whitespace-nowrap">Nexus-2 Smart Meter</button>
+                <button onclick="switchSensor('nexus-3')" id="tab-nexus-3" class="tab-btn px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium transition-all whitespace-nowrap">Nexus-3 Transformer</button>
+                <button onclick="switchSensor('gateway')" id="tab-gateway" class="tab-btn px-6 py-3 rounded-lg border border-slate-700 text-slate-300 font-medium transition-all whitespace-nowrap">Gateway Infrastructure</button>
+            </div>
+
+            <div id="content-nexus-1" class="sensor-content">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="tech-card rounded-2xl p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-2">Nexus-1 Distribution Line Sensor</h3>
+                                <p class="text-cyan-400 text-sm mono">TARGET: Replace Awesense Raptor at 1/4th cost</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-3xl font-black text-green-400">$15-20</div>
+                                <div class="text-xs text-slate-500">BOM Cost</div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">vs Awesense Raptor</span><span class="text-green-400 font-bold">80% cheaper</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Power System</span><span class="text-white">Solar + Piezo + Supercapacitor</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Communication</span><span class="text-white">LoRaWAN + NB-IoT + Mesh</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Edge Compute</span><span class="text-white">ARM Cortex-M4 + TinyML</span></div>
+                            <div class="flex justify-between items-center py-3"><span class="text-slate-400">Install Time</span><span class="text-green-400 font-bold">2 min (vs 10 min)</span></div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-cyan-400 font-bold text-lg">1kHz</div><div class="text-xs text-slate-500">Fault Sampling</div></div>
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-purple-400 font-bold text-lg">5km</div><div class="text-xs text-slate-500">LoRa Range</div></div>
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-green-400 font-bold text-lg">&lt;1mW</div><div class="text-xs text-slate-500">AI Power</div></div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="tech-card rounded-2xl p-6">
+                            <h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>Technical Architecture</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg"><div class="w-10 h-10 rounded bg-cyan-500/10 flex items-center justify-center text-cyan-400 font-bold text-sm">MCU</div><div><div class="text-white font-medium">STM32L4+ Ultra-Low Power</div><div class="text-xs text-slate-500">$3 BOM | 80MHz | 128KB RAM</div></div></div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg"><div class="w-10 h-10 rounded bg-purple-500/10 flex items-center justify-center text-purple-400 font-bold text-sm">RF</div><div><div class="text-white font-medium">Semtech SX1262 + Quectel BC95</div><div class="text-xs text-slate-500">Auto-switching LoRa/NB-IoT</div></div></div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg"><div class="w-10 h-10 rounded bg-green-500/10 flex items-center justify-center text-green-400 font-bold text-sm">AI</div><div><div class="text-white font-medium">TensorFlow Lite Micro</div><div class="text-xs text-slate-500">1KB anomaly model | INT8 quantized</div></div></div>
+                                <div class="flex items-center gap-3 p-3 bg-slate-800/30 rounded-lg"><div class="w-10 h-10 rounded bg-orange-500/10 flex items-center justify-center text-orange-400 font-bold text-sm">SEC</div><div><div class="text-white font-medium">ECC P-256 Hardware Crypto</div><div class="text-xs text-slate-500">Secure boot | OTA updates</div></div></div>
+                            </div>
+                        </div>
+                        <div class="tech-card rounded-2xl p-6">
+                            <h4 class="text-lg font-semibold text-white mb-3">Cost Comparison</h4>
+                            <div class="space-y-3">
+                                <div><div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Nexus-1</span><span class="text-green-400 font-bold">$35-45 retail</span></div><div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-cyan-400 rounded-full progress-fill" style="width: 35%"></div></div></div>
+                                <div><div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Awesense Raptor 3</span><span class="text-red-400 font-bold">$99 retail</span></div><div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-red-500/50 rounded-full progress-fill" style="width: 100%"></div></div></div>
+                            </div>
+                            <div class="mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg"><div class="text-green-400 text-sm font-semibold">Savings: $54-64 per unit (55-65% cheaper)</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-nexus-2" class="sensor-content hidden">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="tech-card rounded-2xl p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><h3 class="text-2xl font-bold text-white mb-2">Nexus-2 Smart Meter Node</h3><p class="text-purple-400 text-sm mono">TARGET: Disrupt BPS Africa meter dependency</p></div>
+                            <div class="text-right"><div class="text-3xl font-black text-green-400">$25-30</div><div class="text-xs text-slate-500">BOM Cost</div></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">vs Typical Smart Meter</span><span class="text-green-400 font-bold">40% cheaper</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Metrology</span><span class="text-white">ADE9153A (0.5% accuracy)</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Prepayment</span><span class="text-white">Integrated STS/BSI Compliant</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Theft Detection</span><span class="text-white">Magnetic + Tilt + Bypass</span></div>
+                            <div class="flex justify-between items-center py-3"><span class="text-slate-400">Display</span><span class="text-green-400 font-bold">E-ink (10yr battery)</span></div>
+                        </div>
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-cyan-400 font-bold text-lg">PLC</div><div class="text-xs text-slate-500">PRIME 1.4</div></div>
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-purple-400 font-bold text-lg">ESP32</div><div class="text-xs text-slate-500">RISC-V + WiFi/BT</div></div>
+                            <div class="bg-slate-800/50 rounded-lg p-3 text-center"><div class="text-green-400 font-bold text-lg">10yr</div><div class="text-xs text-slate-500">Battery Life</div></div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="tech-card rounded-2xl p-6">
+                            <h4 class="text-lg font-semibold text-white mb-4">Theft Detection Matrix</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-center"><div class="text-2xl mb-1">M</div><div class="text-white font-semibold text-sm">Magnetic Tamper</div><div class="text-xs text-slate-400 mt-1">Detects strong magnets</div></div>
+                                <div class="p-4 bg-orange-500/10 border border-orange-500/20 rounded-lg text-center"><div class="text-2xl mb-1">T</div><div class="text-white font-semibold text-sm">Tilt Detection</div><div class="text-xs text-slate-400 mt-1">Meter orientation change</div></div>
+                                <div class="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-center"><div class="text-2xl mb-1">B</div><div class="text-white font-semibold text-sm">Bypass Detection</div><div class="text-xs text-slate-400 mt-1">Current differential analysis</div></div>
+                                <div class="p-4 bg-purple-500/10 border border-purple-500/20 rounded-lg text-center"><div class="text-2xl mb-1">AI</div><div class="text-white font-semibold text-sm">Edge AI Fraud</div><div class="text-xs text-slate-400 mt-1">Load disaggregation</div></div>
+                            </div>
+                        </div>
+                        <div class="tech-card rounded-2xl p-6">
+                            <h4 class="text-lg font-semibold text-white mb-3">Revenue Protection ROI</h4>
+                            <canvas id="roiChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-nexus-3" class="sensor-content hidden">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="tech-card rounded-2xl p-8">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><h3 class="text-2xl font-bold text-white mb-2">Nexus-3 Transformer Monitor</h3><p class="text-orange-400 text-sm mono">TARGET: Mid-point monitoring and predictive health</p></div>
+                            <div class="text-right"><div class="text-3xl font-black text-green-400">$80-100</div><div class="text-xs text-slate-500">BOM Cost</div></div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">vs Traditional DGA</span><span class="text-green-400 font-bold">75% cheaper</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Measurements</span><span class="text-white">Oil Temp + DGA + Harmonics</span></div>
+                            <div class="flex justify-between items-center py-3 border-b border-slate-700/50"><span class="text-slate-400">Predictive</span><span class="text-white">Remaining Life Estimation</span></div>
+                            <div class="flex justify-between items-center py-3"><span class="text-slate-400">Edge AI</span><span class="text-green-400 font-bold">Health Score 0-100</span></div>
+                        </div>
+                    </div>
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">Transformer Health Prediction</h4>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4"><div class="w-24 text-right text-sm text-slate-400">Insulation</div><div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-yellow-400 rounded-full progress-fill" style="width: 78%"></div></div><div class="w-12 text-right text-sm font-bold text-yellow-400">78%</div></div>
+                            <div class="flex items-center gap-4"><div class="w-24 text-right text-sm text-slate-400">Oil Quality</div><div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full progress-fill" style="width: 92%"></div></div><div class="w-12 text-right text-sm font-bold text-green-400">92%</div></div>
+                            <div class="flex items-center gap-4"><div class="w-24 text-right text-sm text-slate-400">Load Stress</div><div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-yellow-400 to-red-400 rounded-full progress-fill" style="width: 65%"></div></div><div class="w-12 text-right text-sm font-bold text-orange-400">65%</div></div>
+                            <div class="flex items-center gap-4"><div class="w-24 text-right text-sm text-slate-400">Thermal</div><div class="flex-1 h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-cyan-400 rounded-full progress-fill" style="width: 88%"></div></div><div class="w-12 text-right text-sm font-bold text-cyan-400">88%</div></div>
+                        </div>
+                        <div class="mt-6 p-4 bg-slate-800/50 rounded-lg">
+                            <div class="flex justify-between items-center"><span class="text-slate-400">Estimated Remaining Life</span><span class="text-2xl font-bold text-white">14.2 years</span></div>
+                            <div class="text-xs text-slate-500 mt-1">Next maintenance: 8 months</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-gateway" class="sensor-content hidden">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <div class="tech-card rounded-2xl p-8">
+                        <h3 class="text-2xl font-bold text-white mb-6">Gateway Infrastructure</h3>
+                        <div class="space-y-6">
+                            <div class="p-4 bg-slate-800/30 rounded-xl border border-cyan-500/20">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center"><svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg></div>
+                                        <div><div class="text-white font-semibold">Nexus-G1 Field Gateway</div><div class="text-xs text-slate-500">Raspberry Pi CM4 + K3s Edge Cluster</div></div>
+                                    </div>
+                                    <div class="text-right"><div class="text-xl font-bold text-green-400">$150</div><div class="text-xs text-slate-500">BOM</div></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-cyan-400 font-bold">100-500</div><div class="text-slate-500">Sensors</div></div>
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-purple-400 font-bold">4G/5G</div><div class="text-slate-500">Backhaul</div></div>
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-green-400 font-bold">7 days</div><div class="text-slate-500">Battery</div></div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-slate-800/30 rounded-xl border border-purple-500/20">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center"><svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg></div>
+                                        <div><div class="text-white font-semibold">Nexus-G2 Micro-Gateway</div><div class="text-xs text-slate-500">ESP32-S3 + 4G Cat-1</div></div>
+                                    </div>
+                                    <div class="text-right"><div class="text-xl font-bold text-green-400">$35</div><div class="text-xs text-slate-500">BOM</div></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-purple-400 font-bold">10-20</div><div class="text-slate-500">Sensors</div></div>
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-cyan-400 font-bold">10W</div><div class="text-slate-500">Solar Panel</div></div>
+                                    <div class="bg-slate-900/50 rounded p-2"><div class="text-orange-400 font-bold">Pole</div><div class="text-slate-500">Mounted</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">Network Topology Visualization</h4>
+                        <canvas id="networkCanvas" width="500" height="400"></canvas>
+                        <div class="flex justify-center gap-6 mt-4 text-xs">
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-cyan-400"></span><span class="text-slate-400">Gateway</span></div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-400"></span><span class="text-slate-400">Line Sensor</span></div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-400"></span><span class="text-slate-400">Smart Meter</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="software" class="relative py-24 px-6 bg-slate-950/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-white">GridOS Software Stack</h2>
+                    <p class="text-slate-400 mt-1">Event-driven microservices on Kubernetes</p>
+                </div>
+            </div>
+
+            <div class="tech-card rounded-2xl p-8 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="col-span-1 md:col-span-4 p-4 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-xl border border-cyan-500/20 text-center">
+                        <div class="text-sm text-cyan-400 font-semibold mb-2">PRESENTATION LAYER</div>
+                        <div class="flex justify-center gap-3 flex-wrap">
+                            <span class="px-3 py-1 bg-slate-800 rounded text-xs text-white">React Web</span>
+                            <span class="px-3 py-1 bg-slate-800 rounded text-xs text-white">Flutter Mobile</span>
+                            <span class="px-3 py-1 bg-slate-800 rounded text-xs text-white">GraphQL API</span>
+                            <span class="px-3 py-1 bg-slate-800 rounded text-xs text-white">Partner Portal</span>
+                        </div>
+                    </div>
+                    <div class="col-span-1 md:col-span-4 p-3 bg-slate-800/50 rounded-lg border border-slate-700 text-center">
+                        <div class="text-xs text-slate-400">API GATEWAY (Kong) - Auth, Rate Limiting, Routing</div>
+                    </div>
+                    <div class="col-span-1 md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="p-3 bg-cyan-500/5 rounded-lg border border-cyan-500/20 text-center"><div class="text-xs text-cyan-400 font-semibold mb-1">Ingestion</div><div class="text-[10px] text-slate-500">Kafka | 10M msg/s</div></div>
+                        <div class="p-3 bg-purple-500/5 rounded-lg border border-purple-500/20 text-center"><div class="text-xs text-purple-400 font-semibold mb-1">Digital Twin</div><div class="text-[10px] text-slate-500">Neo4j | TimescaleDB</div></div>
+                        <div class="p-3 bg-green-500/5 rounded-lg border border-green-500/20 text-center"><div class="text-xs text-green-400 font-semibold mb-1">Analytics</div><div class="text-[10px] text-slate-500">Spark | Flink | MLflow</div></div>
+                        <div class="p-3 bg-orange-500/5 rounded-lg border border-orange-500/20 text-center"><div class="text-xs text-orange-400 font-semibold mb-1">Billing</div><div class="text-[10px] text-slate-500">STS | API Integration</div></div>
+                    </div>
+                    <div class="col-span-1 md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 font-semibold mb-1">Asset Mgmt</div><div class="text-[10px] text-slate-500">Lifecycle Tracking</div></div>
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 font-semibold mb-1">Predictive Maint</div><div class="text-[10px] text-slate-500">ML | Survival Analysis</div></div>
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 font-semibold mb-1">GIS Engine</div><div class="text-[10px] text-slate-500">PostGIS | Martin</div></div>
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-slate-700 text-center"><div class="text-xs text-slate-400 font-semibold mb-1">User Mgmt</div><div class="text-[10px] text-slate-500">RBAC | OAuth 2.0</div></div>
+                    </div>
+                    <div class="col-span-1 md:col-span-4 grid grid-cols-3 md:grid-cols-6 gap-2">
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-cyan-400">TimescaleDB</div></div>
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-purple-400">Neo4j</div></div>
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-green-400">MongoDB</div></div>
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-orange-400">S3 Blob</div></div>
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-yellow-400">Kafka</div></div>
+                        <div class="p-2 bg-slate-900/50 rounded text-center"><div class="text-[10px] text-red-400">Redis</div></div>
+                    </div>
+                    <div class="col-span-1 md:col-span-4 p-3 bg-gradient-to-r from-green-500/10 to-cyan-500/10 rounded-lg border border-green-500/20 text-center">
+                        <div class="text-xs text-green-400 font-semibold mb-1">EDGE LAYER</div>
+                        <div class="flex justify-center gap-3">
+                            <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] text-white">K3s Gateway</span>
+                            <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] text-white">TinyML</span>
+                            <span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] text-white">SQLite Cache</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <div class="tech-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded bg-cyan-500/10 flex items-center justify-center"><svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+                        <h4 class="text-lg font-semibold text-white">Hot Path</h4>
+                        <span class="status-dot status-active ml-auto"></span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-cyan-400 data-pulse"></span><span>Sensor to Gateway (&lt;5s)</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-cyan-400 data-pulse" style="animation-delay: 0.3s"></span><span>Kafka Stream Processing</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-cyan-400 data-pulse" style="animation-delay: 0.6s"></span><span>Redis + Flink Real-time</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-cyan-400 data-pulse" style="animation-delay: 0.9s"></span><span>Live Dashboard (&lt;100ms)</span></div>
+                    </div>
+                    <div class="mt-4 p-3 bg-cyan-500/5 rounded-lg border border-cyan-500/10"><div class="text-xs text-cyan-400 mono">Latency: &lt;1s end-to-end</div></div>
+                </div>
+
+                <div class="tech-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded bg-purple-500/10 flex items-center justify-center"><svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></div>
+                        <h4 class="text-lg font-semibold text-white">Cold Path</h4>
+                        <span class="status-dot status-warn ml-auto"></span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-purple-400 data-pulse"></span><span>S3 Data Lake (Delta Lake)</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-purple-400 data-pulse" style="animation-delay: 0.5s"></span><span>Spark Batch Processing</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-purple-400 data-pulse" style="animation-delay: 1s"></span><span>ML Training (SageMaker)</span></div>
+                        <div class="flex items-center gap-2 text-slate-400"><span class="w-2 h-2 rounded-full bg-purple-400 data-pulse" style="animation-delay: 1.5s"></span><span>Reports + Model Update</span></div>
+                    </div>
+                    <div class="mt-4 p-3 bg-purple-500/5 rounded-lg border border-purple-500/10"><div class="text-xs text-purple-400 mono">Capacity: 1B+ data points/day</div></div>
+                </div>
+
+                <div class="tech-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded bg-green-500/10 flex items-center justify-center"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+                        <h4 class="text-lg font-semibold text-white">Security</h4>
+                        <span class="status-dot status-active ml-auto"></span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2 bg-slate-800/30 rounded"><span class="text-sm text-slate-400">Identity</span><span class="text-xs text-cyan-400">OAuth 2.0 + OIDC + MFA</span></div>
+                        <div class="flex items-center justify-between p-2 bg-slate-800/30 rounded"><span class="text-sm text-slate-400">Network</span><span class="text-xs text-purple-400">mTLS + Istio Mesh</span></div>
+                        <div class="flex items-center justify-between p-2 bg-slate-800/30 rounded"><span class="text-sm text-slate-400">Data</span><span class="text-xs text-green-400">AES-256 | TLS 1.3</span></div>
+                        <div class="flex items-center justify-between p-2 bg-slate-800/30 rounded"><span class="text-sm text-slate-400">Hardware</span><span class="text-xs text-orange-400">ECC P-256 | Secure Boot</span></div>
+                    </div>
+                    <div class="mt-4 p-3 bg-green-500/5 rounded-lg border border-green-500/10"><div class="text-xs text-green-400 mono">Zero-Trust Architecture</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ai" class="relative py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-cyan-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-white">AI/ML Engine</h2>
+                    <p class="text-slate-400 mt-1">Edge + Cloud hybrid intelligence</p>
+                </div>
+            </div>
+
+            <div class="tech-card rounded-2xl p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-semibold text-white">Neural Network Visualization</h4>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-cyan-500/10 rounded text-xs text-cyan-400">Real-time Inference</span>
+                        <span class="px-2 py-1 bg-purple-500/10 rounded text-xs text-purple-400">Active Learning</span>
+                    </div>
+                </div>
+                <canvas id="neuralCanvas"></canvas>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div class="tech-card rounded-2xl p-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">Model Performance Catalog</h4>
+                    <div class="space-y-4">
+                        <div class="group">
+                            <div class="flex justify-between items-center mb-1"><span class="text-sm text-white font-medium">GridSense-V1 (Anomaly)</span><span class="text-xs text-green-400 font-bold">97% precision</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-400 to-green-400 rounded-full progress-fill group-hover:animate-pulse" style="width: 97%"></div></div>
+                            <div class="text-[10px] text-slate-500 mt-1">Autoencoder + Isolation Forest | 1M+ sensor-hours</div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center mb-1"><span class="text-sm text-white font-medium">Topolog-AI (Topology)</span><span class="text-xs text-green-400 font-bold">94% accuracy</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-purple-400 to-cyan-400 rounded-full progress-fill" style="width: 94%"></div></div>
+                            <div class="text-[10px] text-slate-500 mt-1">Graph Neural Network | 100K+ labeled topologies</div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center mb-1"><span class="text-sm text-white font-medium">TheftNet (Loss Detection)</span><span class="text-xs text-green-400 font-bold">96% precision</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-orange-400 to-red-400 rounded-full progress-fill" style="width: 96%"></div></div>
+                            <div class="text-[10px] text-slate-500 mt-1">GNN + XGBoost + Rules | 500K+ labeled cases</div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center mb-1"><span class="text-sm text-white font-medium">TransformerHealth (RUL)</span><span class="text-xs text-green-400 font-bold">92% R-squared</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full progress-fill" style="width: 92%"></div></div>
+                            <div class="text-[10px] text-slate-500 mt-1">LSTM + Physics-informed NN | 50K+ transformer-years</div>
+                        </div>
+                        <div class="group">
+                            <div class="flex justify-between items-center mb-1"><span class="text-sm text-white font-medium">LoadForecast-X (Short-term)</span><span class="text-xs text-green-400 font-bold">97% MAPE&lt;3%</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full progress-fill" style="width: 97%"></div></div>
+                            <div class="text-[10px] text-slate-500 mt-1">LSTM + XGBoost ensemble | 5 years hourly data</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">Edge AI Models (TinyML)</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">AnomalyGuard</div><div class="text-xs text-slate-500">1D CNN + LSTM | INT8 quantized</div></div>
+                                <div class="text-right"><div class="text-cyan-400 font-bold text-sm">8KB</div><div class="text-xs text-slate-500">&lt;50ms latency</div></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">LoadDisaggregator</div><div class="text-xs text-slate-500">CNN Autoencoder | Appliance-level</div></div>
+                                <div class="text-right"><div class="text-purple-400 font-bold text-sm">12KB</div><div class="text-xs text-slate-500">Theft detection</div></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">TheftDetector-Edge</div><div class="text-xs text-slate-500">Random Forest | ONNX Runtime</div></div>
+                                <div class="text-right"><div class="text-green-400 font-bold text-sm">15KB</div><div class="text-xs text-slate-500">&gt;90% alert trigger</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">MLOps Pipeline</h4>
+                        <div class="flex items-center justify-between text-xs">
+                            <div class="flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-cyan-500/10 flex items-center justify-center text-cyan-400">1</div><span class="text-slate-400">Raw Data</span></div>
+                            <div class="flex-1 h-px bg-slate-700 mx-2"></div>
+                            <div class="flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400">2</div><span class="text-slate-400">Feature Store</span></div>
+                            <div class="flex-1 h-px bg-slate-700 mx-2"></div>
+                            <div class="flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center text-green-400">3</div><span class="text-slate-400">Training</span></div>
+                            <div class="flex-1 h-px bg-slate-700 mx-2"></div>
+                            <div class="flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-400">4</div><span class="text-slate-400">Deploy</span></div>
+                            <div class="flex-1 h-px bg-slate-700 mx-2"></div>
+                            <div class="flex flex-col items-center gap-1"><div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-400">5</div><span class="text-slate-400">Monitor</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="digital-twin" class="relative py-24 px-6 bg-slate-950/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-white">Digital Twin</h2>
+                    <p class="text-slate-400 mt-1">Real-time physics-informed grid simulation</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 mb-8">
+                <div class="tech-card rounded-2xl p-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">Grid Topology</h4>
+                    <canvas id="topologyCanvas" width="400" height="300"></canvas>
+                    <div class="mt-4 grid grid-cols-2 gap-2 text-xs">
+                        <div class="p-2 bg-slate-800/30 rounded text-center"><div class="text-cyan-400 font-bold">1,247</div><div class="text-slate-500">Nodes</div></div>
+                        <div class="p-2 bg-slate-800/30 rounded text-center"><div class="text-purple-400 font-bold">3,891</div><div class="text-slate-500">Edges</div></div>
+                    </div>
+                </div>
+
+                <div class="tech-card rounded-2xl p-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">Real-time Metrics</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Grid Health Score</span><span class="text-green-400 font-bold">87/100</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-cyan-400 rounded-full progress-fill" style="width: 87%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">System Load</span><span class="text-yellow-400 font-bold">68%</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-yellow-400 rounded-full progress-fill" style="width: 68%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Power Factor</span><span class="text-cyan-400 font-bold">0.94</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full progress-fill" style="width: 94%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1"><span class="text-slate-400">Loss Rate</span><span class="text-orange-400 font-bold">12.3%</span></div>
+                            <div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-green-400 to-orange-400 rounded-full progress-fill" style="width: 12.3%"></div></div>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-3 bg-slate-800/50 rounded-lg">
+                        <div class="flex justify-between items-center text-xs"><span class="text-slate-400">Active Alerts</span><span class="text-red-400 font-bold">3 Critical</span></div>
+                        <div class="flex justify-between items-center text-xs mt-1"><span class="text-slate-400">Predicted Outages (24h)</span><span class="text-yellow-400 font-bold">2 Possible</span></div>
+                    </div>
+                </div>
+
+                <div class="tech-card rounded-2xl p-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">What-If Simulation</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-cyan-500/20 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                            <div class="text-white text-sm font-medium">Add 500kW Solar PV</div>
+                            <div class="text-xs text-slate-500 mt-1">Impact: Voltage +2.3%, Loss -1.1%</div>
+                        </div>
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-purple-500/20 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                            <div class="text-white text-sm font-medium">Transformer T-123 Failure</div>
+                            <div class="text-xs text-slate-500 mt-1">Impact: 847 customers affected</div>
+                        </div>
+                        <div class="p-3 bg-slate-800/30 rounded-lg border border-green-500/20 cursor-pointer hover:bg-slate-800/50 transition-colors">
+                            <div class="text-white text-sm font-medium">EV Charging Cluster (50 units)</div>
+                            <div class="text-xs text-slate-500 mt-1">Impact: Load +15%, PF -0.03</div>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 py-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-lg text-sm font-medium hover:bg-cyan-500/20 transition-colors">Run Custom Scenario</button>
+                </div>
+            </div>
+
+            <div class="tech-card rounded-2xl p-6">
+                <h4 class="text-lg font-semibold text-white mb-4">Live Sensor Data Stream</h4>
+                <canvas id="liveDataCanvas" width="1200" height="250"></canvas>
+                <div class="flex justify-center gap-6 mt-4 text-xs">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-cyan-400"></span><span class="text-slate-400">Voltage (kV)</span></div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-purple-400"></span><span class="text-slate-400">Current (A)</span></div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-400"></span><span class="text-slate-400">Power Factor</span></div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-400"></span><span class="text-slate-400">Temperature (C)</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                </div>
+                <div>
+                    <h2 class="text-4xl font-bold text-white">Business Model & Projections</h2>
+                    <p class="text-slate-400 mt-1">Revenue trajectory and competitive positioning</p>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="tech-card rounded-2xl p-6">
+                    <h4 class="text-lg font-semibold text-white mb-4">5-Year Revenue Projection</h4>
+                    <canvas id="revenueChart" width="500" height="300"></canvas>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">Pricing Tiers</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">Starter</div><div class="text-xs text-slate-500">Small co-ops, up to 100 sensors</div></div>
+                                <div class="text-right"><div class="text-cyan-400 font-bold">$500/mo</div></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">Professional</div><div class="text-xs text-slate-500">Medium utilities, 100-10K sensors</div></div>
+                                <div class="text-right"><div class="text-purple-400 font-bold">$2K/mo + $5/sensor</div></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">Enterprise</div><div class="text-xs text-slate-500">Large utilities, 10K+ sensors</div></div>
+                                <div class="text-right"><div class="text-green-400 font-bold">Custom</div></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg">
+                                <div><div class="text-white text-sm font-medium">Field Ops</div><div class="text-xs text-slate-500">BPS-type providers, multi-tenant</div></div>
+                                <div class="text-right"><div class="text-orange-400 font-bold">10-15% revenue share</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tech-card rounded-2xl p-6">
+                        <h4 class="text-lg font-semibold text-white mb-4">Competitive Advantage</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-green-400"></div><span class="text-sm text-slate-300">60-75% cheaper than Awesense Raptor</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-cyan-400"></div><span class="text-sm text-slate-300">10x faster deployment via no-code config</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-purple-400"></div><span class="text-sm text-slate-300">95%+ predictive accuracy for outages</span></div>
+                            <div class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-orange-400"></div><span class="text-sm text-slate-300">Full API-first, open data standards</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="relative py-12 px-6 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <span class="text-xl font-bold tracking-wider text-white">GRID<span class="text-cyan-400">OS</span></span>
+                </div>
+                <div class="flex gap-6 text-sm text-slate-500">
+                    <span>Grid Intelligence Platform v2.6.0</span>
+                    <span>|</span>
+                    <span>Architecture Blueprint</span>
+                    <span>|</span>
+                    <span>June 2026</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full">
+                    <span class="status-dot status-active"></span>
+                    <span class="mono text-xs text-green-400">ALL SYSTEMS OPERATIONAL</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Typing Effect
+        const typingText = document.getElementById('typing-text');
+        const phrases = [
+            'Initializing grid topology inference...',
+            'Loading predictive maintenance models...',
+            'Syncing 1,247 sensor nodes...',
+            'AI anomaly detection: ACTIVE',
+            'Digital twin synchronization: 99.7%'
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentPhrase = phrases[phraseIndex];
+            if (isDeleting) {
+                typingText.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+            setTimeout(typeEffect, typeSpeed);
+        }
+        typeEffect();
+
+        // Scroll to section
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Sensor Tab Switching
+        function switchSensor(sensorId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.sensor-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('tab-' + sensorId).classList.add('active');
+            document.getElementById('content-' + sensorId).classList.remove('hidden');
+        }
+
+        // Particle Background
+        const particleCanvas = document.getElementById('particleCanvas');
+        const pCtx = particleCanvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0, mouseY = 0;
+
+        function resizeParticleCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeParticleCanvas();
+        window.addEventListener('resize', resizeParticleCanvas);
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * particleCanvas.width;
+                this.y = Math.random() * particleCanvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 0.5;
+                this.color = Math.random() > 0.5 ? 'rgba(0, 240, 255, ' : 'rgba(184, 41, 221, ';
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > particleCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > particleCanvas.height) this.vy *= -1;
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    this.vx += dx * 0.0001;
+                    this.vy += dy * 0.0001;
+                }
+            }
+            draw() {
+                pCtx.beginPath();
+                pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                pCtx.fillStyle = this.color + (0.3 + Math.random() * 0.3) + ')';
+                pCtx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        pCtx.beginPath();
+                        pCtx.moveTo(particles[i].x, particles[i].y);
+                        pCtx.lineTo(particles[j].x, particles[j].y);
+                        pCtx.strokeStyle = 'rgba(0, 240, 255, ' + (0.1 * (1 - dist / 120)) + ')';
+                        pCtx.lineWidth = 0.5;
+                        pCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Three.js 3D Grid Visualization
+        const threeContainer = document.getElementById('three-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, threeContainer.clientWidth / threeContainer.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(threeContainer.clientWidth, threeContainer.clientHeight);
+        threeContainer.appendChild(renderer.domElement);
+
+        // Create grid of glowing nodes
+        const gridGroup = new THREE.Group();
+        const nodeGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+        const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+        const nodes = [];
+
+        for (let x = -5; x <= 5; x += 1) {
+            for (let z = -5; z <= 5; z += 1) {
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+                node.position.set(x, Math.sin(x * 0.5) * Math.cos(z * 0.5) * 0.5, z);
+                gridGroup.add(node);
+                nodes.push({ mesh: node, baseY: node.position.y, phase: Math.random() * Math.PI * 2 });
+            }
+        }
+
+        // Add connecting lines
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.2 });
+        for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+                const dist = nodes[i].mesh.position.distanceTo(nodes[j].mesh.position);
+                if (dist < 1.5) {
+                    const geometry = new THREE.BufferGeometry().setFromPoints([nodes[i].mesh.position, nodes[j].mesh.position]);
+                    const line = new THREE.Line(geometry, lineMaterial);
+                    gridGroup.add(line);
+                }
+            }
+        }
+
+        scene.add(gridGroup);
+        camera.position.z = 8;
+        camera.position.y = 3;
+        camera.lookAt(0, 0, 0);
+
+        let time = 0;
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            time += 0.01;
+            nodes.forEach(n => {
+                n.mesh.position.y = n.baseY + Math.sin(time + n.phase) * 0.2;
+                const scale = 1 + Math.sin(time * 2 + n.phase) * 0.3;
+                n.mesh.scale.set(scale, scale, scale);
+            });
+            gridGroup.rotation.y = time * 0.2;
+            renderer.render(scene, camera);
+        }
+        animateThree();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = threeContainer.clientWidth / threeContainer.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(threeContainer.clientWidth, threeContainer.clientHeight);
+        });
+
+        // Neural Network Canvas Animation
+        const neuralCanvas = document.getElementById('neuralCanvas');
+        const nCtx = neuralCanvas.getContext('2d');
+        neuralCanvas.width = neuralCanvas.offsetWidth;
+        neuralCanvas.height = 300;
+
+        const layers = [4, 6, 8, 6, 4];
+        const layerX = layers.map((_, i) => (neuralCanvas.width / (layers.length - 1)) * i);
+        let neuralNodes = [];
+
+        layers.forEach((count, li) => {
+            for (let i = 0; i < count; i++) {
+                neuralNodes.push({
+                    x: layerX[li],
+                    y: (neuralCanvas.height / (count + 1)) * (i + 1),
+                    layer: li,
+                    activation: Math.random()
+                });
+            }
+        });
+
+        function drawNeural() {
+            nCtx.clearRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+
+            // Draw connections
+            neuralNodes.forEach((n1, i) => {
+                neuralNodes.forEach((n2, j) => {
+                    if (n1.layer === n2.layer - 1) {
+                        const gradient = nCtx.createLinearGradient(n1.x, n1.y, n2.x, n2.y);
+                        const alpha = (n1.activation + n2.activation) / 2 * 0.5;
+                        gradient.addColorStop(0, 'rgba(0, 240, 255, ' + alpha + ')');
+                        gradient.addColorStop(1, 'rgba(184, 41, 221, ' + alpha + ')');
+                        nCtx.beginPath();
+                        nCtx.moveTo(n1.x, n1.y);
+                        nCtx.lineTo(n2.x, n2.y);
+                        nCtx.strokeStyle = gradient;
+                        nCtx.lineWidth = 1;
+                        nCtx.stroke();
+                    }
+                });
+            });
+
+            // Draw nodes
+            neuralNodes.forEach(n => {
+                n.activation = 0.3 + Math.sin(Date.now() * 0.002 + n.x * 0.01 + n.y * 0.01) * 0.3;
+                nCtx.beginPath();
+                nCtx.arc(n.x, n.y, 6 + n.activation * 4, 0, Math.PI * 2);
+                nCtx.fillStyle = n.layer % 2 === 0 ? 'rgba(0, 240, 255, ' + (0.5 + n.activation * 0.5) + ')' : 'rgba(184, 41, 221, ' + (0.5 + n.activation * 0.5) + ')';
+                nCtx.fill();
+                nCtx.shadowBlur = 10;
+                nCtx.shadowColor = n.layer % 2 === 0 ? '#00f0ff' : '#b829dd';
+            });
+            nCtx.shadowBlur = 0;
+            requestAnimationFrame(drawNeural);
+        }
+        drawNeural();
+
+        // Network Topology Canvas
+        const networkCanvas = document.getElementById('networkCanvas');
+        const netCtx = networkCanvas.getContext('2d');
+        networkCanvas.width = networkCanvas.offsetWidth;
+        networkCanvas.height = 400;
+
+        const gateways = [{ x: 250, y: 80, type: 'gateway' }];
+        const sensors = [];
+        for (let i = 0; i < 15; i++) {
+            sensors.push({
+                x: 50 + Math.random() * 400,
+                y: 150 + Math.random() * 200,
+                type: Math.random() > 0.5 ? 'line' : 'meter',
+                connected: Math.random() > 0.3
+            });
+        }
+
+        function drawNetwork() {
+            netCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+
+            // Draw connections
+            sensors.forEach(s => {
+                if (s.connected) {
+                    const gradient = netCtx.createLinearGradient(gateways[0].x, gateways[0].y, s.x, s.y);
+                    gradient.addColorStop(0, 'rgba(0, 240, 255, 0.3)');
+                    gradient.addColorStop(1, 'rgba(0, 240, 255, 0.1)');
+                    netCtx.beginPath();
+                    netCtx.moveTo(gateways[0].x, gateways[0].y);
+                    netCtx.lineTo(s.x, s.y);
+                    netCtx.strokeStyle = gradient;
+                    netCtx.lineWidth = 1;
+                    netCtx.stroke();
+                }
+            });
+
+            // Draw sensors
+            sensors.forEach(s => {
+                netCtx.beginPath();
+                netCtx.arc(s.x, s.y, 5, 0, Math.PI * 2);
+                netCtx.fillStyle = s.type === 'line' ? 'rgba(184, 41, 221, 0.8)' : 'rgba(0, 255, 136, 0.8)';
+                netCtx.fill();
+            });
+
+            // Draw gateway
+            netCtx.beginPath();
+            netCtx.arc(gateways[0].x, gateways[0].y, 12, 0, Math.PI * 2);
+            netCtx.fillStyle = 'rgba(0, 240, 255, 0.9)';
+            netCtx.fill();
+            netCtx.beginPath();
+            netCtx.arc(gateways[0].x, gateways[0].y, 20, 0, Math.PI * 2);
+            netCtx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+            netCtx.lineWidth = 2;
+            netCtx.stroke();
+
+            requestAnimationFrame(drawNetwork);
+        }
+        drawNetwork();
+
+        // Topology Canvas
+        const topologyCanvas = document.getElementById('topologyCanvas');
+        const topCtx = topologyCanvas.getContext('2d');
+        topologyCanvas.width = topologyCanvas.offsetWidth;
+        topologyCanvas.height = 300;
+
+        const topNodes = [];
+        for (let i = 0; i < 30; i++) {
+            topNodes.push({
+                x: 30 + Math.random() * (topologyCanvas.width - 60),
+                y: 30 + Math.random() * (topologyCanvas.height - 60),
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3
+            });
+        }
+
+        function drawTopology() {
+            topCtx.clearRect(0, 0, topologyCanvas.width, topologyCanvas.height);
+
+            topNodes.forEach(n => {
+                n.x += n.vx;
+                n.y += n.vy;
+                if (n.x < 20 || n.x > topologyCanvas.width - 20) n.vx *= -1;
+                if (n.y < 20 || n.y > topologyCanvas.height - 20) n.vy *= -1;
+            });
+
+            topNodes.forEach((n1, i) => {
+                topNodes.forEach((n2, j) => {
+                    if (i < j) {
+                        const dist = Math.sqrt((n1.x - n2.x) ** 2 + (n1.y - n2.y) ** 2);
+                        if (dist < 80) {
+                            topCtx.beginPath();
+                            topCtx.moveTo(n1.x, n1.y);
+                            topCtx.lineTo(n2.x, n2.y);
+                            topCtx.strokeStyle = 'rgba(0, 240, 255, ' + (0.2 * (1 - dist / 80)) + ')';
+                            topCtx.lineWidth = 0.5;
+                            topCtx.stroke();
+                        }
+                    }
+                });
+            });
+
+            topNodes.forEach(n => {
+                topCtx.beginPath();
+                topCtx.arc(n.x, n.y, 3, 0, Math.PI * 2);
+                topCtx.fillStyle = 'rgba(0, 240, 255, 0.7)';
+                topCtx.fill();
+            });
+
+            requestAnimationFrame(drawTopology);
+        }
+        drawTopology();
+
+        // Live Data Stream Canvas
+        const liveCanvas = document.getElementById('liveDataCanvas');
+        const liveCtx = liveCanvas.getContext('2d');
+        liveCanvas.width = liveCanvas.offsetWidth;
+        liveCanvas.height = 250;
+
+        const dataStreams = {
+            voltage: [],
+            current: [],
+            powerFactor: [],
+            temperature: []
+        };
+
+        for (let i = 0; i < 200; i++) {
+            dataStreams.voltage.push(11 + Math.sin(i * 0.1) * 0.5 + Math.random() * 0.2);
+            dataStreams.current.push(50 + Math.sin(i * 0.15) * 10 + Math.random() * 5);
+            dataStreams.powerFactor.push(0.9 + Math.sin(i * 0.08) * 0.05 + Math.random() * 0.02);
+            dataStreams.temperature.push(45 + Math.sin(i * 0.05) * 5 + Math.random() * 2);
+        }
+
+        function drawLiveData() {
+            liveCtx.clearRect(0, 0, liveCanvas.width, liveCanvas.height);
+
+            // Update data
+            dataStreams.voltage.shift();
+            dataStreams.voltage.push(11 + Math.sin(Date.now() * 0.001) * 0.5 + Math.random() * 0.2);
+            dataStreams.current.shift();
+            dataStreams.current.push(50 + Math.sin(Date.now() * 0.0015) * 10 + Math.random() * 5);
+            dataStreams.powerFactor.shift();
+            dataStreams.powerFactor.push(0.9 + Math.sin(Date.now() * 0.0008) * 0.05 + Math.random() * 0.02);
+            dataStreams.temperature.shift();
+            dataStreams.temperature.push(45 + Math.sin(Date.now() * 0.0005) * 5 + Math.random() * 2);
+
+            const colors = ['#00f0ff', '#b829dd', '#00ff88', '#ff6b35'];
+            const mins = [10, 30, 0.8, 35];
+            const maxs = [12, 70, 1.0, 55];
+
+            Object.keys(dataStreams).forEach((key, idx) => {
+                liveCtx.beginPath();
+                liveCtx.strokeStyle = colors[idx];
+                liveCtx.lineWidth = 2;
+                const data = dataStreams[key];
+                data.forEach((val, i) => {
+                    const x = (i / data.length) * liveCanvas.width;
+                    const y = liveCanvas.height - ((val - mins[idx]) / (maxs[idx] - mins[idx])) * liveCanvas.height * 0.8 - 20;
+                    if (i === 0) liveCtx.moveTo(x, y);
+                    else liveCtx.lineTo(x, y);
+                });
+                liveCtx.stroke();
+            });
+
+            requestAnimationFrame(drawLiveData);
+        }
+        drawLiveData();
+
+        // Chart.js Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                datasets: [{
+                    label: 'SaaS Revenue',
+                    data: [0.6, 3, 12, 30, 60],
+                    backgroundColor: 'rgba(0, 240, 255, 0.6)',
+                    borderColor: '#00f0ff',
+                    borderWidth: 1
+                }, {
+                    label: 'Hardware Revenue',
+                    data: [0.4, 2, 6, 10, 15],
+                    backgroundColor: 'rgba(184, 41, 221, 0.6)',
+                    borderColor: '#b829dd',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8' } }
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148, 163, 184, 0.1)' }, title: { display: true, text: 'Revenue ($M)', color: '#94a3b8' } }
+                }
+            }
+        });
+
+        // ROI Chart
+        const roiCtx = document.getElementById('roiChart').getContext('2d');
+        new Chart(roiCtx, {
+            type: 'line',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6', 'Q7', 'Q8'],
+                datasets: [{
+                    label: 'Revenue Recovered ($K)',
+                    data: [12, 28, 45, 67, 89, 112, 138, 165],
+                    borderColor: '#00ff88',
+                    backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }, {
+                    label: 'Theft Cases Detected',
+                    data: [5, 12, 23, 34, 48, 62, 78, 95],
+                    borderColor: '#ff6b35',
+                    backgroundColor: 'rgba(255, 107, 53, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: '#94a3b8', font: { size: 10 } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    y: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148, 163, 184, 0.1)' } },
+                    y1: { position: 'right', ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } }
+                }
+            }
+        });
+
+        // Simulation Toggle
+        let simulationActive = false;
+        function toggleSimulation() {
+            simulationActive = !simulationActive;
+            if (simulationActive) {
+                alert('Live Simulation Mode Activated!\n\nSensor data streams are now simulating real-time grid conditions with AI anomaly detection running in the background.');
+            }
+        }
+
+        // Intersection Observer for animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.tech-card').forEach(card => observer.observe(card));
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+
+<h2 class="sr-only">Conference mobile app feature comparison across five major events</h2>
+
+<style>
+.conf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; padding: 1rem 0; }
+.conf-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.1rem 1.2rem; }
+.conf-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.conf-icon { width: 36px; height: 36px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.conf-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; margin: 0; }
+.conf-sub { font-size: 11px; color: var(--color-text-secondary); margin: 2px 0 0; }
+.feat-list { list-style: none; padding: 0; margin: 0; }
+.feat-list li { font-size: 12px; color: var(--color-text-secondary); padding: 4px 0; display: flex; align-items: flex-start; gap: 7px; line-height: 1.45; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.feat-list li:last-child { border-bottom: none; }
+.feat-list li i { font-size: 13px; margin-top: 2px; flex-shrink: 0; }
+.star-badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; margin-top: 10px; }
+
+.better-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; padding: 0.5rem 0 1rem; }
+.better-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.1rem; }
+.better-header { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+.better-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0; }
+.section-label { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); letter-spacing: 0.05em; text-transform: uppercase; padding: 1.5rem 0 0.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 0; }
+</style>
+
+<p class="section-label">The five conference apps</p>
+
+<div class="conf-grid">
+
+  <div class="conf-card">
+    <div class="conf-header">
+      <div class="conf-icon" style="background:#E6F1FB;"><i class="ti ti-world" style="color:#185FA5;font-size:18px;" aria-hidden="true"></i></div>
+      <div><p class="conf-name">WEF Forum Live</p><p class="conf-sub">Davos Annual Meeting</p></div>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-calendar" style="color:#185FA5;" aria-hidden="true"></i>Session bookmarking with personal calendar sync</li>
+      <li><i class="ti ti-users" style="color:#185FA5;" aria-hidden="true"></i>Participant browse with industry / country / expertise filters</li>
+      <li><i class="ti ti-id-badge" style="color:#185FA5;" aria-hidden="true"></i>Digital business card exchange via badge scan</li>
+      <li><i class="ti ti-calendar-event" style="color:#185FA5;" aria-hidden="true"></i>Meeting scheduling between participants</li>
+      <li><i class="ti ti-map-pin" style="color:#185FA5;" aria-hidden="true"></i>Turn-by-turn indoor venue navigation</li>
+      <li><i class="ti ti-search" style="color:#185FA5;" aria-hidden="true"></i>Event & session search by interest</li>
+      <li><i class="ti ti-bell" style="color:#185FA5;" aria-hidden="true"></i>Invitations & registered events consolidated view</li>
+    </ul>
+    <span class="star-badge" style="background:#E6F1FB;color:#185FA5;">4.8 ★ App Store</span>
+  </div>
+
+  <div class="conf-card">
+    <div class="conf-header">
+      <div class="conf-icon" style="background:#EAF3DE;"><i class="ti ti-device-laptop" style="color:#3B6D11;font-size:18px;" aria-hidden="true"></i></div>
+      <div><p class="conf-name">CES 2026</p><p class="conf-sub">Consumer Electronics Show</p></div>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-robot" style="color:#3B6D11;" aria-hidden="true"></i>Ask AI chatbot (voice + text, multi-language)</li>
+      <li><i class="ti ti-qrcode" style="color:#3B6D11;" aria-hidden="true"></i>Attendee Connect via MagicBadge™ dynamic QR</li>
+      <li><i class="ti ti-language" style="color:#3B6D11;" aria-hidden="true"></i>In-app live session audio translation</li>
+      <li><i class="ti ti-bus" style="color:#3B6D11;" aria-hidden="true"></i>Live transportation wait times & capacity</li>
+      <li><i class="ti ti-sparkles" style="color:#3B6D11;" aria-hidden="true"></i>Personalized session recommendations by interest</li>
+      <li><i class="ti ti-map" style="color:#3B6D11;" aria-hidden="true"></i>Venue maps & wayfinding</li>
+      <li><i class="ti ti-heart" style="color:#3B6D11;" aria-hidden="true"></i>Favorites pinned sidebar for exhibitors & speakers</li>
+      <li><i class="ti ti-search" style="color:#3B6D11;" aria-hidden="true"></i>Fully indexed search across sessions, venues, speakers, exhibitors</li>
+    </ul>
+    <span class="star-badge" style="background:#EAF3DE;color:#3B6D11;">Powered by Eventbase</span>
+  </div>
+
+  <div class="conf-card">
+    <div class="conf-header">
+      <div class="conf-icon" style="background:#EEEDFE;"><i class="ti ti-music" style="color:#534AB7;font-size:18px;" aria-hidden="true"></i></div>
+      <div><p class="conf-name">SXSW GO</p><p class="conf-sub">Conference & Festivals</p></div>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-layout-dashboard" style="color:#534AB7;" aria-hidden="true"></i>Discover — 50 personalized home screens per attendee profile</li>
+      <li><i class="ti ti-ticket" style="color:#534AB7;" aria-hidden="true"></i>Event spot reservation (limited-seat guarantee)</li>
+      <li><i class="ti ti-brain" style="color:#534AB7;" aria-hidden="true"></i>Braindates — curated peer learning meetups</li>
+      <li><i class="ti ti-qrcode" style="color:#534AB7;" aria-hidden="true"></i>QR code contact exchange</li>
+      <li><i class="ti ti-map-2" style="color:#534AB7;" aria-hidden="true"></i>Interactive maps across 300 Austin venues</li>
+      <li><i class="ti ti-calendar-plus" style="color:#534AB7;" aria-hidden="true"></i>Personal schedule builder with filters</li>
+      <li><i class="ti ti-photo" style="color:#534AB7;" aria-hidden="true"></i>Badge photo upload</li>
+      <li><i class="ti ti-message" style="color:#534AB7;" aria-hidden="true"></i>Attendee messaging & push notifications</li>
+    </ul>
+    <span class="star-badge" style="background:#EEEDFE;color:#534AB7;">7,000+ sessions covered</span>
+  </div>
+
+  <div class="conf-card">
+    <div class="conf-header">
+      <div class="conf-icon" style="background:#FAEEDA;"><i class="ti ti-wifi" style="color:#854F0B;font-size:18px;" aria-hidden="true"></i></div>
+      <div><p class="conf-name">My MWC</p><p class="conf-sub">Mobile World Congress Series</p></div>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-id" style="color:#854F0B;" aria-hidden="true"></i>Digital Access Pass (required for venue entry)</li>
+      <li><i class="ti ti-network" style="color:#854F0B;" aria-hidden="true"></i>9-month cross-series networking (6 months post-event)</li>
+      <li><i class="ti ti-map" style="color:#854F0B;" aria-hidden="true"></i>Improved interactive map across 8 halls</li>
+      <li><i class="ti ti-calendar-stats" style="color:#854F0B;" aria-hidden="true"></i>In-app agenda builder</li>
+      <li><i class="ti ti-building-store" style="color:#854F0B;" aria-hidden="true"></i>Exhibitor & speaker directory with profiles</li>
+      <li><i class="ti ti-share" style="color:#854F0B;" aria-hidden="true"></i>LinkedIn sharing integration for event promotion</li>
+      <li><i class="ti ti-accessible" style="color:#854F0B;" aria-hidden="true"></i>Food, dining & on-site services info</li>
+    </ul>
+    <span class="star-badge" style="background:#FAEEDA;color:#854F0B;">GSMA-organized</span>
+  </div>
+
+  <div class="conf-card">
+    <div class="conf-header">
+      <div class="conf-icon" style="background:#E1F5EE;"><i class="ti ti-diamond" style="color:#0F6E56;font-size:18px;" aria-hidden="true"></i></div>
+      <div><p class="conf-name">FMF App</p><p class="conf-sub">Future Minerals Forum</p></div>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-messages" style="color:#0F6E56;" aria-hidden="true"></i>Private attendee messaging</li>
+      <li><i class="ti ti-calendar-check" style="color:#0F6E56;" aria-hidden="true"></i>Personalized schedule with session reminders</li>
+      <li><i class="ti ti-user-search" style="color:#0F6E56;" aria-hidden="true"></i>Attendee & speaker profiles</li>
+      <li><i class="ti ti-handshake" style="color:#0F6E56;" aria-hidden="true"></i>Pre-event meeting scheduling (Global Connect matchmaking)</li>
+      <li><i class="ti ti-news" style="color:#0F6E56;" aria-hidden="true"></i>Live updates & announcements</li>
+      <li><i class="ti ti-bulb" style="color:#0F6E56;" aria-hidden="true"></i>Innovations & technologies discovery feed</li>
+      <li><i class="ti ti-map-pin" style="color:#0F6E56;" aria-hidden="true"></i>Venue navigation</li>
+    </ul>
+    <span class="star-badge" style="background:#E1F5EE;color:#0F6E56;">Ministry-developed</span>
+  </div>
+
+</div>
+
+<p class="section-label">Notably stronger apps in the conference space</p>
+
+<div class="better-grid">
+
+  <div class="better-card" style="border: 2px solid var(--color-border-info);">
+    <div class="better-header">
+      <div class="conf-icon" style="background:#E6F1FB; width:32px; height:32px;"><i class="ti ti-cloud" style="color:#185FA5;font-size:16px;" aria-hidden="true"></i></div>
+      <p class="better-name">Salesforce Events (Dreamforce)</p>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-location" style="color:#185FA5;" aria-hidden="true"></i>Blue-dot precision indoor navigation via Pointr beacon + WiFi fusion</li>
+      <li><i class="ti ti-robot" style="color:#185FA5;" aria-hidden="true"></i>Ask Agentforce AI — generates ROI justification letters, session summaries</li>
+      <li><i class="ti ti-headphones" style="color:#185FA5;" aria-hidden="true"></i>Mixhalo live in-ear session audio in preferred language</li>
+      <li><i class="ti ti-closed-captioning" style="color:#185FA5;" aria-hidden="true"></i>AI-generated real-time captions</li>
+      <li><i class="ti ti-sparkles" style="color:#185FA5;" aria-hidden="true"></i>AI-recommended agenda by role, industry & interest</li>
+      <li><i class="ti ti-player-play" style="color:#185FA5;" aria-hidden="true"></i>Salesforce+ integration for missed session replays</li>
+      <li><i class="ti ti-users-group" style="color:#185FA5;" aria-hidden="true"></i>Hyperlocal personalization using real-time location context</li>
+    </ul>
+    <span class="star-badge" style="background:#E6F1FB;color:#185FA5;">Gold standard — Eventbase platform</span>
+  </div>
+
+  <div class="better-card">
+    <div class="better-header">
+      <div class="conf-icon" style="background:#EEEDFE; width:32px; height:32px;"><i class="ti ti-rocket" style="color:#534AB7;font-size:16px;" aria-hidden="true"></i></div>
+      <p class="better-name">AWS re:Invent / Google I/O</p>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-calendar-time" style="color:#534AB7;" aria-hidden="true"></i>Session capacity & real-time seat tracking</li>
+      <li><i class="ti ti-login" style="color:#534AB7;" aria-hidden="true"></i>Integrated single-sign-on with conference registration</li>
+      <li><i class="ti ti-package" aria-hidden="true" style="color:#534AB7;"></i>Hands-on lab booking and check-in within the app</li>
+      <li><i class="ti ti-notification" style="color:#534AB7;" aria-hidden="true"></i>Deep push notifications with personalized schedule conflicts</li>
+      <li><i class="ti ti-building" style="color:#534AB7;" aria-hidden="true"></i>Campus-scale multi-venue navigation (250,000 sqft+)</li>
+      <li><i class="ti ti-file-text" style="color:#534AB7;" aria-hidden="true"></i>Session content & slides delivered in-app post-session</li>
+    </ul>
+  </div>
+
+  <div class="better-card">
+    <div class="better-header">
+      <div class="conf-icon" style="background:#EAF3DE; width:32px; height:32px;"><i class="ti ti-chart-arrows" style="color:#3B6D11;font-size:16px;" aria-hidden="true"></i></div>
+      <p class="better-name">Money 20/20 App</p>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-users" style="color:#3B6D11;" aria-hidden="true"></i>AI-powered attendee matchmaking by business intent</li>
+      <li><i class="ti ti-calendar-event" style="color:#3B6D11;" aria-hidden="true"></i>Pre-event curated 1:1 meeting calendar</li>
+      <li><i class="ti ti-filter" style="color:#3B6D11;" aria-hidden="true"></i>Role, company size & deal-stage attendee filtering</li>
+      <li><i class="ti ti-star" style="color:#3B6D11;" aria-hidden="true"></i>Hot leads & warm intro feature for sales teams</li>
+      <li><i class="ti ti-building-bank" style="color:#3B6D11;" aria-hidden="true"></i>Sponsor & exhibitor deal-room booking</li>
+    </ul>
+  </div>
+
+  <div class="better-card">
+    <div class="better-header">
+      <div class="conf-icon" style="background:#FAEEDA; width:32px; height:32px;"><i class="ti ti-brain" style="color:#854F0B;font-size:16px;" aria-hidden="true"></i></div>
+      <p class="better-name">TED Conference App</p>
+    </div>
+    <ul class="feat-list">
+      <li><i class="ti ti-video" style="color:#854F0B;" aria-hidden="true"></i>Instant on-demand talk playback post-session</li>
+      <li><i class="ti ti-bookmark" style="color:#854F0B;" aria-hidden="true"></i>Clipping & saving talk highlights in-app</li>
+      <li><i class="ti ti-world" style="color:#854F0B;" aria-hidden="true"></i>Subtitles in 100+ languages for every session</li>
+      <li><i class="ti ti-heart" style="color:#854F0B;" aria-hidden="true"></i>Community reaction & idea-rating during talks</li>
+      <li><i class="ti ti-microphone" style="color:#854F0B;" aria-hidden="true"></i>Speaker Q&A submission from the app</li>
+    </ul>
+  </div>
+
+</div>

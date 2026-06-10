@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Summit App Flow</title>
+    <!-- Tabler Icons CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f8f9fb;
+            --color-background-warning: #fff8e1;
+            --color-text-primary: #1a1d21;
+            --color-text-secondary: #5f6b7a;
+            --color-text-tertiary: #9aa5b4;
+            --color-text-warning: #856404;
+            --color-border-tertiary: #e3e8ef;
+            --color-border-secondary: #cfd6e0;
+            --border-radius-lg: 16px;
+            --border-radius-md: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f1f3f5;
+            margin: 0;
+            padding: 2rem 1rem;
+        }
+
+        h2.sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        .flow-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1rem 0 2rem;
+        }
+
+        .module {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 0.5s ease;
+        }
+
+        .module.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .module:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .mod-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 0.5px solid transparent;
+            /* changes on open */
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s ease;
+        }
+
+        .module.is-open .mod-header {
+            border-bottom-color: var(--color-border-tertiary);
+            background: #fcfcfd;
+        }
+
+        .mod-header:hover {
+            background: #fafbfc;
+        }
+
+        .mod-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .mod-header:hover .mod-icon {
+            transform: scale(1.1);
+        }
+
+        .mod-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mod-sub {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            margin: 3px 0 0;
+        }
+
+        .mod-badge {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 20px;
+            white-space: nowrap;
+            transition: transform 0.2s ease;
+        }
+
+        .mod-header:hover .mod-badge {
+            transform: scale(1.05);
+        }
+
+        .mod-chevron {
+            margin-left: 8px;
+            font-size: 16px;
+            color: var(--color-text-tertiary);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+        }
+
+        .module.is-open .mod-chevron {
+            transform: rotate(180deg);
+        }
+
+        /* Smooth Height Animation using CSS Grid */
+        .mod-body {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .module.is-open .mod-body {
+            grid-template-rows: 1fr;
+        }
+
+        .mod-body-inner {
+            overflow: hidden;
+        }
+
+        .mod-body-content {
+            padding: 18px 20px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+        }
+
+        .module.is-open .mod-body-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .screen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .screen-card {
+            background: var(--color-background-secondary);
+            border-radius: var(--border-radius-md);
+            padding: 14px 16px;
+            border: 1px solid transparent;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .screen-card:hover {
+            border-color: var(--color-border-tertiary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .screen-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin: 0 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .feat-ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .feat-ul li {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            padding: 3px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+
+        .feat-ul li i {
+            font-size: 13px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .flow-pill {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--color-border-secondary);
+            color: var(--color-text-secondary);
+            background: var(--color-background-primary);
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .flow-pill:hover {
+            background: var(--color-background-primary);
+            color: var(--color-text-primary);
+            border-color: var(--color-text-tertiary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
+
+        .flow-arrow {
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            transition: transform 0.3s ease;
+        }
+
+        .flow-row:hover .flow-arrow {
+            transform: translateX(2px);
+        }
+
+        .sec-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--color-text-tertiary);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin: 0 0 10px;
+        }
+
+        .state-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .state-chip {
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .state-chip:hover {
+            transform: scale(1.05);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--color-border-tertiary);
+            margin: 16px 0;
+        }
+
+        .must-tag {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--color-background-warning);
+            color: var(--color-text-warning);
+            vertical-align: middle;
+            animation: pulse-tag 2s infinite;
+        }
+
+        @keyframes pulse-tag {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 6px rgba(255, 193, 7, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+            }
+        }
+
+        .footer-bar {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: var(--color-background-primary);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 0.5px solid var(--color-border-tertiary);
+        }
+
+        .footer-stat {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .footer-stat span {
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+
+        .cta-button {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #1a1d21;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:hover {
+            background: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-button:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 class="sr-only">Complete app flow for a corporate B2B summit mobile app targeting C-suite executives and
+        investors, covering onboarding, home, agenda, networking, navigation, AI assistant, meetings, and notifications
+        modules.</h2>
+
+    <div class="flow-wrap">
+
+        <!-- Module 1 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#E6F1FB"><i class="ti ti-login"
+                        style="color:#185FA5;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">01 — Onboarding & authentication</p>
+                    <p class="mod-sub">First-run, profile setup, access control</p>
+                </div>
+                <span class="mod-badge" style="background:#E6F1FB;color:#185FA5">4 screens</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <p class="sec-label">User flow</p>
+                        <div class="flow-row">
+                            <span class="flow-pill">Splash / brand</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">SSO / email login</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Registration verify</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Profile builder</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Interest tagging</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Home</span>
+                        </div>
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-sparkles" style="color:#185FA5;font-size:15px"
+                                        aria-hidden="true"></i>Splash & SSO</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-brand-google" aria-hidden="true"></i>Google / LinkedIn / Apple
+                                        SSO</li>
+                                    <li><i class="ti ti-mail" aria-hidden="true"></i>Magic link email login</li>
+                                    <li><i class="ti ti-fingerprint" aria-hidden="true"></i>Biometric unlock on return
+                                    </li>
+                                    <li><i class="ti ti-shield-check" aria-hidden="true"></i>Registration badge
+                                        validation</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-user-edit" style="color:#185FA5;font-size:15px"
+                                        aria-hidden="true"></i>Profile builder</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-photo" aria-hidden="true"></i>Executive headshot upload</li>
+                                    <li><i class="ti ti-building" aria-hidden="true"></i>Company, title, sector</li>
+                                    <li><i class="ti ti-tag" aria-hidden="true"></i>Interest & deal-size tagging</li>
+                                    <li><i class="ti ti-eye-off" aria-hidden="true"></i>Profile visibility controls</li>
+                                    <li><i class="ti ti-brand-linkedin" aria-hidden="true"></i>LinkedIn profile sync
+                                        (optional)</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-id-badge" style="color:#185FA5;font-size:15px"
+                                        aria-hidden="true"></i>Digital pass</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-qrcode" aria-hidden="true"></i>QR digital access badge (venue
+                                        entry)</li>
+                                    <li><i class="ti ti-nfc" aria-hidden="true"></i>NFC tap-to-share contact</li>
+                                    <li><i class="ti ti-lock" aria-hidden="true"></i>Tier-gated content flags (VIP /
+                                        standard)</li>
+                                    <li><i class="ti ti-bell" aria-hidden="true"></i>Session capacity alerts</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#EEEDFE"><i class="ti ti-layout-dashboard"
+                        style="color:#534AB7;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">02 — Home & personalised feed</p>
+                    <p class="mod-sub">Command centre for the day's experience</p>
+                </div>
+                <span class="mod-badge" style="background:#EEEDFE;color:#534AB7">5 widgets</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-clock" style="color:#534AB7;font-size:15px"
+                                        aria-hidden="true"></i>Now & next strip</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-calendar-event" aria-hidden="true"></i>Live countdown to next
+                                        booked session</li>
+                                    <li><i class="ti ti-map-pin" aria-hidden="true"></i>Room location with one-tap
+                                        navigate</li>
+                                    <li><i class="ti ti-users" aria-hidden="true"></i>Who else is attending this session
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-sparkles" style="color:#534AB7;font-size:15px"
+                                        aria-hidden="true"></i>AI daily briefing <span class="must-tag">AI</span></p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-robot" aria-hidden="true"></i>Morning summary: top 3 sessions
+                                        for you</li>
+                                    <li><i class="ti ti-handshake" aria-hidden="true"></i>Top 5 match suggestions for
+                                        today</li>
+                                    <li><i class="ti ti-trending-up" aria-hidden="true"></i>Hot topics trending across
+                                        attendees</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-bell" style="color:#534AB7;font-size:15px"
+                                        aria-hidden="true"></i>Activity feed</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-message" aria-hidden="true"></i>Meeting requests & responses
+                                    </li>
+                                    <li><i class="ti ti-star" aria-hidden="true"></i>New match suggestions</li>
+                                    <li><i class="ti ti-megaphone" aria-hidden="true"></i>Organiser announcements</li>
+                                    <li><i class="ti ti-file-text" aria-hidden="true"></i>Session materials released
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-chart-bar" style="color:#534AB7;font-size:15px"
+                                        aria-hidden="true"></i>My stats</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-users" aria-hidden="true"></i>Connections made</li>
+                                    <li><i class="ti ti-calendar-check" aria-hidden="true"></i>Sessions attended</li>
+                                    <li><i class="ti ti-briefcase" aria-hidden="true"></i>Meetings completed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#EAF3DE"><i class="ti ti-calendar"
+                        style="color:#3B6D11;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">03 — Agenda & sessions</p>
+                    <p class="mod-sub">Full programme, personalisation, translation</p>
+                </div>
+                <span class="mod-badge" style="background:#EAF3DE;color:#3B6D11">6 screens</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <p class="sec-label">User flow</p>
+                        <div class="flow-row">
+                            <span class="flow-pill">Browse agenda</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Filter / search</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Session detail</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Add to schedule</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">My schedule view</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Live session</span>
+                        </div>
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-list" style="color:#3B6D11;font-size:15px"
+                                        aria-hidden="true"></i>Programme browser</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-filter" aria-hidden="true"></i>Filter by track, format, day,
+                                        speaker</li>
+                                    <li><i class="ti ti-search" aria-hidden="true"></i>Full-text search across all
+                                        sessions</li>
+                                    <li><i class="ti ti-sparkles" aria-hidden="true"></i>AI "recommended for you" tag
+                                    </li>
+                                    <li><i class="ti ti-heart" aria-hidden="true"></i>Bookmark to shortlist</li>
+                                    <li><i class="ti ti-users" aria-hidden="true"></i>Attendee count & capacity
+                                        indicator</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-file-description"
+                                        style="color:#3B6D11;font-size:15px" aria-hidden="true"></i>Session detail</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-microphone" aria-hidden="true"></i>Speaker bios with connect
+                                        button</li>
+                                    <li><i class="ti ti-calendar-plus" aria-hidden="true"></i>Add to personal schedule
+                                    </li>
+                                    <li><i class="ti ti-map-pin" aria-hidden="true"></i>Room + one-tap navigation</li>
+                                    <li><i class="ti ti-download" aria-hidden="true"></i>Pre-read materials download
+                                    </li>
+                                    <li><i class="ti ti-share" aria-hidden="true"></i>Share session with contact</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-language" style="color:#3B6D11;font-size:15px"
+                                        aria-hidden="true"></i>Live session <span class="must-tag">LIVE</span></p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-headphones" aria-hidden="true"></i>Live in-ear audio translation
+                                        (8 langs)</li>
+                                    <li><i class="ti ti-closed-captioning" aria-hidden="true"></i>Real-time captions
+                                        overlay</li>
+                                    <li><i class="ti ti-pencil" aria-hidden="true"></i>In-app note-taking per session
+                                    </li>
+                                    <li><i class="ti ti-message-question" aria-hidden="true"></i>Q&A submission & upvote
+                                    </li>
+                                    <li><i class="ti ti-poll" aria-hidden="true"></i>Live audience polls</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-player-play" style="color:#3B6D11;font-size:15px"
+                                        aria-hidden="true"></i>Post-session</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-robot" aria-hidden="true"></i>AI-generated session summary</li>
+                                    <li><i class="ti ti-file-text" aria-hidden="true"></i>Slides & materials in-app
+                                        delivery</li>
+                                    <li><i class="ti ti-video" aria-hidden="true"></i>On-demand replay (if recorded)
+                                    </li>
+                                    <li><i class="ti ti-star" aria-hidden="true"></i>Rate session & speaker</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <p class="sec-label">Conflict handling</p>
+                        <div class="state-row">
+                            <span class="state-chip" style="background:#FAEEDA;color:#854F0B">Schedule conflict
+                                warning</span>
+                            <span class="state-chip" style="background:#E6F1FB;color:#185FA5">Waitlist join</span>
+                            <span class="state-chip" style="background:#EAF3DE;color:#3B6D11">Capacity released
+                                alert</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#FAEEDA"><i class="ti ti-users"
+                        style="color:#854F0B;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">04 — AI networking & matchmaking <span class="must-tag">MUST-HAVE</span></p>
+                    <p class="mod-sub">Intent-based discovery and connection</p>
+                </div>
+                <span class="mod-badge" style="background:#FAEEDA;color:#854F0B">7 screens</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <p class="sec-label">Matching flow</p>
+                        <div class="flow-row">
+                            <span class="flow-pill">Intent survey</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">AI generates ranked matches</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Review profile card</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Send connection request</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">In-app messaging</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Schedule meeting</span>
+                        </div>
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-brain" style="color:#854F0B;font-size:15px"
+                                        aria-hidden="true"></i>Match engine</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-adjustments" aria-hidden="true"></i>Intent: invest / partner /
+                                        hire / learn</li>
+                                    <li><i class="ti ti-building-factory" aria-hidden="true"></i>Sector, deal stage,
+                                        company size filters</li>
+                                    <li><i class="ti ti-sparkles" aria-hidden="true"></i>AI match score with explanation
+                                    </li>
+                                    <li><i class="ti ti-refresh" aria-hidden="true"></i>Refresh matches daily at 7 AM
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-user-circle" style="color:#854F0B;font-size:15px"
+                                        aria-hidden="true"></i>Attendee profile</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-briefcase" aria-hidden="true"></i>Full executive profile</li>
+                                    <li><i class="ti ti-link" aria-hidden="true"></i>Mutual connections shown</li>
+                                    <li><i class="ti ti-calendar-stats" aria-hidden="true"></i>Sessions they're
+                                        attending</li>
+                                    <li><i class="ti ti-message" aria-hidden="true"></i>Send message / request meeting
+                                    </li>
+                                    <li><i class="ti ti-bookmark" aria-hidden="true"></i>Save to watchlist</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-message-dots"
+                                        style="color:#854F0B;font-size:15px" aria-hidden="true"></i>Messaging</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-message" aria-hidden="true"></i>End-to-end encrypted 1:1
+                                        messaging</li>
+                                    <li><i class="ti ti-robot" aria-hidden="true"></i>AI suggested icebreaker message
+                                    </li>
+                                    <li><i class="ti ti-calendar" aria-hidden="true"></i>Inline meeting invite from chat
+                                    </li>
+                                    <li><i class="ti ti-file" aria-hidden="true"></i>Share session & documents in chat
+                                    </li>
+                                    <li><i class="ti ti-bell-off" aria-hidden="true"></i>Do-not-disturb mode</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-qrcode" style="color:#854F0B;font-size:15px"
+                                        aria-hidden="true"></i>In-person connect</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-qrcode" aria-hidden="true"></i>Scan badge to connect instantly
+                                    </li>
+                                    <li><i class="ti ti-nfc" aria-hidden="true"></i>NFC tap alternative</li>
+                                    <li><i class="ti ti-id" aria-hidden="true"></i>Auto-save digital business card</li>
+                                    <li><i class="ti ti-download" aria-hidden="true"></i>Export contacts to CRM
+                                        (Salesforce / HubSpot)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#E1F5EE"><i class="ti ti-calendar-event"
+                        style="color:#0F6E56;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">05 — Meeting scheduler <span class="must-tag">MUST-HAVE</span></p>
+                    <p class="mod-sub">Pre-event and on-site 1:1 meeting management</p>
+                </div>
+                <span class="mod-badge" style="background:#E1F5EE;color:#0F6E56">5 screens</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <p class="sec-label">Booking flow</p>
+                        <div class="flow-row">
+                            <span class="flow-pill">View availability</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Propose time slots</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Accept / counter</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Confirmed + location</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">15-min reminder</span><span class="flow-arrow">→</span>
+                            <span class="flow-pill">Post-meeting notes</span>
+                        </div>
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-calendar-time"
+                                        style="color:#0F6E56;font-size:15px" aria-hidden="true"></i>Availability</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-calendar" aria-hidden="true"></i>Block-out personal unavailable
+                                        times</li>
+                                    <li><i class="ti ti-link" aria-hidden="true"></i>Two-way sync with Google / Outlook
+                                        Cal</li>
+                                    <li><i class="ti ti-clock" aria-hidden="true"></i>30 / 45 / 60 min slot options</li>
+                                    <li><i class="ti ti-eye-off" aria-hidden="true"></i>Meeting blackout windows</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-map-2" style="color:#0F6E56;font-size:15px"
+                                        aria-hidden="true"></i>Meeting rooms</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-building" aria-hidden="true"></i>VIP lounge & breakout room
+                                        browser</li>
+                                    <li><i class="ti ti-check" aria-hidden="true"></i>Real-time room availability</li>
+                                    <li><i class="ti ti-map-pin" aria-hidden="true"></i>Navigate to room from
+                                        confirmation</li>
+                                    <li><i class="ti ti-clock" aria-hidden="true"></i>Check-in when you arrive</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-list-check" style="color:#0F6E56;font-size:15px"
+                                        aria-hidden="true"></i>My meetings</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-layout-list" aria-hidden="true"></i>Chronological meeting list
+                                    </li>
+                                    <li><i class="ti ti-pencil" aria-hidden="true"></i>Pre-meeting agenda notes</li>
+                                    <li><i class="ti ti-x" aria-hidden="true"></i>Cancel with auto-notification</li>
+                                    <li><i class="ti ti-robot" aria-hidden="true"></i>Post-meeting AI action items</li>
+                                    <li><i class="ti ti-upload" aria-hidden="true"></i>Push summary to CRM</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                        <p class="sec-label">Meeting states</p>
+                        <div class="state-row">
+                            <span class="state-chip" style="background:#EAF3DE;color:#3B6D11">Confirmed</span>
+                            <span class="state-chip" style="background:#FAEEDA;color:#854F0B">Pending response</span>
+                            <span class="state-chip" style="background:#E6F1FB;color:#185FA5">Rescheduled</span>
+                            <span class="state-chip" style="background:#FCEBEB;color:#A32D2D">Declined</span>
+                            <span class="state-chip"
+                                style="background:var(--color-background-secondary);color:var(--color-text-secondary)">Completed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 6 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#FBEAF0"><i class="ti ti-map"
+                        style="color:#993556;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">06 — Indoor navigation & venue <span class="must-tag">MUST-HAVE</span></p>
+                    <p class="mod-sub">Venue map, wayfinding, points of interest</p>
+                </div>
+                <span class="mod-badge" style="background:#FBEAF0;color:#993556">4 screens</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-map-2" style="color:#993556;font-size:15px"
+                                        aria-hidden="true"></i>Venue map</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-layers" aria-hidden="true"></i>Multi-floor interactive map</li>
+                                    <li><i class="ti ti-location" aria-hidden="true"></i>Blue-dot live location (BLE
+                                        beacons)</li>
+                                    <li><i class="ti ti-filter" aria-hidden="true"></i>Filter: rooms, exits, catering,
+                                        lounges</li>
+                                    <li><i class="ti ti-search" aria-hidden="true"></i>Search any location by name</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-route" style="color:#993556;font-size:15px"
+                                        aria-hidden="true"></i>Turn-by-turn nav</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-arrow-right" aria-hidden="true"></i>Step-by-step walking
+                                        directions</li>
+                                    <li><i class="ti ti-stairs" aria-hidden="true"></i>Lift & stairs routing options
+                                    </li>
+                                    <li><i class="ti ti-accessible" aria-hidden="true"></i>Accessibility-friendly routes
+                                    </li>
+                                    <li><i class="ti ti-clock" aria-hidden="true"></i>ETA to next session</li>
+                                    <li><i class="ti ti-bell" aria-hidden="true"></i>"Leave now" alert before session
+                                        starts</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-building-store"
+                                        style="color:#993556;font-size:15px" aria-hidden="true"></i>Points of interest
+                                </p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-coffee" aria-hidden="true"></i>Networking lounges & café</li>
+                                    <li><i class="ti ti-briefcase" aria-hidden="true"></i>VIP areas with access check
+                                    </li>
+                                    <li><i class="ti ti-first-aid-kit" aria-hidden="true"></i>Medical, prayer, quiet
+                                        rooms</li>
+                                    <li><i class="ti ti-wifi" aria-hidden="true"></i>Wi-Fi passwords by zone</li>
+                                    <li><i class="ti ti-shirt" aria-hidden="true"></i>Exhibitor booth directory</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-bus" style="color:#993556;font-size:15px"
+                                        aria-hidden="true"></i>Transport</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-clock" aria-hidden="true"></i>Shuttle schedule & live wait times
+                                    </li>
+                                    <li><i class="ti ti-car" aria-hidden="true"></i>Preferred car service booking</li>
+                                    <li><i class="ti ti-map-pin" aria-hidden="true"></i>Nearest pickup points shown on
+                                        map</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 7 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#EEEDFE"><i class="ti ti-robot"
+                        style="color:#534AB7;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">07 — AI summit assistant <span class="must-tag">MUST-HAVE</span></p>
+                    <p class="mod-sub">Conversational concierge for executives</p>
+                </div>
+                <span class="mod-badge" style="background:#EEEDFE;color:#534AB7">Always available</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-message-chatbot"
+                                        style="color:#534AB7;font-size:15px" aria-hidden="true"></i>Chat interface</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-microphone" aria-hidden="true"></i>Voice & text input</li>
+                                    <li><i class="ti ti-language" aria-hidden="true"></i>Multilingual responses</li>
+                                    <li><i class="ti ti-calendar" aria-hidden="true"></i>"What should I do next?"
+                                        scheduling help</li>
+                                    <li><i class="ti ti-users" aria-hidden="true"></i>"Who should I meet about X?"
+                                        matching query</li>
+                                    <li><i class="ti ti-map-pin" aria-hidden="true"></i>"How do I get to Hall B?"
+                                        navigation</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-file-analytics"
+                                        style="color:#534AB7;font-size:15px" aria-hidden="true"></i>Smart outputs</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-notes" aria-hidden="true"></i>Session summary on request</li>
+                                    <li><i class="ti ti-file-export" aria-hidden="true"></i>ROI letter generator for
+                                        event approval</li>
+                                    <li><i class="ti ti-list-details" aria-hidden="true"></i>Post-event action item
+                                        digest</li>
+                                    <li><i class="ti ti-trending-up" aria-hidden="true"></i>Key themes & signals from
+                                        day's sessions</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-settings" style="color:#534AB7;font-size:15px"
+                                        aria-hidden="true"></i>Context & memory</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-brain" aria-hidden="true"></i>Knows your schedule, meetings &
+                                        interests</li>
+                                    <li><i class="ti ti-shield" aria-hidden="true"></i>Data used only within the app
+                                        session</li>
+                                    <li><i class="ti ti-refresh" aria-hidden="true"></i>Adapts as your day progresses
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module 8 -->
+        <div class="module">
+            <div class="mod-header" onclick="toggle(this)">
+                <div class="mod-icon" style="background:#F1EFE8"><i class="ti ti-settings"
+                        style="color:#5F5E5A;font-size:18px" aria-hidden="true"></i></div>
+                <div>
+                    <p class="mod-title">08 — Settings, notifications & admin</p>
+                    <p class="mod-sub">Controls, privacy, and organiser tools</p>
+                </div>
+                <span class="mod-badge" style="background:#F1EFE8;color:#5F5E5A">3 zones</span>
+                <i class="ti ti-chevron-down mod-chevron"></i>
+            </div>
+            <div class="mod-body">
+                <div class="mod-body-inner">
+                    <div class="mod-body-content">
+                        <div class="screen-grid">
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-bell" style="color:#5F5E5A;font-size:15px"
+                                        aria-hidden="true"></i>Notifications</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-adjustments" aria-hidden="true"></i>Granular push notification
+                                        controls per type</li>
+                                    <li><i class="ti ti-moon" aria-hidden="true"></i>Quiet hours schedule</li>
+                                    <li><i class="ti ti-bell-ringing" aria-hidden="true"></i>Session start & "leave now"
+                                        alerts</li>
+                                    <li><i class="ti ti-message" aria-hidden="true"></i>Meeting request priority alerts
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-shield" style="color:#5F5E5A;font-size:15px"
+                                        aria-hidden="true"></i>Privacy & data</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-eye-off" aria-hidden="true"></i>Incognito browsing mode</li>
+                                    <li><i class="ti ti-user-off" aria-hidden="true"></i>Block / report attendee</li>
+                                    <li><i class="ti ti-download" aria-hidden="true"></i>Export all my data (GDPR)</li>
+                                    <li><i class="ti ti-trash" aria-hidden="true"></i>Delete account & data</li>
+                                </ul>
+                            </div>
+                            <div class="screen-card">
+                                <p class="screen-name"><i class="ti ti-shield-star" style="color:#5F5E5A;font-size:15px"
+                                        aria-hidden="true"></i>Organiser admin</p>
+                                <ul class="feat-ul">
+                                    <li><i class="ti ti-megaphone" aria-hidden="true"></i>Push announcement to all /
+                                        segment</li>
+                                    <li><i class="ti ti-chart-pie" aria-hidden="true"></i>Live attendance & engagement
+                                        dashboard</li>
+                                    <li><i class="ti ti-pencil" aria-hidden="true"></i>Edit session details on the fly
+                                    </li>
+                                    <li><i class="ti ti-scan" aria-hidden="true"></i>Badge scanning for room check-ins
+                                    </li>
+                                    <li><i class="ti ti-alert-triangle" aria-hidden="true"></i>Emergency broadcast to
+                                        all attendees</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Bar -->
+        <div class="footer-bar">
+            <div class="footer-stat"><span>8</span> modules</div>
+            <div class="footer-stat"><span>34+</span> distinct screens</div>
+            <div class="footer-stat"><span>4</span> must-have features flagged</div>
+            <div class="footer-stat"><span>iOS + Android</span> target</div>
+            <button class="cta-button" onclick="sendPrompt()">Generate technical spec ↗</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Intersection Observer for Staggered Entry Animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const modules = document.querySelectorAll('.module');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        // Apply staggered delay
+                        setTimeout(() => {
+                            entry.target.classList.add('is-visible');
+                        }, index * 100);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            modules.forEach(mod => observer.observe(mod));
+
+            // Auto-open the first module for a welcoming feel
+            if (modules.length > 0) {
+                setTimeout(() => {
+                    modules[0].classList.add('is-open');
+                }, 600);
+            }
+        });
+
+        // Toggle Accordion with smooth height animation
+        function toggle(header) {
+            const module = header.closest('.module');
+            const isOpen = module.classList.contains('is-open');
+
+            // Close all other modules (Optional: remove if multi-open is preferred)
+            document.querySelectorAll('.module.is-open').forEach(openMod => {
+                if (openMod !== module) {
+                    openMod.classList.remove('is-open');
+                }
+            });
+
+            // Toggle current module
+            if (isOpen) {
+                module.classList.remove('is-open');
+            } else {
+                module.classList.add('is-open');
+            }
+        }
+
+        // Mock function for CTA button
+        function sendPrompt() {
+            const btn = document.querySelector('.cta-button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-loader-2" style="animation: spin 1s linear infinite; display: inline-block;"></i> Generating...';
+            btn.style.pointerEvents = 'none';
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="ti ti-check"></i> Done!';
+                btn.style.background = '#0F6E56';
+
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '#1a1d21';
+                    btn.style.pointerEvents = 'auto';
+                }, 2000);
+            }, 1500);
+        }
+    </script>
+
+    <style>
+        /* Simple spin animation for the loading icon */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+</body>
+
+</html>

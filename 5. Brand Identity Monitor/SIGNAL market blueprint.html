@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL — Reputation & Revenue Intelligence Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #060a13;
+    --bg2: #0c1220;
+    --card: #111a2e;
+    --card-hover: #162038;
+    --border: #1e2d4a;
+    --fg: #e8ecf4;
+    --muted: #7a8ba8;
+    --accent: #00ff88;
+    --accent2: #00cc6a;
+    --danger: #ff4757;
+    --warning: #ffa502;
+    --info: #00d2ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+  /* Navigation */
+  .nav-glass {
+    background: rgba(6,10,19,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(30,45,74,0.5);
+  }
+
+  .nav-link {
+    position: relative;
+    color: var(--muted);
+    transition: color 0.3s;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+  }
+  .nav-link:hover { color: var(--accent); }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Hero canvas */
+  #radar-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+  }
+
+  /* Glow effects */
+  .glow-accent {
+    box-shadow: 0 0 30px rgba(0,255,136,0.15), 0 0 60px rgba(0,255,136,0.05);
+  }
+  .glow-text {
+    text-shadow: 0 0 40px rgba(0,255,136,0.3);
+  }
+
+  /* Section transitions */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* Priority gauge */
+  .gauge-ring {
+    transition: stroke-dashoffset 1.5s ease;
+  }
+
+  /* Gap card */
+  .gap-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .gap-card:hover {
+    background: var(--card-hover);
+    border-color: rgba(0,255,136,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,255,136,0.08);
+  }
+  .gap-card .details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  .gap-card.expanded .details {
+    max-height: 800px;
+  }
+
+  /* Module tabs */
+  .module-tab {
+    padding: 12px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    white-space: nowrap;
+  }
+  .module-tab:hover {
+    color: var(--fg);
+    background: rgba(0,255,136,0.05);
+  }
+  .module-tab.active {
+    color: var(--accent);
+    background: rgba(0,255,136,0.1);
+    border-color: rgba(0,255,136,0.3);
+  }
+
+  .module-content {
+    display: none;
+    animation: fadeSlideIn 0.5s ease;
+  }
+  .module-content.active { display: block; }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Star ratings */
+  .star-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .star-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    width: 0;
+    transition: width 1.2s ease;
+  }
+
+  /* Pricing card */
+  .price-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    transition: all 0.4s ease;
+    position: relative;
+  }
+  .price-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .price-card.featured {
+    border-color: var(--accent);
+    background: linear-gradient(170deg, rgba(0,255,136,0.08) 0%, var(--card) 40%);
+  }
+  .price-card.featured::before {
+    content: 'RECOMMENDED';
+    position: absolute;
+    top: -1px; right: 24px;
+    background: var(--accent);
+    color: var(--bg);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 0 0 8px 8px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Architecture layers */
+  .arch-layer {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .arch-layer:hover {
+    border-color: rgba(0,255,136,0.4);
+    box-shadow: 0 0 30px rgba(0,255,136,0.08);
+  }
+  .arch-connector {
+    width: 2px;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    margin: 0 auto;
+    position: relative;
+  }
+  .arch-connector::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* Stat counter */
+  .stat-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 3rem;
+    line-height: 1;
+  }
+
+  /* Risk matrix */
+  .risk-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    cursor: pointer;
+    position: absolute;
+  }
+  .risk-dot:hover {
+    transform: scale(2);
+    z-index: 10;
+  }
+
+  /* Table styling */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.85rem;
+  }
+  .data-table th {
+    background: rgba(0,255,136,0.06);
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(30,45,74,0.3);
+    vertical-align: top;
+    color: var(--fg);
+  }
+  .data-table tr:hover td {
+    background: rgba(0,255,136,0.02);
+  }
+
+  /* Feature tag */
+  .feat-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* Pulse animation */
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+  .pulse-dot {
+    position: relative;
+  }
+  .pulse-dot::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 10px; height: 10px;
+    margin: -5px 0 0 -5px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  /* Floating particles */
+  @keyframes float-up {
+    0% { transform: translateY(0) scale(1); opacity: 0.6; }
+    100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+  }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+  }
+
+  /* Section divider */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 auto;
+    max-width: 800px;
+  }
+
+  /* Scroll indicator */
+  @keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* Metric bar */
+  .metric-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .metric-fill {
+    height: 100%;
+    border-radius: 4px;
+    width: 0;
+    transition: width 1.5s ease;
+  }
+
+  /* Comparison signal badge */
+  .signal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(0,255,136,0.15);
+    color: var(--accent);
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 24px;
+    color: var(--fg);
+    font-size: 0.9rem;
+    z-index: 9999;
+    transform: translateY(120%);
+    transition: transform 0.4s ease;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .toast.show { transform: translateY(0); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(6,10,19,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--fg);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .stat-number { font-size: 2rem; }
+    .module-tabs-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-glass fixed top-0 left-0 w-full z-50" id="navbar">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-2 no-underline">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-broadcast-tower text-sm" style="color:var(--bg);"></i>
+      </div>
+      <span class="text-lg font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--fg);letter-spacing:0.04em;">SIGNAL</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#gaps" class="nav-link no-underline">Gap Analysis</a>
+      <a href="#disruption" class="nav-link no-underline">Disruption</a>
+      <a href="#product" class="nav-link no-underline">Product</a>
+      <a href="#comparison" class="nav-link no-underline">Comparison</a>
+      <a href="#pricing" class="nav-link no-underline">Pricing</a>
+      <a href="#architecture" class="nav-link no-underline">Architecture</a>
+    </div>
+    <button id="mobile-toggle" class="md:hidden text-xl" style="color:var(--muted);background:none;border:none;cursor:pointer;" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <button id="mobile-close" style="position:absolute;top:24px;right:24px;background:none;border:none;color:var(--fg);font-size:1.5rem;cursor:pointer;" aria-label="Close menu">
+    <i class="fas fa-times"></i>
+  </button>
+  <a href="#gaps" onclick="closeMobileMenu()">Gap Analysis</a>
+  <a href="#disruption" onclick="closeMobileMenu()">Disruption</a>
+  <a href="#product" onclick="closeMobileMenu()">Product</a>
+  <a href="#comparison" onclick="closeMobileMenu()">Comparison</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+  <a href="#architecture" onclick="closeMobileMenu()">Architecture</a>
+</div>
+
+<!-- Hero Section -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+  <canvas id="radar-canvas"></canvas>
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at center, transparent 30%, var(--bg) 75%);z-index:1;"></div>
+  <div class="relative z-10 text-center px-6 max-w-4xl">
+    <div class="inline-block mb-6">
+      <span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);font-size:0.75rem;padding:6px 16px;letter-spacing:0.1em;">
+        MARKET BLUEPRINT — JUNE 2026
+      </span>
+    </div>
+    <h1 class="text-5xl md:text-7xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;line-height:1.05;">
+      From Noise to<br>
+      <span style="color:var(--accent);" class="glow-text">Intelligence</span>
+    </h1>
+    <p class="text-lg md:text-xl mb-4" style="color:var(--muted);max-width:640px;margin:0 auto 16px;">
+      The social listening market will reach <strong style="color:var(--fg);">$16.19B by 2029</strong>, yet 70% of executives say social data remains underutilized. The next generation won't be a listening tool at all.
+    </p>
+    <p class="text-base md:text-lg mb-10" style="color:var(--muted);max-width:600px;margin:0 auto 40px;">
+      It will be an <strong style="color:var(--accent);">AI-native Reputation & Revenue Intelligence Platform</strong> that closes the loop between detection, decision, and action.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="#gaps" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm no-underline transition-all duration-300" style="background:var(--accent);color:var(--bg);font-family:'Space Grotesk',sans-serif;letter-spacing:0.04em;" onmouseover="this.style.boxShadow='0 0 30px rgba(0,255,136,0.4)'" onmouseout="this.style.boxShadow='none'">
+        Explore the Gaps <i class="fas fa-arrow-down text-xs"></i>
+      </a>
+      <a href="#product" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-sm no-underline transition-all duration-300" style="border:1px solid var(--border);color:var(--fg);font-family:'Space Grotesk',sans-serif;letter-spacing:0.04em;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--fg)'">
+        Meet SIGNAL <i class="fas fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+    <div class="mt-16" style="animation:bounce-down 2s infinite;color:var(--muted);">
+      <i class="fas fa-chevron-down"></i>
+    </div>
+  </div>
+</section>
+
+<!-- Key Stats -->
+<section class="py-20 px-6 relative" style="background:var(--bg2);">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <div class="text-center reveal">
+        <div class="stat-number" data-target="16.19" data-prefix="$" data-suffix="B">0</div>
+        <p class="mt-2 text-sm" style="color:var(--muted);">Market Size by 2029</p>
+      </div>
+      <div class="text-center reveal reveal-delay-1">
+        <div class="stat-number" data-target="70" data-suffix="%">0</div>
+        <p class="mt-2 text-sm" style="color:var(--muted);">Executives Say Data Underutilized</p>
+      </div>
+      <div class="text-center reveal reveal-delay-2">
+        <div class="stat-number" data-target="45" data-suffix="%">0</div>
+        <p class="mt-2 text-sm" style="color:var(--muted);">Consumers Use AI for Recommendations</p>
+      </div>
+      <div class="text-center reveal reveal-delay-3">
+        <div class="stat-number" data-target="15" data-suffix=" min">0</div>
+        <p class="mt-2 text-sm" style="color:var(--muted);">Crisis Response Window</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gap Analysis Section -->
+<section id="gaps" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);margin-bottom:12px;">SECTION 2</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        What Every Tool Gets <span style="color:var(--danger);">Wrong</span>
+      </h2>
+      <p class="mt-4 text-lg" style="color:var(--muted);max-width:600px;margin:16px auto 0;">Seven critical gaps that render current social listening tools ineffective — and why they can't fix themselves.</p>
+    </div>
+
+    <div class="grid gap-5" id="gap-cards">
+      <!-- Cards inserted by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- Disruption Analysis -->
+<section id="disruption" class="py-24 px-6" style="background:var(--bg2);">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);margin-bottom:12px;">SECTION 3</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        Why Incumbents <span style="color:var(--info);">Can't Pivot</span>
+      </h2>
+    </div>
+
+    <!-- Structural Lock-In -->
+    <div class="reveal mb-12">
+      <h3 class="text-2xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;">Structural Lock-In</h3>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-chart-bar text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Brand24</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Dashboard-first architecture. Pivoting to actionability requires rebuilding core UX. AI is bolted-on, not native.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-search text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Awario</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Focused on volume and value. Adding AI sophistication would erode cost advantage. No mobile app.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-bolt text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Syften</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Deliberately minimal by design. Adding analytics contradicts their "raw speed" value proposition.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-at text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Mention</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Now owned by Agorapulse — product direction uncertain. Enterprise pivot alienated original SMB base.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-building text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Brandwatch</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Enterprise DNA: slow iteration, high-touch sales, complexity that excludes mid-market.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.1);"><i class="fas fa-water text-sm" style="color:var(--info);"></i></div>
+            <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Meltwater</span>
+          </div>
+          <p class="text-sm" style="color:var(--muted);">Legacy PR infrastructure creates organizational drag. AI-native features are add-ons, not architecture.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical Debt Trap -->
+    <div class="reveal mb-12">
+      <h3 class="text-2xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;">The Technical Debt Trap</h3>
+      <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+        <p class="mb-6" style="color:var(--muted);">All incumbents share a common architecture: <strong style="color:var(--fg);">ingest → store → display</strong>. Data flows in, gets surfaced in a dashboard, and stops. To close the actionability gap, they need to re-architect around:</p>
+        <div class="grid md:grid-cols-4 gap-4">
+          <div class="text-center p-4">
+            <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:2px solid rgba(0,255,136,0.3);">
+              <span style="color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;">1</span>
+            </div>
+            <h4 class="font-bold text-sm mb-1" style="font-family:'Space Grotesk',sans-serif;">Signal Detection</h4>
+            <p class="text-xs" style="color:var(--muted);">Not just keyword matching</p>
+          </div>
+          <div class="text-center p-4">
+            <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:2px solid rgba(0,255,136,0.3);">
+              <span style="color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;">2</span>
+            </div>
+            <h4 class="font-bold text-sm mb-1" style="font-family:'Space Grotesk',sans-serif;">Intent Classification</h4>
+            <p class="text-xs" style="color:var(--muted);">Why is this mention happening?</p>
+          </div>
+          <div class="text-center p-4">
+            <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:2px solid rgba(0,255,136,0.3);">
+              <span style="color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;">3</span>
+            </div>
+            <h4 class="font-bold text-sm mb-1" style="font-family:'Space Grotesk',sans-serif;">Predictive Routing</h4>
+            <p class="text-xs" style="color:var(--muted);">Who should act and how?</p>
+          </div>
+          <div class="text-center p-4">
+            <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:2px solid rgba(0,255,136,0.3);">
+              <span style="color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;">4</span>
+            </div>
+            <h4 class="font-bold text-sm mb-1" style="font-family:'Space Grotesk',sans-serif;">Outcome Tracking</h4>
+            <p class="text-xs" style="color:var(--muted);">Did the action work?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI-Native Window -->
+    <div class="reveal">
+      <h3 class="text-2xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;">The AI-Native Disruption Window</h3>
+      <div class="p-8 rounded-2xl" style="background:linear-gradient(135deg, rgba(0,255,136,0.06) 0%, var(--card) 50%);border:1px solid rgba(0,255,136,0.2);">
+        <p class="text-lg mb-6" style="color:var(--fg);">2026 represents a unique convergence:</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="flex gap-3 items-start">
+            <i class="fas fa-brain mt-1" style="color:var(--accent);"></i>
+            <div><strong style="color:var(--fg);">LLMs are mature enough</strong><br><span class="text-sm" style="color:var(--muted);">to understand context, sarcasm, and intent at scale</span></div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <i class="fas fa-robot mt-1" style="color:var(--accent);"></i>
+            <div><strong style="color:var(--fg);">AI agents are proliferating</strong><br><span class="text-sm" style="color:var(--muted);">45% consumer adoption, up from 6% in 2025</span></div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <i class="fas fa-virus mt-1" style="color:var(--warning);"></i>
+            <div><strong style="color:var(--fg);">Bot-generated content exploding</strong><br><span class="text-sm" style="color:var(--muted);">But detection tools are nascent</span></div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <i class="fas fa-clock mt-1" style="color:var(--danger);"></i>
+            <div><strong style="color:var(--fg);">Crisis windows compressed</strong><br><span class="text-sm" style="color:var(--muted);">15–30 minutes for initial acknowledgment</span></div>
+          </div>
+        </div>
+        <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);border-left:3px solid var(--accent);">
+          <p class="text-sm" style="color:var(--fg);">The incumbents were built for a world where humans read dashboards. The new world requires <strong style="color:var(--accent);">AI-to-AI intelligence</strong> — systems that monitor other AI systems, detect synthetic content, and orchestrate human action at machine speed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Product Section -->
+<section id="product" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);margin-bottom:12px;">SECTION 4</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        Meet <span style="color:var(--accent);">SIGNAL</span>
+      </h2>
+      <p class="mt-4 text-lg" style="color:var(--muted);max-width:640px;margin:16px auto 0;">AI-native Reputation & Revenue Intelligence Platform that doesn't just listen — it <strong style="color:var(--fg);">understands, prioritizes, predicts, and orchestrates</strong>.</p>
+    </div>
+
+    <!-- Philosophy comparison -->
+    <div class="reveal mb-16 overflow-x-auto">
+      <h3 class="text-2xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;">From Dashboards to Decisions</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width:45%;">Legacy Approach</th>
+            <th style="width:55%;">SIGNAL Approach</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--danger);">"Here are your mentions"</td>
+            <td style="color:var(--accent);">"Here are the 3 conversations that need your attention in the next 15 minutes"</td>
+          </tr>
+          <tr>
+            <td style="color:var(--danger);">"Sentiment is 72% positive"</td>
+            <td style="color:var(--accent);">"A high-authenticity negative cluster is forming on Reddit — here's the narrative arc and recommended response"</td>
+          </tr>
+          <tr>
+            <td style="color:var(--danger);">"Your brand was mentioned 1,247 times"</td>
+            <td style="color:var(--accent);">"ChatGPT recommended your competitor 3x more than you this week — here's why and how to fix it"</td>
+          </tr>
+          <tr>
+            <td style="color:var(--danger);">Boolean queries require expertise</td>
+            <td style="color:var(--accent);">Natural language query builder with AI-assisted refinement</td>
+          </tr>
+          <tr>
+            <td style="color:var(--danger);">Static reports</td>
+            <td style="color:var(--accent);">Living intelligence that learns your business context</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Module Tabs -->
+    <div class="reveal">
+      <h3 class="text-2xl font-bold mb-6" style="font-family:'Space Grotesk',sans-serif;">Feature Architecture</h3>
+      <div class="module-tabs-scroll mb-8 flex gap-2 pb-2" id="module-tabs">
+        <button class="module-tab active" data-module="authenticate">AUTHENTICATE</button>
+        <button class="module-tab" data-module="predict">PREDICT</button>
+        <button class="module-tab" data-module="orient">ORIENT</button>
+        <button class="module-tab" data-module="act">ACT</button>
+        <button class="module-tab" data-module="unify">UNIFY</button>
+      </div>
+
+      <div id="module-contents">
+        <!-- AUTHENTICATE -->
+        <div class="module-content active" data-module="authenticate">
+          <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);">
+                <i class="fas fa-shield-halved" style="color:var(--accent);"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">Bot & Fake Content Detection</h4>
+                <p class="text-sm" style="color:var(--muted);">Solves: Authenticity Gap, Fake Engagement Inflation, AI Review Spam</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Feature</th><th>Description</th><th>Gap Solved</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-semibold">Bot Probability Score</td><td>Every mention tagged with authenticity score (0–100) based on account age, behavior patterns, network graph, and content fingerprinting</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">Fake Engagement</span></td></tr>
+                  <tr><td class="font-semibold">AI-Generated Content Detection</td><td>Identifies synthetic text, reviews, and comments using linguistic pattern analysis and provenance tracking</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">AI Review Spam</span></td></tr>
+                  <tr><td class="font-semibold">Network Authenticity Mapping</td><td>Visualizes which accounts are likely bots, coordinated inauthentic behavior, or genuine influencers</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">Coordinated Attacks</span></td></tr>
+                  <tr><td class="font-semibold">Sentiment Confidence Score</td><td>Sentiment analysis paired with confidence rating; low-confidence items flagged for human review</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Sarcasm Mischassification</span></td></tr>
+                  <tr><td class="font-semibold">Influence vs. Reach Scoring</td><td>Distinguishes between high follower counts and accounts that actually drive conversation</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Vanity Metrics</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);">
+              <p class="text-xs" style="color:var(--muted);"><strong style="color:var(--fg);">Technical Approach:</strong> Ensemble model combining graph neural networks (network analysis), transformer-based text classification (synthetic content detection), and behavioral biometrics (bot scoring).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PREDICT -->
+        <div class="module-content" data-module="predict">
+          <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,210,255,0.1);border:1px solid rgba(0,210,255,0.3);">
+                <i class="fas fa-chart-line" style="color:var(--info);"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">Crisis Forecasting & Trend Detection</h4>
+                <p class="text-sm" style="color:var(--muted);">Solves: Network Analysis Gap, Reactive Crisis Management, Alert Fatigue</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Feature</th><th>Description</th><th>Gap Solved</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-semibold">Narrative Velocity Tracking</td><td>Maps how fast a mention spreads through retweet chains, shares, and cross-platform amplification</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Network Analysis</span></td></tr>
+                  <tr><td class="font-semibold">Crisis Trajectory Forecasting</td><td>Predicts which mentions will escalate 2–6 hours before they peak, with confidence intervals</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">Reactive → Proactive</span></td></tr>
+                  <tr><td class="font-semibold">Community Cluster Identification</td><td>Automatically identifies which sub-communities, influencers, or platforms are driving a narrative</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Intervention Targeting</span></td></tr>
+                  <tr><td class="font-semibold">Competitive Threat Detection</td><td>Alerts when competitors gain AI citation share, community mindshare, or influencer advocacy</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Competitive Blind Spots</span></td></tr>
+                  <tr><td class="font-semibold">Seasonal Pattern Learning</td><td>Learns your brand's normal mention patterns and alerts on true anomalies</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Alert Fatigue</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);">
+              <p class="text-xs" style="color:var(--muted);"><strong style="color:var(--fg);">Technical Approach:</strong> Temporal graph neural networks + time-series forecasting. Trained on historical crisis data to identify early-stage patterns.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORIENT -->
+        <div class="module-content" data-module="orient">
+          <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,165,2,0.1);border:1px solid rgba(255,165,2,0.3);">
+                <i class="fas fa-compass" style="color:var(--warning);"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">AI-Mediated Reputation Monitoring</h4>
+                <p class="text-sm" style="color:var(--muted);">Solves: AI-Mediated Reputation Gap, AI Brand Positioning, GEO</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Feature</th><th>Description</th><th>Gap Solved</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-semibold">LLM Share-of-Voice</td><td>Tracks how often ChatGPT, Gemini, Claude, and Perplexity mention your brand vs. competitors</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">AI Reputation Gap</span></td></tr>
+                  <tr><td class="font-semibold">AI Citation Sentiment</td><td>Analyzes whether AI agents portray your brand positively, negatively, or neutrally</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">AI Brand Positioning</span></td></tr>
+                  <tr><td class="font-semibold">Knowledge Graph Optimization</td><td>Identifies which structured data influences AI agent recommendations</td><td><span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);">GEO</span></td></tr>
+                  <tr><td class="font-semibold">AI Response Drift Monitoring</td><td>Alerts when an AI agent's description of your brand changes over time</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Reputation Volatility</span></td></tr>
+                  <tr><td class="font-semibold">Competitor AI Positioning</td><td>Shows how competitors are positioned in AI responses and identifies gaps</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Competitive AI Intel</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);">
+              <p class="text-xs" style="color:var(--muted);"><strong style="color:var(--fg);">Technical Approach:</strong> Automated querying of major LLMs with controlled prompts, combined with knowledge graph extraction and schema markup auditing.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACT -->
+        <div class="module-content" data-module="act">
+          <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,71,87,0.1);border:1px solid rgba(255,71,87,0.3);">
+                <i class="fas fa-bolt" style="color:var(--danger);"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">Intelligent Engagement Orchestration</h4>
+                <p class="text-sm" style="color:var(--muted);">Solves: Actionability Gap, Workflow Automation, ROI Demonstration</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Feature</th><th>Description</th><th>Gap Solved</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-semibold">Intent-Based Prioritization</td><td>Auto-classifies mentions: Crisis, Lead, Feedback, Praise, Competitive Intel, Noise</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">Actionability</span></td></tr>
+                  <tr><td class="font-semibold">Smart Routing</td><td>Routes mentions to the right team/person based on intent, urgency, and historical effectiveness</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Workflow</span></td></tr>
+                  <tr><td class="font-semibold">Response Suggestion Engine</td><td>AI-generated response drafts tailored to platform, tone, and context</td><td><span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);">Response Speed</span></td></tr>
+                  <tr><td class="font-semibold">Engagement Tracking</td><td>Marks mentions as "engaged," tracks outcomes, measures sentiment shift post-response</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Accountability</span></td></tr>
+                  <tr><td class="font-semibold">Outcome Analytics</td><td>Measures whether engagement actions improved sentiment, generated leads, or defused crises</td><td><span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);">ROI</span></td></tr>
+                  <tr><td class="font-semibold">One-Click Response</td><td>Reply, like, share, DM directly from the platform — AI-assisted</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Speed-to-Action</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);">
+              <p class="text-xs" style="color:var(--muted);"><strong style="color:var(--fg);">Technical Approach:</strong> Intent classification using fine-tuned LLMs, reinforcement learning from human feedback (RLHF) for response generation, and causal inference for outcome measurement.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- UNIFY -->
+        <div class="module-content" data-module="unify">
+          <div class="p-8 rounded-2xl" style="background:var(--card);border:1px solid var(--border);">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);">
+                <i class="fas fa-layer-group" style="color:var(--accent);"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;">Cross-Channel Intelligence Layer</h4>
+                <p class="text-sm" style="color:var(--muted);">Solves: Cross-Tool Unification Gap, Silo Breaking, Reporting Automation</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead><tr><th>Feature</th><th>Description</th><th>Gap Solved</th></tr></thead>
+                <tbody>
+                  <tr><td class="font-semibold">Universal Brand Health Score</td><td>Single normalized score aggregating social, PR, community, and AI-mediated reputation</td><td><span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);">Unification</span></td></tr>
+                  <tr><td class="font-semibold">Correlation Engine</td><td>Auto-correlates events across channels (PR hit → social shift → community reaction)</td><td><span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);">Silo Breaking</span></td></tr>
+                  <tr><td class="font-semibold">Unified Alert Stream</td><td>One alert feed for all channels, deduplicated and prioritized</td><td><span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);">Alert Fatigue</span></td></tr>
+                  <tr><td class="font-semibold">Executive Briefing Generator</td><td>Auto-generates weekly summaries with key trends, risks, and recommended actions</td><td><span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);">Reporting</span></td></tr>
+                  <tr><td class="font-semibold">API-First Architecture</td><td>Every feature available via API; native integrations with CRM, Slack, HubSpot, Salesforce, Tableau</td><td><span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);">Stack Integration</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 p-4 rounded-xl" style="background:rgba(0,0,0,0.3);">
+              <p class="text-xs" style="color:var(--muted);"><strong style="color:var(--fg);">Technical Approach:</strong> Event-driven architecture with a unified data lake. Schema-on-read for flexible ingestion from any source.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Competitive Comparison -->
+<section id="comparison" class="py-24 px-6" style="background:var(--bg2);">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(255,165,2,0.12);color:var(--warning);margin-bottom:12px;">SECTION 5</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        SIGNAL vs. The Market
+      </h2>
+    </div>
+    <div class="reveal overflow-x-auto">
+      <table class="data-table" id="comparison-table" style="min-width:900px;">
+        <thead>
+          <tr>
+            <th>Capability</th>
+            <th class="text-center">Brand24</th>
+            <th class="text-center">Awario</th>
+            <th class="text-center">Syften</th>
+            <th class="text-center">Mention</th>
+            <th class="text-center">Brandwatch</th>
+            <th class="text-center">Meltwater</th>
+            <th class="text-center" style="color:var(--accent);">SIGNAL</th>
+          </tr>
+        </thead>
+        <tbody id="comparison-body">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section id="pricing" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);margin-bottom:12px;">SECTION 6</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        Intelligence Tiers
+      </h2>
+      <p class="mt-4 text-lg" style="color:var(--muted);">Pay-as-you-go credit system for overages. No annual lock-in. Cancel anytime.</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+      <!-- Scout -->
+      <div class="price-card">
+        <p class="text-sm font-semibold mb-1" style="color:var(--muted);font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;">SIGNAL Scout</p>
+        <div class="flex items-baseline gap-1 mb-4">
+          <span class="text-4xl font-bold" style="font-family:'Space Grotesk',sans-serif;">$49</span>
+          <span class="text-sm" style="color:var(--muted);">/mo</span>
+        </div>
+        <p class="text-sm mb-5" style="color:var(--muted);">Solo founders, indie hackers</p>
+        <ul class="space-y-2 mb-6" style="list-style:none;">
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>5,000 mentions/mo</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>3 keywords</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Basic bot detection</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Slack alerts</span></li>
+        </ul>
+        <button class="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300" style="border:1px solid var(--border);background:transparent;color:var(--fg);cursor:pointer;font-family:'Space Grotesk',sans-serif;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--fg)'" onclick="showToast('SIGNAL Scout selected — starting free trial')">Start Free Trial</button>
+      </div>
+
+      <!-- Growth -->
+      <div class="price-card featured">
+        <p class="text-sm font-semibold mb-1" style="color:var(--accent);font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;">SIGNAL Growth</p>
+        <div class="flex items-baseline gap-1 mb-4">
+          <span class="text-4xl font-bold" style="font-family:'Space Grotesk',sans-serif;">$149</span>
+          <span class="text-sm" style="color:var(--muted);">/mo</span>
+        </div>
+        <p class="text-sm mb-5" style="color:var(--muted);">SMBs, startups</p>
+        <ul class="space-y-2 mb-6" style="list-style:none;">
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>50,000 mentions/mo</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Unlimited keywords</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Full authenticity suite</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>AI insights</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>CRM integration</span></li>
+        </ul>
+        <button class="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300" style="border:none;background:var(--accent);color:var(--bg);cursor:pointer;font-family:'Space Grotesk',sans-serif;" onmouseover="this.style.boxShadow='0 0 20px rgba(0,255,136,0.4)'" onmouseout="this.style.boxShadow='none'" onclick="showToast('SIGNAL Growth selected — starting free trial')">Start Free Trial</button>
+      </div>
+
+      <!-- Pro -->
+      <div class="price-card">
+        <p class="text-sm font-semibold mb-1" style="color:var(--muted);font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;">SIGNAL Pro</p>
+        <div class="flex items-baseline gap-1 mb-4">
+          <span class="text-4xl font-bold" style="font-family:'Space Grotesk',sans-serif;">$399</span>
+          <span class="text-sm" style="color:var(--muted);">/mo</span>
+        </div>
+        <p class="text-sm mb-5" style="color:var(--muted);">Mid-market teams</p>
+        <ul class="space-y-2 mb-6" style="list-style:none;">
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>500,000 mentions/mo</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Crisis prediction</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>LLM monitoring</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Team workflows</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>API access</span></li>
+        </ul>
+        <button class="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300" style="border:1px solid var(--border);background:transparent;color:var(--fg);cursor:pointer;font-family:'Space Grotesk',sans-serif;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--fg)'" onclick="showToast('SIGNAL Pro selected — starting free trial')">Start Free Trial</button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="price-card">
+        <p class="text-sm font-semibold mb-1" style="color:var(--muted);font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;">SIGNAL Enterprise</p>
+        <div class="flex items-baseline gap-1 mb-4">
+          <span class="text-4xl font-bold" style="font-family:'Space Grotesk',sans-serif;">Custom</span>
+        </div>
+        <p class="text-sm mb-5" style="color:var(--muted);">Global brands</p>
+        <ul class="space-y-2 mb-6" style="list-style:none;">
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Unlimited mentions</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Custom ML models</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>Dedicated CSM</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>White-label reporting</span></li>
+          <li class="flex items-start gap-2 text-sm"><i class="fas fa-check mt-1 text-xs" style="color:var(--accent);"></i><span>On-prem option</span></li>
+        </ul>
+        <button class="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-300" style="border:1px solid var(--border);background:transparent;color:var(--fg);cursor:pointer;font-family:'Space Grotesk',sans-serif;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--fg)'" onclick="showToast('Enterprise inquiry submitted — our team will reach out')">Contact Sales</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section id="architecture" class="py-24 px-6" style="background:var(--bg2);">
+  <div class="max-w-4xl mx-auto">
+    <div class="text-center mb-16 reveal">
+      <span class="feat-tag" style="background:rgba(0,210,255,0.12);color:var(--info);margin-bottom:12px;">SECTION 7</span>
+      <h2 class="text-4xl md:text-5xl font-bold mt-4" style="font-family:'Space Grotesk',sans-serif;">
+        Technical Architecture
+      </h2>
+    </div>
+    <div class="reveal space-y-0" id="arch-diagram">
+      <!-- Ingestion -->
+      <div class="arch-layer" data-layer="ingestion">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,210,255,0.15);"><i class="fas fa-arrow-down text-sm" style="color:var(--info);"></i></div>
+          <h4 class="font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--info);">INGESTION LAYER</h4>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs" style="color:var(--muted);">
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Social APIs (X, LinkedIn, Reddit, TikTok)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Web Crawlers (blogs, forums, news)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Community APIs (GitHub, HN, Discord)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">LLM Query Engine (ChatGPT, Gemini, Claude)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Third-Party Connectors</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <!-- Intelligence -->
+      <div class="arch-layer" data-layer="intelligence">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,255,136,0.15);"><i class="fas fa-brain text-sm" style="color:var(--accent);"></i></div>
+          <h4 class="font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--accent);">INTELLIGENCE LAYER</h4>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs" style="color:var(--muted);">
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Authenticity Engine (GNN + biometrics)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Intent Classifier (Fine-tuned LLM)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Sentiment Analyzer (Multimodal)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Crisis Predictor (Temporal GNN)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Network Mapper (Graph analysis)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">LLM Monitor (Auto-querying)</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <!-- Orchestration -->
+      <div class="arch-layer" data-layer="orchestration">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(255,165,2,0.15);"><i class="fas fa-bolt text-sm" style="color:var(--warning);"></i></div>
+          <h4 class="font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--warning);">ORCHESTRATION LAYER</h4>
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-xs" style="color:var(--muted);">
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Smart Router (Rules + ML routing)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Response Generator (RLHF-tuned LLM)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Action Tracker (Causal inference)</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Executive Briefing (Auto-reports)</div>
+        </div>
+      </div>
+      <div class="arch-connector"></div>
+      <!-- Unification -->
+      <div class="arch-layer" data-layer="unification">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,255,136,0.15);"><i class="fas fa-layer-group text-sm" style="color:var(--accent);"></i></div>
+          <h4 class="font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--accent);">UNIFICATION LAYER</h4>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs" style="color:var(--muted);">
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Universal Brand Health Score</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">Correlation Engine</div>
+          <div class="p-2 rounded-lg" style="background:rgba(0,0,0,0.2);">API Gateway (REST + GraphQL + webhooks)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Risk & Metrics -->
+<section class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-16">
+      <!-- Risk -->
+      <div class="reveal">
+        <span class="feat-tag" style="background:rgba(255,71,87,0.12);color:var(--danger);margin-bottom:12px;">SECTION 8</span>
+        <h3 class="text-3xl font-bold mt-4 mb-8" style="font-family:'Space Grotesk',sans-serif;">Risk Assessment</h3>
+        <div class="space-y-4" id="risk-list">
+        </div>
+      </div>
+
+      <!-- Metrics -->
+      <div class="reveal reveal-delay-2">
+        <span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);margin-bottom:12px;">SECTION 9</span>
+        <h3 class="text-3xl font-bold mt-4 mb-8" style="font-family:'Space Grotesk',sans-serif;">12-Month Targets</h3>
+        <div class="space-y-5" id="metrics-list">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Conclusion -->
+<section class="py-24 px-6 relative overflow-hidden" style="background:var(--bg2);">
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 80%, rgba(0,255,136,0.06) 0%, transparent 60%);"></div>
+  <div class="max-w-3xl mx-auto text-center relative z-10 reveal">
+    <span class="feat-tag" style="background:rgba(0,255,136,0.12);color:var(--accent);margin-bottom:12px;">SECTION 10</span>
+    <h2 class="text-4xl md:text-5xl font-bold mt-6 mb-8" style="font-family:'Space Grotesk',sans-serif;line-height:1.15;">
+      Why Now.<br>Why <span style="color:var(--accent);">SIGNAL</span>.
+    </h2>
+    <div class="grid md:grid-cols-2 gap-4 text-left mb-10">
+      <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-robot text-sm" style="color:var(--accent);"></i>
+          <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">AI-Mediated</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">45% of consumers use AI for recommendations; 90% of B2B buying will be agent-intermediated by 2028</p>
+      </div>
+      <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-virus text-sm" style="color:var(--warning);"></i>
+          <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Synthetic</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">Bot-generated content and AI reviews are proliferating; regulators are cracking down</p>
+      </div>
+      <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-clock text-sm" style="color:var(--danger);"></i>
+          <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Compressed</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">Crisis windows are 15–30 minutes; network spread is exponential</p>
+      </div>
+      <div class="p-5 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-bullseye text-sm" style="color:var(--info);"></i>
+          <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Action-Demanding</span>
+        </div>
+        <p class="text-sm" style="color:var(--muted);">70% of executives say social data is underutilized because tools don't close the action loop</p>
+      </div>
+    </div>
+    <div class="p-6 rounded-2xl mb-10" style="background:linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(0,255,136,0.02) 100%);border:1px solid rgba(0,255,136,0.2);">
+      <p class="text-lg" style="color:var(--fg);line-height:1.7;">
+        SIGNAL is the first platform built natively for this world. It doesn't just listen — it <strong style="color:var(--accent);">understands, prioritizes, predicts, and orchestrates</strong>. It solves the three existential gaps — <strong style="color:var(--fg);">authenticity</strong>, <strong style="color:var(--fg);">AI-mediated reputation</strong>, <strong style="color:var(--fg);">predictive engagement</strong> — that no incumbent can address without rebuilding from scratch.
+      </p>
+    </div>
+    <p class="text-2xl font-bold mb-8" style="font-family:'Space Grotesk',sans-serif;color:var(--accent);" class="glow-text">This is SIGNAL.</p>
+    <button class="inline-flex items-center gap-3 px-10 py-4 rounded-xl font-semibold text-base transition-all duration-300" style="background:var(--accent);color:var(--bg);font-family:'Space Grotesk',sans-serif;letter-spacing:0.04em;border:none;cursor:pointer;" onmouseover="this.style.boxShadow='0 0 40px rgba(0,255,136,0.5)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='none';this.style.transform='translateY(0)'" onclick="showToast('Thank you for your interest in SIGNAL — we will be in touch')">
+      Request Early Access <i class="fas fa-arrow-right"></i>
+    </button>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-10 px-6" style="border-top:1px solid var(--border);">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <div style="width:24px;height:24px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+        <i class="fas fa-broadcast-tower" style="font-size:10px;color:var(--bg);"></i>
+      </div>
+      <span class="text-sm font-bold" style="font-family:'Space Grotesk',sans-serif;color:var(--muted);">SIGNAL</span>
+    </div>
+    <p class="text-xs" style="color:var(--muted);">Market Blueprint — June 2026. Competitive intelligence synthesis, user pain-point analysis, and technological trend forecasting.</p>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// === DATA ===
+const gapsData = [
+  {
+    id: 'actionability',
+    num: '2.1',
+    title: 'The Actionability Gap',
+    priority: 100,
+    severity: 'Critical',
+    icon: 'fa-exclamation-triangle',
+    problem: 'All six tools suffer from the same fundamental flaw: they collect data but do not tell you what to do with it.',
+    impact: 'Teams spend 20+ hours/week manually triaging mentions. Insights sit unused. The tool becomes a "data dump" rather than a decision engine.',
+    symptoms: [
+      { symptom: '"Too much data, not enough prioritization"', evidence: 'Brand24 users report pages of mentions within the first hour with no urgency ranking' },
+      { symptom: '"Alerts lack context"', evidence: "You don't know if a mention came from 500 followers or 500,000 without clicking through" },
+      { symptom: '"No way to mark mentions as engaged"', evidence: "Brand24 has no engagement tracking — you can't see if someone already responded" },
+      { symptom: '"AI Insights feel obvious"', evidence: "Brand24's AI Insights require the right prompts and surface nothing automatically" }
+    ]
+  },
+  {
+    id: 'authenticity',
+    num: '2.2',
+    title: 'The Authenticity Gap',
+    priority: 85,
+    severity: 'Critical',
+    icon: 'fa-user-secret',
+    problem: 'No major social listening tool reliably distinguishes between genuine human conversation and bot-amplified noise, fake reviews, or AI-generated content.',
+    impact: 'Crisis response triggered by bot campaigns. Marketing ROI calculated on fake engagement. The UK Digital Markets Act now enables fines up to 10% of global turnover for fake reviews.',
+    symptoms: [
+      { symptom: 'Bot-inflated metrics', evidence: '18% of retweets in campaigns come from likely inauthentic sources' },
+      { symptom: 'Sentiment accuracy breaks on nuance', evidence: 'Sarcastic posts praising "terrible service" labeled as positive' },
+      { symptom: 'AI-generated review proliferation', evidence: '85% of AI brand mentions come from third-party sources' },
+      { symptom: 'No bot detection in major tools', evidence: 'Free tiers never offer bot detection; paid tiers rarely do' }
+    ]
+  },
+  {
+    id: 'ai-reputation',
+    num: '2.3',
+    title: 'The AI-Mediated Reputation Gap',
+    priority: 90,
+    severity: 'Critical',
+    icon: 'fa-robot',
+    problem: 'Traditional tools monitor what humans say. They completely miss how AI agents portray your brand when consumers ask ChatGPT, Gemini, or Perplexity for recommendations.',
+    impact: 'Your brand could be negatively positioned by AI agents without you ever knowing. By 2028, 90% of B2B buying will be AI agent-intermediated.',
+    symptoms: [
+      { symptom: '45% of consumers use AI tools for recommendations', evidence: 'Up from just 6% in 2025' },
+      { symptom: 'Only 30% of brands maintain visibility across AI responses', evidence: 'Brand presence in LLM outputs is volatile and unmonitored' },
+      { symptom: "Meltwater's GenAI Lens is the only tool addressing this", evidence: "And it's locked behind enterprise contracts" },
+      { symptom: 'Traditional SEO declining', evidence: 'Gartner projects organic search traffic will decline 50%+ by 2028' }
+    ]
+  },
+  {
+    id: 'network',
+    num: '2.4',
+    title: 'The Network Analysis Gap',
+    priority: 72,
+    severity: 'High',
+    icon: 'fa-project-diagram',
+    problem: 'No tool maps how narratives spread through networks. You see individual mentions but not the retweet chains, share cascades, or community amplification patterns.',
+    impact: 'Crises escalate 3–5x faster than teams can respond. Without understanding spread patterns, you can\'t target intervention at the right nodes.',
+    symptoms: [
+      { symptom: '"Network analysis" consistently locked behind paywalls', evidence: 'Even on free tiers with generous data, network mapping is absent' },
+      { symptom: 'No spread velocity tracking', evidence: "You know a mention happened, but not how fast it's traveling" },
+      { symptom: 'No community cluster identification', evidence: "Can't identify which sub-communities are driving negative sentiment" },
+      { symptom: 'Crisis post-mortems require manual investigation', evidence: 'Teams reconstruct spread patterns by hand after the fact' }
+    ]
+  },
+  {
+    id: 'unification',
+    num: '2.5',
+    title: 'The Cross-Tool Unification Gap',
+    priority: 68,
+    severity: 'High',
+    icon: 'fa-object-ungroup',
+    problem: 'Teams use multiple tools with no way to unify the data. Each tool has proprietary scoring, siloed dashboards, and incompatible alert formats.',
+    impact: 'Decision paralysis. Teams can\'t correlate a PR hit with social sentiment shift and community reaction in real time.',
+    symptoms: [
+      { symptom: 'Data lives in silos', evidence: 'Insights from Brand24 never meet insights from Meltwater' },
+      { symptom: 'Inconsistent sentiment scoring', evidence: 'Brand24 scores a mention +0.3 while Brandwatch scores it -0.7 for the same text' },
+      { symptom: 'No single source of truth for brand health', evidence: 'Executives get fragmented reports from different tools' },
+      { symptom: 'Manual normalization required', evidence: 'Analysts spend hours reconciling data before any analysis' }
+    ]
+  },
+  {
+    id: 'sarcasm',
+    num: '2.6',
+    title: 'The Context & Sarcasm Gap',
+    priority: 64,
+    severity: 'Medium-High',
+    icon: 'fa-theater-masks',
+    problem: 'Even "advanced" sentiment analysis fails on sarcasm, irony, culturally specific language, and multimodal content (memes, video, audio).',
+    impact: 'Misallocated resources. Teams respond to "positive" sarcastic posts with thank-you messages, amplifying the mockery.',
+    symptoms: [
+      { symptom: 'Sarcasm misclassification', evidence: '"Love waiting 3 hours for customer service" → Positive sentiment' },
+      { symptom: 'Cultural nuance blind spots', evidence: 'Tools trained on English data fail on idiomatic expressions in other languages' },
+      { symptom: 'Text-only analysis', evidence: 'Image memes, TikTok videos, podcast clips are invisible or misinterpreted' },
+      { symptom: 'Language coverage gaps', evidence: 'International coverage varies wildly by tool' }
+    ]
+  },
+  {
+    id: 'pricing',
+    num: '2.7',
+    title: 'The Pricing & Accessibility Gap',
+    priority: 55,
+    severity: 'Medium',
+    icon: 'fa-tags',
+    problem: 'The market is bifurcated into cheap-but-limited tools ($19–$99/mo) and expensive-but-overkill enterprise platforms ($800+/mo), with almost nothing in the middle.',
+    impact: 'SMBs either overspend on features they don\'t need or underspend and miss critical signals. Startups can\'t afford enterprise tools but outgrow budget options within months.',
+    symptoms: [
+      { symptom: 'Brand24 gates Boolean behind $199/mo', evidence: 'Core precision feature paywalled' },
+      { symptom: 'Brandwatch requires dedicated analysts', evidence: 'Complex setup, weeks-long onboarding, no self-serve' },
+      { symptom: 'Meltwater opaque pricing', evidence: 'Multi-thousand dollar annual contracts, 20% renewal increases' },
+      { symptom: 'No pay-as-you-go options', evidence: 'Most tools force monthly/annual commitments' }
+    ]
+  }
+];
+
+const comparisonData = [
+  { cap: 'Real-Time Alerts', b24: 4, aw: 4, sy: 5, me: 5, bw: 4, mw: 5, sig: 5, sigNote: 'Predictive' },
+  { cap: 'Broad Coverage', b24: 4, aw: 4, sy: 2, me: 3, bw: 5, mw: 5, sig: 5, sigNote: 'Social + Web + AI' },
+  { cap: 'Boolean/Filtering', b24: 2, aw: 5, sy: 4, me: 5, bw: 5, mw: 5, sig: 5, sigNote: 'NL + AI-assisted' },
+  { cap: 'Sentiment Accuracy', b24: 3, aw: 3, sy: 1, me: 3, bw: 5, mw: 5, sig: 5, sigNote: 'Authenticity-aware' },
+  { cap: 'Bot Detection', b24: 1, aw: 1, sy: 1, me: 1, bw: 2, mw: 2, sig: 5, sigNote: 'Core feature' },
+  { cap: 'AI-Mediated Monitoring', b24: 1, aw: 1, sy: 1, me: 1, bw: 2, mw: 3, sig: 5, sigNote: 'Core feature' },
+  { cap: 'Network Analysis', b24: 1, aw: 1, sy: 1, me: 1, bw: 2, mw: 2, sig: 5, sigNote: 'Core feature' },
+  { cap: 'Crisis Prediction', b24: 2, aw: 2, sy: 1, me: 3, bw: 4, mw: 4, sig: 5, sigNote: '2–6h forecast' },
+  { cap: 'In-App Engagement', b24: 1, aw: 5, sy: 2, me: 3, bw: 3, mw: 3, sig: 5, sigNote: 'AI-assisted' },
+  { cap: 'Intent Classification', b24: 1, aw: 2, sy: 1, me: 2, bw: 3, mw: 3, sig: 5, sigNote: 'Auto' },
+  { cap: 'Cross-Channel Unification', b24: 1, aw: 1, sy: 1, me: 1, bw: 2, mw: 3, sig: 5, sigNote: 'Universal score' },
+  { cap: 'API-First', b24: 2, aw: 1, sy: 3, me: 3, bw: 4, mw: 3, sig: 5, sigNote: 'Everything API' },
+  { cap: 'Pricing Accessibility', b24: 3, aw: 5, sy: 5, me: 2, bw: 1, mw: 1, sig: 4, sigNote: 'Pay-as-you-go' }
+];
+
+const risksData = [
+  { risk: 'Platform API changes', likelihood: 'High', impact: 'High', mitigation: 'Multi-source ingestion; web crawling fallback; legal compliance team', l: 4, i: 4 },
+  { risk: 'LLM providers blocking queries', likelihood: 'Medium', impact: 'High', mitigation: 'Rate limiting; distributed querying; partnerships with LLM providers', l: 3, i: 4 },
+  { risk: 'Incumbent fast-follow', likelihood: 'Medium', impact: 'Medium', mitigation: 'Speed-to-market; data flywheel; AI-native architecture advantage', l: 3, i: 3 },
+  { risk: 'False positive crisis alerts', likelihood: 'Medium', impact: 'High', mitigation: 'Confidence thresholds; human-in-the-loop for high-stakes predictions', l: 3, i: 4 },
+  { risk: 'Regulatory scrutiny on AI monitoring', likelihood: 'Low', impact: 'High', mitigation: 'Privacy-by-design; GDPR/CCPA compliance; transparent AI explanations', l: 1, i: 4 },
+  { risk: 'Data storage costs at scale', likelihood: 'High', impact: 'Medium', mitigation: 'Intelligent data retention; tiered storage; edge computing for real-time', l: 4, i: 3 }
+];
+
+const metricsData = [
+  { metric: 'Time-to-Action', target: '< 5 min', pct: 90, color: 'var(--accent)' },
+  { metric: 'Bot Detection Accuracy', target: '> 95% precision, > 90% recall', pct: 95, color: 'var(--info)' },
+  { metric: 'Crisis Prediction Accuracy', target: '> 80% flagged 2+ hours early', pct: 80, color: 'var(--warning)' },
+  { metric: 'Sentiment Confidence', target: '> 90% with > 85% confidence', pct: 90, color: 'var(--accent)' },
+  { metric: 'User Activation (7-day)', target: '> 60% of free users', pct: 60, color: 'var(--info)' },
+  { metric: 'Net Revenue Retention', target: '> 120%', pct: 75, color: 'var(--accent)' },
+  { metric: 'LLM Share-of-Voice Correlation', target: '> 0.7 correlation', pct: 70, color: 'var(--warning)' }
+];
+
+// === RENDER GAP CARDS ===
+const gapContainer = document.getElementById('gap-cards');
+gapsData.forEach((gap, idx) => {
+  const severityColor = gap.severity === 'Critical' ? 'var(--danger)' : gap.severity === 'High' ? 'var(--warning)' : 'var(--info)';
+  const circumference = 2 * Math.PI * 22;
+  const offset = circumference - (gap.priority / 100) * circumference;
+
+  let symptomsHTML = gap.symptoms.map(s => `
+    <tr><td style="color:var(--fg);font-weight:500;">${s.symptom}</td><td style="color:var(--muted);">${s.evidence}</td></tr>
+  `).join('');
+
+  gapContainer.innerHTML += `
+    <div class="gap-card reveal reveal-delay-${Math.min(idx, 4)}" data-gap="${gap.id}" onclick="toggleGap(this)">
+      <div class="p-6">
+        <div class="flex items-start gap-5">
+          <div class="flex-shrink-0">
+            <svg width="60" height="60" viewBox="0 0 60 60" class="priority-gauge" data-priority="${gap.priority}">
+              <circle cx="30" cy="30" r="22" fill="none" stroke="var(--border)" stroke-width="4"/>
+              <circle cx="30" cy="30" r="22" fill="none" stroke="${severityColor}" stroke-width="4"
+                stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" stroke-linecap="round"
+                transform="rotate(-90 30 30)" class="gauge-ring" data-offset="${offset}"/>
+              <text x="30" y="34" text-anchor="middle" fill="${severityColor}" font-size="14" font-weight="700" font-family="Space Grotesk, sans-serif">${gap.priority}</text>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+              <span class="feat-tag" style="background:rgba(${gap.severity === 'Critical' ? '255,71,87' : gap.severity === 'High' ? '255,165,2' : '0,210,255'},0.12);color:${severityColor};">${gap.severity}</span>
+              <span class="text-xs" style="color:var(--muted);">${gap.num}</span>
+            </div>
+            <h3 class="text-lg font-bold mb-2" style="font-family:'Space Grotesk',sans-serif;">${gap.title}</h3>
+            <p class="text-sm" style="color:var(--muted);">${gap.problem}</p>
+          </div>
+          <div class="flex-shrink-0 mt-2">
+            <i class="fas fa-chevron-down text-sm transition-transform duration-300" style="color:var(--muted);"></i>
+          </div>
+        </div>
+      </div>
+      <div class="details">
+        <div class="px-6 pb-6">
+          <div class="mb-4 p-4 rounded-xl" style="background:rgba(0,0,0,0.2);border-left:3px solid ${severityColor};">
+            <p class="text-xs font-semibold mb-1" style="color:${severityColor};font-family:'Space Grotesk',sans-serif;letter-spacing:0.06em;">BUSINESS IMPACT</p>
+            <p class="text-sm" style="color:var(--fg);">${gap.impact}</p>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead><tr><th>Symptom</th><th>Evidence</th></tr></thead>
+              <tbody>${symptomsHTML}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+});
+
+// === RENDER COMPARISON TABLE ===
+const compBody = document.getElementById('comparison-body');
+function stars(n) {
+  let s = '';
+  for (let i = 0; i < 5; i++) {
+    s += i < n ? '<i class="fas fa-star" style="color:var(--accent);font-size:0.6rem;"></i>' : '<i class="far fa-star" style="color:var(--border);font-size:0.6rem;"></i>';
+  }
+  return s;
+}
+comparisonData.forEach(row => {
+  compBody.innerHTML += `
+    <tr>
+      <td class="font-semibold text-sm" style="white-space:nowrap;">${row.cap}</td>
+      <td class="text-center">${stars(row.b24)}</td>
+      <td class="text-center">${stars(row.aw)}</td>
+      <td class="text-center">${stars(row.sy)}</td>
+      <td class="text-center">${stars(row.me)}</td>
+      <td class="text-center">${stars(row.bw)}</td>
+      <td class="text-center">${stars(row.mw)}</td>
+      <td class="text-center">
+        ${stars(row.sig)}
+        <div class="signal-badge mt-1">${row.sigNote}</div>
+      </td>
+    </tr>
+  `;
+});
+
+// === RENDER RISKS ===
+const riskList = document.getElementById('risk-list');
+risksData.forEach(r => {
+  const lColor = r.l >= 4 ? 'var(--danger)' : r.l >= 3 ? 'var(--warning)' : 'var(--accent)';
+  const iColor = r.i >= 4 ? 'var(--danger)' : r.i >= 3 ? 'var(--warning)' : 'var(--accent)';
+  riskList.innerHTML += `
+    <div class="p-4 rounded-xl" style="background:var(--card);border:1px solid var(--border);">
+      <div class="flex items-start justify-between gap-3 mb-2">
+        <h4 class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">${r.risk}</h4>
+        <div class="flex gap-2 flex-shrink-0">
+          <span class="feat-tag" style="background:rgba(${r.l >= 4 ? '255,71,87' : r.l >= 3 ? '255,165,2' : '0,255,136'},0.12);color:${lColor};">L: ${r.likelihood}</span>
+          <span class="feat-tag" style="background:rgba(${r.i >= 4 ? '255,71,87' : r.i >= 3 ? '255,165,2' : '0,255,136'},0.12);color:${iColor};">I: ${r.impact}</span>
+        </div>
+      </div>
+      <p class="text-xs" style="color:var(--muted);">${r.mitigation}</p>
+    </div>
+  `;
+});
+
+// === RENDER METRICS ===
+const metricsList = document.getElementById('metrics-list');
+metricsData.forEach(m => {
+  metricsList.innerHTML += `
+    <div class="metric-item">
+      <div class="flex items-center justify-between mb-2">
+        <span class="font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">${m.metric}</span>
+        <span class="text-xs" style="color:var(--muted);">${m.target}</span>
+      </div>
+      <div class="metric-bar">
+        <div class="metric-fill" data-width="${m.pct}" style="background:${m.color};"></div>
+      </div>
+    </div>
+  `;
+});
+
+// === INTERACTIONS ===
+
+// Toggle gap card expansion
+function toggleGap(card) {
+  const wasExpanded = card.classList.contains('expanded');
+  // Close all
+  document.querySelectorAll('.gap-card').forEach(c => {
+    c.classList.remove('expanded');
+    c.querySelector('.fa-chevron-down').style.transform = 'rotate(0deg)';
+  });
+  // Toggle clicked
+  if (!wasExpanded) {
+    card.classList.add('expanded');
+    card.querySelector('.fa-chevron-down').style.transform = 'rotate(180deg)';
+  }
+}
+
+// Module tabs
+document.querySelectorAll('.module-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.module-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`.module-content[data-module="${tab.dataset.module}"]`).classList.add('active');
+  });
+});
+
+// Mobile menu
+document.getElementById('mobile-toggle').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.add('open');
+});
+document.getElementById('mobile-close').addEventListener('click', closeMobileMenu);
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+// Toast
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = `<div class="flex items-center gap-3"><i class="fas fa-check-circle" style="color:var(--accent);"></i><span>${msg}</span></div>`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// === SCROLL REVEAL ===
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+
+      // Animate gauge rings
+      entry.target.querySelectorAll('.gauge-ring').forEach(ring => {
+        const offset = ring.getAttribute('data-offset');
+        setTimeout(() => ring.style.strokeDashoffset = offset, 200);
+      });
+
+      // Animate metric fills
+      entry.target.querySelectorAll('.metric-fill').forEach(fill => {
+        const w = fill.getAttribute('data-width');
+        setTimeout(() => fill.style.width = w + '%', 200);
+      });
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// === STAT COUNTERS ===
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseFloat(el.dataset.target);
+      const prefix = el.dataset.prefix || '';
+      const suffix = el.dataset.suffix || '';
+      const duration = 2000;
+      const start = performance.now();
+      const isDecimal = target % 1 !== 0;
+
+      function update(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = target * eased;
+        el.textContent = prefix + (isDecimal ? current.toFixed(2) : Math.round(current)) + suffix;
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
+
+// === RADAR CANVAS ===
+const canvas = document.getElementById('radar-canvas');
+const ctx = canvas.getContext('2d');
+let radarAngle = 0;
+const signals = [];
+const maxSignals = 60;
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function addSignal() {
+  const cx = canvas.offsetWidth / 2;
+  const cy = canvas.offsetHeight / 2;
+  const angle = Math.random() * Math.PI * 2;
+  const dist = 50 + Math.random() * 300;
+  signals.push({
+    x: cx + Math.cos(angle) * dist,
+    y: cy + Math.sin(angle) * dist,
+    life: 0,
+    maxLife: 60 + Math.random() * 120,
+    size: 2 + Math.random() * 3,
+    opacity: 0
+  });
+  if (signals.length > maxSignals) signals.shift();
+}
+
+function drawRadar() {
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  const cx = w / 2;
+  const cy = h / 2;
+  const maxR = Math.min(cx, cy) * 0.85;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Concentric rings
+  for (let i = 1; i <= 4; i++) {
+    const r = Math.max(1, maxR * (i / 4));
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(0,255,136,${0.06 + i * 0.01})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Cross lines
+  ctx.beginPath();
+  ctx.moveTo(cx - maxR, cy);
+  ctx.lineTo(cx + maxR, cy);
+  ctx.moveTo(cx, cy - maxR);
+  ctx.lineTo(cx, cy + maxR);
+  ctx.strokeStyle = 'rgba(0,255,136,0.04)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Sweep
+  radarAngle += 0.015;
+  const sweepX = cx + Math.cos(radarAngle) * maxR;
+  const sweepY = cy + Math.sin(radarAngle) * maxR;
+
+  // Sweep gradient trail
+  const trailLength = 0.6;
+  for (let i = 0; i < 30; i++) {
+    const a = radarAngle - (i / 30) * trailLength;
+    const tx = cx + Math.cos(a) * maxR;
+    const ty = cy + Math.sin(a) * maxR;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(tx, ty);
+    ctx.strokeStyle = `rgba(0,255,136,${0.08 * (1 - i / 30)})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Sweep line
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  ctx.lineTo(sweepX, sweepY);
+  ctx.strokeStyle = 'rgba(0,255,136,0.5)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Center glow
+  const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+  grd.addColorStop(0, 'rgba(0,255,136,0.3)');
+  grd.addColorStop(1, 'rgba(0,255,136,0)');
+  ctx.fillStyle = grd;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+  ctx.fillStyle = '#00ff88';
+  ctx.fill();
+
+  // Signals
+  if (Math.random() < 0.08) addSignal();
+  signals.forEach((s, i) => {
+    s.life++;
+    if (s.life < s.maxLife * 0.2) {
+      s.opacity = s.life / (s.maxLife * 0.2);
+    } else if (s.life > s.maxLife * 0.7) {
+      s.opacity = 1 - (s.life - s.maxLife * 0.7) / (s.maxLife * 0.3);
+    } else {
+      s.opacity = 1;
+    }
+    s.opacity = Math.max(0, Math.min(1, s.opacity));
+
+    // Check if sweep just passed this signal
+    const sAngle = Math.atan2(s.y - cy, s.x - cx);
+    const angleDiff = ((radarAngle - sAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    const brightBoost = angleDiff < 0.3 ? (0.3 - angleDiff) / 0.3 : 0;
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.size + brightBoost * 3, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(0,255,136,${s.opacity * (0.3 + brightBoost * 0.7)})`;
+    ctx.fill();
+
+    if (brightBoost > 0.3) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size + 8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0,255,136,${brightBoost * 0.15})`;
+      ctx.fill();
+    }
+  });
+
+  // Remove dead signals
+  for (let i = signals.length - 1; i >= 0; i--) {
+    if (signals[i].life > signals[i].maxLife) signals.splice(i, 1);
+  }
+
+  requestAnimationFrame(drawRadar);
+}
+drawRadar();
+
+// === NAVBAR SCROLL EFFECT ===
+let lastScroll = 0;
+window.addEventListener('scroll', () => {
+  const navbar = document.getElementById('navbar');
+  const scrollY = window.scrollY;
+  if (scrollY > 100) {
+    navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+  } else {
+    navbar.style.boxShadow = 'none';
+  }
+  lastScroll = scrollY;
+});
+
+// === ARCHITECTURE LAYER HOVER ===
+document.querySelectorAll('.arch-layer').forEach(layer => {
+  layer.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.arch-layer').forEach(l => l.style.opacity = '0.4');
+    layer.style.opacity = '1';
+  });
+  layer.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.arch-layer').forEach(l => l.style.opacity = '1');
+  });
+});
+</script>
+</body>
+</html>

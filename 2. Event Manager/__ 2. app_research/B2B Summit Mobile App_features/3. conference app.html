@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conference App Feature Comparison</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        body: ['"DM Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #0B0D12;
+            --bg-elevated: #12151D;
+            --bg-card: #161A25;
+            --bg-card-hover: #1C2132;
+            --fg: #E8E6E3;
+            --fg-muted: #78776F;
+            --fg-dim: #3A3935;
+            --accent: #D4A843;
+            --accent-dim: rgba(212,168,67,0.12);
+            --border: rgba(255,255,255,0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'DM Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Dot grid background */
+        .dot-grid {
+            background-image: radial-gradient(circle, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        /* Animated gradient orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.12;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .orb-1 { width: 700px; height: 700px; background: #4A9FE5; top: -250px; left: -200px; animation: orb1 22s ease-in-out infinite; }
+        .orb-2 { width: 550px; height: 550px; background: #D4A843; bottom: -200px; right: -150px; animation: orb2 28s ease-in-out infinite; }
+        .orb-3 { width: 450px; height: 450px; background: #14B8A6; top: 40%; left: 55%; animation: orb3 32s ease-in-out infinite; }
+
+        @keyframes orb1 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(120px,100px)} 66%{transform:translate(-40px,160px)} }
+        @keyframes orb2 { 0%,100%{transform:translate(0,0)} 33%{transform:translate(-100px,-80px)} 66%{transform:translate(70px,-130px)} }
+        @keyframes orb3 { 0%,100%{transform:translate(-50%,-50%)} 33%{transform:translate(-30%,-70%)} 66%{transform:translate(-70%,-30%)} }
+
+        /* Shimmer accent text */
+        .accent-shimmer {
+            background: linear-gradient(105deg, #D4A843 0%, #F0DFA0 40%, #D4A843 60%, #B8912E 100%);
+            background-size: 250% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s ease-in-out infinite;
+        }
+        @keyframes shimmer { 0%{background-position:0% center} 50%{background-position:100% center} 100%{background-position:0% center} }
+
+        /* Hero line animation */
+        .hero-line {
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            animation: draw-line 1.2s 0.6s ease-out forwards;
+        }
+        @keyframes draw-line { to { width: 120px; } }
+
+        /* Cards */
+        .conf-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            opacity: 0;
+            transform: translateY(40px);
+            will-change: transform, opacity;
+        }
+        .conf-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .conf-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255,255,255,0.1);
+            box-shadow: 0 24px 64px -16px rgba(0,0,0,0.6);
+        }
+        .conf-card.card-dimmed {
+            opacity: 0.3 !important;
+            transform: scale(0.97) !important;
+            pointer-events: none;
+        }
+
+        .accent-bar {
+            height: 3px;
+            width: 100%;
+            transition: height 0.35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .conf-card:hover .accent-bar { height: 4px; }
+        .accent-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: bar-shine 3s ease-in-out infinite;
+        }
+        @keyframes bar-shine { 0%{left:-100%} 50%{left:100%} 100%{left:100%} }
+
+        .card-body { padding: 1.25rem 1.3rem 1.4rem; }
+
+        .conf-icon {
+            width: 42px; height: 42px;
+            border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+        .conf-card:hover .conf-icon {
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow: 0 4px 16px -4px currentColor;
+        }
+
+        /* Feature list */
+        .feat-item {
+            font-size: 13px;
+            color: var(--fg-muted);
+            padding: 9px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.35s ease;
+            cursor: default;
+        }
+        .feat-item:last-child { border-bottom: none; }
+        .feat-item i {
+            font-size: 15px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            transition: transform 0.25s ease;
+        }
+        .feat-item:hover i { transform: scale(1.25); }
+        .feat-item.highlighted {
+            color: var(--fg);
+            background: rgba(255,255,255,0.035);
+            border-radius: 8px;
+            padding: 9px 8px;
+            margin: 2px -8px;
+            border-bottom-color: transparent;
+        }
+        .feat-item.highlighted + .feat-item.highlighted { margin-top: -2px; }
+        .feat-item.dimmed { opacity: 0.15; }
+
+        .feat-cat-tag {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+            margin-left: auto;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .feat-item.highlighted .feat-cat-tag,
+        .show-tags .feat-cat-tag { opacity: 1; }
+
+        /* Category distribution bar */
+        .cat-bar {
+            display: flex;
+            height: 3px;
+            border-radius: 2px;
+            overflow: hidden;
+            gap: 2px;
+            margin-top: 14px;
+        }
+        .cat-bar-seg {
+            height: 100%;
+            border-radius: 1px;
+            transition: width 0.5s ease, opacity 0.3s ease;
+        }
+
+        /* Star badge */
+        .star-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 11px;
+            border-radius: 20px;
+            margin-top: 14px;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.02em;
+            transition: transform 0.25s ease;
+        }
+        .conf-card:hover .star-badge { transform: translateX(2px); }
+
+        /* Category pills */
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 15px;
+            border-radius: 22px;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--fg-muted);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            user-select: none;
+            outline: none;
+        }
+        .cat-pill:hover { border-color: rgba(255,255,255,0.15); color: var(--fg); }
+        .cat-pill:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+        .cat-pill.active {
+            border-color: var(--pill-color, var(--accent));
+            color: var(--pill-color, var(--accent));
+            background: var(--pill-bg, var(--accent-dim));
+            box-shadow: 0 0 20px -6px var(--pill-color, var(--accent));
+        }
+        .cat-pill .pill-count {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            color: var(--fg-muted);
+            margin-left: 2px;
+        }
+        .cat-pill.active .pill-count {
+            background: rgba(255,255,255,0.1);
+            color: var(--pill-color, var(--accent));
+        }
+
+        /* Search */
+        .search-wrap { position: relative; flex-shrink: 0; }
+        .search-input {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 9px 36px 9px 38px;
+            color: var(--fg);
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            width: 100%;
+            max-width: 280px;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
+        }
+        .search-input::placeholder { color: var(--fg-dim); }
+        .search-clear {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--fg-muted);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: none;
+            transition: color 0.2s;
+        }
+        .search-clear:hover { color: var(--fg); }
+        .search-clear.visible { display: block; }
+
+        /* Sticky filter bar */
+        .filter-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(11,13,18,0.82);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid transparent;
+            transition: all 0.35s ease;
+        }
+        .filter-bar.scrolled {
+            border-bottom-color: var(--border);
+            box-shadow: 0 8px 40px -12px rgba(0,0,0,0.5);
+        }
+
+        /* Section divider */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .section-divider::before,
+        .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Gold card special */
+        .better-card-gold {
+            border-color: rgba(212,168,67,0.25) !important;
+            box-shadow: 0 0 50px -15px rgba(212,168,67,0.1);
+        }
+        .better-card-gold:hover {
+            border-color: rgba(212,168,67,0.4) !important;
+            box-shadow: 0 0 70px -12px rgba(212,168,67,0.18), 0 24px 64px -16px rgba(0,0,0,0.5);
+        }
+        .gold-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(212,168,67,0.2), rgba(212,168,67,0.08));
+            color: #D4A843;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        /* Stats counter animation */
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--fg);
+            line-height: 1.2;
+        }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            animation: bounce-down 2s ease-in-out infinite;
+        }
+        @keyframes bounce-down {
+            0%,100%{ transform: translateY(0); opacity: 0.5; }
+            50%{ transform: translateY(8px); opacity: 1; }
+        }
+
+        /* Entrance */
+        @keyframes hero-enter {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-animate { animation: hero-enter 0.9s ease-out both; }
+        .hero-animate-delay { animation: hero-enter 0.9s 0.15s ease-out both; }
+        .hero-animate-delay2 { animation: hero-enter 0.9s 0.3s ease-out both; }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .orb, .accent-bar::after { animation: none !important; }
+            .conf-card { transition: opacity 0.2s !important; transform: none !important; }
+            .conf-card.visible { opacity: 1; }
+            .accent-shimmer { animation: none !important; }
+            .scroll-hint { animation: none !important; }
+            .hero-animate, .hero-animate-delay, .hero-animate-delay2 { animation: none !important; opacity: 1; }
+        }
+
+        @media (max-width: 640px) {
+            .card-body { padding: 1rem 1.1rem 1.2rem; }
+            .conf-icon { width: 36px; height: 36px; border-radius: 9px; }
+            .stat-value { font-size: 18px; }
+        }
+    </style>
+</head>
+<body class="dot-grid min-h-screen">
+    <!-- Background orbs -->
+    <div class="orb orb-1" aria-hidden="true"></div>
+    <div class="orb orb-2" aria-hidden="true"></div>
+    <div class="orb orb-3" aria-hidden="true"></div>
+
+    <div class="relative z-10">
+        <!-- Hero -->
+        <header class="max-w-7xl mx-auto px-5 sm:px-8 pt-14 sm:pt-20 pb-6">
+            <p class="hero-animate section-label mb-5" style="font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;">Competitive Analysis</p>
+            <h1 class="hero-animate font-display text-4xl sm:text-5xl lg:text-6xl leading-tight tracking-tight mb-5" style="font-weight:700;">
+                Conference App<br>
+                <span class="accent-shimmer">Feature Comparison</span>
+            </h1>
+            <p class="hero-animate-delay text-base sm:text-lg max-w-2xl" style="color:var(--fg-muted);line-height:1.75;">
+                A detailed look at mobile app capabilities across five major conferences — and the apps setting the gold standard in event technology.
+            </p>
+            <div class="hero-line mt-6" aria-hidden="true"></div>
+            <div class="mt-6 flex items-center gap-2 scroll-hint" style="color:var(--fg-dim);">
+                <i class="ti ti-chevron-down" style="font-size:18px;" aria-hidden="true"></i>
+                <span class="text-xs font-display" style="font-weight:500;">Scroll to explore</span>
+            </div>
+        </header>
+
+        <!-- Sticky filter bar -->
+        <nav class="filter-bar" id="filterBar" role="toolbar" aria-label="Feature category filters">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 py-3.5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 flex-1 w-full sm:w-auto no-scrollbar" id="categoryPills" role="tablist" aria-label="Filter by category" style="scrollbar-width:none;-ms-overflow-style:none;">
+                </div>
+                <div class="search-wrap">
+                    <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2" style="font-size:15px;color:var(--fg-dim);z-index:1;" aria-hidden="true"></i>
+                    <input type="text" class="search-input" placeholder="Search features..." id="searchInput" aria-label="Search features across all apps">
+                    <button class="search-clear" id="searchClear" aria-label="Clear search"><i class="ti ti-x" style="font-size:14px;"></i></button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="max-w-7xl mx-auto px-5 sm:px-8 py-10">
+            <h2 class="sr-only">Conference mobile app feature comparison across five major events</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5" id="mainGrid"></div>
+
+            <!-- Notably stronger section -->
+            <section class="mt-20" aria-labelledby="stronger-label">
+                <div class="section-divider mb-10">
+                    <p id="stronger-label" class="section-label" style="font-size:11px;font-weight:600;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;font-family:'Space Grotesk',sans-serif;white-space:nowrap;padding:0 4px;">Notably stronger apps</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="betterGrid"></div>
+            </section>
+
+            <!-- Stats -->
+            <footer class="mt-20 pt-10 pb-16" style="border-top:1px solid var(--border);">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-5" id="statsGrid"></div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+    // ===== DATA =====
+    const categories = {
+        all:         { label: 'All',           icon: 'ti-layout-grid', color: '#D4A843', bg: 'rgba(212,168,67,0.12)' },
+        networking:  { label: 'Networking',    icon: 'ti-users',       color: '#4ECDC4', bg: 'rgba(78,205,196,0.12)' },
+        navigation:  { label: 'Navigation',    icon: 'ti-map-pin',     color: '#FF6B6B', bg: 'rgba(255,107,107,0.12)' },
+        ai:          { label: 'AI & Smart',    icon: 'ti-robot',       color: '#C084FC', bg: 'rgba(192,132,252,0.12)' },
+        scheduling:  { label: 'Scheduling',    icon: 'ti-calendar',    color: '#60A5FA', bg: 'rgba(96,165,250,0.12)' },
+        content:     { label: 'Content',       icon: 'ti-video',       color: '#34D399', bg: 'rgba(52,211,153,0.12)' },
+        access:      { label: 'Access & ID',   icon: 'ti-id-badge',    color: '#FBBF24', bg: 'rgba(251,191,36,0.12)' },
+        search:      { label: 'Search',        icon: 'ti-search',      color: '#F472B6', bg: 'rgba(244,114,182,0.12)' },
+    };
+
+    const conferences = [
+        {
+            id:'wef', name:'WEF Forum Live', sub:'Davos Annual Meeting', icon:'ti-world', color:'#4A9FE5',
+            badge:'4.8 \u2605 App Store',
+            features:[
+                {icon:'ti-calendar',text:'Session bookmarking with personal calendar sync',cat:'scheduling'},
+                {icon:'ti-users',text:'Participant browse with industry / country / expertise filters',cat:'networking'},
+                {icon:'ti-id-badge',text:'Digital business card exchange via badge scan',cat:'networking'},
+                {icon:'ti-calendar-event',text:'Meeting scheduling between participants',cat:'scheduling'},
+                {icon:'ti-map-pin',text:'Turn-by-turn indoor venue navigation',cat:'navigation'},
+                {icon:'ti-search',text:'Event & session search by interest',cat:'search'},
+                {icon:'ti-bell',text:'Invitations & registered events consolidated view',cat:'scheduling'},
+            ]
+        },
+        {
+            id:'ces', name:'CES 2026', sub:'Consumer Electronics Show', icon:'ti-device-laptop', color:'#5CB338',
+            badge:'Powered by Eventbase',
+            features:[
+                {icon:'ti-robot',text:'Ask AI chatbot (voice + text, multi-language)',cat:'ai'},
+                {icon:'ti-qrcode',text:'Attendee Connect via MagicBadge\u2122 dynamic QR',cat:'access'},
+                {icon:'ti-language',text:'In-app live session audio translation',cat:'content'},
+                {icon:'ti-bus',text:'Live transportation wait times & capacity',cat:'navigation'},
+                {icon:'ti-sparkles',text:'Personalized session recommendations by interest',cat:'ai'},
+                {icon:'ti-map',text:'Venue maps & wayfinding',cat:'navigation'},
+                {icon:'ti-heart',text:'Favorites pinned sidebar for exhibitors & speakers',cat:'scheduling'},
+                {icon:'ti-search',text:'Fully indexed search across sessions, venues, speakers, exhibitors',cat:'search'},
+            ]
+        },
+        {
+            id:'sxsw', name:'SXSW GO', sub:'Conference & Festivals', icon:'ti-music', color:'#7C6FF7',
+            badge:'7,000+ sessions covered',
+            features:[
+                {icon:'ti-layout-dashboard',text:'Discover \u2014 50 personalized home screens per attendee profile',cat:'ai'},
+                {icon:'ti-ticket',text:'Event spot reservation (limited-seat guarantee)',cat:'scheduling'},
+                {icon:'ti-brain',text:'Braindates \u2014 curated peer learning meetups',cat:'networking'},
+                {icon:'ti-qrcode',text:'QR code contact exchange',cat:'networking'},
+                {icon:'ti-map-2',text:'Interactive maps across 300 Austin venues',cat:'navigation'},
+                {icon:'ti-calendar-plus',text:'Personal schedule builder with filters',cat:'scheduling'},
+                {icon:'ti-photo',text:'Badge photo upload',cat:'access'},
+                {icon:'ti-message',text:'Attendee messaging & push notifications',cat:'networking'},
+            ]
+        },
+        {
+            id:'mwc', name:'My MWC', sub:'Mobile World Congress Series', icon:'ti-wifi', color:'#D4940A',
+            badge:'GSMA-organized',
+            features:[
+                {icon:'ti-id',text:'Digital Access Pass (required for venue entry)',cat:'access'},
+                {icon:'ti-network',text:'9-month cross-series networking (6 months post-event)',cat:'networking'},
+                {icon:'ti-map',text:'Improved interactive map across 8 halls',cat:'navigation'},
+                {icon:'ti-calendar-stats',text:'In-app agenda builder',cat:'scheduling'},
+                {icon:'ti-building-store',text:'Exhibitor & speaker directory with profiles',cat:'networking'},
+                {icon:'ti-share',text:'LinkedIn sharing integration for event promotion',cat:'networking'},
+                {icon:'ti-accessible',text:'Food, dining & on-site services info',cat:'search'},
+            ]
+        },
+        {
+            id:'fmf', name:'FMF App', sub:'Future Minerals Forum', icon:'ti-diamond', color:'#14B8A6',
+            badge:'Ministry-developed',
+            features:[
+                {icon:'ti-messages',text:'Private attendee messaging',cat:'networking'},
+                {icon:'ti-calendar-check',text:'Personalized schedule with session reminders',cat:'scheduling'},
+                {icon:'ti-user-search',text:'Attendee & speaker profiles',cat:'networking'},
+                {icon:'ti-handshake',text:'Pre-event meeting scheduling (Global Connect matchmaking)',cat:'networking'},
+                {icon:'ti-news',text:'Live updates & announcements',cat:'content'},
+                {icon:'ti-bulb',text:'Innovations & technologies discovery feed',cat:'search'},
+                {icon:'ti-map-pin',text:'Venue navigation',cat:'navigation'},
+            ]
+        },
+    ];
+
+    const notablyStronger = [
+        {
+            id:'salesforce', name:'Salesforce Events (Dreamforce)', icon:'ti-cloud', color:'#4A9FE5', gold:true,
+            badge:'Gold standard \u2014 Eventbase platform',
+            features:[
+                {icon:'ti-location',text:'Blue-dot precision indoor navigation via Pointr beacon + WiFi fusion',cat:'navigation'},
+                {icon:'ti-robot',text:'Ask Agentforce AI \u2014 generates ROI justification letters, session summaries',cat:'ai'},
+                {icon:'ti-headphones',text:'Mixhalo live in-ear session audio in preferred language',cat:'content'},
+                {icon:'ti-closed-captioning',text:'AI-generated real-time captions',cat:'content'},
+                {icon:'ti-sparkles',text:'AI-recommended agenda by role, industry & interest',cat:'ai'},
+                {icon:'ti-player-play',text:'Salesforce+ integration for missed session replays',cat:'content'},
+                {icon:'ti-users-group',text:'Hyperlocal personalization using real-time location context',cat:'ai'},
+            ]
+        },
+        {
+            id:'aws', name:'AWS re:Invent / Google I/O', icon:'ti-rocket', color:'#7C6FF7',
+            features:[
+                {icon:'ti-calendar-time',text:'Session capacity & real-time seat tracking',cat:'scheduling'},
+                {icon:'ti-login',text:'Integrated single-sign-on with conference registration',cat:'access'},
+                {icon:'ti-package',text:'Hands-on lab booking and check-in within the app',cat:'scheduling'},
+                {icon:'ti-notification',text:'Deep push notifications with personalized schedule conflicts',cat:'scheduling'},
+                {icon:'ti-building',text:'Campus-scale multi-venue navigation (250,000 sqft+)',cat:'navigation'},
+                {icon:'ti-file-text',text:'Session content & slides delivered in-app post-session',cat:'content'},
+            ]
+        },
+        {
+            id:'money', name:'Money 20/20 App', icon:'ti-chart-arrows', color:'#5CB338',
+            features:[
+                {icon:'ti-users',text:'AI-powered attendee matchmaking by business intent',cat:'ai'},
+                {icon:'ti-calendar-event',text:'Pre-event curated 1:1 meeting calendar',cat:'scheduling'},
+                {icon:'ti-filter',text:'Role, company size & deal-stage attendee filtering',cat:'networking'},
+                {icon:'ti-star',text:'Hot leads & warm intro feature for sales teams',cat:'networking'},
+                {icon:'ti-building-bank',text:'Sponsor & exhibitor deal-room booking',cat:'scheduling'},
+            ]
+        },
+        {
+            id:'ted', name:'TED Conference App', icon:'ti-brain', color:'#D4940A',
+            features:[
+                {icon:'ti-video',text:'Instant on-demand talk playback post-session',cat:'content'},
+                {icon:'ti-bookmark',text:'Clipping & saving talk highlights in-app',cat:'content'},
+                {icon:'ti-world',text:'Subtitles in 100+ languages for every session',cat:'content'},
+                {icon:'ti-heart',text:'Community reaction & idea-rating during talks',cat:'networking'},
+                {icon:'ti-microphone',text:'Speaker Q&A submission from the app',cat:'content'},
+            ]
+        },
+    ];
+
+    // ===== STATE =====
+    let activeCategory = 'all';
+    let searchQuery = '';
+
+    // ===== HELPERS =====
+    function getAllApps() { return [...conferences, ...notablyStronger]; }
+
+    function countFeaturesByCat(cat) {
+        if (cat === 'all') return getAllApps().reduce((s,a) => s + a.features.length, 0);
+        return getAllApps().reduce((s,a) => s + a.features.filter(f => f.cat === cat).length, 0);
+    }
+
+    function catDistribution(features) {
+        const d = {};
+        features.forEach(f => { d[f.cat] = (d[f.cat]||0) + 1; });
+        return d;
+    }
+
+    // ===== RENDER =====
+    function renderCategoryPills() {
+        const c = document.getElementById('categoryPills');
+        c.innerHTML = '';
+        Object.entries(categories).forEach(([key, cat]) => {
+            const count = countFeaturesByCat(key);
+            const pill = document.createElement('button');
+            pill.className = `cat-pill${activeCategory === key ? ' active' : ''}`;
+            pill.style.setProperty('--pill-color', cat.color);
+            pill.style.setProperty('--pill-bg', cat.bg);
+            pill.setAttribute('role', 'tab');
+            pill.setAttribute('aria-selected', String(activeCategory === key));
+            pill.setAttribute('aria-label', `Filter: ${cat.label}`);
+            pill.innerHTML = `<i class="ti ${cat.icon}" style="font-size:13px;"></i><span>${cat.label}</span><span class="pill-count">${count}</span>`;
+            pill.addEventListener('click', () => { activeCategory = key; renderCategoryPills(); updateVisibility(); });
+            c.appendChild(pill);
+        });
+    }
+
+    function buildCatBar(features) {
+        const dist = catDistribution(features);
+        const total = features.length;
+        let h = '<div class="cat-bar" aria-hidden="true">';
+        Object.entries(dist).forEach(([cat, cnt]) => {
+            const ci = categories[cat];
+            if (ci) h += `<div class="cat-bar-seg" data-bar-cat="${cat}" style="width:${cnt/total*100}%;background:${ci.color};opacity:${activeCategory==='all'||activeCategory===cat?1:0.2};"></div>`;
+        });
+        h += '</div>';
+        return h;
+    }
+
+    function buildFeatures(features, color) {
+        let h = '<ul style="list-style:none;padding:0;margin:0;">';
+        features.forEach((f,i) => {
+            const ci = categories[f.cat];
+            h += `<li class="feat-item" data-cat="${f.cat}" style="transition-delay:${i*30}ms;">
+                <i class="ti ${f.icon}" style="color:${color};" aria-hidden="true"></i>
+                <span>${f.text}</span>
+                <span class="feat-cat-tag" style="background:${ci?ci.bg:'rgba(255,255,255,0.05)'};color:${ci?ci.color:'#999'};">${ci?ci.label:f.cat}</span>
+            </li>`;
+        });
+        h += '</ul>';
+        return h;
+    }
+
+    function buildCard(conf, idx, isBetter) {
+        const card = document.createElement('article');
+        card.className = `conf-card${conf.gold ? ' better-card-gold' : ''}`;
+        card.style.transitionDelay = `${idx * 90}ms`;
+        card.dataset.conf = conf.id;
+        card.innerHTML = `
+            <div class="accent-bar" style="background:${conf.color};" aria-hidden="true"></div>
+            <div class="card-body">
+                ${conf.gold ? '<div class="gold-badge"><i class="ti ti-crown" style="font-size:11px;"></i> Gold Standard</div>' : ''}
+                <div class="flex items-start gap-3 mb-4 pb-3" style="border-bottom:1px solid var(--border);">
+                    <div class="conf-icon" style="background:${conf.color}1A;"><i class="ti ${conf.icon}" style="color:${conf.color};font-size:20px;" aria-hidden="true"></i></div>
+                    <div style="min-width:0;">
+                        <h3 class="font-display text-sm leading-tight" style="font-weight:600;color:var(--fg);">${conf.name}</h3>
+                        ${conf.sub ? `<p class="text-xs mt-0.5" style="color:var(--fg-muted);">${conf.sub}</p>` : ''}
+                    </div>
+                </div>
+                ${buildFeatures(conf.features, conf.color)}
+                ${conf.badge ? `<span class="star-badge" style="background:${conf.color}1A;color:${conf.color};">${conf.badge}</span>` : ''}
+                ${buildCatBar(conf.features)}
+            </div>`;
+        return card;
+    }
+
+    function renderMainCards() {
+        const g = document.getElementById('mainGrid');
+        g.innerHTML = '';
+        conferences.forEach((c,i) => g.appendChild(buildCard(c,i,false)));
+    }
+
+    function renderBetterCards() {
+        const g = document.getElementById('betterGrid');
+        g.innerHTML = '';
+        notablyStronger.forEach((c,i) => g.appendChild(buildCard(c,i,true)));
+    }
+
+    function renderStats() {
+        const all = getAllApps();
+        const allF = all.flatMap(a => a.features);
+        const totalFeatures = allF.length;
+        const avgPer = Math.round(totalFeatures / all.length * 10) / 10;
+        const catCounts = {};
+        allF.forEach(f => { catCounts[f.cat] = (catCounts[f.cat]||0)+1; });
+        const topCat = Object.entries(catCounts).sort((a,b)=>b[1]-a[1])[0];
+        const topCatLabel = categories[topCat[0]]?.label || topCat[0];
+        const mostFeat = [...all].sort((a,b)=>b.features.length-a.features.length)[0];
+
+        const stats = [
+            { label:'Total Features Mapped', value: totalFeatures, icon:'ti-list-check', accent:'#D4A843' },
+            { label:'Avg Features Per App', value: avgPer, icon:'ti-chart-bar', accent:'#4ECDC4' },
+            { label:'Top Category', value: topCatLabel, icon:'ti-trophy', accent:'#FF6B6B' },
+            { label:'Most Featured App', value: mostFeat.name, icon:'ti-crown', accent:'#C084FC' },
+        ];
+
+        const g = document.getElementById('statsGrid');
+        g.innerHTML = '';
+        stats.forEach((s,i) => {
+            const card = document.createElement('div');
+            card.className = 'conf-card';
+            card.style.transitionDelay = `${i * 100}ms`;
+            card.innerHTML = `<div class="card-body">
+                <div class="flex items-center gap-2 mb-3">
+                    <div style="width:32px;height:32px;border-radius:8px;background:${s.accent}18;display:flex;align-items:center;justify-content:center;">
+                        <i class="ti ${s.icon}" style="color:${s.accent};font-size:16px;" aria-hidden="true"></i>
+                    </div>
+                    <span class="text-xs" style="color:var(--fg-muted);font-weight:500;">${s.label}</span>
+                </div>
+                <p class="stat-value">${s.value}</p>
+            </div>`;
+            g.appendChild(card);
+        });
+    }
+
+    // ===== INTERACTIONS =====
+    function updateVisibility() {
+        const hasFilter = activeCategory !== 'all' || searchQuery;
+        // Show/hide category tags based on filter
+        document.querySelectorAll('.feat-list').forEach(ul => {
+            if (hasFilter) ul.classList.add('show-tags');
+            else ul.classList.remove('show-tags');
+        });
+
+        document.querySelectorAll('.feat-item').forEach(item => {
+            const cat = item.dataset.cat;
+            const text = item.querySelector('span')?.textContent.toLowerCase() || '';
+            const matchCat = activeCategory === 'all' || cat === activeCategory;
+            const matchSearch = !searchQuery || text.includes(searchQuery.toLowerCase());
+            if (matchCat && matchSearch) {
+                item.classList.remove('dimmed');
+                item.classList.toggle('highlighted', activeCategory !== 'all' && cat === activeCategory);
+            } else {
+                item.classList.add('dimmed');
+                item.classList.remove('highlighted');
+            }
+        });
+
+        // Dim cards with zero visible features
+        document.querySelectorAll('.conf-card').forEach(card => {
+            const items = card.querySelectorAll('.feat-item');
+            const visible = card.querySelectorAll('.feat-item:not(.dimmed)');
+            if (items.length > 0 && visible.length === 0 && hasFilter) {
+                card.classList.add('card-dimmed');
+            } else {
+                card.classList.remove('card-dimmed');
+            }
+        });
+
+        // Update cat-bar segment opacity
+        document.querySelectorAll('.cat-bar-seg').forEach(seg => {
+            const cat = seg.dataset.barCat;
+            seg.style.opacity = (activeCategory === 'all' || activeCategory === cat) ? '1' : '0.15';
+        });
+    }
+
+    // Cross-card highlighting on feature hover
+    function setupCrossHighlight() {
+        const allItems = () => document.querySelectorAll('.feat-item');
+        document.addEventListener('mouseover', e => {
+            const item = e.target.closest('.feat-item');
+            if (!item || activeCategory !== 'all' || searchQuery) return;
+            const cat = item.dataset.cat;
+            allItems().forEach(other => {
+                if (other === item) return;
+                if (other.dataset.cat === cat) { other.classList.add('highlighted'); other.classList.remove('dimmed'); }
+                else other.classList.add('dimmed');
+            });
+            // Show tags during hover
+            document.querySelectorAll('.feat-list').forEach(ul => ul.classList.add('show-tags'));
+        });
+        document.addEventListener('mouseout', e => {
+            const item = e.target.closest('.feat-item');
+            if (!item) return;
+            // Only clear if we're not moving to another feat-item
+            const related = e.relatedTarget?.closest?.('.feat-item');
+            if (related) return;
+            if (activeCategory === 'all' && !searchQuery) {
+                allItems().forEach(other => { other.classList.remove('highlighted','dimmed'); });
+                document.querySelectorAll('.feat-list').forEach(ul => ul.classList.remove('show-tags'));
+            }
+        });
+    }
+
+    // Search
+    const searchInput = document.getElementById('searchInput');
+    const searchClear = document.getElementById('searchClear');
+    searchInput.addEventListener('input', e => {
+        searchQuery = e.target.value.trim();
+        searchClear.classList.toggle('visible', searchQuery.length > 0);
+        updateVisibility();
+    });
+    searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchQuery = '';
+        searchClear.classList.remove('visible');
+        updateVisibility();
+        searchInput.focus();
+    });
+
+    // Sticky bar shadow
+    const filterBar = document.getElementById('filterBar');
+    const scrollHandler = () => {
+        requestAnimationFrame(() => {
+            filterBar.classList.toggle('scrolled', window.scrollY > 80);
+        });
+    };
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+
+    // Scroll-triggered card animations
+    function setupScrollAnimations() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+        document.querySelectorAll('.conf-card').forEach(card => observer.observe(card));
+    }
+
+    // Animate stat counters
+    function animateCounters() {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const target = parseFloat(el.dataset.target);
+                    const isFloat = el.dataset.float === '1';
+                    const duration = 1200;
+                    const start = performance.now();
+                    function tick(now) {
+                        const progress = Math.min((now - start) / duration, 1);
+                        const ease = 1 - Math.pow(1 - progress, 3);
+                        const current = target * ease;
+                        el.textContent = isFloat ? current.toFixed(1) : Math.round(current);
+                        if (progress < 1) requestAnimationFrame(tick);
+                    }
+                    requestAnimationFrame(tick);
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('[data-target]').forEach(el => observer.observe(el));
+    }
+
+    // ===== INIT =====
+    renderCategoryPills();
+    renderMainCards();
+    renderBetterCards();
+    renderStats();
+    setupCrossHighlight();
+    setupScrollAnimations();
+
+    // Add counter animation to stat values
+    const allApps = getAllApps();
+    const allFeats = allApps.flatMap(a => a.features);
+    const statEls = document.querySelectorAll('.stat-value');
+    if (statEls[0]) { statEls[0].dataset.target = allFeats.length; statEls[0].dataset.float = '0'; statEls[0].textContent = '0'; }
+    if (statEls[1]) { statEls[1].dataset.target = Math.round(allFeats.length / allApps.length * 10) / 10; statEls[1].dataset.float = '1'; statEls[1].textContent = '0'; }
+    if (statEls[2]) { statEls[2].textContent = statEls[2].textContent; } // text, no counter
+    if (statEls[3]) { statEls[3].textContent = statEls[3].textContent; } // text, no counter
+    animateCounters();
+
+    // Keyboard navigation for pills
+    document.getElementById('categoryPills').addEventListener('keydown', e => {
+        const pills = Array.from(e.currentTarget.querySelectorAll('.cat-pill'));
+        const idx = pills.indexOf(document.activeElement);
+        if (idx === -1) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            pills[(idx + 1) % pills.length].focus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            pills[(idx - 1 + pills.length) % pills.length].focus();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            pills[idx].click();
+        }
+    });
+    </script>
+</body>
+</html>
