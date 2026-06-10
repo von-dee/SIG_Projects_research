@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pluzz FM Ghana — Digital Transformation Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0A0E0C;
+    --bg-secondary: #111916;
+    --card: rgba(18, 30, 24, 0.75);
+    --card-hover: rgba(24, 42, 32, 0.85);
+    --border: rgba(212, 168, 83, 0.12);
+    --border-hover: rgba(212, 168, 83, 0.3);
+    --fg: #E8E4DF;
+    --fg-secondary: #9CA39E;
+    --accent: #D4A853;
+    --accent-glow: rgba(212, 168, 83, 0.15);
+    --emerald: #2EBD8E;
+    --emerald-dim: rgba(46, 189, 142, 0.12);
+    --coral: #C75B39;
+    --coral-dim: rgba(199, 91, 57, 0.12);
+    --violet: #8B7EC8;
+    --violet-dim: rgba(139, 126, 200, 0.12);
+    --green: #5FA848;
+    --green-dim: rgba(95, 168, 72, 0.12);
+    --rose: #B85475;
+    --rose-dim: rgba(184, 84, 117, 0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Background canvas */
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Atmospheric blobs */
+  .atmo-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+    animation: blobDrift 20s ease-in-out infinite alternate;
+  }
+  .atmo-blob.a { width: 500px; height: 500px; background: rgba(212,168,83,0.08); top: -10%; left: -5%; animation-duration: 25s; }
+  .atmo-blob.b { width: 400px; height: 400px; background: rgba(46,189,142,0.06); bottom: 10%; right: -5%; animation-duration: 30s; animation-direction: alternate-reverse; }
+  .atmo-blob.c { width: 300px; height: 300px; background: rgba(199,91,57,0.05); top: 50%; left: 40%; animation-duration: 22s; }
+
+  @keyframes blobDrift {
+    0% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, -30px) scale(1.1); }
+    100% { transform: translate(-20px, 20px) scale(0.95); }
+  }
+
+  /* Main wrapper */
+  .main-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* Hero header */
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.8s ease-out both;
+  }
+  .hero-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--fg) 0%, var(--accent) 60%, var(--emerald) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 15px;
+    color: var(--fg-secondary);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* Radio wave animation in hero */
+  .wave-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 3px;
+    height: 32px;
+    margin: 1.5rem auto 0;
+  }
+  .wave-bar {
+    width: 3px;
+    border-radius: 3px;
+    background: var(--accent);
+    animation: waveAnim 1.2s ease-in-out infinite alternate;
+    opacity: 0.7;
+  }
+  .wave-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+  .wave-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+  .wave-bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
+  .wave-bar:nth-child(4) { height: 32px; animation-delay: 0.3s; }
+  .wave-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
+  .wave-bar:nth-child(6) { height: 28px; animation-delay: 0.15s; }
+  .wave-bar:nth-child(7) { height: 12px; animation-delay: 0.35s; }
+  .wave-bar:nth-child(8) { height: 24px; animation-delay: 0.25s; }
+  .wave-bar:nth-child(9) { height: 16px; animation-delay: 0.05s; }
+  .wave-bar:nth-child(10) { height: 8px; animation-delay: 0.45s; }
+
+  @keyframes waveAnim {
+    0% { transform: scaleY(0.3); opacity: 0.4; }
+    100% { transform: scaleY(1); opacity: 0.9; }
+  }
+
+  /* Tab navigation */
+  .tab-row {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 4px;
+    background: var(--bg-secondary);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    animation: fadeUp 0.8s ease-out 0.15s both;
+  }
+  .tab {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--fg-secondary);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .tab::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    opacity: 0;
+    border-radius: 10px;
+    transition: opacity 0.3s;
+  }
+  .tab:hover { color: var(--fg); }
+  .tab:hover::before { opacity: 0.06; }
+  .tab.active {
+    background: rgba(212, 168, 83, 0.12);
+    color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.08);
+  }
+
+  /* Panels */
+  .panel {
+    display: none;
+    animation: panelIn 0.5s ease-out both;
+  }
+  .panel.active { display: block; }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Section labels */
+  .sec-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 2rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+  .sec-label:first-child { margin-top: 0.5rem; }
+
+  /* Card grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 30px var(--accent-glow);
+  }
+  .card:hover::before { opacity: 1; }
+  .card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--fg);
+  }
+  .card p {
+    font-size: 12.5px;
+    color: var(--fg-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .card .badge {
+    display: inline-block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10.5px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* Phase timeline */
+  .phase-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .phase-row::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 40px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--emerald), var(--coral), var(--violet));
+    opacity: 0.3;
+    border-radius: 2px;
+  }
+  .phase {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    cursor: default;
+  }
+  .phase:hover {
+    border-color: var(--border-hover);
+    transform: translateX(4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .phase-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    min-width: 44px;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+  }
+  .phase-body h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--fg);
+  }
+  .phase-body p {
+    font-size: 12.5px;
+    color: var(--fg-secondary);
+    margin: 0 0 10px;
+    line-height: 1.6;
+  }
+  .phase-body .items { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 10.5px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  /* Revenue cards */
+  .rev-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .rev-card {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .rev-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 0 0 14px 14px;
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .rev-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-hover);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+  .rev-card:hover::after { opacity: 1; }
+  .rev-card:nth-child(1)::after { background: var(--accent); }
+  .rev-card:nth-child(2)::after { background: var(--emerald); }
+  .rev-card:nth-child(3)::after { background: var(--coral); }
+  .rev-card:nth-child(4)::after { background: var(--violet); }
+  .rev-card:nth-child(5)::after { background: var(--green); }
+  .rev-card:nth-child(6)::after { background: var(--rose); }
+
+  .rev-card .icon {
+    font-size: 22px;
+    margin-bottom: 10px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--accent-glow);
+    color: var(--accent);
+  }
+  .rev-card:nth-child(2) .icon { background: var(--emerald-dim); color: var(--emerald); }
+  .rev-card:nth-child(3) .icon { background: var(--coral-dim); color: var(--coral); }
+  .rev-card:nth-child(4) .icon { background: var(--violet-dim); color: var(--violet); }
+  .rev-card:nth-child(5) .icon { background: var(--green-dim); color: var(--green); }
+  .rev-card:nth-child(6) .icon { background: var(--rose-dim); color: var(--rose); }
+
+  .rev-card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--fg);
+  }
+  .rev-card p {
+    font-size: 12px;
+    color: var(--fg-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .rev-card .est {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11.5px;
+    margin-top: 10px;
+    font-weight: 600;
+    padding: 4px 0;
+  }
+
+  /* Software cards */
+  .sw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .sw-card {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+  }
+  .sw-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .sw-card .cat {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+  .sw-card h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--fg);
+  }
+  .sw-card p {
+    font-size: 12px;
+    color: var(--fg-secondary);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .sw-card .cost {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    margin-top: 8px;
+    color: var(--fg-secondary);
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* Alert boxes */
+  .warn {
+    background: rgba(199, 91, 57, 0.08);
+    border: 1px solid rgba(199, 91, 57, 0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #E8A88C;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.55;
+  }
+  .warn i { margin-top: 2px; color: var(--coral); }
+
+  .info {
+    background: rgba(46, 189, 142, 0.06);
+    border: 1px solid rgba(46, 189, 142, 0.18);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #8ECFB5;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.55;
+  }
+  .info i { margin-top: 2px; color: var(--emerald); }
+
+  /* Cost summary box */
+  .cost-summary {
+    background: var(--card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-hover);
+    border-radius: 14px;
+    padding: 18px 22px;
+    font-size: 13px;
+    color: var(--fg-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.65;
+    position: relative;
+    overflow: hidden;
+  }
+  .cost-summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--accent), var(--emerald));
+    border-radius: 3px 0 0 3px;
+  }
+  .cost-summary strong { color: var(--accent); }
+
+  /* Staggered entry animations */
+  .stagger { opacity: 0; transform: translateY(16px); }
+  .stagger.visible {
+    animation: staggerIn 0.45s ease-out forwards;
+  }
+
+  @keyframes staggerIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Particle canvas */
+  #particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Scroll progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--emerald));
+    z-index: 100;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  /* Interactive stat counter */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.35s;
+    cursor: default;
+  }
+  .stat-item:hover {
+    border-color: var(--border-hover);
+    transform: scale(1.03);
+  }
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--fg-secondary);
+    font-weight: 500;
+  }
+
+  /* Tooltip on hover */
+  .tooltip-wrap {
+    position: relative;
+  }
+  .tooltip-wrap .tip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    background: #1a2a22;
+    border: 1px solid var(--border-hover);
+    color: var(--fg);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+  }
+  .tooltip-wrap:hover .tip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .main-wrap { padding: 1.5rem 1rem 3rem; }
+    .card-grid, .sw-grid { grid-template-columns: 1fr; }
+    .rev-row { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .tab-row { gap: 2px; padding: 3px; }
+    .tab { font-size: 11px; padding: 6px 10px; }
+    .phase { flex-direction: column; gap: 10px; }
+    .phase-row::before { display: none; }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="atmo-blob a"></div>
+<div class="atmo-blob b"></div>
+<div class="atmo-blob c"></div>
+
+<canvas id="particles"></canvas>
+
+<div class="main-wrap">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-eyebrow">Partnership Blueprint</div>
+    <h1>Pluzz FM Ghana</h1>
+    <p>Full digital transformation partnership — from FM broadcaster to multi-platform media company</p>
+    <div class="wave-container" aria-hidden="true">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stat-row" id="statRow">
+    <div class="stat-item tooltip-wrap">
+      <div class="stat-value" data-target="5" data-suffix="M+">0</div>
+      <div class="stat-label">Listeners Reached</div>
+      <div class="tip">Greater Accra coverage area</div>
+    </div>
+    <div class="stat-item tooltip-wrap">
+      <div class="stat-value" data-target="74.6" data-suffix="%" data-decimal="1">0</div>
+      <div class="stat-label">Internet Penetration</div>
+      <div class="tip">Ghana 2025 estimate</div>
+    </div>
+    <div class="stat-item tooltip-wrap">
+      <div class="stat-value" data-target="38" data-suffix="M+">0</div>
+      <div class="stat-label">Monthly Streams</div>
+      <div class="tip">Spotify plays from Ghana</div>
+    </div>
+    <div class="stat-item tooltip-wrap">
+      <div class="stat-value" data-target="93" data-suffix="%">0</div>
+      <div class="stat-label">WhatsApp Reach</div>
+      <div class="tip">Penetration in Ghana</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <nav class="tab-row" role="tablist" aria-label="Blueprint sections">
+    <button class="tab active" role="tab" aria-selected="true" data-panel="opportunity">The Opportunity</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="structure">Partnership Structure</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="phases">6–12 Month Plan</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="revenue">Revenue Model</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="software">Software Stack</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="risks">Risks & Mitigation</button>
+  </nav>
+
+  <!-- Panel: Opportunity -->
+  <section id="p-opportunity" class="panel active" role="tabpanel">
+    <p class="sec-label">Why Pluzz FM is the right anchor</p>
+    <div class="card-grid">
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(212,168,83,0.12);color:#D4A853;">Broadcast reach</span>
+        <h4>25kW transmitter, entire Greater Accra</h4>
+        <p>Pluzz 89.9 FM has covered all of Greater Accra since 2011 — roughly 5–6 million people. That's a built-in audience no digital-only startup can buy. Globally streamable via pluzz899.com.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(46,189,142,0.12);color:#2EBD8E;">Format fit</span>
+        <h4>Top 40 / pop / sports / lifestyle</h4>
+        <p>Pluzz's format — music, sports, lifestyle — maps perfectly onto the fastest-growing podcast and digital content categories in Ghana. No format overhaul needed.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(199,91,57,0.12);color:#C75B39;">Market timing</span>
+        <h4>Ghana internet at 74.6% penetration</h4>
+        <p>26.3M online users as of 2025. 93.4% on broadband mobile. WhatsApp at 93% penetration. The audience is digital-ready — Pluzz just needs the digital layer to monetise it.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(139,126,200,0.12);color:#8B7EC8;">Content tailwind</span>
+        <h4>Afrobeats global moment</h4>
+        <p>Accra ranks alongside London and Paris for Afrobeats streaming. Ghanaians stream 38M+ plays/month on Spotify. A station rooted in this culture has a global content export story.</p>
+      </div>
+    </div>
+    <p class="sec-label">The gap you fill</p>
+    <div class="card-grid">
+      <div class="card stagger">
+        <h4>What Pluzz has</h4>
+        <p>FM license + transmitter infrastructure · Established Accra audience · Existing on-air talent & programming · Brand recognition since 2011 · Live streaming already active</p>
+      </div>
+      <div class="card stagger">
+        <h4>What you bring</h4>
+        <p>Tech / software development · Capital & funding · Content & creator network · Ad sales & marketing capability · Media industry connections — all five pillars</p>
+      </div>
+      <div class="card stagger">
+        <h4>What neither has yet</h4>
+        <p>Podcast network infrastructure · Programmatic advertising pipeline · Mobile money subscription layer · Creator monetisation platform · Audience data & analytics stack · Digital marketing services arm</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel: Structure -->
+  <section id="p-structure" class="panel" role="tabpanel">
+    <p class="sec-label">Recommended partnership model</p>
+    <div class="info"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> The American lesson: don't acquire debt-heavy assets. Structure this as a joint venture or digital services partnership, not a buyout. Pluzz FM keeps the license; you build and co-own the digital layer.</div>
+    <div class="card-grid">
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(46,189,142,0.12);color:#2EBD8E;">Option A — Recommended</span>
+        <h4>Digital JV (Joint Venture)</h4>
+        <p>Form a separate digital entity (e.g. "Pluzz Digital Ltd") co-owned with Pluzz FM. You fund and build the digital stack. Revenue from digital operations flows to the JV. Broadcast revenue stays with Pluzz FM. Clean separation avoids legacy liability.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(139,126,200,0.12);color:#8B7EC8;">Option B</span>
+        <h4>Exclusive digital services contract</h4>
+        <p>You become Pluzz FM's exclusive digital transformation partner. You build, operate, and monetise the digital layer in exchange for a revenue share (e.g. 30–50% of new digital revenue). Lower commitment but weaker ownership position long-term.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(199,91,57,0.12);color:#C75B39;">Option C — Caution</span>
+        <h4>Acquisition / majority stake</h4>
+        <p>Buying into or acquiring Pluzz FM outright. Higher control, but exposes you to legacy broadcast cost structure. Only makes sense if FM is genuinely undervalued and you want the license as a barrier to entry. Avoid debt financing for this.</p>
+      </div>
+    </div>
+    <p class="sec-label">Value exchange in a JV</p>
+    <div class="card-grid">
+      <div class="card stagger">
+        <h4>Pluzz FM contributes</h4>
+        <p>Brand name & audience trust · 89.9 FM broadcast distribution · Existing on-air talent for podcast conversion · Studio facilities · NCA broadcast license (invaluable) · Local market relationships with advertisers</p>
+      </div>
+      <div class="card stagger">
+        <h4>You contribute</h4>
+        <p>Development of streaming app & website upgrade · Podcast hosting & production infrastructure · Programmatic ad tech integration · Digital ad sales capability · Creator network onboarding · Seed capital for operations · Industry connections for content deals</p>
+      </div>
+      <div class="card stagger">
+        <h4>Shared ownership of</h4>
+        <p>"Pluzz Digital" entity · Podcast IP created under the partnership · Audience data & CRM · Creator network & contracts · Any mobile app IP · Revenue from all digital operations</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel: Phases -->
+  <section id="p-phases" class="panel" role="tabpanel">
+    <p class="sec-label">6–12 month execution roadmap</p>
+    <div class="phase-row">
+      <div class="phase stagger">
+        <div class="phase-num" style="color:#D4A853;">01</div>
+        <div class="phase-body">
+          <h4>Months 1–2 · Foundation & quick wins</h4>
+          <p>Formalise the partnership structure and immediately deliver visible wins that build internal trust. Focus on low-cost, high-impact digital upgrades.</p>
+          <div class="items">
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">Legal: JV agreement signed</span>
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">Website rebuild + SEO</span>
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">Streaming quality upgrade</span>
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">Social media strategy launch</span>
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">Audience data baseline audit</span>
+            <span class="tag" style="background:rgba(212,168,83,0.1);color:#D4A853;">First 3 podcast pilots recorded</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase stagger">
+        <div class="phase-num" style="color:#2EBD8E;">02</div>
+        <div class="phase-body">
+          <h4>Months 3–4 · Digital infrastructure deployed</h4>
+          <p>Core technology stack goes live. Podcast network launches publicly. First digital ad campaigns run. Streaming app in beta with existing audience.</p>
+          <div class="items">
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">Podcast network: 5–8 shows live</span>
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">Mobile app (iOS + Android) beta</span>
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">Broadcast automation upgrade</span>
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">Google Ad Manager integration</span>
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">First digital-only sponsorship sold</span>
+            <span class="tag" style="background:rgba(46,189,142,0.1);color:#2EBD8E;">Creator onboarding program open</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase stagger">
+        <div class="phase-num" style="color:#C75B39;">03</div>
+        <div class="phase-body">
+          <h4>Months 5–7 · Monetisation at scale</h4>
+          <p>Revenue streams switch on. Mobile money subscription tier launches. Digital marketing services arm begins serving local SME clients. Programmatic audio integration live.</p>
+          <div class="items">
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Mobile money subscription tier live</span>
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Programmatic audio: Google/AdsWizz</span>
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Digital marketing services: first 10 SME clients</span>
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Podcast: first host-read ad deals signed</span>
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Live events: first branded digital event</span>
+            <span class="tag" style="background:rgba(199,91,57,0.1);color:#C75B39;">Audience data: first advertiser targeting reports</span>
+          </div>
+        </div>
+      </div>
+      <div class="phase stagger">
+        <div class="phase-num" style="color:#8B7EC8;">04</div>
+        <div class="phase-body">
+          <h4>Months 8–12 · Network expansion & export</h4>
+          <p>Pluzz becomes a platform, not just a station. Creator network grows. Content begins reaching diaspora and pan-African audiences. Model proven; ready to replicate.</p>
+          <div class="items">
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">20+ podcast shows / creator partners</span>
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">Diaspora streaming audience (UK/US/DE)</span>
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">Spotify / Apple Podcasts distribution live</span>
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">Video podcast pilots (YouTube/TikTok)</span>
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">Second station partnership (Kumasi / Takoradi)</span>
+            <span class="tag" style="background:rgba(139,126,200,0.1);color:#8B7EC8;">Year-1 digital revenue review & Series A prep</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel: Revenue -->
+  <section id="p-revenue" class="panel" role="tabpanel">
+    <p class="sec-label">Revenue streams to build — in priority order</p>
+    <div class="rev-row">
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i></div>
+        <h4>1. Digital advertising (programmatic)</h4>
+        <p>Run Google Ad Manager on the website and streaming app. Connect to AdsWizz or Triton Digital for programmatic audio. Brands buy your audience digitally — no phone calls needed.</p>
+        <div class="est" style="color:#D4A853;">Year 1 target: $40–80K · Scales with traffic</div>
+      </div>
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-headphones" aria-hidden="true"></i></div>
+        <h4>2. Podcast sponsorships (host-read)</h4>
+        <p>Signed, exclusive shows with loyal audiences command GH₵2,000–8,000/episode from local brands: telecoms, banks, FMCG, real estate. Far higher CPM than broadcast spots.</p>
+        <div class="est" style="color:#2EBD8E;">Year 1 target: $30–60K · High margin</div>
+      </div>
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-credit-card" aria-hidden="true"></i></div>
+        <h4>3. Mobile money subscriptions</h4>
+        <p>GH₵5–15/week for ad-free streaming + exclusive content. Collect via MTN Mobile Money, Vodafone Cash, AirtelTigo Money. Even 5,000 subscribers at GH₵8/week = ~$80K/year.</p>
+        <div class="est" style="color:#C75B39;">Year 1 target: $20–50K · Recurring</div>
+      </div>
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></div>
+        <h4>4. Digital marketing services</h4>
+        <p>Sell social media management, Google Ads, SEO, and content to Accra's 55%+ of businesses now spending 40%+ of budget digitally. Your media relationships are the door opener.</p>
+        <div class="est" style="color:#8B7EC8;">Year 1 target: $50–120K · High potential</div>
+      </div>
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-tower-broadcast" aria-hidden="true"></i></div>
+        <h4>5. Upgraded broadcast spot sales</h4>
+        <p>Pluzz FM's existing spot revenue, but now with data-backed audience insights to justify higher rates. Digital audience measurement makes the broadcast inventory more credible to brands.</p>
+        <div class="est" style="color:#5FA848;">Existing + 20–30% uplift target</div>
+      </div>
+      <div class="rev-card stagger">
+        <div class="icon"><i class="fa-solid fa-calendar-star" aria-hidden="true"></i></div>
+        <h4>6. Events & brand activations</h4>
+        <p>Branded concerts, listening parties, creator meet-ups. iHeartRadio Music Festival model at Ghana scale. One well-executed annual event can generate $30–100K in sponsorship.</p>
+        <div class="est" style="color:#B85475;">Year 1: 1–2 events · Grows with brand</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel: Software -->
+  <section id="p-software" class="panel" role="tabpanel">
+    <p class="sec-label">Recommended software stack — affordable, proven, Africa-ready</p>
+    <div class="sw-grid">
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#D4A853;">📻 Broadcast automation</div>
+        <h4>PlayoutONE / Myriad</h4>
+        <p>Cost-effective, cloud-capable broadcast automation. Handles playout, voice tracking, scheduling, and multi-format. Far cheaper than RCS Zetta for a single station.</p>
+        <div class="cost">~$200–400/month · Scales up to Zetta later</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#D4A853;">🎵 Music scheduling</div>
+        <h4>RCS GSelector (SelectorCloud tier)</h4>
+        <p>Industry-standard music scheduling with AI rotation. Cloud tier is accessible without massive upfront cost. Ensures format clock discipline — critical for maintaining ratings.</p>
+        <div class="cost">~$150–300/month</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#2EBD8E;">🎙 Podcast hosting</div>
+        <h4>Buzzsprout or Transistor.fm</h4>
+        <p>Affordable podcast hosting with RSS distribution to Spotify, Apple, Amazon, Google. Built-in analytics. Transistor supports unlimited shows under one plan — ideal for a network.</p>
+        <div class="cost">$19–49/month for a full network</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#2EBD8E;">🎛 Audio production</div>
+        <h4>Adobe Audition or Descript</h4>
+        <p>Audition for professional audio editing and spot production. Descript for podcast editing via transcript — dramatically faster for non-engineers.</p>
+        <div class="cost">Audition $55/month · Descript $24/month</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#C75B39;">💰 Ad monetisation</div>
+        <h4>Google Ad Manager (free)</h4>
+        <p>The default choice for a growing publisher. Manages display, video, and audio ad inventory. Programmatic demand via Google AdX. Free at Pluzz's scale.</p>
+        <div class="cost">Free · Revenue share on programmatic fill</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#C75B39;">💰 Podcast ad monetisation</div>
+        <h4>Spotify Audience Network or Podbean Ads</h4>
+        <p>Spotify Audience Network gives access to programmatic podcast ad buyers globally. Podbean has an integrated ads marketplace. Either works without a dedicated ad sales team.</p>
+        <div class="cost">Revenue share model · No upfront cost</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#8B7EC8;">📱 Streaming app</div>
+        <h4>Custom PWA or StreamGuys</h4>
+        <p>A Progressive Web App (PWA) is the fastest, cheapest path to an "app" — works on any phone without an app store. StreamGuys provides white-label streaming infrastructure.</p>
+        <div class="cost">PWA: dev cost once · StreamGuys: $200–500/month</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#8B7EC8;">💳 Subscriptions</div>
+        <h4>Paystack (mobile money + card)</h4>
+        <p>Ghana-native payment infrastructure. Accepts MTN Mobile Money, Vodafone Cash, AirtelTigo, Visa, Mastercard. Integrates via simple API.</p>
+        <div class="cost">1.95% per transaction · No monthly fee</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#5FA848;">📊 Analytics & CRM</div>
+        <h4>Chartable + HubSpot (free tier)</h4>
+        <p>Chartable for podcast and streaming analytics — tracks listener demographics, episode performance, and attribution. HubSpot CRM (free) for advertiser and creator management.</p>
+        <div class="cost">Chartable: ~$50/month · HubSpot: free to start</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#5FA848;">📣 Social & content</div>
+        <h4>Buffer + Canva Pro</h4>
+        <p>Buffer for scheduled social publishing across Facebook, Instagram, TikTok, X. Canva Pro for show artwork, social graphics, and sponsor deliverables.</p>
+        <div class="cost">Buffer $18/month · Canva $17/month</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#B85475;">🤖 AI content tools</div>
+        <h4>ElevenLabs + Claude API</h4>
+        <p>ElevenLabs for AI voice cloning — create show intros, promos, and multilingual content (Twi, Ga, Hausa versions) at near-zero cost. Claude API for show notes, SEO copy, ad scripts.</p>
+        <div class="cost">ElevenLabs: $22/month · Claude API: usage-based</div>
+      </div>
+      <div class="sw-card stagger">
+        <div class="cat" style="color:#B85475;">📡 Stream delivery</div>
+        <h4>Shoutcast / IceCast + Cloudflare</h4>
+        <p>Shoutcast or IceCast for stream encoding and distribution. Cloudflare for CDN and DDoS protection. Together these handle reliable global stream delivery at minimal cost.</p>
+        <div class="cost">Shoutcast: $25–50/month · Cloudflare: free tier</div>
+      </div>
+    </div>
+    <p class="sec-label">Total estimated monthly software cost (year 1)</p>
+    <div class="cost-summary stagger">
+      Core stack (automation + podcast + ads + payments + analytics + streaming): <strong>~$800–1,500/month</strong> — well under $20K/year. Compare: iHeartMedia spends tens of millions annually on equivalent infrastructure. You're building the same capability at 1/100th the cost.
+    </div>
+  </section>
+
+  <!-- Panel: Risks -->
+  <section id="p-risks" class="panel" role="tabpanel">
+    <p class="sec-label">Key risks and how to manage them</p>
+    <div class="warn"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> The biggest risk isn't technology — it's partnership misalignment. Agree on ownership percentages, decision rights, and exit terms in writing before spending a cedi on software.</div>
+    <div class="card-grid">
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(199,91,57,0.15);color:#E87A5A;">High risk</span>
+        <h4>Partner misalignment</h4>
+        <p>Pluzz FM's existing ownership may resist digital revenue being "extracted" by a new entity. Mitigation: structure the JV so Pluzz FM equity holders participate in digital upside. Align incentives from day one.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(199,91,57,0.15);color:#E87A5A;">High risk</span>
+        <h4>Ad market size</h4>
+        <p>Ghana's digital ad market is only ~$57M total in 2025. Digital audio gets a small slice. Mitigation: diversify into digital marketing services (serving local SMEs) which is a larger, less competitive opportunity.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(212,168,83,0.15);color:#D4A853;">Medium risk</span>
+        <h4>Talent & production quality</h4>
+        <p>Podcast quality is the difference between a show that dies at episode 3 and one that builds a loyal audience. Mitigation: invest in one professional audio engineer and a content editor before launching public shows.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(212,168,83,0.15);color:#D4A853;">Medium risk</span>
+        <h4>Data & internet infrastructure</h4>
+        <p>Streaming burns mobile data. High data costs can suppress app adoption. Mitigation: build a lightweight PWA optimised for low-bandwidth; negotiate zero-rating deals with MTN or Vodafone Ghana.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(46,189,142,0.15);color:#2EBD8E;">Manageable</span>
+        <h4>NCA regulatory changes</h4>
+        <p>Ghana's National Communications Authority could introduce new digital broadcasting rules. Mitigation: the FM license is already held by Pluzz FM — digital streaming is currently lightly regulated. Monitor NCA communications.</p>
+      </div>
+      <div class="card stagger">
+        <span class="badge" style="background:rgba(46,189,142,0.15);color:#2EBD8E;">Manageable</span>
+        <h4>Competitor response</h4>
+        <p>Joy FM (Multimedia Group) and others are better-resourced. Mitigation: move fast on podcast IP ownership and creator contracts. Distribution moats are hard to build; content and community moats are stickier.</p>
+      </div>
+    </div>
+    <div class="info"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> The American lesson applied: never let debt be the primary risk factor. Keep overhead lean, validate revenue streams in months 3–5 before scaling costs, and maintain a 3–6 month cash reserve at all times.</div>
+  </section>
+
+</div>
+
+<script>
+  // ===== Tab switching with animation =====
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.panel;
+
+      // Update tab states
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      // Switch panels with re-animation
+      panels.forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('p-' + target);
+      panel.classList.add('active');
+
+      // Re-trigger stagger animations for the new panel
+      initStaggerObserver(panel);
+    });
+  });
+
+  // ===== Staggered entry animation with IntersectionObserver =====
+  function initStaggerObserver(root) {
+    const container = root || document;
+    const items = container.querySelectorAll('.stagger');
+
+    // Reset items
+    items.forEach(item => {
+      item.classList.remove('visible');
+      item.style.animationDelay = '';
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      let visibleIndex = 0;
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = visibleIndex * 60;
+          entry.target.style.animationDelay = delay + 'ms';
+          entry.target.classList.add('visible');
+          visibleIndex++;
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+    items.forEach(item => observer.observe(item));
+  }
+
+  // Initialize on load
+  initStaggerObserver();
+
+  // ===== Animated stat counters =====
+  function animateCounters() {
+    const statValues = document.querySelectorAll('.stat-value');
+    statValues.forEach(el => {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const decimal = parseInt(el.dataset.decimal) || 0;
+      const duration = 1800;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-out cubic
+        const ease = 1 - Math.pow(1 - progress, 3);
+        const current = target * ease;
+
+        if (decimal > 0) {
+          el.textContent = current.toFixed(decimal) + suffix;
+        } else {
+          el.textContent = Math.round(current) + suffix;
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+      requestAnimationFrame(update);
+    });
+  }
+
+  // Trigger counters when stats become visible
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounters();
+        statObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  statObserver.observe(document.getElementById('statRow'));
+
+  // ===== Scroll progress bar =====
+  const progressBar = document.getElementById('progressBar');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = progress + '%';
+  }, { passive: true });
+
+  // ===== Floating particle system =====
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let mouseX = 0, mouseY = 0;
+  let animFrameId;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Particle class
+  class Particle {
+    constructor() {
+      this.reset();
+    }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.speedY = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.3 + 0.05;
+      this.baseOpacity = this.opacity;
+      // Color variation: gold or emerald
+      const colors = [
+        [212, 168, 83],  // gold
+        [46, 189, 142],  // emerald
+        [199, 91, 57],   // coral
+      ];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+
+      // Mouse influence: gentle push away
+      const dx = this.x - mouseX;
+      const dy = this.y - mouseY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 150) {
+        const force = (150 - dist) / 150 * 0.3;
+        this.x += (dx / dist) * force;
+        this.y += (dy / dist) * force;
+        this.opacity = Math.min(this.baseOpacity + 0.15, 0.5);
+      } else {
+        this.opacity += (this.baseOpacity - this.opacity) * 0.05;
+      }
+
+      // Wrap around screen
+      if (this.x < -10) this.x = canvas.width + 10;
+      if (this.x > canvas.width + 10) this.x = -10;
+      if (this.y < -10) this.y = canvas.height + 10;
+      if (this.y > canvas.height + 10) this.y = -10;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.color[0]}, ${this.color[1]}, ${this.color[2]}, ${this.opacity})`;
+      ctx.fill();
+    }
+  }
+
+  // Initialize particles
+  const particleCount = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 15000));
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+
+  // Draw connecting lines between close particles
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          const opacity = (1 - dist / 120) * 0.06;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(212, 168, 83, ${opacity})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.update();
+      p.draw();
+    });
+    drawLines();
+    animFrameId = requestAnimationFrame(animateParticles);
+  }
+
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (!prefersReducedMotion.matches) {
+    animateParticles();
+  }
+
+  prefersReducedMotion.addEventListener('change', (e) => {
+    if (e.matches) {
+      cancelAnimationFrame(animFrameId);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } else {
+      animateParticles();
+    }
+  });
+
+  // ===== Card tilt effect on hover =====
+  document.querySelectorAll('.card, .rev-card, .sw-card, .phase').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = (y - centerY) / centerY * -2;
+      const rotateY = (x - centerX) / centerX * 2;
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+
+  // ===== Keyboard navigation for tabs =====
+  const tabRow = document.querySelector('.tab-row');
+  tabRow.addEventListener('keydown', (e) => {
+    const currentTab = document.activeElement;
+    if (!currentTab.classList.contains('tab')) return;
+
+    const tabList = Array.from(tabs);
+    const currentIndex = tabList.indexOf(currentTab);
+    let nextIndex;
+
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      nextIndex = (currentIndex + 1) % tabList.length;
+      e.preventDefault();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      nextIndex = (currentIndex - 1 + tabList.length) % tabList.length;
+      e.preventDefault();
+    } else if (e.key === 'Home') {
+      nextIndex = 0;
+      e.preventDefault();
+    } else if (e.key === 'End') {
+      nextIndex = tabList.length - 1;
+      e.preventDefault();
+    }
+
+    if (nextIndex !== undefined) {
+      tabList[nextIndex].focus();
+      tabList[nextIndex].click();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>U.S. Audio & Media Industry — 2025 Research</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0C0C10;
+      --bg-secondary: #13131A;
+      --fg: #EDE9E0;
+      --fg-secondary: #908C96;
+      --accent: #D4943A;
+      --accent-light: #E8B86A;
+      --accent-glow: rgba(212,148,58,0.12);
+      --card: #18181F;
+      --card-hover: #1F1F28;
+      --border: #28283A;
+      --border-hover: #3A3A50;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+    /* Scroll progress */
+    #scrollProgress {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      z-index: 200; width: 0; transition: width 0.05s linear;
+    }
+
+    /* Background canvas */
+    #waveCanvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; opacity: 0.5;
+    }
+
+    /* Mouse glow */
+    #mouseGlow {
+      position: fixed; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,148,58,0.04) 0%, transparent 70%);
+      pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
+      transition: left 0.3s ease-out, top 0.3s ease-out;
+    }
+
+    /* Noise overlay */
+    .noise-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 1; pointer-events: none; opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* Main content */
+    .main-content {
+      position: relative; z-index: 2;
+      max-width: 1180px; margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    /* Hero */
+    .hero { margin-bottom: 2.5rem; }
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900; font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+      line-height: 1.1; letter-spacing: -0.02em; color: var(--fg);
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-sub {
+      font-size: 1rem; color: var(--fg-secondary);
+      margin-top: 0.75rem; font-weight: 300; max-width: 560px; line-height: 1.6;
+    }
+    .hero-row { display: flex; align-items: center; gap: 16px; margin-top: 1.25rem; }
+    .accent-line { width: 48px; height: 3px; background: var(--accent); border-radius: 2px; }
+
+    /* Equalizer */
+    .equalizer { display: flex; align-items: flex-end; gap: 3px; height: 22px; }
+    .equalizer .bar {
+      width: 3px; border-radius: 1.5px; background: var(--accent);
+      animation: equalize 1.4s ease-in-out infinite;
+    }
+    .equalizer .bar:nth-child(1) { height: 35%; animation-delay: 0s; }
+    .equalizer .bar:nth-child(2) { height: 65%; animation-delay: 0.12s; }
+    .equalizer .bar:nth-child(3) { height: 100%; animation-delay: 0.24s; }
+    .equalizer .bar:nth-child(4) { height: 50%; animation-delay: 0.36s; }
+    .equalizer .bar:nth-child(5) { height: 80%; animation-delay: 0.48s; }
+    .equalizer .bar:nth-child(6) { height: 28%; animation-delay: 0.6s; }
+    .equalizer .bar:nth-child(7) { height: 58%; animation-delay: 0.72s; }
+    @keyframes equalize {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.25); }
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px; font-weight: 600; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin: 2rem 0 0.75rem;
+    }
+
+    /* Stat row */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 12px; margin-bottom: 2rem;
+    }
+    .stat-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px 14px; text-align: center;
+      transition: all 0.35s ease; position: relative; overflow: hidden;
+    }
+    .stat-box::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .stat-box:hover::before { opacity: 1; }
+    .stat-box:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+    .stat-box .n { font-size: 22px; font-weight: 700; color: var(--fg); font-variant-numeric: tabular-nums; }
+    .stat-box .l { font-size: 11px; color: var(--fg-secondary); margin-top: 4px; line-height: 1.4; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tab-btn {
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      padding: 8px 20px; border-radius: 8px; border: 1px solid var(--border);
+      background: transparent; color: var(--fg-secondary); cursor: pointer;
+      transition: all 0.25s ease; position: relative;
+    }
+    .tab-btn:hover { color: var(--fg); border-color: var(--border-hover); background: rgba(255,255,255,0.02); }
+    .tab-btn.active {
+      background: var(--accent-glow); color: var(--accent-light);
+      border-color: rgba(212,148,58,0.35); font-weight: 600;
+    }
+    .tab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: panelIn 0.45s ease forwards; }
+    @keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Company grid */
+    .company-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px; margin-bottom: 1.5rem;
+    }
+    .company-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px; cursor: pointer;
+      transition: all 0.3s ease; position: relative; overflow: hidden;
+      opacity: 0; transform: translateY(18px);
+    }
+    .company-card.visible { animation: cardIn 0.5s ease forwards; }
+    @keyframes cardIn { to { opacity: 1; transform: translateY(0); } }
+    .company-card:hover {
+      border-color: var(--border-hover); transform: translateY(-4px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.4);
+    }
+    .company-card .click-hint {
+      position: absolute; bottom: 8px; right: 10px;
+      font-size: 10px; color: var(--fg-secondary); opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .company-card:hover .click-hint { opacity: 0.6; }
+    .company-card .badge {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 10px;
+    }
+    .company-card h3 { font-size: 15px; font-weight: 600; margin: 0 0 4px; color: var(--fg); }
+    .company-card .rev { font-size: 26px; font-weight: 700; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+    .company-card .sub { font-size: 12px; color: var(--fg-secondary); line-height: 1.5; }
+    .company-card .rev-bar-wrap {
+      height: 4px; background: var(--border); border-radius: 2px;
+      margin: 10px 0 6px; overflow: hidden;
+    }
+    .company-card .rev-bar { height: 4px; border-radius: 2px; width: 0; transition: width 1.2s cubic-bezier(0.22,1,0.36,1); }
+
+    /* Stream grid */
+    .stream-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 12px; margin-bottom: 1.5rem;
+    }
+    .stream-card {
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+      transition: all 0.3s ease; opacity: 0; transform: translateY(14px);
+    }
+    .stream-card.visible { animation: cardIn 0.45s ease forwards; }
+    .stream-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .stream-card .icon { font-size: 22px; margin-bottom: 10px; color: var(--accent); }
+    .stream-card h4 { font-size: 13px; font-weight: 600; margin: 0 0 6px; color: var(--fg); }
+    .stream-card p { font-size: 12px; color: var(--fg-secondary); margin: 0; line-height: 1.6; }
+
+    /* Software grid */
+    .sw-section {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px; margin-bottom: 1.5rem;
+    }
+    .sw-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+      transition: all 0.3s ease; opacity: 0; transform: translateY(14px);
+    }
+    .sw-card.visible { animation: cardIn 0.45s ease forwards; }
+    .sw-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+    .sw-cat { font-size: 10px; font-weight: 600; margin: 0 0 8px; letter-spacing: 0.05em; text-transform: uppercase; }
+    .sw-card h4 { font-size: 14px; font-weight: 600; margin: 0 0 6px; color: var(--fg); }
+    .sw-card p { font-size: 12px; color: var(--fg-secondary); margin: 0; line-height: 1.6; }
+    .sw-card .used-by { font-size: 11px; color: var(--fg-secondary); margin-top: 8px; opacity: 0.6; font-style: italic; }
+
+    /* Trend card extras */
+    .trend-indicator {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; margin-top: 8px;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .trend-up { color: #5BC95B; background: rgba(91,201,91,0.1); }
+    .trend-dn { color: #E86868; background: rgba(232,104,104,0.1); }
+    .trend-neutral { color: var(--accent-light); background: var(--accent-glow); }
+
+    /* Toast */
+    .toast-container {
+      position: fixed; bottom: 24px; right: 24px; z-index: 500;
+      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+    }
+    .toast {
+      background: var(--card); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); border-radius: 8px;
+      padding: 14px 18px; max-width: 380px; font-size: 13px;
+      color: var(--fg); box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+      animation: toastIn 0.4s ease forwards; pointer-events: auto;
+    }
+    .toast .toast-label { font-size: 10px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .toast.removing { animation: toastOut 0.3s ease forwards; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(40px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+    @keyframes toastOut { to { opacity: 0; transform: translateX(40px) scale(0.95); } }
+
+    /* Responsive */
+    @media (max-width: 900px) { .stat-row { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) {
+      .stat-row { grid-template-columns: repeat(2, 1fr); }
+      .company-grid, .stream-grid, .sw-section { grid-template-columns: 1fr 1fr; }
+      .hero-title { font-size: 1.6rem; }
+    }
+    @media (max-width: 420px) {
+      .company-grid, .stream-grid, .sw-section { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .equalizer .bar { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Scroll progress -->
+  <div id="scrollProgress"></div>
+
+  <!-- Background canvas -->
+  <canvas id="waveCanvas" aria-hidden="true"></canvas>
+
+  <!-- Mouse glow -->
+  <div id="mouseGlow" aria-hidden="true"></div>
+
+  <!-- Noise overlay -->
+  <div class="noise-overlay" aria-hidden="true"></div>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Hero -->
+    <header class="hero">
+      <h1 class="hero-title">U.S. Audio, Media <span class="accent">&</span> FM<br>Industry Research</h1>
+      <p class="hero-sub">Companies, revenue streams, software infrastructure, and technology trends shaping the 2025 audio landscape.</p>
+      <div class="hero-row">
+        <div class="accent-line"></div>
+        <div class="equalizer" aria-hidden="true">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+        <span style="font-size:12px;color:var(--fg-secondary);font-weight:400;">Live data overview</span>
+      </div>
+    </header>
+
+    <!-- Stats -->
+    <p class="section-label">Industry at a Glance — 2025</p>
+    <div class="stat-row" role="list">
+      <div class="stat-box" role="listitem">
+        <div class="n" data-target="12.2" data-prefix="$" data-suffix="B">$0B</div>
+        <div class="l">U.S. traditional radio revenue</div>
+      </div>
+      <div class="stat-box" role="listitem">
+        <div class="n" data-target="2.3" data-prefix="$" data-suffix="B">$0B</div>
+        <div class="l">Programmatic audio revenue</div>
+      </div>
+      <div class="stat-box" role="listitem">
+        <div class="n" data-target="2.9" data-prefix="$" data-suffix="B">$0B</div>
+        <div class="l">Local digital ad spend</div>
+      </div>
+      <div class="stat-box" role="listitem">
+        <div class="n" data-target="170" data-prefix="" data-suffix="M+">0M+</div>
+        <div class="l">SiriusXM monthly listeners</div>
+      </div>
+      <div class="stat-box" role="listitem">
+        <div class="n" data-target="80" data-prefix="~" data-suffix="%">~0%</div>
+        <div class="l">Top 3 operators' market share</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <nav class="tabs" role="tablist" aria-label="Research sections">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="tab-companies" data-tab="companies">Major Companies</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-streams" data-tab="streams">Revenue Streams</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-software" data-tab="software">Software Stack</button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-trends" data-tab="trends">Tech Trends</button>
+    </nav>
+
+    <!-- Tab: Companies -->
+    <div id="tab-companies" class="tab-panel active" role="tabpanel">
+      <p class="section-label">Major players by annual revenue</p>
+      <div class="company-grid">
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about iHeartMedia's business model and digital strategy">
+          <span class="badge" style="background:rgba(55,138,221,0.12);color:#5BA8E8;">Publicly traded</span>
+          <h3>iHeartMedia</h3>
+          <div class="rev" style="color:#5BA8E8;">$3.86B</div>
+          <div class="sub">FY 2025 · 858 radio stations</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="100%" style="background:#378ADD;"></div></div>
+          <div class="sub">Multiplatform $2.3B · Digital Audio $1.3B</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about SiriusXM's subscription and advertising model">
+          <span class="badge" style="background:rgba(29,158,117,0.12);color:#3EC99A;">Publicly traded</span>
+          <h3>SiriusXM Holdings</h3>
+          <div class="rev" style="color:#3EC99A;">~$8.7B</div>
+          <div class="sub">Satellite + Pandora + Podcasts</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="100%" style="background:#1D9E75;"></div></div>
+          <div class="sub">Reaches 255M combined monthly listeners</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about Cumulus Media's situation and strategy">
+          <span class="badge" style="background:rgba(239,159,39,0.12);color:#E8B040;">OTC traded</span>
+          <h3>Cumulus Media</h3>
+          <div class="rev" style="color:#E8B040;">$874M</div>
+          <div class="sub">FY 2024 · Filed Ch.11 Mar 2026</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="23%" style="background:#EF9F27;"></div></div>
+          <div class="sub">Broadcast $597M · Digital $161M</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about Audacy and what happened with its bankruptcy">
+          <span class="badge" style="background:rgba(226,75,74,0.12);color:#E86868;">Private (post-bankruptcy)</span>
+          <h3>Audacy</h3>
+          <div class="rev" style="color:#E86868;">~$1.2B</div>
+          <div class="sub">220+ stations · Emerged 2024</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="31%" style="background:#E24B4A;"></div></div>
+          <div class="sub">Podcasting network + streaming</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about Townsquare Media's digital-first strategy">
+          <span class="badge" style="background:rgba(127,119,221,0.12);color:#9F97EE;">Publicly traded</span>
+          <h3>Townsquare Media</h3>
+          <div class="rev" style="color:#9F97EE;">~$500M</div>
+          <div class="sub">Local radio + digital marketing</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="13%" style="background:#7F77DD;"></div></div>
+          <div class="sub">Strong digital services arm</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+        <div class="company-card" tabindex="0" data-prompt="Tell me more about NPR's funding and digital expansion">
+          <span class="badge" style="background:rgba(99,153,34,0.12);color:#7DB83A;">Non-profit</span>
+          <h3>NPR</h3>
+          <div class="rev" style="color:#7DB83A;">~$340M</div>
+          <div class="sub">National Public Radio</div>
+          <div class="rev-bar-wrap"><div class="rev-bar" data-width="9%" style="background:#639922;"></div></div>
+          <div class="sub">Member stations + podcast + grants</div>
+          <span class="click-hint">Click to explore <i class="ti ti-arrow-right" style="font-size:10px;"></i></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Streams -->
+    <div id="tab-streams" class="tab-panel" role="tabpanel">
+      <p class="section-label">How these companies make money</p>
+      <div class="stream-grid">
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-speakerphone" aria-hidden="true"></i></div>
+          <h4>Broadcast spot advertising</h4>
+          <p>Traditional 30/60-second ads sold to local and national advertisers. Still the largest single revenue source (~$10B market-wide), though down slightly year-over-year.</p>
+          <div class="trend-indicator trend-neutral"><i class="ti ti-minus" style="font-size:12px;"></i> Flat YoY</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-device-desktop-analytics" aria-hidden="true"></i></div>
+          <h4>Digital & programmatic audio</h4>
+          <p>Ads delivered via streaming apps, online radio, and podcast feeds. Programmatic audio reached $2.3B in 2025 — up 18% — attracting digital-native advertisers at scale.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> +18% YoY</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-headphones" aria-hidden="true"></i></div>
+          <h4>Podcast advertising</h4>
+          <p>Host-read, dynamically inserted, and programmatic podcast ads. iHeartMedia podcast revenue hit $174M in Q4 2025 alone, up 24% YoY. SiriusXM podcast revenue surged ~50% in Q3 2025.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> +24% YoY</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
+          <h4>Subscription revenue</h4>
+          <p>SiriusXM's core model: paid satellite and streaming subscriptions. Pandora Premium and ad-free tiers. Combined subscriber base drives the bulk of ~$8.7B annual revenue.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Stable</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
+          <h4>Events & sponsorships</h4>
+          <p>iHeartRadio Music Festival, Jingle Ball, iHeart awards shows. Live events create premium sponsorship inventory and extend brand relationships beyond broadcast.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Growing</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-chart-dots" aria-hidden="true"></i></div>
+          <h4>Digital marketing services</h4>
+          <p>Townsquare and Cumulus both run significant digital agency arms — local SEO, social advertising, display — often earning more per market than radio spot revenue alone.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> +12% YoY</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-building-store" aria-hidden="true"></i></div>
+          <h4>Traffic & data licensing</h4>
+          <p>iHeartMedia's Katz Media Group and RCS syndication arm license broadcast traffic data and ratings tools to smaller stations. RCS software products are sold globally as SaaS.</p>
+          <div class="trend-indicator trend-neutral"><i class="ti ti-minus" style="font-size:12px;"></i> Stable</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-broadcast" aria-hidden="true"></i></div>
+          <h4>Political advertising</h4>
+          <p>High-cyclical revenue in even-numbered years. 2024 was a presidential year — companies saw large spikes. 2025 saw declines excluding political compared to 2024 levels.</p>
+          <div class="trend-indicator trend-dn"><i class="ti ti-trending-down" style="font-size:12px;"></i> Off-cycle</div>
+        </div>
+        <div class="stream-card">
+          <div class="icon"><i class="ti ti-license" aria-hidden="true"></i></div>
+          <h4>Content syndication</h4>
+          <p>Cumulus's Westwood One syndicates sports, news, and talk content (NCAA, NFL, Super Bowl) to 500+ affiliated stations, SiriusXM, and streaming platforms — earning rights fees.</p>
+          <div class="trend-indicator trend-neutral"><i class="ti ti-minus" style="font-size:12px;"></i> Stable</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Software -->
+    <div id="tab-software" class="tab-panel" role="tabpanel">
+      <p class="section-label">Software categories & products in use</p>
+      <div class="sw-section">
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#5BA8E8;">📻 Broadcast automation / playout</div>
+          <h4>RCS Zetta & ZettaCloud</h4>
+          <p>The dominant broadcast automation platform — handles playout sequencing, live assists, voice tracking, splits, and cloud-native radio for multi-station groups.</p>
+          <div class="used-by">Used by: Major networks, iHeart, Audacy affiliates</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#5BA8E8;">📻 Broadcast automation / playout</div>
+          <h4>WideOrbit Aurora</h4>
+          <p>Full-stack automation for radio including centralized playlists, content ingest, music conversion, and market-wide distribution. Integrates with vCreative Cloud AutoDub.</p>
+          <div class="used-by">Used by: Large group operators, syndication networks</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#3EC99A;">🎵 Music scheduling</div>
+          <h4>RCS GSelector / SelectorCloud</h4>
+          <p>AI-powered music scheduling with rule-based rotation, format clocks, and audience targeting. SelectorCloud adds cloud-native AI scheduling for modern music workflows.</p>
+          <div class="used-by">Used by: Commercial FM stations across all major groups</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#3EC99A;">🎵 Music scheduling</div>
+          <h4>PlayoutONE / Myriad</h4>
+          <p>Mid-market automation and scheduling tools for independent and community stations. Known for ease of use, voice tracking, and flexible multi-format support.</p>
+          <div class="used-by">Used by: Independent and community stations</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#E8B040;">📊 Traffic & billing</div>
+          <h4>RCS Aquira</h4>
+          <p>Traffic, billing, and order management system tightly integrated with Zetta and GSelector. Manages ad orders, reconciliation, and invoicing across multi-market operations.</p>
+          <div class="used-by">Used by: RCS network stations</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#E8B040;">📊 Traffic & billing</div>
+          <h4>WideOrbit Traffic</h4>
+          <p>Broadcast traffic management with workflow automation for spot management, affidavits, and political ad compliance. Widely deployed across commercial radio.</p>
+          <div class="used-by">Used by: Most top-40 commercial radio groups</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#9F97EE;">💰 Ad tech & programmatic</div>
+          <h4>AdsWizz (SiriusXM subsidiary)</h4>
+          <p>The engine behind SiriusXM/Pandora ad monetization. Also powers third-party audio publishers. Provides DSP/SSP connectivity, programmatic buying, contextual targeting (60% of all global targeting on the platform).</p>
+          <div class="used-by">Used by: SiriusXM, Pandora, 3rd-party publishers globally</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#9F97EE;">💰 Ad tech & programmatic</div>
+          <h4>Triton Digital / Omny Studio</h4>
+          <p>Podcast hosting, measurement, and ad monetization. Triton's AdBuilder AI generates ads in 60+ languages. Partnered with Washington Post and hundreds of broadcasters for full podcast stack.</p>
+          <div class="used-by">Used by: Washington Post, major podcast networks, broadcasters</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#7DB83A;">🎙 Production & content</div>
+          <h4>Adobe Audition</h4>
+          <p>Industry-standard audio editing and production. Used for spot production, voice tracking, podcast mastering, and editing live recordings. Integrates with automation via Genesys.</p>
+          <div class="used-by">Used by: Station production teams industry-wide</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#7DB83A;">🎙 Production & content</div>
+          <h4>ENCO aiTrack</h4>
+          <p>AI-powered dynamic content insertion for playout. Browser-accessible; generates broadcast-ready audio in seconds using generative AI. Major evolution announced NAB 2026.</p>
+          <div class="used-by">Used by: Forward-looking broadcasters adopting AI workflows</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#D4768A;">📡 Streaming & distribution</div>
+          <h4>Simplecast (SiriusXM)</h4>
+          <p>Podcast hosting and distribution platform owned by SiriusXM. Provides RSS distribution, analytics, and listener data used for targeted ad sales across the SiriusXM Media ecosystem.</p>
+          <div class="used-by">Used by: SiriusXM podcast creators and partners</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#D4768A;">📡 Streaming & distribution</div>
+          <h4>Triton Digital Streaming</h4>
+          <p>Encoder, CDN, and stream management for online radio. Provides listener measurement (Webcast Metrics), competitive rankings, and stream monetization infrastructure.</p>
+          <div class="used-by">Used by: Commercial and public radio stations</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#908C96;">🔗 Identity & data</div>
+          <h4>LiveRamp / Unified ID 2.0</h4>
+          <p>Cookieless identity resolution for targeting and measurement. Pandora became the first audio publisher on UID2. SiriusXM and AdsWizz expanded LiveRamp integration in 2026 for cross-platform audience matching.</p>
+          <div class="used-by">Used by: SiriusXM Media / Pandora for programmatic targeting</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#908C96;">🔗 Identity & data</div>
+          <h4>Amazon DSP / Yahoo DSP / Magnite</h4>
+          <p>Demand-side platforms integrated with broadcast radio inventory. iHeartMedia and SiriusXM both made major moves in 2025 to make broadcast radio buyable programmatically through these DSPs.</p>
+          <div class="used-by">Used by: iHeartMedia, SiriusXM, Audacy for programmatic sales</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#C97A3A;">⚙️ Workflow & production ops</div>
+          <h4>vCreative Cloud AutoDub</h4>
+          <p>Automates audio spot production and delivery. Checks, processes, and delivers spots with correct format, metadata, and companion files. Integrates live with WideOrbit Aurora and RCS ZettaCloud.</p>
+          <div class="used-by">Used by: Multi-market operators on WideOrbit or Zetta</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Trends -->
+    <div id="tab-trends" class="tab-panel" role="tabpanel">
+      <p class="section-label">Technology trends reshaping the industry</p>
+      <div class="sw-section">
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#5BA8E8;">Cloud-native broadcasting</div>
+          <h4>On-prem to cloud shift</h4>
+          <p>RCS is migrating ZettaCloud from disaster recovery to full primary radio automation. 2026 is being called "the year of the cloud" in broadcast. Reduces hardware dependency and enables remote operations.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Accelerating</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#3EC99A;">AI in every layer</div>
+          <h4>AI content & scheduling</h4>
+          <p>RCS SelectorCloud uses AI for music scheduling. ENCO aiTrack uses generative AI for content insertion. Triton's AdBuilder AI writes ads in 60+ languages. AI is now embedded in playout, scheduling, production, and ad creation.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Rapid growth</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#E8B040;">Programmatic radio</div>
+          <h4>Broadcast to digital buying</h4>
+          <p>iHeartMedia is building ad tech to make broadcast radio buyable via Amazon DSP, Yahoo DSP, and StackAdapt — the same way digital inventory is transacted. A structural shift in how radio is sold.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Emerging</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#9F97EE;">Podcast video expansion</div>
+          <h4>Audio to video podcast</h4>
+          <p>Triton's Omny Studio added video podcast support in Dec 2025. Audioboom reports video now generates 13%+ of revenue. iHeartMedia launched a TikTok Podcast Network. The medium is converging with video.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Converging</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#7DB83A;">Privacy-first targeting</div>
+          <h4>Cookieless identity</h4>
+          <p>Pandora became the first audio publisher on UID2. SiriusXM is using clean room technology with Amazon and LiveRamp to maintain targeting precision without third-party cookies.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Critical</div>
+        </div>
+        <div class="sw-card">
+          <div class="sw-cat" style="color:#D4768A;">Connected car & smart speakers</div>
+          <h4>New distribution surfaces</h4>
+          <p>Connected-car dashboards are delivering synchronized banner-plus-spot formats. Smart speaker adoption adds ~2.1% to radio's forecast CAGR. These surfaces create new programmatic inventory.</p>
+          <div class="trend-indicator trend-up"><i class="ti ti-trending-up" style="font-size:12px;"></i> Expanding</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <script>
+    /* ==========================
+       Background Wave Canvas
+       ========================== */
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    let animFrame;
+    let time = 0;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Particles floating upward
+    const particles = [];
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.5,
+        speed: Math.random() * 0.3 + 0.1,
+        drift: (Math.random() - 0.5) * 0.2,
+        opacity: Math.random() * 0.3 + 0.05
+      });
+    }
+
+    function drawBackground() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw sine waves
+      const waves = [
+        { amp: 50, freq: 0.0025, speed: 0.008, yBase: 0.25, color: 'rgba(212,148,58,0.04)' },
+        { amp: 35, freq: 0.004, speed: 0.012, yBase: 0.45, color: 'rgba(212,148,58,0.03)' },
+        { amp: 60, freq: 0.0015, speed: 0.006, yBase: 0.65, color: 'rgba(212,148,58,0.025)' },
+        { amp: 25, freq: 0.006, speed: 0.015, yBase: 0.8, color: 'rgba(212,148,58,0.02)' }
+      ];
+
+      waves.forEach(w => {
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        for (let x = 0; x <= canvas.width; x += 2) {
+          const y = canvas.height * w.yBase + Math.sin(x * w.freq + time * w.speed) * w.amp
+                    + Math.sin(x * w.freq * 1.7 + time * w.speed * 0.7) * w.amp * 0.3;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.closePath();
+        ctx.fillStyle = w.color;
+        ctx.fill();
+      });
+
+      // Draw particles
+      particles.forEach(p => {
+        p.y -= p.speed;
+        p.x += p.drift + Math.sin(time * 0.01 + p.x * 0.01) * 0.15;
+        if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.5, p.r), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212,148,58,${p.opacity})`;
+        ctx.fill();
+      });
+
+      time++;
+      animFrame = requestAnimationFrame(drawBackground);
+    }
+    drawBackground();
+
+    /* ==========================
+       Mouse Glow
+       ========================== */
+    const glow = document.getElementById('mouseGlow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    /* ==========================
+       Scroll Progress
+       ========================== */
+    const progressBar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+      progressBar.style.width = pct + '%';
+    });
+
+    /* ==========================
+       Animated Counters
+       ========================== */
+    function animateCounters() {
+      const counters = document.querySelectorAll('.stat-box .n[data-target]');
+      counters.forEach(el => {
+        const target = parseFloat(el.dataset.target);
+        const prefix = el.dataset.prefix || '';
+        const suffix = el.dataset.suffix || '';
+        const duration = 1800;
+        const start = performance.now();
+
+        function update(now) {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = (target * eased);
+
+          // Format number
+          let display;
+          if (target % 1 !== 0) {
+            display = current.toFixed(1);
+          } else {
+            display = Math.round(current);
+          }
+
+          el.textContent = prefix + display + suffix;
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            el.textContent = prefix + target + suffix;
+          }
+        }
+        requestAnimationFrame(update);
+      });
+    }
+
+    /* ==========================
+       Card Visibility Animation
+       ========================== */
+    function revealCards(container) {
+      const cards = container.querySelectorAll('.company-card, .stream-card, .sw-card');
+      cards.forEach((card, i) => {
+        card.classList.remove('visible');
+        // Reset animation
+        card.style.animation = 'none';
+        card.offsetHeight; // Trigger reflow
+        card.style.animation = '';
+        setTimeout(() => {
+          card.classList.add('visible');
+        }, i * 70);
+      });
+    }
+
+    /* ==========================
+       Revenue Bar Animation
+       ========================== */
+    function animateRevenueBars() {
+      const bars = document.querySelectorAll('.company-card .rev-bar');
+      bars.forEach(bar => {
+        bar.style.width = '0';
+        const targetWidth = bar.dataset.width || '0';
+        setTimeout(() => {
+          bar.style.width = targetWidth;
+        }, 300);
+      });
+    }
+
+    /* ==========================
+       Tab Switching
+       ========================== */
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+
+    function showTab(tabId) {
+      // Update buttons
+      tabBtns.forEach(btn => {
+        const isActive = btn.dataset.tab === tabId;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      // Update panels
+      tabPanels.forEach(panel => {
+        panel.classList.remove('active');
+      });
+      const activePanel = document.getElementById('tab-' + tabId);
+      if (activePanel) {
+        activePanel.classList.add('active');
+        // Reveal cards with stagger
+        revealCards(activePanel);
+        // Animate revenue bars if companies tab
+        if (tabId === 'companies') {
+          setTimeout(animateRevenueBars, 400);
+        }
+      }
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => showTab(btn.dataset.tab));
+    });
+
+    // Keyboard navigation for tabs
+    document.querySelector('.tabs').addEventListener('keydown', e => {
+      const tabs = Array.from(tabBtns);
+      const current = tabs.findIndex(t => t.classList.contains('active'));
+      let next = current;
+      if (e.key === 'ArrowRight') next = (current + 1) % tabs.length;
+      else if (e.key === 'ArrowLeft') next = (current - 1 + tabs.length) % tabs.length;
+      else return;
+      e.preventDefault();
+      tabs[next].click();
+      tabs[next].focus();
+    });
+
+    /* ==========================
+       Company Card Clicks → Toast
+       ========================== */
+    function showToast(message) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<div class="toast-label">Research Query</div><div>${message}</div>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('removing');
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    document.querySelectorAll('.company-card').forEach(card => {
+      const prompt = card.dataset.prompt;
+      if (prompt) {
+        card.addEventListener('click', () => showToast(prompt));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            showToast(prompt);
+          }
+        });
+      }
+    });
+
+    /* ==========================
+       Initial Load
+       ========================== */
+    window.addEventListener('load', () => {
+      // Animate counters
+      setTimeout(animateCounters, 400);
+
+      // Reveal initial tab cards
+      const activePanel = document.querySelector('.tab-panel.active');
+      if (activePanel) {
+        setTimeout(() => {
+          revealCards(activePanel);
+          setTimeout(animateRevenueBars, 500);
+        }, 300);
+      }
+    });
+  </script>
+</body>
+</html>
