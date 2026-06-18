@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geoscience AI Landscape — Disrupting Technologies & Products</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --bg: #0a0c10;
+  --bg-2: #10141b;
+  --bg-3: #161c25;
+  --bg-4: #1d2530;
+  --fg: #ece9e3;
+  --fg-dim: #b8b4ac;
+  --muted: #6c7484;
+  --muted-2: #3d4452;
+  --accent: #e8b86d;
+  --accent-glow: rgba(232, 184, 109, 0.15);
+  --teal: #5eead4;
+  --deployed: #34d399;
+  --deployed-bg: rgba(52, 211, 153, 0.1);
+  --research: #fbbf24;
+  --research-bg: rgba(251, 191, 36, 0.1);
+  --proprietary: #fb7185;
+  --proprietary-bg: rgba(251, 113, 133, 0.1);
+  --border: rgba(236, 233, 227, 0.07);
+  --border-strong: rgba(236, 233, 227, 0.14);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background geological pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(232, 184, 109, 0.06), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(94, 234, 212, 0.04), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(236, 233, 227, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(236, 233, 227, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.display {
+  font-family: 'Fraunces', serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  letter-spacing: -0.03em;
+}
+
+/* ---------- Layout ---------- */
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+}
+
+/* ---------- Page header ---------- */
+.page-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+.header-eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--accent);
+}
+
+.page-title {
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1;
+  font-weight: 300;
+  margin-bottom: 1rem;
+}
+.page-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.page-subtitle {
+  color: var(--fg-dim);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 640px;
+  margin-bottom: 1.75rem;
+}
+
+.header-meta {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.meta-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.meta-stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--fg);
+  line-height: 1;
+}
+.meta-stat-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.search-wrap {
+  position: relative;
+  margin-left: auto;
+}
+.search-input {
+  background: var(--bg-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 100px;
+  padding: 0.7rem 1rem 0.7rem 2.6rem;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: 0.88rem;
+  width: 260px;
+  transition: all 0.3s;
+  outline: none;
+}
+.search-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow);
+  width: 300px;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-icon {
+  position: absolute;
+  left: 1rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.85rem;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .search-wrap { margin-left: 0; width: 100%; }
+  .search-input, .search-input:focus { width: 100%; }
+  .header-meta { gap: 1.25rem; }
+}
+
+/* ---------- Tabs ---------- */
+.tech-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 6px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.tab-btn {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 450;
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: var(--fg-dim);
+  cursor: pointer;
+  transition: color 0.25s, background 0.25s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--fg); background: rgba(236, 233, 227, 0.03); }
+.tab-btn.active {
+  color: var(--bg);
+  background: var(--accent);
+  box-shadow: 0 4px 20px -4px rgba(232, 184, 109, 0.4);
+}
+.tab-btn .tab-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+.tab-btn.active .tab-icon { filter: saturate(1.2); }
+
+.tab-count {
+  font-size: 0.68rem;
+  background: rgba(236, 233, 227, 0.1);
+  padding: 1px 7px;
+  border-radius: 100px;
+  font-weight: 500;
+  margin-left: 0.15rem;
+}
+.tab-btn.active .tab-count {
+  background: rgba(10, 12, 16, 0.2);
+  color: var(--bg);
+}
+
+/* ---------- Sections ---------- */
+.section {
+  display: none;
+  animation: sectionIn 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.section.active { display: block; }
+
+@keyframes sectionIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tech-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.tech-icon-wrap {
+  width: 48px; height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.tech-icon-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, var(--accent-glow), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.section.active .tech-icon-wrap::before { opacity: 1; }
+
+.tech-header-text { flex: 1; min-width: 0; padding-top: 0.25rem; }
+.tech-title {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.35rem;
+}
+.tech-desc {
+  font-size: 0.92rem;
+  color: var(--fg-dim);
+  line-height: 1.65;
+  max-width: 820px;
+}
+
+.maturity-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.75rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.maturity-track {
+  flex: 1;
+  height: 3px;
+  background: var(--bg-2);
+  border-radius: 100px;
+  overflow: hidden;
+  max-width: 200px;
+}
+.maturity-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  border-radius: 100px;
+  transform-origin: left;
+  animation: fillIn 1.2s 0.2s cubic-bezier(0.2, 1, 0.3, 1) both;
+}
+@keyframes fillIn {
+  from { transform: scaleX(0); }
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.35s, transform 0.35s, box-shadow 0.35s;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardIn 0.55s cubic-bezier(0.2, 1, 0.3, 1) both;
+}
+.section.active .card:nth-child(3) { animation-delay: 0.05s; }
+.section.active .card:nth-child(4) { animation-delay: 0.12s; }
+.section.active .card:nth-child(5) { animation-delay: 0.19s; }
+.section.active .card:nth-child(6) { animation-delay: 0.26s; }
+
+@keyframes cardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.45s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.5);
+}
+.card:hover::before { transform: scaleY(1); }
+
+.card.hidden-by-search {
+  display: none;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.card-title-block { flex: 1; min-width: 0; }
+.sw-name {
+  font-family: 'Fraunces', serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.sw-tagline {
+  font-size: 0.85rem;
+  color: var(--fg-dim);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 100px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+.badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-green {
+  background: var(--deployed-bg);
+  color: var(--deployed);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+.badge-green::before { animation: pulse 2.4s ease-in-out infinite; }
+.badge-amber {
+  background: var(--research-bg);
+  color: var(--research);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+.badge-red {
+  background: var(--proprietary-bg);
+  color: var(--proprietary);
+  border: 1px solid rgba(251, 113, 133, 0.2);
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  50% { opacity: 0.6; box-shadow: 0 0 0 4px transparent; }
+}
+
+/* ---------- Flow steps ---------- */
+.flow-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.flow-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.step {
+  font-size: 0.78rem;
+  padding: 0.45rem 0.85rem;
+  background: var(--bg-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--fg);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+  font-weight: 450;
+}
+.step:hover {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px -6px rgba(232, 184, 109, 0.5);
+}
+.step:active { transform: translateY(0); }
+.step.clicked {
+  animation: stepPing 0.5s ease-out;
+}
+@keyframes stepPing {
+  0% { box-shadow: 0 0 0 0 var(--accent); }
+  100% { box-shadow: 0 0 0 12px transparent; }
+}
+
+.arrow {
+  color: var(--muted-2);
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  width: 16px;
+  justify-content: center;
+}
+.arrow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  animation: flowDash 2.5s ease-in-out infinite;
+}
+@keyframes flowDash {
+  0%, 100% { opacity: 0; transform: translateX(-4px); }
+  50% { opacity: 0.4; transform: translateX(4px); }
+}
+
+.divider {
+  border: none;
+  border-top: 1px dashed var(--border-strong);
+  margin: 1.25rem 0;
+}
+
+/* ---------- Gap pill ---------- */
+.gap-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 100px;
+  background: linear-gradient(90deg, rgba(251, 113, 133, 0.08), rgba(251, 113, 133, 0.04));
+  color: var(--proprietary);
+  border: 1px solid rgba(251, 113, 133, 0.2);
+  margin-top: 1rem;
+  font-weight: 450;
+  position: relative;
+  overflow: hidden;
+}
+.gap-pill::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(251, 113, 133, 0.12), transparent);
+  animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  to { left: 100%; }
+}
+.gap-pill i { font-size: 0.85rem; }
+
+/* ---------- Empty state ---------- */
+.no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  display: none;
+}
+.no-results.show { display: block; }
+.no-results i { font-size: 2rem; margin-bottom: 1rem; color: var(--muted-2); }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--bg-3);
+  border: 1px solid var(--border-strong);
+  color: var(--fg);
+  padding: 0.9rem 1.4rem;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  z-index: 1000;
+  transition: transform 0.45s cubic-bezier(0.2, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--border);
+  max-width: 90vw;
+  backdrop-filter: blur(20px);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast i { color: var(--accent); }
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 100px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-2); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 720px) {
+  .page { padding: 2rem 1rem 3rem; }
+  .tech-tabs { gap: 4px; padding: 4px; }
+  .tab-btn { font-size: 0.75rem; padding: 0.5rem 0.85rem; }
+  .card { padding: 1.25rem; }
+  .card-header { flex-direction: column; gap: 0.75rem; }
+  .badge { align-self: flex-start; }
+  .step { font-size: 0.72rem; padding: 0.4rem 0.7rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-eyebrow">Geoscience AI · Landscape Analysis</div>
+    <h1 class="page-title display">
+      Disrupting <em>technologies,</em><br>products & UI flows.
+    </h1>
+    <p class="page-subtitle">
+      A living map of AI technologies reshaping mineral exploration, geological modelling, and subsurface characterisation — from foundation models to multimodal sensor fusion.
+    </p>
+    <div class="header-meta">
+      <div class="meta-stat">
+        <span class="meta-stat-num">7</span>
+        <span class="meta-stat-label">Tech categories</span>
+      </div>
+      <div class="meta-stat">
+        <span class="meta-stat-num">11</span>
+        <span class="meta-stat-label">Products tracked</span>
+      </div>
+      <div class="meta-stat">
+        <span class="meta-stat-num">6</span>
+        <span class="meta-stat-label">Market gaps</span>
+      </div>
+      <div class="search-wrap">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-input" id="searchInput" placeholder="Search products or flows…" aria-label="Search">
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <nav class="tech-tabs" id="tabs" role="tablist" aria-label="Technology categories">
+    <button class="tab-btn active" data-tab="llm" role="tab" aria-selected="true">
+      <span class="tab-icon">🏗️</span>
+      <span>Foundation LLMs</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="gen" role="tab" aria-selected="false">
+      <span class="tab-icon">🌊</span>
+      <span>Generative / Diffusion</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="pinn" role="tab" aria-selected="false">
+      <span class="tab-icon">🧠</span>
+      <span>PINNs</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="gnn" role="tab" aria-selected="false">
+      <span class="tab-icon">🕸️</span>
+      <span>GNNs</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="ssl" role="tab" aria-selected="false">
+      <span class="tab-icon">🤖</span>
+      <span>Semi-supervised</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="xai" role="tab" aria-selected="false">
+      <span class="tab-icon">🔍</span>
+      <span>XAI</span>
+      <span class="tab-count">2</span>
+    </button>
+    <button class="tab-btn" data-tab="multi" role="tab" aria-selected="false">
+      <span class="tab-icon">🛰️</span>
+      <span>Multimodal</span>
+      <span class="tab-count">2</span>
+    </button>
+  </nav>
+
+  <!-- Foundation LLMs -->
+  <section id="sec-llm" class="section active" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🏗️</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Foundation models — LLMs for geoscience</h2>
+        <p class="tech-desc">Domain-specific large language models trained on geological corpora — enabling natural language Q&amp;A, document mining, and multimodal map analysis for exploration teams.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 55%;"></div></div>
+      <span>Early access</span>
+    </div>
+
+    <article class="card" data-search="geogpt multimodal geological qa upload maps query natural language">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">GeoGPT</div>
+          <div class="sw-tagline">Multimodal geological Q&amp;A — upload maps, query in natural language</div>
+        </div>
+        <span class="badge badge-amber">Research / early access</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Upload geological map</span><span class="arrow">→</span>
+        <span class="step">Type natural language query</span><span class="arrow">→</span>
+        <span class="step">AI extracts lat/lon + legend</span><span class="arrow">→</span>
+        <span class="step">Interactive dialogue Q&amp;A</span><span class="arrow">→</span>
+        <span class="step">Export findings</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Gap: cannot reason over 3D geometry</div>
+    </article>
+
+    <article class="card" data-search="radixplore mining archive intelligence scanned geological reports">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">RadiXplore</div>
+          <div class="sw-tagline">Mining-specific archive intelligence — search millions of scanned geological reports</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Connect historical archive</span><span class="arrow">→</span>
+        <span class="step">Type natural language query</span><span class="arrow">→</span>
+        <span class="step">View ranked results + evidence highlights</span><span class="arrow">→</span>
+        <span class="step">Clip anomalies / targets</span><span class="arrow">→</span>
+        <span class="step">Push to target generation workflow</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- Generative / Diffusion -->
+  <section id="sec-gen" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🌊</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Generative / diffusion models</h2>
+        <p class="tech-desc">Probabilistic subsurface simulation from sparse drill data. 3D latent diffusion models enable facies-based geological realizations with variable metaparameters — far beyond 2D fixed-parameter systems.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 40%;"></div></div>
+      <span>R&amp;D phase</span>
+    </div>
+
+    <article class="card" data-search="rmsp geologicai conditional simulation resource model generation">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">RMSP — GeologicAI</div>
+          <div class="sw-tagline">Conditional simulation engine for resource model generation</div>
+        </div>
+        <span class="badge badge-amber">Conditional sim deployed; true diffusion in development</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Import sparse drill data</span><span class="arrow">→</span>
+        <span class="step">Configure simulation parameters</span><span class="arrow">→</span>
+        <span class="step">Generate probabilistic realisations</span><span class="arrow">→</span>
+        <span class="step">Review uncertainty per block</span><span class="arrow">→</span>
+        <span class="step">Export block model</span>
+      </div>
+    </article>
+
+    <article class="card" data-search="seequent evo cloud geological modelling probabilistic subsurface">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Seequent Evo</div>
+          <div class="sw-tagline">Cloud geological modelling platform with probabilistic subsurface realisation</div>
+        </div>
+        <span class="badge badge-amber">Conditional sim; diffusion R&amp;D</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Load drillhole / geophysics data</span><span class="arrow">→</span>
+        <span class="step">Define geological domains</span><span class="arrow">→</span>
+        <span class="step">Run conditional simulation</span><span class="arrow">→</span>
+        <span class="step">Visualise realisations in 3D</span><span class="arrow">→</span>
+        <span class="step">History-match against production data</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Gap: true diffusion-based 3D generation not yet productized</div>
+    </article>
+  </section>
+
+  <!-- PINNs -->
+  <section id="sec-pinn" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🧠</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Physics-informed neural networks (PINNs)</h2>
+        <p class="tech-desc">Neural networks trained with physical constraints (petrophysical laws, geostatistical rules) embedded directly into their architecture — ensuring predictions respect geological physics even with limited data.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 50%;"></div></div>
+      <span>Adjacency deployed</span>
+    </div>
+
+    <article class="card" data-search="maptek vestrex domainmcf rbf interpolants structural geology">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Maptek Vestrex / DomainMCF</div>
+          <div class="sw-tagline">Physically-constrained RBF interpolants for complex structural geology</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Import drillhole + structural data</span><span class="arrow">→</span>
+        <span class="step">Select RBF interpolant type (Linear / Spheroidal)</span><span class="arrow">→</span>
+        <span class="step">Set physical constraints (faults, veins, intrusions)</span><span class="arrow">→</span>
+        <span class="step">Generate 3D geological model</span><span class="arrow">→</span>
+        <span class="step">Validate against geophysics</span>
+      </div>
+    </article>
+
+    <article class="card" data-search="rmsp geologicai uncertainty module geostatistical mineralogy well logs">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">RMSP — GeologicAI (uncertainty module)</div>
+          <div class="sw-tagline">Geostatistical physical constraints for mineralogy estimation from well logs</div>
+        </div>
+        <span class="badge badge-amber">PINN-adjacent; pure PINN tools 12–24 months away</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Input geophysical well logs</span><span class="arrow">→</span>
+        <span class="step">Apply petrophysical constraint layer</span><span class="arrow">→</span>
+        <span class="step">Estimate mineralogy per interval</span><span class="arrow">→</span>
+        <span class="step">Surface uncertainty per block</span><span class="arrow">→</span>
+        <span class="step">Flag physics violations for review</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Gap: no pure PINN commercial tool for hard rock mining</div>
+    </article>
+  </section>
+
+  <!-- GNNs -->
+  <section id="sec-gnn" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🕸️</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Graph neural networks (GNNs)</h2>
+        <p class="tech-desc">GNNs model spatial relationships between geochemical, geophysical, and geological signals across large terranes — ideal for multi-signal target generation. Currently proprietary-only: the biggest white space in the market.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 25%;"></div></div>
+      <span>Proprietary only</span>
+    </div>
+
+    <article class="card" data-search="kobold metals proprietary gnn multi-signal exploration targeting terrane">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">KoBold Metals (proprietary platform)</div>
+          <div class="sw-tagline">GNN-based multi-signal exploration targeting across large terranes</div>
+        </div>
+        <span class="badge badge-red">Proprietary — not commercially licensed</span>
+      </div>
+      <div class="flow-label">Inferred UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Ingest geochemical + geophysical layers</span><span class="arrow">→</span>
+        <span class="step">Build spatial graph across terrane</span><span class="arrow">→</span>
+        <span class="step">Run GNN to score spatial relationships</span><span class="arrow">→</span>
+        <span class="step">Rank anomaly clusters</span><span class="arrow">→</span>
+        <span class="step">Generate drill target recommendations</span>
+      </div>
+    </article>
+
+    <article class="card" data-search="sensore ai mineral targeting spatial data relationships">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">SensOre</div>
+          <div class="sw-tagline">AI-driven mineral targeting using spatial data relationships</div>
+        </div>
+        <span class="badge badge-red">Proprietary — exploration service, not a licensed tool</span>
+      </div>
+      <div class="flow-label">Inferred UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Submit regional datasets</span><span class="arrow">→</span>
+        <span class="step">SensOre builds spatial signal graph</span><span class="arrow">→</span>
+        <span class="step">GNN scores anomaly relationships</span><span class="arrow">→</span>
+        <span class="step">Receive ranked target report</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Biggest gap: no standalone commercial GNN geological modelling tool</div>
+    </article>
+  </section>
+
+  <!-- Semi-supervised -->
+  <section id="sec-ssl" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🤖</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Semi-supervised &amp; transfer learning</h2>
+        <p class="tech-desc">The most widely deployed AI category in geoscience today. Learns geological patterns from small labelled datasets by leveraging large unlabelled data — enabling fast model bootstrapping and cross-deposit transfer.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 85%;"></div></div>
+      <span>Widely deployed</span>
+    </div>
+
+    <article class="card" data-search="seequent driver ml geological structure geologist override">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Seequent Driver</div>
+          <div class="sw-tagline">ML-powered geological structure understanding with geologist override</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Connect deposit dataset</span><span class="arrow">→</span>
+        <span class="step">Driver learns geological structure (no coding)</span><span class="arrow">→</span>
+        <span class="step">Auto-informs 3D model</span><span class="arrow">→</span>
+        <span class="step">Geologist reviews + adjusts interpretations</span><span class="arrow">→</span>
+        <span class="step">Export improved downstream model</span>
+      </div>
+    </article>
+
+    <article class="card" data-search="datarock geologist core logging imdex elemission">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Datarock</div>
+          <div class="sw-tagline">Geologist-in-the-loop core logging with IMDEX + ELEMISSION integrations</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Core tray enters scanner (IMDEX / ELEMISSION)</span><span class="arrow">→</span>
+        <span class="step">AI classifies lithology + alteration per interval</span><span class="arrow">→</span>
+        <span class="step">Geologist validates flagged intervals</span><span class="arrow">→</span>
+        <span class="step">Repeatable standardised log generated</span><span class="arrow">→</span>
+        <span class="step">Push to database / resource model</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- XAI -->
+  <section id="sec-xai" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🔍</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Explainable AI (XAI)</h2>
+        <p class="tech-desc">AI outputs accompanied by traceable reasoning — critical for JORC / NI 43-101 compliance, where resource estimates must be defensible. Currently only niche vendors implement this; major platforms (Surpac, Vulcan) do not.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 45%;"></div></div>
+      <span>Niche deployment</span>
+    </div>
+
+    <article class="card" data-search="datarock explainable ai core characterisation jorc ni 43-101">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Datarock</div>
+          <div class="sw-tagline">Production-ready explainable AI for core characterisation — JORC/NI 43-101 ready</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">AI classifies core interval</span><span class="arrow">→</span>
+        <span class="step">Confidence score surfaced per classification</span><span class="arrow">→</span>
+        <span class="step">Feature attribution shown (which spectral bands drove result)</span><span class="arrow">→</span>
+        <span class="step">Geologist approves / overrides with audit trail</span><span class="arrow">→</span>
+        <span class="step">Compliant log exported for JORC report</span>
+      </div>
+    </article>
+
+    <article class="card" data-search="rmsp geologicai spatial uncertainty block model explainability">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">RMSP — GeologicAI</div>
+          <div class="sw-tagline">Spatial uncertainty per block as a form of explainability for resource estimates</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Run block model estimation</span><span class="arrow">→</span>
+        <span class="step">Uncertainty value generated per block</span><span class="arrow">→</span>
+        <span class="step">Colour-coded uncertainty heatmap in 3D viewer</span><span class="arrow">→</span>
+        <span class="step">Filter high-uncertainty zones for follow-up drilling</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Gap: XAI not yet in Surpac, Vulcan, or other major platforms</div>
+    </article>
+  </section>
+
+  <!-- Multimodal -->
+  <section id="sec-multi" class="section" role="tabpanel">
+    <div class="tech-header">
+      <div class="tech-icon-wrap">🛰️</div>
+      <div class="tech-header-text">
+        <h2 class="tech-title">Multimodal AI</h2>
+        <p class="tech-desc">Simultaneous fusion of multiple sensor streams (hyperspectral, XRF, LiDAR, RGB, magnetic susceptibility, LIBS) at the pixel level. GeologicAI is the most complete implementation in the market.</p>
+      </div>
+    </div>
+    <div class="maturity-bar">
+      <span>Maturity</span>
+      <div class="maturity-track"><div class="maturity-fill" style="width: 65%;"></div></div>
+      <span>Deployed, integrating</span>
+    </div>
+
+    <article class="card" data-search="geologicai rmsp lumo analytics 5-sensor mobile scanning critical minerals">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">GeologicAI (RMSP + Lumo Analytics)</div>
+          <div class="sw-tagline">5-sensor mobile scanning unit — the only fully integrated critical minerals sensor platform</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow — scanning</div>
+      <div class="flow-steps">
+        <span class="step">Drive mobile trailer to drill site</span><span class="arrow">→</span>
+        <span class="step">Auto-scan core trays (SWIR/VNIR + XRF + RGB + LiDAR + mag. susc.)</span><span class="arrow">→</span>
+        <span class="step">AI stitches 5 sensor streams at pixel level</span><span class="arrow">→</span>
+        <span class="step">LIBS adds rare-earth + light element detection (Lumo)</span><span class="arrow">→</span>
+        <span class="step">Integrated mineralogy + structure model output</span>
+      </div>
+      <hr class="divider">
+      <div class="flow-label">UI flow — analysis</div>
+      <div class="flow-steps">
+        <span class="step">Open fused dataset in RMSP</span><span class="arrow">→</span>
+        <span class="step">Query mineralogy by interval or element</span><span class="arrow">→</span>
+        <span class="step">Cross-reference with geophysics / block model</span><span class="arrow">→</span>
+        <span class="step">Generate drill targets or resource update</span>
+      </div>
+      <div class="gap-pill"><i class="fas fa-triangle-exclamation"></i>Gap: no open API standard across sensor types</div>
+    </article>
+
+    <article class="card" data-search="datarock rgb hyperspectral core imaging ai classification">
+      <div class="card-header">
+        <div class="card-title-block">
+          <div class="sw-name">Datarock</div>
+          <div class="sw-tagline">RGB + hyperspectral core imaging with AI classification</div>
+        </div>
+        <span class="badge badge-green">Commercially deployed</span>
+      </div>
+      <div class="flow-label">UI flow</div>
+      <div class="flow-steps">
+        <span class="step">Scan core with RGB + SWIR camera</span><span class="arrow">→</span>
+        <span class="step">AI fuses visual + spectral signals</span><span class="arrow">→</span>
+        <span class="step">Classify lithology + alteration + mineralogy</span><span class="arrow">→</span>
+        <span class="step">Export structured log to IMDEX / database</span>
+      </div>
+    </article>
+  </section>
+
+  <!-- No results -->
+  <div class="no-results" id="noResults">
+    <i class="fas fa-magnifying-glass"></i>
+    <p>No products match your search in this category.</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <i class="fas fa-circle-info"></i>
+  <span id="toastMsg">Step selected.</span>
+</div>
+
+<script>
+  // ============= Tab switching =============
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('.section');
+
+  function show(id, tabBtn) {
+    sections.forEach(s => s.classList.remove('active'));
+    tabs.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    const target = document.getElementById('sec-' + id);
+    if (target) target.classList.add('active');
+    if (tabBtn) {
+      tabBtn.classList.add('active');
+      tabBtn.setAttribute('aria-selected', 'true');
+    }
+    // Clear search when switching
+    document.getElementById('searchInput').value = '';
+    filterCards('');
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => show(tab.dataset.tab, tab));
+  });
+
+  // ============= Keyboard navigation for tabs =============
+  document.getElementById('tabs').addEventListener('keydown', (e) => {
+    const activeIdx = Array.from(tabs).findIndex(t => t.classList.contains('active'));
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      const next = tabs[(activeIdx + 1) % tabs.length];
+      next.focus();
+      show(next.dataset.tab, next);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prev = tabs[(activeIdx - 1 + tabs.length) % tabs.length];
+      prev.focus();
+      show(prev.dataset.tab, prev);
+    }
+  });
+
+  // ============= Step clicks → toast =============
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  let toastTimeout;
+
+  function showToast(msg) {
+    toastMsg.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  document.querySelectorAll('.step').forEach(step => {
+    step.addEventListener('click', () => {
+      step.classList.remove('clicked');
+      void step.offsetWidth; // force reflow for animation restart
+      step.classList.add('clicked');
+      showToast('Flow step: ' + step.textContent.trim());
+    });
+  });
+
+  // ============= Search / filter =============
+  const searchInput = document.getElementById('searchInput');
+  const noResults = document.getElementById('noResults');
+
+  function filterCards(query) {
+    const q = query.toLowerCase().trim();
+    const activeSection = document.querySelector('.section.active');
+    if (!activeSection) return;
+
+    const cards = activeSection.querySelectorAll('.card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      if (!q) {
+        card.classList.remove('hidden-by-search');
+        visibleCount++;
+        return;
+      }
+      const searchText = (card.dataset.search || '').toLowerCase();
+      const cardText = card.textContent.toLowerCase();
+      if (searchText.includes(q) || cardText.includes(q)) {
+        card.classList.remove('hidden-by-search');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden-by-search');
+      }
+    });
+
+    noResults.classList.toggle('show', visibleCount === 0);
+  }
+
+  searchInput.addEventListener('input', (e) => filterCards(e.target.value));
+
+  // ============= Subtle parallax on tech icon =============
+  document.querySelectorAll('.tech-icon-wrap').forEach(icon => {
+    const section = icon.closest('.section');
+    section.addEventListener('mousemove', (e) => {
+      const rect = section.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
+      const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
+      icon.style.transform = `translate(${x * 6}px, ${y * 6}px)`;
+    });
+    section.addEventListener('mouseleave', () => {
+      icon.style.transform = '';
+    });
+  });
+
+  // ============= Card entrance stagger on tab switch =============
+  // (Handled via CSS animation-delay, but re-trigger on section change)
+  const observer = new MutationObserver(() => {
+    const active = document.querySelector('.section.active');
+    if (active) {
+      active.querySelectorAll('.card').forEach((card, i) => {
+        card.style.animation = 'none';
+        void card.offsetWidth;
+        card.style.animation = `cardIn 0.55s ${i * 0.07}s cubic-bezier(0.2, 1, 0.3, 1) both`;
+      });
+    }
+  });
+  sections.forEach(s => {
+    observer.observe(s, { attributes: true, attributeFilter: ['class'] });
+  });
+</script>
+
+</body>
+</html>

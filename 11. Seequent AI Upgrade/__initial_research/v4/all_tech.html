@@ -1,0 +1,434 @@
+<style>
+  :root {
+    --bg-main: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #5f6368;
+    --text-tertiary: #80868b;
+    --border-color: #e0e0e0;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    --radius-lg: 12px;
+    --transition-fast: 0.2s ease-out;
+    --transition-med: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  h2.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .nav {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem; padding-top: 1.5rem;
+    position: sticky; top: 0; background: var(--bg-main); z-index: 10;
+    padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);
+  }
+
+  .pill {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-secondary);
+    cursor: pointer; transition: all var(--transition-fast); box-shadow: var(--shadow-sm);
+  }
+
+  .pill:hover {
+    background: #f0f0f0; border-color: #ccc; transform: translateY(-1px);
+  }
+
+  .pill.active {
+    background: var(--text-primary); color: #fff; border-color: var(--text-primary);
+    box-shadow: var(--shadow-md); transform: translateY(-1px);
+  }
+
+  .section { margin-bottom: 2.5rem; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  
+  .tech-label {
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+    letter-spacing: .03em; text-transform: uppercase;
+  }
+
+  .tl-pinn{background:#E6F1FB;color:#0C447C} .dark .tl-pinn{background:#0C447C;color:#B5D4F4}
+  .tl-gen{background:#EAF3DE;color:#27500A} .dark .tl-gen{background:#27500A;color:#C0DD97}
+  .tl-gnn{background:#EEEDFE;color:#3C3489} .dark .tl-gnn{background:#3C3489;color:#CECBF6}
+  .tl-llm{background:#FAEEDA;color:#633806} .dark .tl-llm{background:#633806;color:#FAC775}
+  .tl-ssl{background:#E1F5EE;color:#085041} .dark .tl-ssl{background:#085041;color:#9FE1CB}
+  .tl-xai{background:#FCEBEB;color:#791F1F} .dark .tl-xai{background:#791F1F;color:#F7C1C1}
+  .tl-mm{background:#FBEAF0;color:#72243E} .dark .tl-mm{background:#72243E;color:#F4C0D1}
+
+  .section-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+
+  .cards {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+  }
+
+  /* Animation setup */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+    padding: 16px 18px; cursor: pointer; transition: all var(--transition-med);
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    opacity: 0; transform: translateY(15px);
+  }
+
+  .card.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  .card:hover {
+    border-color: #bbb; transform: translateY(-4px); box-shadow: var(--shadow-lg);
+  }
+
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+  .card-name { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+  
+  .badge {
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .badge-startup{background:#E1F5EE;color:#085041}
+  .badge-established{background:#F1EFE8;color:#5B5B58}
+  .badge-research{background:#EEEDFE;color:#3C3489}
+  
+  .card-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+  .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 6px; background: #f1f3f4; color: var(--text-secondary); font-weight: 500; }
+
+  /* Modal Overlay */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 50;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity var(--transition-med);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .detail-modal {
+    background: var(--bg-card); border-radius: 16px; padding: 24px;
+    max-width: 600px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    transform: scale(0.95) translateY(10px); transition: transform var(--transition-med);
+    max-height: 90vh; overflow-y: auto;
+  }
+  .modal-overlay.open .detail-modal { transform: scale(1) translateY(0); }
+
+  .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+  .modal-name { font-size: 18px; font-weight: 700; color: var(--text-primary); padding-right: 16px; }
+  
+  .close-btn {
+    background: #f1f3f4; border: none; font-size: 16px; cursor: pointer; color: var(--text-secondary);
+    width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition-fast);
+  }
+  .close-btn:hover { background: #e0e0e0; color: var(--text-primary); }
+
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 1.5rem; }
+  .modal-field label { font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px; display: block; font-weight: 600; text-transform: uppercase; }
+  .modal-field p { font-size: 13.5px; color: var(--text-primary); margin: 0; line-height: 1.5; }
+
+  .ux-panel { background: #f8f9fa; border-radius: 12px; padding: 16px 20px; border: 1px solid var(--border-color); }
+  .ux-title { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+  .ux-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; color: var(--text-primary); }
+  .ux-step { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 6px 12px; font-weight: 500; }
+  .ux-arrow { color: var(--text-tertiary); font-size: 12px; }
+
+  /* Utility */
+  .fade-container { transition: opacity 0.2s ease; }
+  .fade-out { opacity: 0; }
+</style>
+
+<h2 class="sr-only">AI/ML technologies mapped to real geological modeling software implementations</h2>
+
+<div class="nav" id="nav">
+  <button class="pill active" onclick="filter('all')">All technologies</button>
+  <button class="pill" onclick="filter('pinn')">Physics-Informed NNs</button>
+  <button class="pill" onclick="filter('gen')">Generative / Diffusion</button>
+  <button class="pill" onclick="filter('gnn')">Graph Neural Nets</button>
+  <button class="pill" onclick="filter('llm')">Foundation LLMs</button>
+  <button class="pill" onclick="filter('ssl')">Semi-supervised / Transfer</button>
+  <button class="pill" onclick="filter('xai')">Explainable AI</button>
+  <button class="pill" onclick="filter('mm')">Multimodal</button>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeDetail(event)">
+  <div class="detail-modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="modal-name" id="d-name"></span>
+      <button class="close-btn" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="modal-grid">
+      <div class="modal-field"><label>Type</label><p id="d-type"></p></div>
+      <div class="modal-field"><label>Technology</label><p id="d-tech"></p></div>
+      <div class="modal-field"><label>Key feature</label><p id="d-feature"></p></div>
+      <div class="modal-field"><label>Users</label><p id="d-users"></p></div>
+    </div>
+    <div class="ux-panel">
+      <div class="ux-title">UI/UX workflow</div>
+      <div class="ux-flow" id="d-flow"></div>
+    </div>
+  </div>
+</div>
+
+<div id="sections" class="fade-container"></div>
+
+<script>
+const techMeta = {
+  pinn:{label:'Physics-Informed NN',cls:'tl-pinn',name:'Physics-Informed Neural Networks'},
+  gen:{label:'Generative / Diffusion',cls:'tl-gen',name:'Generative & Diffusion Models'},
+  gnn:{label:'Graph Neural Nets',cls:'tl-gnn',name:'Graph Neural Networks'},
+  llm:{label:'Foundation LLM',cls:'tl-llm',name:'Foundation Language Models'},
+  ssl:{label:'Semi-supervised',cls:'tl-ssl',name:'Semi-supervised & Transfer Learning'},
+  xai:{label:'Explainable AI',cls:'tl-xai',name:'Explainable AI'},
+  mm:{label:'Multimodal',cls:'tl-mm',name:'Multimodal AI'},
+};
+
+const software = [
+  {
+    name:'Seequent Evo + Driver',
+    badge:'established',
+    tags:['pinn','ssl','xai'],
+    desc:'Cloud platform with Driver: ML-powered domain modeling that auto-informs 3D models with zero coding. Launched July 2025.',
+    tech:'ML implicit modeling, semi-supervised domain learning',
+    feature:'Driver auto-generates structural ellipsoids from sparse data; geologist adjusts interactively',
+    users:'Eight of top 10 mining companies globally',
+    flow:['Upload drillhole data','Driver auto-detects grade domains','Review 3D ellipsoid overlay','Adjust confidence threshold','Export to Leapfrog Geo']
+  },
+  {
+    name:'Maptek DomainMCF + Vestrex',
+    badge:'established',
+    tags:['ssl','xai','pinn'],
+    desc:'ML-driven domain modeling inside Vulcan ecosystem. DomainMCF assigns probabilistic domain codes; Vestrex adds cloud compute for parallel simulation.',
+    tech:'Random forest domain classification, RBF implicit modeling',
+    feature:'Grade control optimizer with locally optimal results; uncertainty quantified per block',
+    users:'Large open pit operations with dedicated technical staff',
+    flow:['Load drillhole DB','Run DomainMCF classifier','Inspect domain probability volumes','Run parallel kriging via Vestrex MCF','Download version-controlled block model']
+  },
+  {
+    name:'GeologicAI Digital Core Table',
+    badge:'startup',
+    tags:['mm','ssl','xai'],
+    desc:'Multi-sensor (RGB, XRF, hyperspectral SWIR/VNIR, LiDAR, mag sus) core scanning unit with AI logging platform. $100M raised; backed by BHP Ventures & Rio Tinto.',
+    tech:'Computer vision, multimodal sensor fusion, site-specific fine-tuning',
+    feature:'Scans 300–500m core/day; AI predicts assay, lithology, mineralogy per pixel',
+    users:'Agnico Eagle, Glencore, Fireweed Metals',
+    flow:['Load core trays into scanner','Robotic arm moves through 5 sensors','AI classifies minerals per pixel','Geologist reviews on Digital Core Table UI','Export to RMSP / Surpac / Leapfrog']
+  },
+  {
+    name:'Datarock',
+    badge:'startup',
+    tags:['mm','ssl','xai'],
+    desc:'Computer vision platform automating core image interpretation. "Geologist-in-the-loop" design; production-ready explainable AI for lithology, alteration, structures.',
+    tech:'CNN-based image segmentation, transfer learning, explainable predictions',
+    feature:'Logs lithology, alteration, structures from photos — outputs ready for 3D model import',
+    users:'Mid-tier explorers, integrates with IMDEX and ELEMISSION',
+    flow:['Upload core tray photos (phone/scanner)','Model auto-logs rock type & structure','Geologist reviews flagged uncertain intervals','Accept / override predictions','Sync to geotech or resource model']
+  },
+  {
+    name:'Plotlogic OreSense®',
+    badge:'startup',
+    tags:['mm','ssl'],
+    desc:'Mobile hyperspectral + LiDAR + GPS sensor stack. Scans mine faces, stockpiles, underground drives. Returns ore/waste discrimination in < 15 min. Clients: BHP, Vale, South32.',
+    tech:'Hyperspectral imaging + AI classification, real-time edge inference',
+    feature:'OreSense Light Vehicle mounts on vehicle; scans face, returns grade map before next blast',
+    users:'BHP, Vale, South32, Pilbara Minerals',
+    flow:['Mount OreSense unit on LV or underground vehicle','Drive along face or stockpile','Sensor stack auto-collects hyperspectral + LiDAR','On-device AI returns material classification map','Upload to OreCheck API → short-term schedule update']
+  },
+  {
+    name:'GeoGPT (Zhejiang Lab)',
+    badge:'research',
+    tags:['llm','mm'],
+    desc:'First open geoscience foundation model. Publicly released April 2025. Trained on 1M+ geoscience papers. Supports geological map Q&A, coordinate extraction, and knowledge graph construction.',
+    tech:'Domain-specific LLM fine-tuned on geoscience corpus (5.5B tokens)',
+    feature:'Upload a geological map image → extract legend, coordinates, formation names via dialogue',
+    users:'Research teams, open access globally',
+    flow:['Open GeoGPT web interface','Upload geological map or report PDF','Ask natural language questions','Model extracts entities, coordinates, formation types','Export structured data to GIS or modeling software']
+  },
+  {
+    name:'RadiXplore',
+    badge:'startup',
+    tags:['llm','xai'],
+    desc:'"Google for geology" — AI search across millions of historical reports including handwritten scanned docs. Hybrid extractive + contextual search specifically for exploration teams.',
+    tech:'RAG (retrieval-augmented generation) over geological document corpus',
+    feature:'Finds overlooked targets in legacy PDFs in seconds; surfaces geochemical anomalies across decades of data',
+    users:'Exploration teams with large legacy data archives',
+    flow:['Connect historical report archive','Index PDFs (including scanned/handwritten)','Type natural language query: "antimony anomalies NW quadrant"','View ranked results with highlighted evidence','Clip to target generation workflow']
+  },
+  {
+    name:'KoBold Metals platform',
+    badge:'startup',
+    tags:['llm','ssl','gnn'],
+    desc:'Proprietary AI platform aggregating satellite, geophysical, and historical drill data to predict undiscovered critical mineral deposits. $2.96B valuation; backed by Gates & Bezos.',
+    tech:'Multi-source data fusion, deep learning prospectivity modeling, transfer across geologies',
+    feature:'Trained on Rio Tinto historical datasets; identified 1.3B tonne Cu-Au deposit near Olympic Dam',
+    users:'Internal exploration; BHP partnership in Australia',
+    flow:['Ingest satellite + geophysical + historical drill data','AI builds subsurface probability map','Geoscientist reviews heat-mapped target areas','Field team designs drill program from AI targets','New drill data feeds back to retrain model']
+  },
+  {
+    name:'SensOre (BHP-backed)',
+    badge:'startup',
+    tags:['ssl','gnn','xai'],
+    desc:'AI-driven drilling target identification platform. BHP venture investment unlocked $1B in value from data automation. Specializes in under-explored terrane prediction.',
+    tech:'Pattern recognition across multi-source geoscience datasets, AI target generation',
+    feature:'Identifies mineral-rich sites by cross-correlating geological, geochemical & geophysical signals',
+    users:'BHP and major miners in Australia',
+    flow:['Upload multi-source regional datasets','AI identifies anomalous patterns vs known deposits','Ranked target list generated with confidence scores','Geologist selects and annotates targets','Export drill collar recommendations']
+  },
+  {
+    name:'TerraEye',
+    badge:'startup',
+    tags:['mm','ssl'],
+    desc:'Hyperspectral satellite platform mapping surface mineralogy remotely — even under vegetation or shallow cover. Targets junior and mid-tier miners priced out of airborne surveys.',
+    tech:'Satellite hyperspectral imaging, mineral spectral fingerprinting, ML classification',
+    feature:'Maps alteration halos and surface mineralization across 100s of km² per scene',
+    users:'Junior and mid-tier explorers in Africa, South America',
+    flow:['Define target area on web map','Order hyperspectral satellite pass','Receive mineralogy classification map (3–5 days)','Overlay on regional geology in GIS','Prioritize ground truthing locations']
+  },
+  {
+    name:'Micromine Origin Copilot',
+    badge:'established',
+    tags:['ssl','xai'],
+    desc:'AI-powered grade modeling using neural networks, launched 2024. Part of Micromine Origin geology & estimation suite. Daily subscription pricing (A$300/day Geology Modeller Bundle).',
+    tech:'Neural network grade estimation, automated variography',
+    feature:'AI suggests variogram model parameters; geologist reviews and approves before kriging run',
+    users:'Exploration projects and junior-to-mid-tier miners',
+    flow:['Import drillhole data to Origin','Run Copilot grade modeling wizard','Review AI-suggested domain boundaries and variograms','Adjust or accept with one click','Generate resource estimate with JORC/NI43-101 output']
+  },
+  {
+    name:'Imago (Seequent)',
+    badge:'established',
+    tags:['mm','xai','ssl'],
+    desc:'Cloud geological image management with AI AutoCrop and ML-assisted core logging. Core tasks that took hours now take minutes. Integrates directly with Leapfrog and Evo.',
+    tech:'ML image segmentation, AutoCrop linearization, AI feature detection in core photos',
+    feature:'AutoCrop: auto-crops and linearizes core tray photos → structured interval data in minutes',
+    users:'Geologists at mines and exploration projects worldwide',
+    flow:['Photograph core trays in field (mobile or scanner)','Upload to Imago cloud','AutoCrop auto-linearizes and segments intervals','Team annotates collaboratively on web UI','Export structured core data to Leapfrog / Evo']
+  },
+  {
+    name:'RMSP (Resource Modeling Solutions / GeologicAI)',
+    badge:'established',
+    tags:['xai','ssl','pinn'],
+    desc:'Geostatistical simulation platform acquired by GeologicAI 2024. Used by Glencore for continuous/categorical simulation. Quantifies uncertainty for risk-optimized mine planning.',
+    tech:'Sequential Gaussian simulation, conditional simulation, uncertainty quantification',
+    feature:'Generates probabilistic resource models; quantifies uncertainty at each block for drill targeting',
+    users:'Glencore, Agnico Eagle, major-tier mines on 5 continents',
+    flow:['Load assay and geological data','Configure variogram model','Run conditional simulation (parallel cloud compute)','Review uncertainty envelope per block','Optimize drill program against uncertainty map']
+  },
+  {
+    name:'GeologicAI RMSP + Core Scanning (integrated)',
+    badge:'startup',
+    tags:['mm','ssl','xai','pinn'],
+    desc:'"Scan to Plan" end-to-end workflow: multi-sensor core scanning feeds directly into RMSP resource modeling, closing the data gap from physical core to mine plan.',
+    tech:'End-to-end sensor fusion → AI classification → geostatistical simulation pipeline',
+    feature:'Only platform combining high-fidelity sensor data with resource modeling and uncertainty quantification in one system',
+    users:'Five continents; Agnico Eagle, Glencore, Rio Tinto ventures',
+    flow:['Core arrives at scanner trailer (mobile or site-fixed)','5 sensors capture data simultaneously','AI classifies mineralogy + predicts assays','Data flows into RMSP simulation platform','Output: probabilistic block model + drill recommendations']
+  },
+];
+
+let activeFilter = 'all';
+
+function filter(f) {
+  activeFilter = f;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  const container = document.getElementById('sections');
+  container.classList.add('fade-out');
+  
+  setTimeout(() => {
+    render();
+    container.classList.remove('fade-out');
+  }, 200);
+}
+
+function render() {
+  const sections = document.getElementById('sections');
+  sections.innerHTML = '';
+
+  if (activeFilter === 'all') {
+    const grouped = {};
+    software.forEach(s => s.tags.forEach(t => {
+      if (!grouped[t]) grouped[t] = [];
+      if (!grouped[t].includes(s)) grouped[t].push(s);
+    }));
+    Object.keys(techMeta).forEach(techKey => {
+      if (grouped[techKey]) renderSection(sections, techKey, grouped[techKey]);
+    });
+  } else {
+    const filtered = software.filter(s => s.tags.includes(activeFilter));
+    renderSection(sections, activeFilter, filtered);
+  }
+}
+
+function renderSection(container, techKey, items) {
+  const tm = techMeta[techKey];
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  sec.innerHTML = `<div class="section-header"><span class="tech-label ${tm.cls}">${tm.label}</span><span class="section-title">${tm.name}</span></div>`;
+  
+  const cards = document.createElement('div');
+  cards.className = 'cards';
+  
+  items.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.transitionDelay = `${i * 60}ms`;
+    
+    const badgeClass = s.badge === 'startup' ? 'badge-startup' : s.badge === 'research' ? 'badge badge-research' : 'badge-established';
+    const badgeLabel = s.badge === 'startup' ? 'Startup' : s.badge === 'research' ? 'Research' : 'Established';
+    
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-name">${s.name}</div>
+        <span class="badge ${badgeClass}">${badgeLabel}</span>
+      </div>
+      <div class="card-desc">${s.desc}</div>
+      <div class="card-tags">${s.tags.map(t=>`<span class="tag ${techMeta[t].cls}">${techMeta[t].label}</span>`).join('')}</div>`;
+    
+    card.onclick = () => openDetail(s);
+    cards.appendChild(card);
+    
+    // Trigger animation
+    setTimeout(() => card.classList.add('visible'), 50);
+  });
+  
+  sec.appendChild(cards);
+  container.appendChild(sec);
+}
+
+function openDetail(s) {
+  document.getElementById('d-name').textContent = s.name;
+  document.getElementById('d-type').textContent = s.badge.charAt(0).toUpperCase() + s.badge.slice(1);
+  document.getElementById('d-tech').textContent = s.tech;
+  document.getElementById('d-feature').textContent = s.feature;
+  document.getElementById('d-users').textContent = s.users;
+  
+  const flow = document.getElementById('d-flow');
+  flow.innerHTML = s.flow.map((step, i) =>
+    `${i > 0 ? '<span class="ux-arrow">→</span>' : ''}<span class="ux-step">${step}</span>`
+  ).join('');
+  
+  const overlay = document.getElementById('modalOverlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden'; // Prevent scrolling
+}
+
+function closeDetail(event) {
+  // If event exists, check if we clicked the overlay background, otherwise allow direct calls
+  if (!event || event.target.id === 'modalOverlay') {
+    const overlay = document.getElementById('modalOverlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+}
+
+// Add escape key listener
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeDetail();
+});
+
+render();
+</script>

@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Right Direction — Logistics System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Dark Theme (Default) */
+    --bg-deep:#070a10;
+    --bg-panel:#0e131c;
+    --bg-card:#141a26;
+    --bg-card-hover:#1a2233;
+    --bg-elevated:#1b2334;
+    --border:#1e2638;
+    --border-light:#2a3450;
+    --text-primary:#e8edf5;
+    --text-secondary:#8a95ac;
+    --text-muted:#56607a;
+    --accent-blue:#3b82f6;
+    --accent-blue-bright:#60a5fa;
+    --accent-blue-glow:rgba(59,130,246,.35);
+    --accent-green:#22c55e;
+    --accent-green-soft:rgba(34,197,94,.15);
+    --accent-amber:#f59e0b;
+    --accent-amber-soft:rgba(245,158,11,.15);
+    --accent-red:#ef4444;
+    --accent-purple:#8b5cf6;
+    --shadow-card:0 4px 20px rgba(0,0,0,.35);
+    --map-bg:#0a0f18;
+    --map-grid:rgba(255,255,255,.025);
+    --map-road:#1e2638;
+    --map-overlay-bg:rgba(10,15,24,.85);
+    --scrollbar-thumb:#2a3450;
+    --scrollbar-thumb-hover:#3a4666;
+  }
+
+  [data-theme="light"] {
+    --bg-deep:#f4f6f9;
+    --bg-panel:#ffffff;
+    --bg-card:#ffffff;
+    --bg-card-hover:#f1f5f9;
+    --bg-elevated:#f8fafc;
+    --border:#e2e8f0;
+    --border-light:#cbd5e1;
+    --text-primary:#1e293b;
+    --text-secondary:#64748b;
+    --text-muted:#94a3b8;
+    --accent-blue:#3b82f6;
+    --accent-blue-bright:#2563eb;
+    --accent-blue-glow:rgba(59,130,246,.2);
+    --accent-green:#16a34a;
+    --accent-green-soft:rgba(22,163,74,.1);
+    --accent-amber:#d97706;
+    --accent-amber-soft:rgba(217,119,6,.1);
+    --accent-red:#dc2626;
+    --accent-purple:#7c3aed;
+    --shadow-card:0 4px 12px rgba(0,0,0,.08);
+    --map-bg:#e9eef5;
+    --map-grid:rgba(0,0,0,.04);
+    --map-road:#cbd5e1;
+    --map-overlay-bg:rgba(255,255,255,.9);
+    --scrollbar-thumb:#cbd5e1;
+    --scrollbar-thumb-hover:#94a3b8;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    background:var(--bg-deep);
+    color:var(--text-primary);
+    font-size:14px;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background-color .3s ease, color .3s ease;
+  }
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-thumb-hover)}
+
+  .app{
+    display:grid;
+    grid-template-columns:250px 1fr;
+    height:100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    background:var(--bg-panel);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    transition:background-color .3s ease, border-color .3s ease;
+  }
+  .logo{
+    padding:22px 22px 26px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+  }
+  .logo-mark{
+    width:34px;height:34px;
+    border-radius:9px;
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+    display:grid;place-items:center;
+    box-shadow:0 4px 14px rgba(59,130,246,.4);
+  }
+  .logo-mark svg{width:18px;height:18px;color:#fff}
+  .logo-text{
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+  .logo-text span{display:block;font-weight:500;font-size:11px;color:var(--text-muted);letter-spacing:.04em;margin-top:2px}
+
+  .nav-group{padding:0; flex:1; overflow-y:auto;}
+  .nav-label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:var(--text-muted);
+    padding:18px 22px 8px;
+    font-weight:600;
+  }
+  
+  /* Full width active menu */
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 22px;
+    color:var(--text-secondary);
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:500;
+    transition:background-color .2s ease, color .2s ease;
+    position:relative;
+    margin:0;
+    border-radius:0;
+  }
+  .nav-item svg{width:18px;height:18px;flex-shrink:0;opacity:.85;transition: transform .2s ease;}
+  .nav-item:hover{background:var(--bg-card-hover);color:var(--text-primary)}
+  .nav-item:hover svg{transform: scale(1.1);}
+  .nav-item.active{
+    background:var(--accent-blue);
+    color:#fff;
+    box-shadow:0 4px 14px var(--accent-blue-glow);
+  }
+  .nav-item.active svg{opacity:1}
+  .nav-badge{
+    margin-left:auto;
+    background:var(--accent-blue);
+    color:#fff;
+    font-size:10px;
+    font-weight:700;
+    padding:2px 7px;
+    border-radius:10px;
+  }
+  .nav-item.active .nav-badge{background:rgba(255,255,255,.25)}
+
+  /* Dropdown with connecting lines */
+  .nav-submenu {
+    position: relative;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    max-height: 500px; /* Default open */
+    overflow: hidden;
+    transition: max-height .3s ease;
+  }
+  .nav-submenu::before {
+    content: '';
+    position: absolute;
+    left: 31px; /* Aligns with the icon center */
+    top: 0;
+    bottom: 20px; /* Stops before the last item's center */
+    width: 1px;
+    background: var(--border-light);
+  }
+  .sub-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 22px 8px 54px; /* Left padding to accommodate line */
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all .2s ease;
+  }
+  .sub-item svg { width: 16px; height: 16px; opacity: .8; transition: transform .2s ease; }
+  /* Horizontal connecting lines */
+  .sub-item::before {
+    content: '';
+    position: absolute;
+    left: 31px; /* Starts at vertical line */
+    top: 50%;
+    width: 15px; /* Reaches out to the item */
+    height: 1px;
+    background: var(--border-light);
+    transition: background-color .2s ease;
+  }
+  .sub-item:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+  }
+  .sub-item:hover svg { transform: translateX(2px); }
+  .sub-item.active-sub {
+    color: var(--accent-blue-bright);
+    background: var(--bg-card-hover);
+  }
+  .sub-item.active-sub::before {
+    background: var(--accent-blue-bright);
+    height: 2px;
+  }
+
+  .sidebar-footer{
+    margin-top:auto;
+    padding:18px 22px;
+    border-top:1px solid var(--border);
+  }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px;
+    margin-bottom: 12px;
+    background:var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius:9px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    transition: all .2s;
+  }
+  .theme-toggle:hover {
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
+    border-color: var(--accent-blue);
+  }
+  .theme-toggle svg { width: 16px; height: 16px; transition: transform .3s ease; }
+  .theme-toggle:hover svg { transform: rotate(15deg); }
+  .icon-sun { display: none; }
+  .icon-moon { display: block; }
+  [data-theme="light"] .icon-sun { display: block; }
+  [data-theme="light"] .icon-moon { display: none; }
+
+  .user-chip{
+    display:flex;align-items:center;gap:10px;
+    padding:8px;border-radius:10px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .user-chip:hover{background:var(--bg-card-hover)}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;
+    background:linear-gradient(135deg,#f59e0b,#ef4444);
+    display:grid;place-items:center;
+    font-weight:700;font-size:13px;color:#fff;
+  }
+  .user-meta{line-height:1.25}
+  .user-meta strong{font-size:13px;display:block}
+  .user-meta small{font-size:11px;color:var(--text-muted)}
+
+  /* ============ VIEWS ============ */
+  .view-area {
+    overflow-y: auto;
+    height: 100vh;
+    background: var(--bg-deep);
+    transition: background-color .3s ease;
+  }
+  .view { display: none; animation: fadeIn .3s ease; }
+  .view.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ============ TRACKING VIEW ============ */
+  .tracking-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    height: 100vh;
+  }
+
+  .fleet{
+    background:var(--bg-panel);
+    border-right:1px solid var(--border);
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    transition:background-color .3s ease, border-color .3s ease;
+  }
+  .fleet-header{
+    padding:22px 22px 14px;
+    border-bottom:1px solid var(--border);
+  }
+  .fleet-title{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .fleet-title h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
+  .fleet-count{
+    font-size:11px;
+    background:var(--bg-card);
+    color:var(--text-secondary);
+    padding:3px 9px;border-radius:10px;
+    border:1px solid var(--border-light);
+    font-weight:600;
+  }
+  .search-box{ position:relative; margin-bottom:12px; }
+  .search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--text-muted)}
+  .search-box input{
+    width:100%;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:9px 12px 9px 36px;
+    color:var(--text-primary);
+    font-size:13px;
+    font-family:inherit;
+    transition:border-color .2s;
+  }
+  .search-box input::placeholder{color:var(--text-muted)}
+  .search-box input:focus{outline:none;border-color:var(--accent-blue)}
+
+  .filter-tabs{display:flex;gap:6px}
+  .filter-tab{
+    font-size:12px;
+    padding:5px 11px;
+    border-radius:7px;
+    background:transparent;
+    color:var(--text-secondary);
+    cursor:pointer;
+    font-weight:500;
+    border:1px solid transparent;
+    transition:all .2s;
+  }
+  .filter-tab:hover{background:var(--bg-card)}
+  .filter-tab.active{background:var(--bg-card);color:var(--text-primary);border-color:var(--border-light)}
+
+  .fleet-list{ flex:1; overflow-y:auto; padding:12px; }
+  .vehicle-card{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:8px;
+    cursor:pointer;
+    transition:all .2s ease;
+    position:relative;
+  }
+  .vehicle-card:hover{background:var(--bg-card-hover);border-color:var(--border-light);transform: translateY(-1px);}
+  .vehicle-card.selected{
+    background:var(--bg-elevated);
+    border-color:var(--accent-blue);
+    box-shadow:0 0 0 1px var(--accent-blue), 0 6px 20px rgba(59,130,246,.18);
+  }
+  .vehicle-card.selected::before{
+    content:'';
+    position:absolute;
+    left:-1px;top:14px;bottom:14px;
+    width:3px;
+    background:var(--accent-blue);
+    border-radius:0 3px 3px 0;
+  }
+  .vc-top{ display:flex;align-items:center;justify-content:space-between; margin-bottom:10px; }
+  .vc-plate{ font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.02em; color:var(--text-primary); }
+  .vc-status{ display:inline-flex;align-items:center;gap:5px; font-size:11px;font-weight:600; padding:3px 8px;border-radius:6px; }
+  .vc-status.on-route{background:var(--accent-green-soft);color:var(--accent-green)}
+  .vc-status.working{background:var(--accent-amber-soft);color:var(--accent-amber)}
+  .vc-status .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+  .vc-bottom{ display:flex;align-items:center;justify-content:space-between; font-size:12px; }
+  .vc-route{color:var(--text-secondary);display:flex;align-items:center;gap:6px}
+  .vc-route svg{width:13px;height:13px;opacity:.7}
+  .vc-eta{color:var(--text-muted);font-weight:500}
+  .vc-eta strong{color:var(--text-primary);font-weight:600}
+
+  /* Detail Panel */
+  .detail{
+    background:var(--bg-panel);
+    overflow-y:auto;
+    display:flex;flex-direction:column;
+    transition:background-color .3s ease;
+  }
+  .detail-topbar{
+    padding:18px 26px;
+    border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg-panel);
+    position:sticky;top:0;z-index:5;
+  }
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-left .plate-lg{ font-family:'JetBrains Mono',monospace; font-size:18px;font-weight:700; letter-spacing:.01em; }
+  .status-pill{ display:inline-flex;align-items:center;gap:6px; background:var(--accent-green-soft); color:var(--accent-green); font-size:12px;font-weight:600; padding:5px 11px;border-radius:7px; }
+  .status-pill .pulse{ width:7px;height:7px;border-radius:50%; background:var(--accent-green); box-shadow:0 0 0 0 var(--accent-green); animation:pulse 2s infinite; }
+  @keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)} 70%{box-shadow:0 0 0 8px rgba(34,197,94,0)} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0)} }
+  .topbar-actions{display:flex;gap:9px}
+  
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:9px 15px;
+    border-radius:9px;
+    font-size:13px;font-weight:600;
+    cursor:pointer;
+    border:1px solid var(--border-light);
+    background:var(--bg-card);
+    color:var(--text-primary);
+    transition:all .2s;
+    font-family:inherit;
+  }
+  .btn:hover{background:var(--bg-card-hover);border-color:var(--accent-blue);transform: translateY(-1px);}
+  .btn:active{transform: translateY(0);}
+  .btn svg{width:15px;height:15px}
+  .btn-primary{
+    background:var(--accent-blue);
+    border-color:var(--accent-blue);
+    color:#fff;
+    box-shadow:0 4px 14px var(--accent-blue-glow);
+  }
+  .btn-primary:hover{background:var(--accent-blue-bright);border-color:var(--accent-blue-bright)}
+
+  .detail-body{padding:24px 26px 32px;display:flex;flex-direction:column;gap:22px}
+
+  .stat-row{ display:grid; grid-template-columns:1.1fr 1fr; gap:16px; }
+  .card-block{
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    transition:background-color .3s, border-color .3s;
+  }
+  .block-label{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--text-muted); font-weight:600; margin-bottom:12px; }
+
+  .driver-info{display:flex;align-items:center;gap:14px}
+  .driver-avatar{ width:48px;height:48px;border-radius:50%; background:linear-gradient(135deg,#3b82f6,#8b5cf6); display:grid;place-items:center; font-weight:700;font-size:16px;color:#fff; flex-shrink:0; }
+  .driver-meta{flex:1;min-width:0}
+  .driver-meta strong{display:block;font-size:14px;margin-bottom:2px}
+  .driver-meta small{color:var(--text-secondary);font-size:12px}
+  .driver-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--accent-amber);font-weight:600}
+  .driver-rating svg{width:13px;height:13px}
+
+  .capacity-wrap{display:flex;align-items:center;gap:18px}
+  .capacity-ring{position:relative;width:78px;height:78px;flex-shrink:0}
+  .capacity-ring svg{transform:rotate(-90deg)}
+  .capacity-ring .track{stroke:var(--border-light);fill:none;stroke-width:8}
+  .capacity-ring .fill{stroke:url(#capGrad);fill:none;stroke-width:8;stroke-linecap:round; stroke-dasharray:226;stroke-dashoffset:93; transition:stroke-dashoffset 1s ease; }
+  .capacity-value{ position:absolute;inset:0; display:grid;place-items:center; font-weight:800;font-size:18px; }
+  .capacity-detail{flex:1}
+  .capacity-detail .big{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .capacity-detail .big span{font-size:13px;color:var(--text-secondary);font-weight:600}
+  .capacity-detail .sub{font-size:12px;color:var(--text-muted);margin-top:3px}
+  .cap-bar{ margin-top:8px;height:5px;background:var(--border-light);border-radius:3px;overflow:hidden; }
+  .cap-bar i{display:block;height:100%;width:59%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px}
+
+  /* Map */
+  .map-block{ background:var(--bg-card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition:background-color .3s, border-color .3s; }
+  .map-head{ padding:14px 18px; display:flex;align-items:center;justify-content:space-between; border-bottom:1px solid var(--border); }
+  .map-head h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .map-head h3 svg{width:15px;height:15px;color:var(--accent-blue)}
+  .map-meta{display:flex;gap:14px;font-size:12px;color:var(--text-secondary)}
+  .map-meta strong{color:var(--text-primary)}
+  .map-canvas{ position:relative; height:280px; background: radial-gradient(circle at 30% 40%, rgba(59,130,246,.06), transparent 60%), radial-gradient(circle at 75% 65%, rgba(139,92,246,.05), transparent 55%), var(--map-bg); overflow:hidden; }
+  .map-grid{ position:absolute;inset:0; background-image: linear-gradient(var(--map-grid) 1px, transparent 1px), linear-gradient(90deg, var(--map-grid) 1px, transparent 1px); background-size:32px 32px; }
+  .map-roads{position:absolute;inset:0;opacity:.5}
+  .map-route{position:absolute;inset:0;pointer-events:none;}
+  .map-marker{position:absolute;transform:translate(-50%,-50%);z-index:3}
+  .marker-origin{ width:14px;height:14px;border-radius:50%; background:var(--accent-green); border:3px solid var(--map-bg); box-shadow:0 0 0 4px rgba(34,197,94,.25); }
+  .marker-dest{ width:18px;height:18px; background:var(--accent-red); border-radius:50% 50% 50% 0; transform:translate(-50%,-100%) rotate(-45deg); border:2px solid var(--map-bg); box-shadow:0 0 0 3px rgba(239,68,68,.25); }
+  .marker-current{ width:16px;height:16px;border-radius:50%; background:var(--accent-blue); border:3px solid #fff; box-shadow:0 0 0 6px rgba(59,130,246,.3), 0 0 20px rgba(59,130,246,.6); z-index:4; }
+  .marker-current::after{ content:'';position:absolute;inset:-6px;border-radius:50%; border:2px solid var(--accent-blue); animation:ripple 2s infinite; }
+  @keyframes ripple{ 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.5);opacity:0} }
+  .map-label{ position:absolute; background:var(--bg-elevated); border:1px solid var(--border-light); padding:5px 10px; border-radius:7px; font-size:11px; font-weight:600; white-space:nowrap; box-shadow:var(--shadow-card); transform:translate(-50%,-130%); z-index:5; }
+  .map-label small{display:block;font-size:10px;color:var(--text-muted);font-weight:500;margin-top:1px}
+  .map-legend{ position:absolute; left:14px;bottom:14px; background:var(--map-overlay-bg); backdrop-filter:blur(8px); border:1px solid var(--border); border-radius:9px; padding:10px 12px; display:flex;flex-direction:column;gap:6px; font-size:11px; }
+  .legend-item{display:flex;align-items:center;gap:7px;color:var(--text-secondary)}
+  .legend-dot{width:9px;height:9px;border-radius:50%}
+  .map-controls{ position:absolute; right:14px;top:14px; display:flex;flex-direction:column;gap:6px; }
+  .map-ctrl{ width:32px;height:32px; background:var(--map-overlay-bg); backdrop-filter:blur(8px); border:1px solid var(--border); border-radius:8px; display:grid;place-items:center; cursor:pointer;color:var(--text-secondary); transition:all .2s; }
+  .map-ctrl:hover{color:var(--text-primary);border-color:var(--accent-blue)}
+
+  /* Cargo Photos */
+  .cargo-block{ background:var(--bg-card); border:1px solid var(--border); border-radius:14px; padding:18px; }
+  .cargo-head{ display:flex;align-items:center;justify-content:space-between; margin-bottom:14px; }
+  .cargo-head h3{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .cargo-head h3 svg{width:15px;height:15px;color:var(--accent-blue)}
+  .cargo-link{ font-size:12px;color:var(--accent-blue-bright);font-weight:600;cursor:pointer; }
+  .cargo-link:hover{text-decoration:underline}
+  .photo-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .photo-thumb{ aspect-ratio:1; border-radius:9px; overflow:hidden; position:relative; cursor:pointer; border:1px solid var(--border); transition:transform .2s, border-color .2s; }
+  .photo-thumb:hover{transform:scale(1.03);border-color:var(--accent-blue)}
+  .photo-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-thumb::after{ content:attr(data-time); position:absolute;left:5px;bottom:5px; background:rgba(0,0,0,.7); backdrop-filter:blur(4px); color:#fff; font-size:9px; font-weight:600; padding:2px 6px; border-radius:4px; }
+  .photo-thumb.verify::before{ content:'✓'; position:absolute;top:5px;right:5px; width:16px;height:16px; background:var(--accent-green); color:#fff; border-radius:50%; display:grid;place-items:center; font-size:10px;font-weight:700; z-index:2; }
+
+
+  /* ============ COMPONENTS VIEW ============ */
+  .components-container {
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .comp-header {
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .comp-header h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.02em; }
+  .comp-header p { color: var(--text-secondary); font-size: 15px; }
+  
+  .comp-section {
+    margin-bottom: 48px;
+  }
+  .comp-section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .comp-section-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--accent-blue);
+    border-radius: 2px;
+  }
+
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  /* Typography */
+  .typo-card { padding: 24px; }
+  .typo-row { margin-bottom: 16px; }
+  .typo-row:last-child { margin-bottom: 0; }
+  .h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+  .h2 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .h3 { font-size: 18px; font-weight: 600; }
+  .text-body { font-size: 14px; color: var(--text-primary); }
+  .text-muted { font-size: 13px; color: var(--text-muted); }
+  .text-small { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+  /* Badges */
+  .badges-wrap { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 24px; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .badge-success { background: var(--accent-green-soft); color: var(--accent-green); }
+  .badge-warning { background: var(--accent-amber-soft); color: var(--accent-amber); }
+  .badge-danger { background: rgba(239,68,68,.15); color: var(--accent-red); }
+  .badge-info { background: rgba(59,130,246,.15); color: var(--accent-blue-bright); }
+  .badge-neutral { background: var(--bg-card-hover); color: var(--text-secondary); border: 1px solid var(--border-light); }
+  .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* Accordions */
+  .accordion-item { border-bottom: 1px solid var(--border); }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-header {
+    padding: 16px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color .2s;
+  }
+  .accordion-header:hover { color: var(--accent-blue-bright); }
+  .accordion-icon { width: 18px; height: 18px; transition: transform .3s ease; }
+  .accordion-item.open .accordion-icon { transform: rotate(180deg); }
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .3s ease, padding .3s ease;
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+  .accordion-item.open .accordion-content {
+    max-height: 200px;
+    padding-bottom: 16px;
+  }
+
+  /* Table */
+  .table-card { padding: 0; overflow: hidden; }
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th { text-align: left; padding: 14px 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border); background: var(--bg-elevated); }
+  .data-table td { padding: 14px 20px; font-size: 13px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr { transition: background .2s; }
+  .data-table tbody tr:hover { background: var(--bg-card-hover); }
+  .table-user { display: flex; align-items: center; gap: 10px; }
+  .table-avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; }
+
+  /* Toast */
+  .toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 100;
+  }
+  .toast {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    padding: 14px 20px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 250px;
+    animation: slideIn .3s ease;
+  }
+  @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  .toast.success { border-left: 4px solid var(--accent-green); }
+  .toast.info { border-left: 4px solid var(--accent-blue); }
+  .toast svg { width: 18px; height: 18px; }
+  .toast.success svg { color: var(--accent-green); }
+  .toast.info svg { color: var(--accent-blue); }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h13M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="logo-text">Right Direction<span>Fleet Manager</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Main</div>
+      <div class="nav-item" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-view="chats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chats
+        <span class="nav-badge">5</span>
+      </div>
+      <div class="nav-item" data-view="partners">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Partners
+      </div>
+      
+      <div class="nav-item active" data-view="tracking">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Tracking
+      </div>
+
+      <div class="nav-submenu">
+        <div class="sub-item active-sub" data-view="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/><circle cx="6.5" cy="16.5" r="2.5"/><circle cx="16.5" cy="16.5" r="2.5"/></svg>
+          Trucks
+        </div>
+        <div class="sub-item" data-view="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Cargos
+          <span class="nav-badge">2</span>
+        </div>
+        <div class="sub-item" data-view="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Repair
+        </div>
+        <div class="sub-item" data-view="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/><path d="M2 12h8M14 12h8M12 2v8M12 14v8"/></svg>
+          Drivers
+        </div>
+        <div class="sub-item" data-view="tracking">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          Reports
+          <span class="nav-badge">1</span>
+        </div>
+      </div>
+
+      <div class="nav-label">System</div>
+      <div class="nav-item" data-view="analysis">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Analysis
+      </div>
+      <div class="nav-item" data-view="history">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+        History
+      </div>
+      <div class="nav-item" data-view="components">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        UI Components
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button id="theme-toggle" class="theme-toggle">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <span id="theme-text">Light Mode</span>
+      </button>
+      <div class="user-chip">
+        <div class="avatar">MK</div>
+        <div class="user-meta">
+          <strong>Marco Keller</strong>
+          <small>Fleet Dispatcher</small>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ============ VIEW AREA ============ -->
+  <div class="view-area">
+
+    <!-- TRACKING VIEW -->
+    <div id="tracking-view" class="view active">
+      <div class="tracking-grid">
+        <!-- Fleet List -->
+        <section class="fleet">
+          <div class="fleet-header">
+            <div class="fleet-title">
+              <h2>Active Fleet</h2>
+              <span class="fleet-count">12 vehicles</span>
+            </div>
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" placeholder="Search by plate or route…" />
+            </div>
+            <div class="filter-tabs">
+              <div class="filter-tab active">All</div>
+              <div class="filter-tab">On Route</div>
+              <div class="filter-tab">Working</div>
+              <div class="filter-tab">Idle</div>
+            </div>
+          </div>
+
+          <div class="fleet-list">
+            <!-- Vehicles will be injected here or hardcoded -->
+            <div class="vehicle-card">
+              <div class="vc-top">
+                <span class="vc-plate">XR - 936383762</span>
+                <span class="vc-status working"><span class="dot"></span>Working</span>
+              </div>
+              <div class="vc-bottom">
+                <span class="vc-route">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Berlin → Munich
+                </span>
+                <span class="vc-eta">ETA <strong>2h 15m</strong></span>
+              </div>
+            </div>
+
+            <div class="vehicle-card selected">
+              <div class="vc-top">
+                <span class="vc-plate">SD - 752069247</span>
+                <span class="vc-status on-route"><span class="dot"></span>On Route</span>
+              </div>
+              <div class="vc-bottom">
+                <span class="vc-route">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Hamburg → Cologne
+                </span>
+                <span class="vc-eta">ETA <strong>4h 30m</strong></span>
+              </div>
+            </div>
+
+            <div class="vehicle-card">
+              <div class="vc-top">
+                <span class="vc-plate">AL - 113949207</span>
+                <span class="vc-status on-route"><span class="dot"></span>On Route</span>
+              </div>
+              <div class="vc-bottom">
+                <span class="vc-route">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Frankfurt → Leipzig
+                </span>
+                <span class="vc-eta">ETA <strong>1h 45m</strong></span>
+              </div>
+            </div>
+
+            <div class="vehicle-card">
+              <div class="vc-top">
+                <span class="vc-plate">BV - 482019375</span>
+                <span class="vc-status working"><span class="dot"></span>Working</span>
+              </div>
+              <div class="vc-bottom">
+                <span class="vc-route">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Stuttgart → Nuremberg
+                </span>
+                <span class="vc-eta">ETA <strong>3h 05m</strong></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Detail Panel -->
+        <main class="detail">
+          <div class="detail-topbar">
+            <div class="topbar-left">
+              <span class="plate-lg">SD - 752069247</span>
+              <span class="status-pill"><span class="pulse"></span>On Route</span>
+            </div>
+            <div class="topbar-actions">
+              <button class="btn btn-primary" id="call-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Call Driver
+              </button>
+              <button class="btn" id="chat-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Chat with Driver
+              </button>
+            </div>
+          </div>
+
+          <div class="detail-body">
+            <!-- Stats Row -->
+            <div class="stat-row">
+              <div class="card-block">
+                <div class="block-label">Driver Assignment</div>
+                <div class="driver-info">
+                  <div class="driver-avatar">TH</div>
+                  <div class="driver-meta">
+                    <strong>Thomas Hoffmann</strong>
+                    <small>License #DE-29481756 · Senior Operator</small>
+                  </div>
+                  <div class="driver-rating">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.95 6.36L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.05-.91z"/></svg>
+                    4.9
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-block">
+                <div class="block-label">Current Truck Capacity</div>
+                <div class="capacity-wrap">
+                  <div class="capacity-ring">
+                    <svg width="78" height="78" viewBox="0 0 78 78">
+                      <defs>
+                        <linearGradient id="capGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stop-color="#3b82f6"/>
+                          <stop offset="100%" stop-color="#60a5fa"/>
+                        </linearGradient>
+                      </defs>
+                      <circle class="track" cx="39" cy="39" r="36"/>
+                      <circle class="fill" cx="39" cy="39" r="36"/>
+                    </svg>
+                    <div class="capacity-value">59%</div>
+                  </div>
+                  <div class="capacity-detail">
+                    <div class="big">59<span>%</span></div>
+                    <div class="sub">14.75 of 25 tons loaded</div>
+                    <div class="cap-bar"><i></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Map -->
+            <div class="map-block">
+              <div class="map-head">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                  Route
+                </h3>
+                <div class="map-meta">
+                  <span><strong>438 km</strong> total</span>
+                  <span><strong>192 km</strong> remaining</span>
+                  <span><strong>4h 30m</strong> ETA</span>
+                </div>
+              </div>
+              <div class="map-canvas">
+                <div class="map-grid"></div>
+                <svg class="map-roads" viewBox="0 0 800 280" preserveAspectRatio="none">
+                  <path d="M0 80 Q200 60 400 100 T800 70" stroke="var(--map-road)" stroke-width="1.5" fill="none"/>
+                  <path d="M0 200 Q150 180 350 210 T800 190" stroke="var(--map-road)" stroke-width="1.5" fill="none"/>
+                  <path d="M120 0 L140 280" stroke="var(--map-road)" stroke-width="1" fill="none"/>
+                  <path d="M580 0 L600 280" stroke="var(--map-road)" stroke-width="1" fill="none"/>
+                  <path d="M0 140 L800 140" stroke="var(--map-road)" stroke-width="1" fill="none" opacity=".5"/>
+                </svg>
+                <svg class="map-route" viewBox="0 0 800 280" preserveAspectRatio="none">
+                  <path d="M80 220 C 180 180, 240 120, 360 130" stroke="#22c55e" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".8"/>
+                  <path d="M360 130 C 480 140, 580 90, 720 60" stroke="#3b82f6" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-dasharray="8 6" opacity=".9"/>
+                </svg>
+                <div class="map-marker marker-origin" style="left:10%;top:79%"></div>
+                <div class="map-label" style="left:10%;top:79%">Hamburg<small>Departed · 08:14</small></div>
+                <div class="map-marker marker-current" style="left:45%;top:46%"></div>
+                <div class="map-label" style="left:45%;top:46%;background:var(--bg-elevated);border-color:var(--accent-blue);color:var(--accent-blue-bright)">Current Position<small style="color:var(--text-secondary)">Live · 86 km/h</small></div>
+                <div class="map-marker marker-dest" style="left:90%;top:21%"></div>
+                <div class="map-label" style="left:90%;top:21%">Cologne<small>Arrival · 14:44</small></div>
+                <div class="map-controls">
+                  <div class="map-ctrl" title="Zoom in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                  <div class="map-ctrl" title="Zoom out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+                </div>
+                <div class="map-legend">
+                  <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span>Traveled path</div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#3b82f6"></span>Remaining route</div>
+                  <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Destination</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cargo Photos -->
+            <div class="cargo-block">
+              <div class="cargo-head">
+                <h3>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                  Cargo Photo Reports
+                </h3>
+                <span class="cargo-link">View all (8)</span>
+              </div>
+              <div class="photo-grid">
+                <div class="photo-thumb verify" data-time="08:14 · Loading"><img src="https://picsum.photos/seed/cargo1/200/200.jpg" alt="Cargo"></div>
+                <div class="photo-thumb verify" data-time="08:32 · Departure"><img src="https://picsum.photos/seed/cargo2/200/200.jpg" alt="Cargo"></div>
+                <div class="photo-thumb verify" data-time="10:05 · Checkpoint"><img src="https://picsum.photos/seed/cargo3/200/200.jpg" alt="Cargo"></div>
+                <div class="photo-thumb" data-time="11:48 · In transit"><img src="https://picsum.photos/seed/cargo4/200/200.jpg" alt="Cargo"></div>
+              </div>
+            </div>
+
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- COMPONENTS VIEW -->
+    <div id="components-view" class="view">
+      <div class="components-container">
+        <div class="comp-header">
+          <h1>UI Components Library</h1>
+          <p>A showcase of all available interface elements, styled for both Dark and Light themes.</p>
+        </div>
+
+        <!-- Typography -->
+        <div class="comp-section">
+          <div class="comp-section-title">Typography</div>
+          <div class="comp-grid">
+            <div class="card-block typo-card">
+              <div class="typo-row"><div class="h1">Heading Level 1</div></div>
+              <div class="typo-row"><div class="h2">Heading Level 2</div></div>
+              <div class="typo-row"><div class="h3">Heading Level 3</div></div>
+              <div class="typo-row"><div class="text-body">Standard body text for paragraphs and general content.</div></div>
+              <div class="typo-row"><div class="text-muted">Muted secondary text for less important info.</div></div>
+              <div class="typo-row"><div class="text-small">Micro Label / Uppercase</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons & Badges -->
+        <div class="comp-section">
+          <div class="comp-section-title">Buttons & Badges</div>
+          <div class="comp-grid">
+            <div class="card-block">
+              <div class="block-label">Buttons</div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+                <button class="btn btn-primary">Primary Action</button>
+                <button class="btn">Secondary Action</button>
+                <button class="btn" style="opacity:0.5; cursor:not-allowed;">Disabled</button>
+              </div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" style="padding:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+                <button class="btn" style="padding:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+              </div>
+            </div>
+            <div class="card-block badges-wrap" style="display:flex; flex-direction:column; align-items:flex-start; gap:15px;">
+              <div class="block-label" style="margin:0;">Status Badges</div>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <span class="badge badge-success"><span class="dot"></span>Success</span>
+                <span class="badge badge-warning"><span class="dot"></span>Warning</span>
+                <span class="badge badge-danger"><span class="dot"></span>Danger</span>
+                <span class="badge badge-info"><span class="dot"></span>Info</span>
+                <span class="badge badge-neutral">Neutral</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accordion & Cards -->
+        <div class="comp-section">
+          <div class="comp-section-title">Accordions & Cards</div>
+          <div class="comp-grid">
+            <div class="card-block" style="padding:24px;">
+              <div class="block-label" style="margin-bottom:20px;">Accordion List</div>
+              <div class="accordion-item open">
+                <div class="accordion-header">
+                  How does the tracking system work?
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-content">
+                  Our tracking system utilizes GPS data transmitted from onboard telematics units in each truck. The data is pinged every 15 seconds to provide real-time location updates.
+                </div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header">
+                  What is truck capacity measured in?
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-content">
+                  Truck capacity is calculated based on weight (tons) and volume (cubic meters). The percentage reflects the current load relative to the maximum legal limit.
+                </div>
+              </div>
+              <div class="accordion-item">
+                <div class="accordion-header">
+                  How to contact a driver directly?
+                  <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-content">
+                  You can use the "Call Driver" or "Chat with Driver" buttons located at the top right of the tracking detail panel.
+                </div>
+              </div>
+            </div>
+            
+            <div class="card-block" style="display:flex; flex-direction:column; gap:15px;">
+              <div class="block-label">Stat Cards</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg-elevated); border-radius:10px; border:1px solid var(--border);">
+                <div>
+                  <div style="font-size:12px; color:var(--text-muted); margin-bottom:5px;">Total Distance Today</div>
+                  <div style="font-size:20px; font-weight:700;">14,392 km</div>
+                </div>
+                <div class="badge badge-success">+12%</div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg-elevated); border-radius:10px; border:1px solid var(--border);">
+                <div>
+                  <div style="font-size:12px; color:var(--text-muted); margin-bottom:5px;">Active Deliveries</div>
+                  <div style="font-size:20px; font-weight:700;">48</div>
+                </div>
+                <div class="badge badge-info">In Transit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="comp-section">
+          <div class="comp-section-title">Data Tables</div>
+          <div class="card-block table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Driver</th>
+                  <th>Vehicle</th>
+                  <th>Route</th>
+                  <th>Status</th>
+                  <th>ETA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><div class="table-user"><div class="table-avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">TH</div>Thomas Hoffmann</div></td>
+                  <td><span style="font-family:'JetBrains Mono',monospace; font-size:12px;">SD - 752069247</span></td>
+                  <td>Hamburg → Cologne</td>
+                  <td><span class="badge badge-success"><span class="dot"></span>On Route</span></td>
+                  <td>4h 30m</td>
+                </tr>
+                <tr>
+                  <td><div class="table-user"><div class="table-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">JS</div>Julia Schmidt</div></td>
+                  <td><span style="font-family:'JetBrains Mono',monospace; font-size:12px;">XR - 936383762</span></td>
+                  <td>Berlin → Munich</td>
+                  <td><span class="badge badge-warning"><span class="dot"></span>Working</span></td>
+                  <td>2h 15m</td>
+                </tr>
+                <tr>
+                  <td><div class="table-user"><div class="table-avatar" style="background:linear-gradient(135deg,#22c55e,#16a34a)">MK</div>Markus Klein</div></td>
+                  <td><span style="font-family:'JetBrains Mono',monospace; font-size:12px;">AL - 113949207</span></td>
+                  <td>Frankfurt → Leipzig</td>
+                  <td><span class="badge badge-success"><span class="dot"></span>On Route</span></td>
+                  <td>1h 45m</td>
+                </tr>
+                <tr>
+                  <td><div class="table-user"><div class="table-avatar" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6)">LE</div>Lena Fischer</div></td>
+                  <td><span style="font-family:'JetBrains Mono',monospace; font-size:12px;">BV - 482019375</span></td>
+                  <td>Stuttgart → Nuremberg</td>
+                  <td><span class="badge badge-neutral"><span class="dot"></span>Idle</span></td>
+                  <td>—</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+  // --- Theme Switching ---
+  const themeToggle = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+  const themeText = document.getElementById('theme-text');
+
+  // Initialize theme
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  root.setAttribute('data-theme', savedTheme);
+  themeText.textContent = savedTheme === 'light' ? 'Dark Mode' : 'Light Mode';
+
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = root.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeText.textContent = newTheme === 'light' ? 'Dark Mode' : 'Light Mode';
+  });
+
+  // --- View Routing ---
+  const navItems = document.querySelectorAll('.nav-item, .sub-item');
+  const views = document.querySelectorAll('.view');
+
+  function switchView(viewId) {
+    views.forEach(v => v.classList.remove('active'));
+    const targetView = document.getElementById(viewId + '-view');
+    if (targetView) targetView.classList.add('active');
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      const viewId = item.dataset.view;
+      if (!viewId) return;
+
+      // Handle active states for main nav
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.sub-item').forEach(n => n.classList.remove('active-sub'));
+
+      // If it's a sub-item, mark parent active and itself
+      if (item.classList.contains('sub-item')) {
+        const parent = item.closest('.nav-group').querySelector('.nav-item.active');
+        // We want to keep "Tracking" active if clicking a sub-item, but we removed it.
+        // Let's find the 'Tracking' nav item specifically if the view is tracking
+        if (viewId === 'tracking') {
+            document.querySelector('.nav-item[data-view="tracking"]').classList.add('active');
+        } else {
+            document.querySelector(`.nav-item[data-view="${viewId}"]`)?.classList.add('active');
+        }
+        item.classList.add('active-sub');
+      } else {
+        item.classList.add('active');
+        // If clicking "Tracking" main item, activate first sub-item
+        if (viewId === 'tracking') {
+            const firstSub = document.querySelector('.sub-item');
+            if(firstSub) firstSub.classList.add('active-sub');
+        }
+      }
+
+      switchView(viewId);
+    });
+  });
+
+  // --- Tracking List Interactions ---
+  const cards = document.querySelectorAll('.vehicle-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      const plate = card.querySelector('.vc-plate').textContent;
+      const statusText = card.querySelector('.vc-status').textContent.trim();
+      document.querySelector('.plate-lg').textContent = plate;
+      const pill = document.querySelector('.status-pill');
+      pill.innerHTML = '<span class="pulse"></span>' + statusText;
+    });
+  });
+
+  // --- Filter Tabs ---
+  const tabs = document.querySelectorAll('.filter-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // --- Toast System ---
+  function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = type === 'success' 
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+
+    toast.innerHTML = `${icon}<span>${message}</span>`;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      toast.style.transition = 'all .3s ease';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  document.getElementById('call-btn').addEventListener('click', () => showToast('Connecting to driver...', 'info'));
+  document.getElementById('chat-btn').addEventListener('click', () => showToast('Opening chat window...', 'success'));
+
+  // --- Accordion Logic ---
+  const accHeaders = document.querySelectorAll('.accordion-header');
+  accHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      const isOpen = item.classList.contains('open');
+      
+      // Close all
+      document.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('open'));
+      
+      // Open clicked if it was closed
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    });
+  });
+
+</script>
+
+</body>
+</html>

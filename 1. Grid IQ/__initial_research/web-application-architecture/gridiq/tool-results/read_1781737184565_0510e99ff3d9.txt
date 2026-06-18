@@ -1,0 +1,1520 @@
+     1→'use client'
+     2→
+     3→import React, { useState, useEffect } from 'react'
+     4→import { motion, AnimatePresence } from 'framer-motion'
+     5→import { ThemeToggle } from '@/components/theme-toggle'
+     6→import { Button } from '@/components/ui/button'
+     7→import { Badge } from '@/components/ui/badge'
+     8→import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction } from '@/components/ui/card'
+     9→import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion'
+    10→import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from '@/components/ui/table'
+    11→import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+    12→import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
+    13→import { Progress } from '@/components/ui/progress'
+    14→import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+    15→import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
+    16→import { Input } from '@/components/ui/input'
+    17→import { Textarea } from '@/components/ui/textarea'
+    18→import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+    19→import { Checkbox } from '@/components/ui/checkbox'
+    20→import { Switch } from '@/components/ui/switch'
+    21→import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+    22→import { Slider } from '@/components/ui/slider'
+    23→import { Separator } from '@/components/ui/separator'
+    24→import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+    25→import { Skeleton } from '@/components/ui/skeleton'
+    26→import { Label } from '@/components/ui/label'
+    27→import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel'
+    28→import {
+    29→  Sparkles, Terminal, AlertCircle, Rocket, Heart, Star, Zap, Shield,
+    30→  ArrowRight, Mail, Lock, User, ChevronRight, Github, Globe, Palette,
+    31→  Layout, Code2, Layers, Copy, Check, Info, Sun, Moon, CloudRain,
+    32→  Music, Coffee, BookOpen, Gift, MapPin, Phone, Clock, TrendingUp,
+    33→  Users, DollarSign, ShoppingCart, Activity, Bell, Search, Settings,
+    34→  Home, BarChart3, FileText, MessageSquare
+    35→} from 'lucide-react'
+    36→
+    37→/* ─── Animation helpers ─── */
+    38→
+    39→const fadeInUp = {
+    40→  hidden: { opacity: 0, y: 40 },
+    41→  visible: { opacity: 1, y: 0 },
+    42→}
+    43→
+    44→const staggerContainer = {
+    45→  hidden: { opacity: 0 },
+    46→  visible: {
+    47→    opacity: 1,
+    48→    transition: { staggerChildren: 0.08 },
+    49→  },
+    50→}
+    51→
+    52→const staggerItem = {
+    53→  hidden: { opacity: 0, y: 20 },
+    54→  visible: { opacity: 1, y: 0 },
+    55→}
+    56→
+    57→function AnimatedSection({
+    58→  children,
+    59→  className = '',
+    60→  delay = 0,
+    61→}: {
+    62→  children: React.ReactNode
+    63→  className?: string
+    64→  delay?: number
+    65→}) {
+    66→  return (
+    67→    <motion.div
+    68→      initial="hidden"
+    69→      whileInView="visible"
+    70→      viewport={{ once: true, margin: '-80px' }}
+    71→      variants={fadeInUp}
+    72→      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    73→      className={className}
+    74→    >
+    75→      {children}
+    76→    </motion.div>
+    77→  )
+    78→}
+    79→
+    80→function SectionHeader({ title, description }: { title: string; description: string }) {
+    81→  return (
+    82→    <div className="mb-10 text-center">
+    83→      <motion.h2
+    84→        initial={{ opacity: 0, y: 20 }}
+    85→        whileInView={{ opacity: 1, y: 0 }}
+    86→        viewport={{ once: true }}
+    87→        transition={{ duration: 0.5 }}
+    88→        className="text-3xl font-bold tracking-tight sm:text-4xl"
+    89→      >
+    90→        {title}
+    91→      </motion.h2>
+    92→      <motion.p
+    93→        initial={{ opacity: 0, y: 10 }}
+    94→        whileInView={{ opacity: 1, y: 0 }}
+    95→        viewport={{ once: true }}
+    96→        transition={{ duration: 0.5, delay: 0.15 }}
+    97→        className="mt-3 text-muted-foreground text-lg"
+    98→      >
+    99→        {description}
+   100→      </motion.p>
+   101→    </div>
+   102→  )
+   103→}
+   104→
+   105→/* ─── Hero letter animation ─── */
+   106→
+   107→function AnimatedLetters({ text, className = '' }: { text: string; className?: string }) {
+   108→  return (
+   109→    <span className={className}>
+   110→      {text.split('').map((char, i) => (
+   111→        <motion.span
+   112→          key={i}
+   113→          initial={{ opacity: 0, y: 20 }}
+   114→          animate={{ opacity: 1, y: 0 }}
+   115→          transition={{ duration: 0.4, delay: 0.6 + i * 0.04, ease: [0.22, 1, 0.36, 1] }}
+   116→          className="inline-block"
+   117→        >
+   118→          {char === ' ' ? '\u00A0' : char}
+   119→        </motion.span>
+   120→      ))}
+   121→    </span>
+   122→  )
+   123→}
+   124→
+   125→/* ─── Typewriter subtitle ─── */
+   126→
+   127→function TypewriterText({ texts }: { texts: string[] }) {
+   128→  const [index, setIndex] = useState(0)
+   129→  const [displayed, setDisplayed] = useState('')
+   130→  const [deleting, setDeleting] = useState(false)
+   131→
+   132→  useEffect(() => {
+   133→    const current = texts[index]
+   134→    const speed = deleting ? 30 : 60
+   135→    const timeout = setTimeout(() => {
+   136→      if (!deleting) {
+   137→        if (displayed.length < current.length) {
+   138→          setDisplayed(current.slice(0, displayed.length + 1))
+   139→        } else {
+   140→          setTimeout(() => setDeleting(true), 1800)
+   141→        }
+   142→      } else {
+   143→        if (displayed.length > 0) {
+   144→          setDisplayed(current.slice(0, displayed.length - 1))
+   145→        } else {
+   146→          setDeleting(false)
+   147→          setIndex((prev) => (prev + 1) % texts.length)
+   148→        }
+   149→      }
+   150→    }, speed)
+   151→    return () => clearTimeout(timeout)
+   152→  }, [displayed, deleting, index, texts])
+   153→
+   154→  return (
+   155→    <span className="text-primary font-medium">
+   156→      {displayed}
+   157→      <motion.span
+   158→        animate={{ opacity: [1, 0] }}
+   159→        transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+   160→        className="inline-block w-[2px] h-5 bg-primary ml-0.5 align-middle"
+   161→      />
+   162→    </span>
+   163→  )
+   164→}
+   165→
+   166→/* ─── Progress bar with animation ─── */
+   167→
+   168→function AnimatedProgress({ value, label }: { value: number; label: string }) {
+   169→  const [progress, setProgress] = useState(0)
+   170→  useEffect(() => {
+   171→    const timer = setTimeout(() => setProgress(value), 300)
+   172→    return () => clearTimeout(timer)
+   173→  }, [value])
+   174→  return (
+   175→    <div className="space-y-2">
+   176→      <div className="flex justify-between text-sm">
+   177→        <span>{label}</span>
+   178→        <span className="text-muted-foreground">{progress}%</span>
+   179→      </div>
+   180→      <Progress value={progress} />
+   181→    </div>
+   182→  )
+   183→}
+   184→
+   185→/* ─── Main Page ─── */
+   186→
+   187→export default function ComponentShowcase() {
+   188→  const [sliderValue, setSliderValue] = useState([65])
+   189→  const [newsletterChecked, setNewsletterChecked] = useState(true)
+   190→  const [darkModeSwitch, setDarkModeSwitch] = useState(false)
+   191→  const [plan, setPlan] = useState('pro')
+   192→  const [copied, setCopied] = useState(false)
+   193→
+   194→  const handleCopy = () => {
+   195→    setCopied(true)
+   196→    setTimeout(() => setCopied(false), 2000)
+   197→  }
+   198→
+   199→  /* ─── Data ─── */
+   200→  const tableData = [
+   201→    { id: 'ORD-001', customer: 'Alice Johnson', product: 'Pro Plan', amount: '$49.00', status: 'Completed', date: '2024-12-01' },
+   202→    { id: 'ORD-002', customer: 'Bob Smith', product: 'Starter Kit', amount: '$19.00', status: 'Pending', date: '2024-12-03' },
+   203→    { id: 'ORD-003', customer: 'Carol White', product: 'Enterprise', amount: '$199.00', status: 'Completed', date: '2024-12-05' },
+   204→    { id: 'ORD-004', customer: 'David Lee', product: 'Pro Plan', amount: '$49.00', status: 'Refunded', date: '2024-12-07' },
+   205→    { id: 'ORD-005', customer: 'Eva Martinez', product: 'Starter Kit', amount: '$19.00', status: 'Completed', date: '2024-12-10' },
+   206→  ]
+   207→
+   208→  const statsCards = [
+   209→    { title: 'Total Revenue', value: '$45,231', change: '+20.1%', icon: DollarSign },
+   210→    { title: 'Active Users', value: '2,350', change: '+12.5%', icon: Users },
+   211→    { title: 'Sales', value: '12,234', change: '+8.2%', icon: ShoppingCart },
+   212→    { title: 'Active Now', value: '573', change: '+4.3%', icon: Activity },
+   213→  ]
+   214→
+   215→  const carouselItems = [
+   216→    { title: 'Design System', desc: 'Consistent, beautiful, and accessible components.', icon: Palette },
+   217→    { title: 'Performance', desc: 'Optimized for speed with server-side rendering.', icon: Zap },
+   218→    { title: 'Security', desc: 'Enterprise-grade security built in.', icon: Shield },
+   219→    { title: 'Scalability', desc: 'From startup to enterprise, grows with you.', icon: Layers },
+   220→  ]
+   221→
+   222→  return (
+   223→    <div className="min-h-screen flex flex-col bg-background text-foreground">
+   224→      {/* ── Custom scrollbar ── */}
+   225→      <style>{`
+   226→        ::-webkit-scrollbar { width: 8px; height: 8px; }
+   227→        ::-webkit-scrollbar-track { background: transparent; }
+   228→        ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 999px; }
+   229→        ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.4); }
+   230→      `}</style>
+   231→
+   232→      {/* ── Sticky Header ── */}
+   233→      <motion.header
+   234→        initial={{ y: -80, opacity: 0 }}
+   235→        animate={{ y: 0, opacity: 1 }}
+   236→        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   237→        className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-xl"
+   238→      >
+   239→        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+   240→          <motion.div
+   241→            className="flex items-center gap-2"
+   242→            whileHover={{ scale: 1.02 }}
+   243→          >
+   244→            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+   245→              <Sparkles className="size-4" />
+   246→            </div>
+   247→            <span className="text-lg font-bold tracking-tight">UI Showcase</span>
+   248→          </motion.div>
+   249→          <nav className="hidden items-center gap-1 md:flex">
+   250→            {['Components', 'Animation', 'Layout', 'Forms'].map((item) => (
+   251→              <Button key={item} variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+   252→                {item}
+   253→              </Button>
+   254→            ))}
+   255→          </nav>
+   256→          <div className="flex items-center gap-2">
+   257→            <ThemeToggle />
+   258→          </div>
+   259→        </div>
+   260→      </motion.header>
+   261→
+   262→      {/* ── Main content ── */}
+   263→      <main className="flex-1">
+   264→        {/* ════════════ HERO SECTION ════════════ */}
+   265→        <section className="relative overflow-hidden py-24 sm:py-32">
+   266→          {/* Background decorative elements */}
+   267→          <div className="absolute inset-0 -z-10">
+   268→            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+   269→            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--primary)/0.08),transparent_50%)]" />
+   270→            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.06),transparent_50%)]" />
+   271→            {/* Grid pattern */}
+   272→            <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--border)/0.3)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--border)/0.3)_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_80%_70%_at_50%_50%,black,transparent)]" />
+   273→          </div>
+   274→
+   275→          {/* Floating orbs */}
+   276→          <motion.div
+   277→            className="absolute top-20 left-[15%] size-64 rounded-full bg-primary/10 blur-[80px]"
+   278→            animate={{ y: [0, -20, 0], x: [0, 10, 0] }}
+   279→            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+   280→          />
+   281→          <motion.div
+   282→            className="absolute bottom-20 right-[15%] size-48 rounded-full bg-primary/5 blur-[60px]"
+   283→            animate={{ y: [0, 15, 0], x: [0, -10, 0] }}
+   284→            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+   285→          />
+   286→
+   287→          <div className="relative mx-auto max-w-6xl px-4 text-center">
+   288→            <motion.div
+   289→              initial={{ opacity: 0, scale: 0.9 }}
+   290→              animate={{ opacity: 1, scale: 1 }}
+   291→              transition={{ duration: 0.5 }}
+   292→            >
+   293→              <Badge variant="secondary" className="mb-6 gap-1.5 px-3 py-1 text-sm">
+   294→                <Sparkles className="size-3.5" />
+   295→                Built with shadcn/ui + Framer Motion
+   296→              </Badge>
+   297→            </motion.div>
+   298→
+   299→            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+   300→              <AnimatedLetters text="Beautiful " />
+   301→              <AnimatedLetters text="UI Components" className="text-primary" />
+   302→            </h1>
+   303→
+   304→            <motion.p
+   305→              initial={{ opacity: 0 }}
+   306→              animate={{ opacity: 1 }}
+   307→              transition={{ delay: 1.4, duration: 0.6 }}
+   308→              className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl"
+   309→            >
+   310→              Explore a stunning collection of animated, accessible, and production-ready components.{' '}
+   311→              <TypewriterText texts={['Modern.', 'Accessible.', 'Beautiful.', 'Performant.']} />
+   312→            </motion.p>
+   313→
+   314→            <motion.div
+   315→              initial={{ opacity: 0, y: 20 }}
+   316→              animate={{ opacity: 1, y: 0 }}
+   317→              transition={{ delay: 1.8, duration: 0.5 }}
+   318→              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+   319→            >
+   320→              <Button size="lg" className="gap-2" asChild>
+   321→                <motion.button
+   322→                  whileHover={{ scale: 1.04 }}
+   323→                  whileTap={{ scale: 0.97 }}
+   324→                  className="gap-2"
+   325→                >
+   326→                  Get Started <ArrowRight className="size-4" />
+   327→                </motion.button>
+   328→              </Button>
+   329→              <Button size="lg" variant="outline" className="gap-2" asChild>
+   330→                <motion.button
+   331→                  whileHover={{ scale: 1.04 }}
+   332→                  whileTap={{ scale: 0.97 }}
+   333→                  className="gap-2"
+   334→                >
+   335→                  <Github className="size-4" /> View Source
+   336→                </motion.button>
+   337→              </Button>
+   338→            </motion.div>
+   339→
+   340→            {/* Floating icons decoration */}
+   341→            <div className="pointer-events-none absolute inset-0">
+   342→              <motion.div
+   343→                className="absolute top-10 left-[10%]"
+   344→                animate={{ y: [0, -12, 0] }}
+   345→                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+   346→              >
+   347→                <Star className="size-5 text-primary/30" />
+   348→              </motion.div>
+   349→              <motion.div
+   350→                className="absolute top-32 right-[8%]"
+   351→                animate={{ y: [0, -8, 0], rotate: [0, 15, 0] }}
+   352→                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+   353→              >
+   354→                <Zap className="size-6 text-primary/20" />
+   355→              </motion.div>
+   356→              <motion.div
+   357→                className="absolute bottom-20 left-[20%]"
+   358→                animate={{ y: [0, -10, 0] }}
+   359→                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+   360→              >
+   361→                <Heart className="size-4 text-primary/25" />
+   362→              </motion.div>
+   363→              <motion.div
+   364→                className="absolute bottom-10 right-[25%]"
+   365→                animate={{ y: [0, -15, 0] }}
+   366→                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+   367→              >
+   368→                <Rocket className="size-5 text-primary/20" />
+   369→              </motion.div>
+   370→            </div>
+   371→          </div>
+   372→        </section>
+   373→
+   374→        <div className="mx-auto max-w-6xl px-4 space-y-24 pb-24">
+   375→
+   376→          {/* ════════════ BUTTONS ════════════ */}
+   377→          <AnimatedSection>
+   378→            <SectionHeader title="Buttons" description="All variants and sizes with delightful hover and tap animations." />
+   379→            <div className="space-y-8">
+   380→              {/* Variants */}
+   381→              <motion.div
+   382→                variants={staggerContainer}
+   383→                initial="hidden"
+   384→                whileInView="visible"
+   385→                viewport={{ once: true }}
+   386→                className="flex flex-wrap items-center gap-3"
+   387→              >
+   388→                {(['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).map((variant) => (
+   389→                  <motion.div key={variant} variants={staggerItem}>
+   390→                    <Button variant={variant} asChild>
+   391→                      <motion.button
+   392→                        whileHover={{ scale: 1.06, y: -2 }}
+   393→                        whileTap={{ scale: 0.95 }}
+   394→                      >
+   395→                        {variant.charAt(0).toUpperCase() + variant.slice(1)}
+   396→                      </motion.button>
+   397→                    </Button>
+   398→                  </motion.div>
+   399→                ))}
+   400→              </motion.div>
+   401→
+   402→              {/* Sizes */}
+   403→              <motion.div
+   404→                variants={staggerContainer}
+   405→                initial="hidden"
+   406→                whileInView="visible"
+   407→                viewport={{ once: true }}
+   408→                className="flex flex-wrap items-center gap-3"
+   409→              >
+   410→                {(['sm', 'default', 'lg'] as const).map((size) => (
+   411→                  <motion.div key={size} variants={staggerItem}>
+   412→                    <Button size={size} asChild>
+   413→                      <motion.button
+   414→                        whileHover={{ scale: 1.05 }}
+   415→                        whileTap={{ scale: 0.95 }}
+   416→                      >
+   417→                        Size {size}
+   418→                      </motion.button>
+   419→                    </Button>
+   420→                  </motion.div>
+   421→                ))}
+   422→                <motion.div variants={staggerItem}>
+   423→                  <Button size="icon" asChild>
+   424→                    <motion.button whileHover={{ scale: 1.1, rotate: 10 }} whileTap={{ scale: 0.9 }}>
+   425→                      <Heart className="size-4" />
+   426→                    </motion.button>
+   427→                  </Button>
+   428→                </motion.div>
+   429→              </motion.div>
+   430→
+   431→              {/* Icon buttons */}
+   432→              <motion.div
+   433→                variants={staggerContainer}
+   434→                initial="hidden"
+   435→                whileInView="visible"
+   436→                viewport={{ once: true }}
+   437→                className="flex flex-wrap items-center gap-3"
+   438→              >
+   439→                {[
+   440→                  { icon: Mail, label: 'Email' },
+   441→                  { icon: Bell, label: 'Notify' },
+   442→                  { icon: Search, label: 'Search' },
+   443→                  { icon: Settings, label: 'Settings' },
+   444→                  { icon: Copy, label: 'Copy' },
+   445→                ].map(({ icon: Icon, label }) => (
+   446→                  <motion.div key={label} variants={staggerItem}>
+   447→                    <Button variant="outline" className="gap-2" asChild>
+   448→                      <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+   449→                        <Icon className="size-4" />
+   450→                        {label}
+   451→                      </motion.button>
+   452→                    </Button>
+   453→                  </motion.div>
+   454→                ))}
+   455→              </motion.div>
+   456→            </div>
+   457→          </AnimatedSection>
+   458→
+   459→          <Separator />
+   460→
+   461→          {/* ════════════ BADGES ════════════ */}
+   462→          <AnimatedSection>
+   463→            <SectionHeader title="Badges" description="Small status descriptors with staggered entrance animations." />
+   464→            <motion.div
+   465→              variants={staggerContainer}
+   466→              initial="hidden"
+   467→              whileInView="visible"
+   468→              viewport={{ once: true }}
+   469→              className="flex flex-wrap items-center gap-3"
+   470→            >
+   471→              {([
+   472→                { variant: 'default' as const, label: 'Default' },
+   473→                { variant: 'secondary' as const, label: 'Secondary' },
+   474→                { variant: 'destructive' as const, label: 'Destructive' },
+   475→                { variant: 'outline' as const, label: 'Outline' },
+   476→              ]).map(({ variant, label }) => (
+   477→                <motion.div key={label} variants={staggerItem} whileHover={{ scale: 1.1 }}>
+   478→                  <Badge variant={variant}>{label}</Badge>
+   479→                </motion.div>
+   480→              ))}
+   481→              <motion.div variants={staggerItem} whileHover={{ scale: 1.1 }}>
+   482→                <Badge variant="default" className="gap-1"><Check className="size-3" /> Verified</Badge>
+   483→              </motion.div>
+   484→              <motion.div variants={staggerItem} whileHover={{ scale: 1.1 }}>
+   485→                <Badge variant="destructive" className="gap-1"><AlertCircle className="size-3" /> Critical</Badge>
+   486→              </motion.div>
+   487→              <motion.div variants={staggerItem} whileHover={{ scale: 1.1 }}>
+   488→                <Badge variant="secondary" className="gap-1"><Clock className="size-3" /> Pending</Badge>
+   489→              </motion.div>
+   490→              <motion.div variants={staggerItem} whileHover={{ scale: 1.1 }}>
+   491→                <Badge variant="outline" className="gap-1"><Star className="size-3" /> Featured</Badge>
+   492→              </motion.div>
+   493→            </motion.div>
+   494→          </AnimatedSection>
+   495→
+   496→          <Separator />
+   497→
+   498→          {/* ════════════ CARDS ════════════ */}
+   499→          <AnimatedSection>
+   500→            <SectionHeader title="Cards" description="Versatile containers for content with hover animations and lift effects." />
+   501→
+   502→            {/* Stats cards */}
+   503→            <motion.div
+   504→              variants={staggerContainer}
+   505→              initial="hidden"
+   506→              whileInView="visible"
+   507→              viewport={{ once: true }}
+   508→              className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+   509→            >
+   510→              {statsCards.map((stat) => (
+   511→                <motion.div key={stat.title} variants={staggerItem} whileHover={{ y: -4, boxShadow: '0 12px 40px rgba(0,0,0,0.08)' }}>
+   512→                  <Card className="py-4">
+   513→                    <CardHeader className="pb-2">
+   514→                      <CardDescription className="flex items-center gap-2">
+   515→                        <stat.icon className="size-4 text-muted-foreground" />
+   516→                        {stat.title}
+   517→                      </CardDescription>
+   518→                      <CardTitle className="text-2xl">{stat.value}</CardTitle>
+   519→                    </CardHeader>
+   520→                    <CardContent>
+   521→                      <p className="text-xs text-emerald-600 flex items-center gap-1">
+   522→                        <TrendingUp className="size-3" /> {stat.change} from last month
+   523→                      </p>
+   524→                    </CardContent>
+   525→                  </Card>
+   526→                </motion.div>
+   527→              ))}
+   528→            </motion.div>
+   529→
+   530→            {/* Feature cards */}
+   531→            <motion.div
+   532→              variants={staggerContainer}
+   533→              initial="hidden"
+   534→              whileInView="visible"
+   535→              viewport={{ once: true }}
+   536→              className="grid gap-6 md:grid-cols-3"
+   537→            >
+   538→              {[
+   539→                { icon: Zap, title: 'Lightning Fast', desc: 'Optimized for speed with SSR and smart caching strategies.' },
+   540→                { icon: Shield, title: 'Secure by Default', desc: 'Built-in security best practices and CSRF protection.' },
+   541→                { icon: Palette, title: 'Customizable', desc: 'Tailor every component to match your brand perfectly.' },
+   542→              ].map((item) => (
+   543→                <motion.div
+   544→                  key={item.title}
+   545→                  variants={staggerItem}
+   546→                  whileHover={{ y: -6, boxShadow: '0 16px 48px rgba(0,0,0,0.1)' }}
+   547→                  transition={{ type: 'spring', stiffness: 300 }}
+   548→                >
+   549→                  <Card className="h-full transition-shadow">
+   550→                    <CardHeader>
+   551→                      <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+   552→                        <item.icon className="size-5" />
+   553→                      </div>
+   554→                      <CardTitle>{item.title}</CardTitle>
+   555→                      <CardDescription>{item.desc}</CardDescription>
+   556→                    </CardHeader>
+   557→                    <CardFooter>
+   558→                      <Button variant="ghost" className="gap-1 text-primary" asChild>
+   559→                        <motion.button whileHover={{ x: 4 }}>
+   560→                          Learn more <ChevronRight className="size-4" />
+   561→                        </motion.button>
+   562→                      </Button>
+   563→                    </CardFooter>
+   564→                  </Card>
+   565→                </motion.div>
+   566→              ))}
+   567→            </motion.div>
+   568→
+   569→            {/* Card with image placeholder */}
+   570→            <motion.div
+   571→              initial={{ opacity: 0, y: 30 }}
+   572→              whileInView={{ opacity: 1, y: 0 }}
+   573→              viewport={{ once: true }}
+   574→              transition={{ duration: 0.5, delay: 0.2 }}
+   575→              className="mt-8"
+   576→            >
+   577→              <Card className="overflow-hidden">
+   578→                <div className="grid md:grid-cols-2">
+   579→                  <div className="bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center p-8 md:p-12">
+   580→                    <motion.div
+   581→                      animate={{ rotate: [0, 5, -5, 0] }}
+   582→                      transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+   583→                    >
+   584→                      <Globe className="size-24 text-primary/40" />
+   585→                    </motion.div>
+   586→                  </div>
+   587→                  <div>
+   588→                    <CardHeader>
+   589→                      <Badge variant="secondary" className="w-fit">New</Badge>
+   590→                      <CardTitle className="text-xl">Global Deployment</CardTitle>
+   591→                      <CardDescription>
+   592→                        Deploy your applications worldwide with edge computing support and automatic failover.
+   593→                      </CardDescription>
+   594→                    </CardHeader>
+   595→                    <CardContent className="space-y-3">
+   596→                      <div className="flex items-center gap-2 text-sm"><Check className="size-4 text-emerald-600" /> Edge network in 50+ regions</div>
+   597→                      <div className="flex items-center gap-2 text-sm"><Check className="size-4 text-emerald-600" /> Auto-scaling infrastructure</div>
+   598→                      <div className="flex items-center gap-2 text-sm"><Check className="size-4 text-emerald-600" /> 99.99% uptime guarantee</div>
+   599→                    </CardContent>
+   600→                    <CardFooter className="gap-2">
+   601→                      <Button asChild>
+   602→                        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>Deploy Now</motion.button>
+   603→                      </Button>
+   604→                      <Button variant="outline" asChild>
+   605→                        <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>Documentation</motion.button>
+   606→                      </Button>
+   607→                    </CardFooter>
+   608→                  </div>
+   609→                </div>
+   610→              </Card>
+   611→            </motion.div>
+   612→          </AnimatedSection>
+   613→
+   614→          <Separator />
+   615→
+   616→          {/* ════════════ ACCORDION ════════════ */}
+   617→          <AnimatedSection>
+   618→            <SectionHeader title="Accordion" description="Collapsible content sections with smooth expand and collapse animations." />
+   619→            <motion.div
+   620→              initial={{ opacity: 0, y: 20 }}
+   621→              whileInView={{ opacity: 1, y: 0 }}
+   622→              viewport={{ once: true }}
+   623→              transition={{ duration: 0.5 }}
+   624→            >
+   625→              <Accordion type="single" collapsible className="w-full max-w-2xl mx-auto">
+   626→                {[
+   627→                  { q: 'What technologies are used?', a: 'This showcase is built with Next.js 16, TypeScript, Tailwind CSS 4, shadcn/ui components, and Framer Motion for animations. Everything runs on the App Router with server and client components.' },
+   628→                  { q: 'Is it accessible?', a: 'Absolutely! All components follow WAI-ARIA guidelines. We use semantic HTML, proper ARIA attributes, and ensure keyboard navigation works throughout the entire application.' },
+   629→                  { q: 'Can I customize the theme?', a: 'Yes! Click the theme toggle in the header to switch between light and dark modes. The entire design system is built with CSS custom properties, making it easy to create your own theme.' },
+   630→                  { q: 'How do I install these components?', a: 'Use the shadcn/ui CLI to add components to your project. Each component is installed individually, so you only include what you need. Run npx shadcn@latest add [component] to get started.' },
+   631→                ].map((item, i) => (
+   632→                  <AccordionItem key={i} value={`item-${i}`}>
+   633→                    <AccordionTrigger>{item.q}</AccordionTrigger>
+   634→                    <AccordionContent>{item.a}</AccordionContent>
+   635→                  </AccordionItem>
+   636→                ))}
+   637→              </Accordion>
+   638→            </motion.div>
+   639→          </AnimatedSection>
+   640→
+   641→          <Separator />
+   642→
+   643→          {/* ════════════ TABLE ════════════ */}
+   644→          <AnimatedSection>
+   645→            <SectionHeader title="Table" description="Data-rich tables with status badges and staggered row animations." />
+   646→            <Card>
+   647→              <CardContent className="p-0">
+   648→                <Table>
+   649→                  <TableHeader>
+   650→                    <TableRow>
+   651→                      <TableHead>Order ID</TableHead>
+   652→                      <TableHead>Customer</TableHead>
+   653→                      <TableHead className="hidden sm:table-cell">Product</TableHead>
+   654→                      <TableHead>Amount</TableHead>
+   655→                      <TableHead>Status</TableHead>
+   656→                    </TableRow>
+   657→                  </TableHeader>
+   658→                  <TableBody>
+   659→                    <AnimatePresence>
+   660→                      {tableData.map((row, i) => (
+   661→                        <motion.tr
+   662→                          key={row.id}
+   663→                          initial={{ opacity: 0, x: -20 }}
+   664→                          whileInView={{ opacity: 1, x: 0 }}
+   665→                          viewport={{ once: true }}
+   666→                          transition={{ delay: i * 0.08, duration: 0.3 }}
+   667→                          className="hover:bg-muted/50 border-b transition-colors"
+   668→                        >
+   669→                          <TableCell className="font-medium">{row.id}</TableCell>
+   670→                          <TableCell>{row.customer}</TableCell>
+   671→                          <TableCell className="hidden sm:table-cell">{row.product}</TableCell>
+   672→                          <TableCell>{row.amount}</TableCell>
+   673→                          <TableCell>
+   674→                            <Badge
+   675→                              variant={
+   676→                                row.status === 'Completed' ? 'default' :
+   677→                                row.status === 'Pending' ? 'secondary' :
+   678→                                'destructive'
+   679→                              }
+   680→                            >
+   681→                              {row.status}
+   682→                            </Badge>
+   683→                          </TableCell>
+   684→                        </motion.tr>
+   685→                      ))}
+   686→                    </AnimatePresence>
+   687→                  </TableBody>
+   688→                </Table>
+   689→              </CardContent>
+   690→            </Card>
+   691→          </AnimatedSection>
+   692→
+   693→          <Separator />
+   694→
+   695→          {/* ════════════ TABS ════════════ */}
+   696→          <AnimatedSection>
+   697→            <SectionHeader title="Tabs" description="Organized content switching with animated tab transitions." />
+   698→            <Tabs defaultValue="overview" className="w-full max-w-2xl mx-auto">
+   699→              <TabsList className="w-full">
+   700→                <TabsTrigger value="overview" className="flex-1 gap-1.5"><Home className="size-3.5" /> Overview</TabsTrigger>
+   701→                <TabsTrigger value="features" className="flex-1 gap-1.5"><Layers className="size-3.5" /> Features</TabsTrigger>
+   702→                <TabsTrigger value="pricing" className="flex-1 gap-1.5"><DollarSign className="size-3.5" /> Pricing</TabsTrigger>
+   703→              </TabsList>
+   704→              <TabsContent value="overview">
+   705→                  <motion.div
+   706→                    initial={{ opacity: 0, y: 10 }}
+   707→                    animate={{ opacity: 1, y: 0 }}
+   708→                    transition={{ duration: 0.25 }}
+   709→                  >
+   710→                    <Card>
+   711→                      <CardHeader>
+   712→                        <CardTitle>Project Overview</CardTitle>
+   713→                        <CardDescription>A comprehensive component showcase built with modern web technologies.</CardDescription>
+   714→                      </CardHeader>
+   715→                      <CardContent className="space-y-4">
+   716→                        <p className="text-sm text-muted-foreground">
+   717→                          This project demonstrates how to build beautiful, accessible, and performant user interfaces
+   718→                          using the latest web technologies. Every component is crafted with attention to detail.
+   719→                        </p>
+   720→                        <div className="grid grid-cols-2 gap-4">
+   721→                          <div className="text-center p-3 rounded-lg bg-muted/50">
+   722→                            <div className="text-2xl font-bold">50+</div>
+   723→                            <div className="text-xs text-muted-foreground">Components</div>
+   724→                          </div>
+   725→                          <div className="text-center p-3 rounded-lg bg-muted/50">
+   726→                            <div className="text-2xl font-bold">100%</div>
+   727→                            <div className="text-xs text-muted-foreground">Accessible</div>
+   728→                          </div>
+   729→                        </div>
+   730→                      </CardContent>
+   731→                    </Card>
+   732→                  </motion.div>
+   733→                </TabsContent>
+   734→                <TabsContent value="features">
+   735→                  <motion.div
+   736→                    initial={{ opacity: 0, y: 10 }}
+   737→                    animate={{ opacity: 1, y: 0 }}
+   738→                    transition={{ duration: 0.25, delay: 0.05 }}
+   739→                  >
+   740→                    <Card>
+   741→                      <CardHeader>
+   742→                        <CardTitle>Features</CardTitle>
+   743→                        <CardDescription>Everything you need to build amazing applications.</CardDescription>
+   744→                      </CardHeader>
+   745→                      <CardContent>
+   746→                        <div className="space-y-3">
+   747→                          {[
+   748→                            { icon: Zap, text: 'Server-side rendering for optimal performance' },
+   749→                            { icon: Shield, text: 'Built-in security and CSRF protection' },
+   750→                            { icon: Palette, text: 'Fully customizable design system' },
+   751→                            { icon: Globe, text: 'Internationalization support' },
+   752→                            { icon: Code2, text: 'TypeScript first with full type safety' },
+   753→                          ].map((f, i) => (
+   754→                            <motion.div
+   755→                              key={i}
+   756→                              initial={{ opacity: 0, x: -10 }}
+   757→                              animate={{ opacity: 1, x: 0 }}
+   758→                              transition={{ delay: i * 0.08 }}
+   759→                              className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors"
+   760→                            >
+   761→                              <f.icon className="size-4 text-primary shrink-0" />
+   762→                              <span className="text-sm">{f.text}</span>
+   763→                            </motion.div>
+   764→                          ))}
+   765→                        </div>
+   766→                      </CardContent>
+   767→                    </Card>
+   768→                  </motion.div>
+   769→                </TabsContent>
+   770→                <TabsContent value="pricing">
+   771→                  <motion.div
+   772→                    initial={{ opacity: 0, y: 10 }}
+   773→                    animate={{ opacity: 1, y: 0 }}
+   774→                    transition={{ duration: 0.25, delay: 0.1 }}
+   775→                  >
+   776→                    <Card>
+   777→                      <CardHeader>
+   778→                        <CardTitle>Pricing Plans</CardTitle>
+   779→                        <CardDescription>Choose the plan that fits your needs.</CardDescription>
+   780→                      </CardHeader>
+   781→                      <CardContent>
+   782→                        <div className="space-y-4">
+   783→                          {[
+   784→                            { name: 'Starter', price: '$9/mo', features: ['5 projects', 'Basic analytics', 'Email support'] },
+   785→                            { name: 'Pro', price: '$29/mo', features: ['Unlimited projects', 'Advanced analytics', 'Priority support', 'Custom domains'] },
+   786→                            { name: 'Enterprise', price: '$99/mo', features: ['Everything in Pro', 'SSO & SAML', 'Dedicated manager', 'SLA guarantee'] },
+   787→                          ].map((plan, i) => (
+   788→                            <motion.div
+   789→                              key={plan.name}
+   790→                              initial={{ opacity: 0, x: -10 }}
+   791→                              animate={{ opacity: 1, x: 0 }}
+   792→                              transition={{ delay: i * 0.1 }}
+   793→                              className={`p-4 rounded-lg border ${i === 1 ? 'border-primary bg-primary/5' : 'border-border'}`}
+   794→                            >
+   795→                              <div className="flex justify-between items-center mb-2">
+   796→                                <span className="font-semibold">{plan.name}</span>
+   797→                                <span className="text-lg font-bold">{plan.price}</span>
+   798→                              </div>
+   799→                              <ul className="space-y-1">
+   800→                                {plan.features.map((f) => (
+   801→                                  <li key={f} className="text-sm text-muted-foreground flex items-center gap-2">
+   802→                                    <Check className="size-3 text-emerald-600 shrink-0" /> {f}
+   803→                                  </li>
+   804→                                ))}
+   805→                              </ul>
+   806→                            </motion.div>
+   807→                          ))}
+   808→                        </div>
+   809→                      </CardContent>
+   810→                    </Card>
+   811→                  </motion.div>
+   812→                </TabsContent>
+   813→            </Tabs>
+   814→          </AnimatedSection>
+   815→
+   816→          <Separator />
+   817→
+   818→          {/* ════════════ ALERTS ════════════ */}
+   819→          <AnimatedSection>
+   820→            <SectionHeader title="Alerts" description="Contextual feedback messages for typical user actions." />
+   821→            <div className="space-y-4 max-w-2xl mx-auto">
+   822→              <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+   823→                <Alert>
+   824→                  <Info className="size-4" />
+   825→                  <AlertTitle>Heads up!</AlertTitle>
+   826→                  <AlertDescription>
+   827→                    You can use alerts to provide contextual feedback about user actions or system status changes.
+   828→                  </AlertDescription>
+   829→                </Alert>
+   830→              </motion.div>
+   831→              <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}>
+   832→                <Alert variant="destructive">
+   833→                  <AlertCircle className="size-4" />
+   834→                  <AlertTitle>Error</AlertTitle>
+   835→                  <AlertDescription>
+   836→                    Your session has expired. Please log in again to continue accessing your account.
+   837→                  </AlertDescription>
+   838→                </Alert>
+   839→              </motion.div>
+   840→              <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.2 }}>
+   841→                <Alert>
+   842→                  <Terminal className="size-4" />
+   843→                  <AlertTitle>Update Available</AlertTitle>
+   844→                  <AlertDescription>
+   845→                    A new version of the application is available. Refresh the page to update.
+   846→                  </AlertDescription>
+   847→                </Alert>
+   848→              </motion.div>
+   849→            </div>
+   850→          </AnimatedSection>
+   851→
+   852→          <Separator />
+   853→
+   854→          {/* ════════════ PROGRESS BARS ════════════ */}
+   855→          <AnimatedSection>
+   856→            <SectionHeader title="Progress Bars" description="Animated progress indicators for task completion." />
+   857→            <div className="max-w-xl mx-auto space-y-6">
+   858→              <AnimatedProgress value={85} label="Project Completion" />
+   859→              <AnimatedProgress value={62} label="Storage Used" />
+   860→              <AnimatedProgress value={34} label="Monthly Budget" />
+   861→              <AnimatedProgress value={91} label="Test Coverage" />
+   862→            </div>
+   863→          </AnimatedSection>
+   864→
+   865→          <Separator />
+   866→
+   867→          {/* ════════════ AVATARS ════════════ */}
+   868→          <AnimatedSection>
+   869→            <SectionHeader title="Avatars" description="User representation with fallbacks and multiple sizes." />
+   870→            <motion.div
+   871→              variants={staggerContainer}
+   872→              initial="hidden"
+   873→              whileInView="visible"
+   874→              viewport={{ once: true }}
+   875→              className="flex flex-wrap items-end gap-4 justify-center"
+   876→            >
+   877→              {[
+   878→                { size: 'size-8', name: 'AJ', img: '' },
+   879→                { size: 'size-10', name: 'BS', img: '' },
+   880→                { size: 'size-12', name: 'CW', img: '' },
+   881→                { size: 'size-14', name: 'DL', img: '' },
+   882→                { size: 'size-16', name: 'EM', img: '' },
+   883→                { size: 'size-20', name: 'FK', img: '' },
+   884→              ].map((avatar, i) => (
+   885→                <motion.div key={i} variants={staggerItem} whileHover={{ scale: 1.15, rotate: 5 }}>
+   886→                  <Avatar className={avatar.size}>
+   887→                    <AvatarFallback className="bg-primary/10 text-primary text-xs sm:text-sm">
+   888→                      {avatar.name}
+   889→                    </AvatarFallback>
+   890→                  </Avatar>
+   891→                </motion.div>
+   892→              ))}
+   893→            </motion.div>
+   894→            <motion.div
+   895→              variants={staggerContainer}
+   896→              initial="hidden"
+   897→              whileInView="visible"
+   898→              viewport={{ once: true }}
+   899→              className="mt-6 flex items-center gap-2 justify-center"
+   900→            >
+   901→              {['Alice', 'Bob', 'Carol', 'David', 'Eva'].map((name, i) => (
+   902→                <motion.div key={name} variants={staggerItem}>
+   903→                  <Avatar>
+   904→                    <AvatarFallback className="text-xs">{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+   905→                  </Avatar>
+   906→                </motion.div>
+   907→              ))}
+   908→              <motion.div variants={staggerItem}>
+   909→                <Avatar>
+   910→                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">+5</AvatarFallback>
+   911→                </Avatar>
+   912→              </motion.div>
+   913→            </motion.div>
+   914→          </AnimatedSection>
+   915→
+   916→          <Separator />
+   917→
+   918→          {/* ════════════ DIALOG / MODAL ════════════ */}
+   919→          <AnimatedSection>
+   920→            <SectionHeader title="Dialog" description="Modal dialogs for focused interactions and confirmations." />
+   921→            <div className="flex justify-center">
+   922→              <Dialog>
+   923→                <DialogTrigger asChild>
+   924→                  <Button variant="outline" size="lg" asChild>
+   925→                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="gap-2">
+   926→                      <MessageSquare className="size-4" /> Open Dialog
+   927→                    </motion.button>
+   928→                  </Button>
+   929→                </DialogTrigger>
+   930→                <DialogContent>
+   931→                  <DialogHeader>
+   932→                    <DialogTitle>Confirm Subscription</DialogTitle>
+   933→                    <DialogDescription>
+   934→                      You are about to subscribe to the Pro plan at $29/month. This action will charge your payment method immediately.
+   935→                    </DialogDescription>
+   936→                  </DialogHeader>
+   937→                  <div className="space-y-4 py-2">
+   938→                    <div className="flex items-center gap-3 rounded-lg border p-3">
+   939→                      <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
+   940→                        <Zap className="size-5 text-primary" />
+   941→                      </div>
+   942→                      <div>
+   943→                        <p className="font-medium text-sm">Pro Plan</p>
+   944→                        <p className="text-xs text-muted-foreground">Unlimited projects & analytics</p>
+   945→                      </div>
+   946→                      <div className="ml-auto font-semibold">$29/mo</div>
+   947→                    </div>
+   948→                  </div>
+   949→                  <DialogFooter>
+   950→                    <DialogClose asChild>
+   951→                      <Button variant="outline">Cancel</Button>
+   952→                    </DialogClose>
+   953→                    <Button asChild>
+   954→                      <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="gap-2">
+   955→                        <Check className="size-4" /> Confirm
+   956→                      </motion.button>
+   957→                    </Button>
+   958→                  </DialogFooter>
+   959→                </DialogContent>
+   960→              </Dialog>
+   961→            </div>
+   962→          </AnimatedSection>
+   963→
+   964→          <Separator />
+   965→
+   966→          {/* ════════════ FORM CONTROLS ════════════ */}
+   967→          <AnimatedSection>
+   968→            <SectionHeader title="Form Controls" description="Input fields, textareas, selects, and interactive form elements." />
+   969→            <div className="max-w-2xl mx-auto space-y-8">
+   970→              {/* Inputs */}
+   971→              <Card>
+   972→                <CardHeader>
+   973→                  <CardTitle className="text-lg">Input Fields</CardTitle>
+   974→                  <CardDescription>Text, email, and password inputs with labels and icons.</CardDescription>
+   975→                </CardHeader>
+   976→                <CardContent className="space-y-4">
+   977→                  <div className="grid gap-4 sm:grid-cols-2">
+   978→                    <div className="space-y-2">
+   979→                      <Label htmlFor="name">Full Name</Label>
+   980→                      <div className="relative">
+   981→                        <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+   982→                        <Input id="name" placeholder="John Doe" className="pl-9" />
+   983→                      </div>
+   984→                    </div>
+   985→                    <div className="space-y-2">
+   986→                      <Label htmlFor="email">Email</Label>
+   987→                      <div className="relative">
+   988→                        <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+   989→                        <Input id="email" type="email" placeholder="john@example.com" className="pl-9" />
+   990→                      </div>
+   991→                    </div>
+   992→                  </div>
+   993→                  <div className="space-y-2">
+   994→                    <Label htmlFor="password">Password</Label>
+   995→                    <div className="relative">
+   996→                      <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+   997→                      <Input id="password" type="password" placeholder="Enter your password" className="pl-9" />
+   998→                    </div>
+   999→                  </div>
+  1000→                </CardContent>
+  1001→              </Card>
+  1002→
+  1003→              {/* Textarea & Select */}
+  1004→              <div className="grid gap-4 md:grid-cols-2">
+  1005→                <Card>
+  1006→                  <CardHeader>
+  1007→                    <CardTitle className="text-lg">Textarea</CardTitle>
+  1008→                  </CardHeader>
+  1009→                  <CardContent>
+  1010→                    <div className="space-y-2">
+  1011→                      <Label htmlFor="message">Message</Label>
+  1012→                      <Textarea id="message" placeholder="Type your message here..." rows={4} />
+  1013→                    </div>
+  1014→                  </CardContent>
+  1015→                </Card>
+  1016→                <Card>
+  1017→                  <CardHeader>
+  1018→                    <CardTitle className="text-lg">Select</CardTitle>
+  1019→                  </CardHeader>
+  1020→                  <CardContent className="space-y-4">
+  1021→                    <div className="space-y-2">
+  1022→                      <Label>Country</Label>
+  1023→                      <Select>
+  1024→                        <SelectTrigger className="w-full">
+  1025→                          <SelectValue placeholder="Select a country" />
+  1026→                        </SelectTrigger>
+  1027→                        <SelectContent>
+  1028→                          <SelectItem value="us">United States</SelectItem>
+  1029→                          <SelectItem value="uk">United Kingdom</SelectItem>
+  1030→                          <SelectItem value="de">Germany</SelectItem>
+  1031→                          <SelectItem value="fr">France</SelectItem>
+  1032→                          <SelectItem value="jp">Japan</SelectItem>
+  1033→                        </SelectContent>
+  1034→                      </Select>
+  1035→                    </div>
+  1036→                    <div className="space-y-2">
+  1037→                      <Label>Timezone</Label>
+  1038→                      <Select>
+  1039→                        <SelectTrigger className="w-full">
+  1040→                          <SelectValue placeholder="Select timezone" />
+  1041→                        </SelectTrigger>
+  1042→                        <SelectContent>
+  1043→                          <SelectItem value="utc-8">UTC-8 (PST)</SelectItem>
+  1044→                          <SelectItem value="utc-5">UTC-5 (EST)</SelectItem>
+  1045→                          <SelectItem value="utc+0">UTC+0 (GMT)</SelectItem>
+  1046→                          <SelectItem value="utc+1">UTC+1 (CET)</SelectItem>
+  1047→                          <SelectItem value="utc+9">UTC+9 (JST)</SelectItem>
+  1048→                        </SelectContent>
+  1049→                      </Select>
+  1050→                    </div>
+  1051→                  </CardContent>
+  1052→                </Card>
+  1053→              </div>
+  1054→
+  1055→              {/* Checkbox, Switch, Radio */}
+  1056→              <Card>
+  1057→                <CardHeader>
+  1058→                  <CardTitle className="text-lg">Checkboxes, Switches & Radio</CardTitle>
+  1059→                  <CardDescription>Interactive form controls for selections and toggles.</CardDescription>
+  1060→                </CardHeader>
+  1061→                <CardContent className="space-y-6">
+  1062→                  <div className="space-y-3">
+  1063→                    <Label className="text-base">Notifications</Label>
+  1064→                    <div className="flex items-center gap-3">
+  1065→                      <Checkbox id="newsletter" checked={newsletterChecked} onCheckedChange={(v) => setNewsletterChecked(v as boolean)} />
+  1066→                      <Label htmlFor="newsletter" className="font-normal">Receive email newsletters</Label>
+  1067→                    </div>
+  1068→                    <div className="flex items-center gap-3">
+  1069→                      <Checkbox id="marketing" />
+  1070→                      <Label htmlFor="marketing" className="font-normal">Receive marketing updates</Label>
+  1071→                    </div>
+  1072→                    <div className="flex items-center gap-3">
+  1073→                      <Checkbox id="security" defaultChecked />
+  1074→                      <Label htmlFor="security" className="font-normal">Security alerts (recommended)</Label>
+  1075→                    </div>
+  1076→                  </div>
+  1077→
+  1078→                  <Separator />
+  1079→
+  1080→                  <div className="space-y-3">
+  1081→                    <Label className="text-base">Preferences</Label>
+  1082→                    <div className="flex items-center justify-between">
+  1083→                      <Label htmlFor="dark-mode" className="font-normal">Dark mode</Label>
+  1084→                      <Switch id="dark-mode" checked={darkModeSwitch} onCheckedChange={setDarkModeSwitch} />
+  1085→                    </div>
+  1086→                    <div className="flex items-center justify-between">
+  1087→                      <Label htmlFor="notifications" className="font-normal">Push notifications</Label>
+  1088→                      <Switch id="notifications" defaultChecked />
+  1089→                    </div>
+  1090→                  </div>
+  1091→
+  1092→                  <Separator />
+  1093→
+  1094→                  <div className="space-y-3">
+  1095→                    <Label className="text-base">Plan</Label>
+  1096→                    <RadioGroup value={plan} onValueChange={setPlan}>
+  1097→                      {[
+  1098→                        { value: 'free', label: 'Free', desc: 'Basic features' },
+  1099→                        { value: 'pro', label: 'Pro', desc: 'Advanced features' },
+  1100→                        { value: 'enterprise', label: 'Enterprise', desc: 'All features + support' },
+  1101→                      ].map((p) => (
+  1102→                        <div key={p.value} className="flex items-center gap-3">
+  1103→                          <RadioGroupItem value={p.value} id={p.value} />
+  1104→                          <Label htmlFor={p.value} className="font-normal">
+  1105→                            {p.label} <span className="text-muted-foreground text-xs">({p.desc})</span>
+  1106→                          </Label>
+  1107→                        </div>
+  1108→                      ))}
+  1109→                    </RadioGroup>
+  1110→                  </div>
+  1111→                </CardContent>
+  1112→              </Card>
+  1113→            </div>
+  1114→          </AnimatedSection>
+  1115→
+  1116→          <Separator />
+  1117→
+  1118→          {/* ════════════ SLIDER ════════════ */}
+  1119→          <AnimatedSection>
+  1120→            <SectionHeader title="Slider" description="Continuous value selection with real-time display." />
+  1121→            <Card className="max-w-md mx-auto">
+  1122→              <CardHeader>
+  1123→                <CardTitle className="text-lg">Volume Control</CardTitle>
+  1124→                <CardDescription>Adjust the volume using the slider below.</CardDescription>
+  1125→              </CardHeader>
+  1126→              <CardContent className="space-y-6">
+  1127→                <div className="space-y-3">
+  1128→                  <div className="flex justify-between text-sm">
+  1129→                    <span>Volume</span>
+  1130→                    <motion.span
+  1131→                      key={sliderValue[0]}
+  1132→                      initial={{ scale: 1.3, color: 'hsl(var(--primary))' }}
+  1133→                      animate={{ scale: 1, color: 'hsl(var(--foreground))' }}
+  1134→                      transition={{ duration: 0.2 }}
+  1135→                    >
+  1136→                      {sliderValue[0]}%
+  1137→                    </motion.span>
+  1138→                  </div>
+  1139→                  <Slider
+  1140→                    value={sliderValue}
+  1141→                    onValueChange={setSliderValue}
+  1142→                    max={100}
+  1143→                    step={1}
+  1144→                  />
+  1145→                </div>
+  1146→                <div className="flex items-center gap-2">
+  1147→                  {sliderValue[0] < 30 ? (
+  1148→                    <><CloudRain className="size-4 text-muted-foreground" /> <span className="text-sm text-muted-foreground">Quiet</span></>
+  1149→                  ) : sliderValue[0] < 70 ? (
+  1150→                    <><Music className="size-4 text-primary" /> <span className="text-sm">Comfortable</span></>
+  1151→                  ) : (
+  1152→                    <><Coffee className="size-4 text-destructive" /> <span className="text-sm text-destructive">Loud!</span></>
+  1153→                  )}
+  1154→                </div>
+  1155→              </CardContent>
+  1156→            </Card>
+  1157→          </AnimatedSection>
+  1158→
+  1159→          <Separator />
+  1160→
+  1161→          {/* ════════════ SEPARATORS ════════════ */}
+  1162→          <AnimatedSection>
+  1163→            <SectionHeader title="Separators" description="Visual dividers for both horizontal and vertical layouts." />
+  1164→            <div className="max-w-md mx-auto space-y-4">
+  1165→              <div>
+  1166→                <p className="text-sm text-muted-foreground mb-2">Horizontal separator:</p>
+  1167→                <div className="space-y-2">
+  1168→                  <p className="text-sm">Content above</p>
+  1169→                  <Separator />
+  1170→                  <p className="text-sm">Content below</p>
+  1171→                </div>
+  1172→              </div>
+  1173→              <div>
+  1174→                <p className="text-sm text-muted-foreground mb-2">Vertical separator:</p>
+  1175→                <div className="flex items-center gap-4 h-8">
+  1176→                  <span className="text-sm">Blog</span>
+  1177→                  <Separator orientation="vertical" />
+  1178→                  <span className="text-sm">Docs</span>
+  1179→                  <Separator orientation="vertical" />
+  1180→                  <span className="text-sm">Source</span>
+  1181→                </div>
+  1182→              </div>
+  1183→            </div>
+  1184→          </AnimatedSection>
+  1185→
+  1186→          <Separator />
+  1187→
+  1188→          {/* ════════════ TOOLTIPS ════════════ */}
+  1189→          <AnimatedSection>
+  1190→            <SectionHeader title="Tooltips" description="Contextual information on hover for buttons and icons." />
+  1191→            <motion.div
+  1192→              variants={staggerContainer}
+  1193→              initial="hidden"
+  1194→              whileInView="visible"
+  1195→              viewport={{ once: true }}
+  1196→              className="flex flex-wrap items-center justify-center gap-3"
+  1197→            >
+  1198→              {[
+  1199→                { icon: Home, label: 'Home', tip: 'Go to homepage' },
+  1200→                { icon: BarChart3, label: 'Analytics', tip: 'View analytics' },
+  1201→                { icon: FileText, label: 'Documents', tip: 'Open documents' },
+  1202→                { icon: Bell, label: 'Notifications', tip: '3 new notifications' },
+  1203→                { icon: Search, label: 'Search', tip: 'Search everything' },
+  1204→                { icon: Settings, label: 'Settings', tip: 'Open settings' },
+  1205→              ].map(({ icon: Icon, label, tip }) => (
+  1206→                <motion.div key={label} variants={staggerItem}>
+  1207→                  <Tooltip>
+  1208→                    <TooltipTrigger asChild>
+  1209→                      <Button variant="outline" size="icon" asChild>
+  1210→                        <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+  1211→                          <Icon className="size-4" />
+  1212→                          <span className="sr-only">{label}</span>
+  1213→                        </motion.button>
+  1214→                      </Button>
+  1215→                    </TooltipTrigger>
+  1216→                    <TooltipContent>{tip}</TooltipContent>
+  1217→                  </Tooltip>
+  1218→                </motion.div>
+  1219→              ))}
+  1220→            </motion.div>
+  1221→          </AnimatedSection>
+  1222→
+  1223→          <Separator />
+  1224→
+  1225→          {/* ════════════ TYPOGRAPHY ════════════ */}
+  1226→          <AnimatedSection>
+  1227→            <SectionHeader title="Typography" description="A showcase of heading levels, body text, and code styles." />
+  1228→            <Card className="max-w-2xl mx-auto">
+  1229→              <CardContent className="space-y-6 pt-6">
+  1230→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4 }}>
+  1231→                  <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Heading One</h1>
+  1232→                  <p className="text-muted-foreground mt-1">The largest heading for page titles and hero sections.</p>
+  1233→                </motion.div>
+  1234→                <Separator />
+  1235→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.05 }}>
+  1236→                  <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">Heading Two</h2>
+  1237→                  <p className="text-muted-foreground mt-1">Section headings for major content divisions.</p>
+  1238→                </motion.div>
+  1239→                <Separator />
+  1240→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.1 }}>
+  1241→                  <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Heading Three</h3>
+  1242→                  <p className="text-muted-foreground mt-1">Subsection headings within larger sections.</p>
+  1243→                </motion.div>
+  1244→                <Separator />
+  1245→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.15 }}>
+  1246→                  <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">Heading Four</h4>
+  1247→                  <p className="text-muted-foreground mt-1">Card and component level headings.</p>
+  1248→                </motion.div>
+  1249→                <Separator />
+  1250→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.2 }}>
+  1251→                  <p className="leading-7">
+  1252→                    Typography is the art and technique of arranging type to make written language legible, readable,
+  1253→                    and appealing when displayed. The arrangement of type involves selecting typefaces, point sizes,
+  1254→                    line lengths, line-spacing, and letter-spacing.
+  1255→                  </p>
+  1256→                </motion.div>
+  1257→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.25 }}>
+  1258→                  <p className="text-sm text-muted-foreground">This is muted text, perfect for secondary information and captions.</p>
+  1259→                </motion.div>
+  1260→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.3 }}>
+  1261→                  <p className="text-sm">
+  1262→                    Inline code example:{' '}
+  1263→                    <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+  1264→                      const greeting = &quot;Hello, World!&quot;
+  1265→                    </code>
+  1266→                  </p>
+  1267→                </motion.div>
+  1268→                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: 0.35 }}>
+  1269→                  <div className="rounded-lg bg-muted p-4">
+  1270→                    <div className="flex items-center justify-between mb-2">
+  1271→                      <span className="text-xs text-muted-foreground font-mono">terminal</span>
+  1272→                      <Button variant="ghost" size="sm" className="h-6 gap-1 text-xs" onClick={handleCopy} asChild>
+  1273→                        <motion.button whileTap={{ scale: 0.9 }}>
+  1274→                          {copied ? <><Check className="size-3" /> Copied</> : <><Copy className="size-3" /> Copy</>}
+  1275→                        </motion.button>
+  1276→                      </Button>
+  1277→                    </div>
+  1278→                    <pre className="text-sm font-mono overflow-x-auto">
+  1279→                      <code>{`npx create-next-app@latest \\
+  1280→  --typescript --tailwind \\
+  1281→  --eslint --app --src-dir
+  1282→
+  1283→cd my-app
+  1284→bun add framer-motion`}</code>
+  1285→                    </pre>
+  1286→                  </div>
+  1287→                </motion.div>
+  1288→              </CardContent>
+  1289→            </Card>
+  1290→          </AnimatedSection>
+  1291→
+  1292→          <Separator />
+  1293→
+  1294→          {/* ════════════ SKELETON LOADING ════════════ */}
+  1295→          <AnimatedSection>
+  1296→            <SectionHeader title="Skeleton Loading" description="Placeholder previews while content is being loaded." />
+  1297→            <div className="grid gap-6 md:grid-cols-2 max-w-2xl mx-auto">
+  1298→              <Card>
+  1299→                <CardContent className="pt-6 space-y-4">
+  1300→                  <div className="flex items-center gap-3">
+  1301→                    <Skeleton className="size-12 rounded-full" />
+  1302→                    <div className="space-y-2 flex-1">
+  1303→                      <Skeleton className="h-4 w-3/4" />
+  1304→                      <Skeleton className="h-3 w-1/2" />
+  1305→                    </div>
+  1306→                  </div>
+  1307→                  <Skeleton className="h-4 w-full" />
+  1308→                  <Skeleton className="h-4 w-5/6" />
+  1309→                  <Skeleton className="h-32 w-full rounded-lg" />
+  1310→                  <div className="flex gap-2">
+  1311→                    <Skeleton className="h-8 w-20" />
+  1312→                    <Skeleton className="h-8 w-20" />
+  1313→                  </div>
+  1314→                </CardContent>
+  1315→              </Card>
+  1316→              <Card>
+  1317→                <CardContent className="pt-6 space-y-4">
+  1318→                  <div className="flex items-center justify-between">
+  1319→                    <Skeleton className="h-6 w-24" />
+  1320→                    <Skeleton className="h-5 w-16" />
+  1321→                  </div>
+  1322→                  <div className="space-y-2">
+  1323→                    <Skeleton className="h-4 w-full" />
+  1324→                    <Skeleton className="h-4 w-full" />
+  1325→                    <Skeleton className="h-4 w-3/4" />
+  1326→                  </div>
+  1327→                  <Separator />
+  1328→                  <div className="grid grid-cols-2 gap-3">
+  1329→                    <div className="space-y-2">
+  1330→                      <Skeleton className="h-3 w-12" />
+  1331→                      <Skeleton className="h-5 w-16" />
+  1332→                    </div>
+  1333→                    <div className="space-y-2">
+  1334→                      <Skeleton className="h-3 w-12" />
+  1335→                      <Skeleton className="h-5 w-16" />
+  1336→                    </div>
+  1337→                  </div>
+  1338→                  <Skeleton className="h-9 w-full" />
+  1339→                </CardContent>
+  1340→              </Card>
+  1341→            </div>
+  1342→          </AnimatedSection>
+  1343→
+  1344→          <Separator />
+  1345→
+  1346→          {/* ════════════ CAROUSEL ════════════ */}
+  1347→          <AnimatedSection>
+  1348→            <SectionHeader title="Carousel" description="Cycling content with navigation controls and smooth transitions." />
+  1349→            <div className="max-w-xl mx-auto">
+  1350→              <Carousel className="w-full">
+  1351→                <CarouselContent>
+  1352→                  {carouselItems.map((item, index) => (
+  1353→                    <CarouselItem key={index}>
+  1354→                      <Card className="min-h-[220px]">
+  1355→                        <CardContent className="flex flex-col items-center justify-center text-center h-full pt-6 gap-4">
+  1356→                          <motion.div
+  1357→                            initial={{ scale: 0 }}
+  1358→                            whileInView={{ scale: 1 }}
+  1359→                            viewport={{ once: true }}
+  1360→                            transition={{ type: 'spring', stiffness: 200, delay: 0.1 }}
+  1361→                            className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary"
+  1362→                          >
+  1363→                            <item.icon className="size-8" />
+  1364→                          </motion.div>
+  1365→                          <div>
+  1366→                            <h3 className="text-xl font-semibold">{item.title}</h3>
+  1367→                            <p className="text-muted-foreground mt-1">{item.desc}</p>
+  1368→                          </div>
+  1369→                          <Badge variant="secondary">Slide {index + 1} of {carouselItems.length}</Badge>
+  1370→                        </CardContent>
+  1371→                      </Card>
+  1372→                    </CarouselItem>
+  1373→                  ))}
+  1374→                </CarouselContent>
+  1375→                <CarouselPrevious />
+  1376→                <CarouselNext />
+  1377→              </Carousel>
+  1378→            </div>
+  1379→          </AnimatedSection>
+  1380→
+  1381→          <Separator />
+  1382→
+  1383→          {/* ════════════ INTERACTIVE COMBO ════════════ */}
+  1384→          <AnimatedSection>
+  1385→            <SectionHeader title="Interactive Combo" description="A real-world example combining multiple components together." />
+  1386→            <Card className="max-w-2xl mx-auto">
+  1387→              <CardHeader>
+  1388→                <div className="flex items-center justify-between">
+  1389→                  <div>
+  1390→                    <CardTitle>Team Settings</CardTitle>
+  1391→                    <CardDescription>Manage your team and preferences.</CardDescription>
+  1392→                  </div>
+  1393→                  <Badge>Pro Plan</Badge>
+  1394→                </div>
+  1395→              </CardHeader>
+  1396→              <CardContent className="space-y-6">
+  1397→                {/* Team members */}
+  1398→                <div className="space-y-3">
+  1399→                  <Label className="text-base">Team Members</Label>
+  1400→                  {[
+  1401→                    { name: 'Alice Johnson', role: 'Owner', email: 'alice@example.com' },
+  1402→                    { name: 'Bob Smith', role: 'Admin', email: 'bob@example.com' },
+  1403→                    { name: 'Carol White', role: 'Member', email: 'carol@example.com' },
+  1404→                  ].map((member, i) => (
+  1405→                    <motion.div
+  1406→                      key={member.name}
+  1407→                      initial={{ opacity: 0, x: -10 }}
+  1408→                      whileInView={{ opacity: 1, x: 0 }}
+  1409→                      viewport={{ once: true }}
+  1410→                      transition={{ delay: i * 0.1 }}
+  1411→                      className="flex items-center gap-3 rounded-lg border p-3"
+  1412→                    >
+  1413→                      <Avatar>
+  1414→                        <AvatarFallback className="text-xs">{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+  1415→                      </Avatar>
+  1416→                      <div className="flex-1 min-w-0">
+  1417→                        <p className="text-sm font-medium truncate">{member.name}</p>
+  1418→                        <p className="text-xs text-muted-foreground truncate">{member.email}</p>
+  1419→                      </div>
+  1420→                      <Badge variant={member.role === 'Owner' ? 'default' : member.role === 'Admin' ? 'secondary' : 'outline'}>
+  1421→                        {member.role}
+  1422→                      </Badge>
+  1423→                    </motion.div>
+  1424→                  ))}
+  1425→                </div>
+  1426→
+  1427→                <Separator />
+  1428→
+  1429→                {/* Settings */}
+  1430→                <div className="space-y-4">
+  1431→                  <Label className="text-base">Settings</Label>
+  1432→                  <div className="flex items-center justify-between">
+  1433→                    <div className="space-y-0.5">
+  1434→                      <Label htmlFor="email-notif" className="font-normal">Email notifications</Label>
+  1435→                      <p className="text-xs text-muted-foreground">Receive updates about team activity.</p>
+  1436→                    </div>
+  1437→                    <Switch id="email-notif" defaultChecked />
+  1438→                  </div>
+  1439→                  <div className="flex items-center justify-between">
+  1440→                    <div className="space-y-0.5">
+  1441→                      <Label htmlFor="weekly-digest" className="font-normal">Weekly digest</Label>
+  1442→                      <p className="text-xs text-muted-foreground">Get a summary every Monday.</p>
+  1443→                    </div>
+  1444→                    <Switch id="weekly-digest" />
+  1445→                  </div>
+  1446→                </div>
+  1447→
+  1448→                <Separator />
+  1449→
+  1450→                <div className="flex items-center gap-3">
+  1451→                  <Select>
+  1452→                    <SelectTrigger className="w-[140px]">
+  1453→                      <SelectValue placeholder="Timezone" />
+  1454→                    </SelectTrigger>
+  1455→                    <SelectContent>
+  1456→                      <SelectItem value="utc-8">UTC-8 (PST)</SelectItem>
+  1457→                      <SelectItem value="utc-5">UTC-5 (EST)</SelectItem>
+  1458→                      <SelectItem value="utc+0">UTC+0 (GMT)</SelectItem>
+  1459→                    </SelectContent>
+  1460→                  </Select>
+  1461→                  <Button className="gap-2" asChild>
+  1462→                    <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+  1463→                      Save Changes
+  1464→                    </motion.button>
+  1465→                  </Button>
+  1466→                </div>
+  1467→              </CardContent>
+  1468→            </Card>
+  1469→          </AnimatedSection>
+  1470→        </div>
+  1471→      </main>
+  1472→
+  1473→      {/* ── Sticky Footer ── */}
+  1474→      <footer className="mt-auto border-t bg-muted/30">
+  1475→        <div className="mx-auto max-w-6xl px-4 py-8">
+  1476→          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+  1477→            <div className="flex items-center gap-2">
+  1478→              <div className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+  1479→                <Sparkles className="size-3" />
+  1480→              </div>
+  1481→              <span className="text-sm font-semibold">UI Showcase</span>
+  1482→            </div>
+  1483→            <p className="text-sm text-muted-foreground">
+  1484→              Built with Next.js 16, shadcn/ui, Tailwind CSS & Framer Motion
+  1485→            </p>
+  1486→            <div className="flex items-center gap-3">
+  1487→              <Tooltip>
+  1488→                <TooltipTrigger asChild>
+  1489→                  <Button variant="ghost" size="icon" className="size-8" asChild>
+  1490→                    <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+  1491→                      <Github className="size-4" />
+  1492→                      <span className="sr-only">GitHub</span>
+  1493→                    </motion.a>
+  1494→                  </Button>
+  1495→                </TooltipTrigger>
+  1496→                <TooltipContent>View source on GitHub</TooltipContent>
+  1497→              </Tooltip>
+  1498→              <Tooltip>
+  1499→                <TooltipTrigger asChild>
+  1500→                  <Button variant="ghost" size="icon" className="size-8" asChild>
+  1501→                    <motion.a href="#" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+  1502→                      <Globe className="size-4" />
+  1503→                      <span className="sr-only">Website</span>
+  1504→                    </motion.a>
+  1505→                  </Button>
+  1506→                </TooltipTrigger>
+  1507→                <TooltipContent>Visit our website</TooltipContent>
+  1508→              </Tooltip>
+  1509→            </div>
+  1510→          </div>
+  1511→          <Separator className="my-4" />
+  1512→          <p className="text-center text-xs text-muted-foreground">
+  1513→            &copy; {new Date().getFullYear()} UI Showcase. All components are open-source and free to use.
+  1514→          </p>
+  1515→        </div>
+  1516→      </footer>
+  1517→    </div>
+  1518→  )
+  1519→}
+  1520→
