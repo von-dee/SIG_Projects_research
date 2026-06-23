@@ -1,0 +1,8 @@
+https://becca.qodeinteractive.com/saas-home/ https://becca.qodeinteractive.com/about-us/ https://becca.qodeinteractive.com/pricing-plans/ https://becca.qodeinteractive.com/our-services/ https://becca.qodeinteractive.com/faq-page/ https://becca.qodeinteractive.com/get-in-touch/ https://becca.qodeinteractive.com/right-sidebar/ -O ./becca_website_bundle +becca.qodeinteractive.com/wp-content/* +becca.qodeinteractive.com/wp-includes/* -v
+File generated automatically on Tue, 23 Jun 2026 00:53:55, do NOT edit
+
+To update a mirror, just launch httrack without any parameters
+The existing cache will be used (and modified)
+To have other options, retype all parameters and launch HTTrack
+To continue an interrupted mirror, just launch httrack without any parameters
+
