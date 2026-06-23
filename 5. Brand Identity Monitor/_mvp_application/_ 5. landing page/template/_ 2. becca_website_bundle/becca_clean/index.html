@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Becca &#8211; Clean Static Build</title>
+	<link rel="icon" href="assets/wp-content/uploads/2023/02/cropped-fav-icon-32x32.png" sizes="32x32">
+	<link rel="icon" href="assets/wp-content/uploads/2023/02/cropped-fav-icon-192x192.png" sizes="192x192">
+	<link rel="apple-touch-icon" href="assets/wp-content/uploads/2023/02/cropped-fav-icon-180x180.png">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter%3A300%2C400%2C500%2C600%2C700&amp;display=swap">
+	<style>
+		:root {
+			--bg: #16031f;
+			--bg-2: #1f0830;
+			--accent: #7a4dff;
+			--accent-2: #a07cff;
+			--text: #efe7fb;
+			--muted: #b3a1cf;
+			--card: rgba(255, 255, 255, 0.04);
+			--card-border: rgba(255, 255, 255, 0.09);
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(1100px 700px at 80% -10%, rgba(122, 77, 255, 0.25), transparent 60%),
+				radial-gradient(900px 600px at 0% 110%, rgba(160, 124, 255, 0.18), transparent 55%),
+				var(--bg);
+			min-height: 100vh;
+			-webkit-font-smoothing: antialiased;
+		}
+		.wrap {
+			max-width: 1040px;
+			margin: 0 auto;
+			padding: 72px 24px 96px;
+		}
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 14px;
+			margin-bottom: 18px;
+		}
+		.brand img { height: 42px; width: auto; }
+		.brand .tag {
+			font-size: 12px;
+			letter-spacing: .14em;
+			text-transform: uppercase;
+			color: var(--accent-2);
+			font-weight: 600;
+		}
+		h1 {
+			font-size: clamp(34px, 5vw, 54px);
+			line-height: 1.05;
+			margin: 0 0 14px;
+			font-weight: 700;
+			letter-spacing: -0.02em;
+		}
+		.lede {
+			font-size: 18px;
+			line-height: 1.6;
+			color: var(--muted);
+			max-width: 620px;
+			margin: 0 0 44px;
+		}
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+			gap: 18px;
+		}
+		a.card {
+			display: block;
+			text-decoration: none;
+			color: inherit;
+			background: var(--card);
+			border: 1px solid var(--card-border);
+			border-radius: 16px;
+			padding: 26px 24px;
+			transition: transform .18s ease, border-color .18s ease, background .18s ease;
+		}
+		a.card:hover {
+			transform: translateY(-4px);
+			border-color: rgba(160, 124, 255, 0.55);
+			background: rgba(122, 77, 255, 0.10);
+		}
+		.card .num {
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--accent-2);
+			letter-spacing: .08em;
+		}
+		.card h2 {
+			font-size: 20px;
+			margin: 10px 0 6px;
+			font-weight: 600;
+		}
+		.card p {
+			margin: 0;
+			font-size: 14px;
+			line-height: 1.5;
+			color: var(--muted);
+		}
+		.foot {
+			margin-top: 56px;
+			padding-top: 24px;
+			border-top: 1px solid var(--card-border);
+			font-size: 13px;
+			color: var(--muted);
+		}
+		.foot code {
+			background: rgba(255, 255, 255, 0.06);
+			padding: 2px 7px;
+			border-radius: 6px;
+			font-size: 12.5px;
+		}
+		@media (max-width: 560px) {
+			.wrap { padding: 48px 20px 64px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<div class="brand">
+			<img src="assets/wp-content/uploads/2023/01/becca-logo-img.png" alt="Becca logo" onerror="this.style.display='none'">
+			<span class="tag">Static Build</span>
+		</div>
+		<h1>Becca</h1>
+		<p class="lede">
+			A cleaned, self-contained copy of the Becca template &mdash; the seven pages
+			shown in the original menu, with every CSS, JavaScript, font, and image
+			asset bundled locally under <code style="color:var(--accent-2)">assets/</code>.
+			Open any page below; all links and resources resolve relative to this folder,
+			so it works anywhere you copy it.
+		</p>
+
+		<div class="grid">
+			<a class="card" href="saas-home.html">
+				<span class="num">01</span>
+				<h2>SaaS Home</h2>
+				<p>The main landing page.</p>
+			</a>
+			<a class="card" href="about-us.html">
+				<span class="num">02</span>
+				<h2>About Us</h2>
+				<p>Company overview and story.</p>
+			</a>
+			<a class="card" href="pricing-plans.html">
+				<span class="num">03</span>
+				<h2>Pricing Plans</h2>
+				<p>Tiers and feature comparison.</p>
+			</a>
+			<a class="card" href="our-services.html">
+				<span class="num">04</span>
+				<h2>Our Services</h2>
+				<p>What the product offers.</p>
+			</a>
+			<a class="card" href="faq-page.html">
+				<span class="num">05</span>
+				<h2>FAQ Page</h2>
+				<p>Frequently asked questions.</p>
+			</a>
+			<a class="card" href="get-in-touch.html">
+				<span class="num">06</span>
+				<h2>Get In Touch</h2>
+				<p>Contact details and form.</p>
+			</a>
+			<a class="card" href="right-sidebar.html">
+				<span class="num">07</span>
+				<h2>Right Sidebar</h2>
+				<p>Blog-style sidebar layout.</p>
+			</a>
+		</div>
+
+		<div class="foot">
+			Structure: <code>*.html</code> pages at root &middot; <code>assets/</code> holds all CSS, JS, images, fonts. Original source: <code>becca.qodeinteractive.com</code>.
+		</div>
+	</div>
+</body>
+</html>
