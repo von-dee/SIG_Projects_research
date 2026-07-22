@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue Model — African Mining Week Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fbf8f1;
+    --bg-warm: #fefbf5;
+    --bg-elev: #ffffff;
+    --fg: #2a2218;
+    --fg-soft: #4a3f30;
+    --muted: #7a6e5c;
+    --dim: #b8ad9a;
+    --accent: #c8502e;
+    --accent-soft: #e89678;
+    --accent-bg: #fce8df;
+    --accent-2: #b8862f;
+    --accent-2-bg: #f7edd6;
+    --accent-3: #2d4a6b;
+    --accent-3-bg: #e3ebf3;
+    --border: rgba(42, 34, 24, 0.08);
+    --border-soft: rgba(42, 34, 24, 0.05);
+    --border-strong: rgba(42, 34, 24, 0.14);
+    --card: #ffffff;
+    --card-tint: #fdfaf3;
+    --shadow-xs: 0 1px 2px rgba(42, 34, 24, 0.03);
+    --shadow-sm: 0 2px 8px rgba(42, 34, 24, 0.04), 0 1px 2px rgba(42, 34, 24, 0.03);
+    --shadow-md: 0 8px 24px rgba(42, 34, 24, 0.06), 0 2px 6px rgba(42, 34, 24, 0.04);
+    --shadow-lg: 0 24px 56px rgba(42, 34, 24, 0.08), 0 6px 16px rgba(42, 34, 24, 0.04);
+  }
+
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  .font-display { font-family: 'Fraunces', serif; font-feature-settings: "ss01"; }
+
+  #hero-canvas {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+  }
+
+  .tint-warm {
+    background:
+      radial-gradient(ellipse 80% 60% at 90% 10%, rgba(200, 80, 46, 0.05), transparent 65%),
+      radial-gradient(ellipse 60% 50% at 10% 90%, rgba(184, 134, 47, 0.06), transparent 65%);
+  }
+
+  .tint-cool {
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 20%, rgba(45, 74, 107, 0.04), transparent 65%),
+      radial-gradient(ellipse 70% 50% at 90% 80%, rgba(200, 80, 46, 0.04), transparent 65%);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* Stream cards — bright white */
+  .stream-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+  .stream-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle 380px at var(--mx, 50%) var(--my, 50%), rgba(200, 80, 46, 0.04), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .stream-card:hover::before { opacity: 1; }
+  .stream-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+  .stream-card.expanded {
+    border-color: rgba(200, 80, 46, 0.3);
+    box-shadow: var(--shadow-lg);
+  }
+  .stream-card.expanded::before { opacity: 1; }
+
+  .stream-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .stream-card.expanded .stream-details { max-height: 4000px; }
+
+  .stream-arrow { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .stream-card.expanded .stream-arrow { transform: rotate(45deg); }
+
+  .item-row {
+    border-left: 2px solid var(--border-soft);
+    transition: border-color 0.3s;
+    padding-left: 1.25rem;
+  }
+  .item-row:hover { border-left-color: var(--accent); }
+
+  /* Tags — light tinted pills */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.6rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg-warm);
+    color: var(--muted);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .tag-accent {
+    border-color: rgba(200, 80, 46, 0.25);
+    background: var(--accent-bg);
+    color: var(--accent);
+  }
+  .tag-warm {
+    border-color: rgba(184, 134, 47, 0.3);
+    background: var(--accent-2-bg);
+    color: #8a6520;
+  }
+  .tag-blue {
+    border-color: rgba(45, 74, 107, 0.25);
+    background: var(--accent-3-bg);
+    color: var(--accent-3);
+  }
+
+  .margin-bar {
+    height: 6px;
+    background: rgba(42, 34, 24, 0.05);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .margin-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    border-radius: 3px;
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  }
+  .in .margin-bar-fill { transform: scaleX(var(--w, 0.5)); }
+
+  .phase-panel {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border);
+    background: var(--card);
+    box-shadow: var(--shadow-xs);
+  }
+  .phase-panel:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+  .phase-panel.active {
+    border-color: rgba(200, 80, 46, 0.3);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(180deg, #fffdf8 0%, #ffffff 100%);
+  }
+  .phase-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s;
+    opacity: 0;
+  }
+  .phase-panel.active .phase-content {
+    max-height: 800px;
+    opacity: 1;
+  }
+  .phase-num { transition: all 0.5s; }
+  .phase-panel.active .phase-num { color: var(--accent); }
+  .phase-panel.active .phase-marker {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .nav-link {
+    position: relative;
+    transition: color 0.3s;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0;
+    width: 0; height: 1.5px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-link:hover::after { width: 100%; }
+  .nav-link:hover { color: var(--accent); }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.7); opacity: 0.6; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .pulse-dot { position: relative; }
+  .pulse-dot::before {
+    content: '';
+    position: absolute; inset: -4px;
+    border-radius: 50%;
+    border: 1.5px solid var(--accent);
+    animation: pulse-ring 2.5s ease-out infinite;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track {
+    display: flex;
+    animation: marquee 80s linear infinite;
+    width: max-content;
+  }
+
+  .big-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+  }
+
+  .accent-text { color: var(--accent); }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-warm); }
+  ::-webkit-scrollbar-thumb { background: rgba(200, 80, 46, 0.2); border-radius: 5px; border: 2px solid var(--bg-warm); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(200, 80, 46, 0.4); }
+
+  ::selection { background: rgba(200, 80, 46, 0.2); color: var(--fg); }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    padding: 0.85rem 1.4rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: var(--fg);
+    z-index: 100;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    box-shadow: var(--shadow-lg);
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  .shift-arrow {
+    position: relative;
+    overflow: hidden;
+  }
+  .shift-arrow::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(200, 80, 46, 0.4), transparent);
+    animation: shift-flow 3s ease-in-out infinite;
+  }
+  @keyframes shift-flow { to { left: 100%; } }
+
+  .featured-pill {
+    position: absolute;
+    top: -1px; right: 1.5rem;
+    background: var(--accent);
+    color: white;
+    font-size: 0.62rem;
+    font-weight: 600;
+    padding: 0.28rem 0.7rem;
+    border-radius: 0 0 8px 8px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lift { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; }
+  .lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+  .stat-num { font-variant-numeric: tabular-nums; }
+
+  .logo-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 80%; height: 100%;
+    background: radial-gradient(circle, rgba(200, 80, 46, 0.06), transparent 70%);
+    pointer-events: none;
+  }
+  .logo-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40%; left: -20%;
+    width: 70%; height: 80%;
+    background: radial-gradient(circle, rgba(45, 74, 107, 0.05), transparent 70%);
+    pointer-events: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    transition: all 0.3s;
+    box-shadow: 0 4px 14px rgba(200, 80, 46, 0.25);
+  }
+  .btn-primary:hover {
+    background: #b04528;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(200, 80, 46, 0.35);
+  }
+
+  .btn-ghost {
+    background: white;
+    border: 1px solid var(--border-strong);
+    transition: all 0.3s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .accent-line {
+    width: 32px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body class="relative">
+
+<div id="toast" class="toast"></div>
+
+<!-- Nav -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[rgba(251,248,241,0.85)] border-b border-[var(--border)]">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3 group">
+      <img src="https://z-cdn-media.chatglm.cn/files/eae02d75-931b-4b3b-a24b-e68a0580cc8e.png?auth_key=1882908811-36065ccce09c49989060ea292fb96bfa-0-24973c87e201892df6b6bcc30e002569"
+           alt="African Mining Week"
+           class="h-9 w-auto object-contain"
+           onerror="this.style.display='none'; document.getElementById('nav-fallback').style.display='flex'" />
+      <div id="nav-fallback" class="hidden items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#c8502e] via-[#b8862f] to-[#2d4a6b] flex items-center justify-center font-display font-bold text-white text-sm">A</div>
+        <span class="font-display font-semibold text-sm text-[var(--fg)]">African Mining Week</span>
+      </div>
+    </a>
+    <ul class="hidden md:flex items-center gap-8 text-sm text-[var(--muted)]">
+      <li><a href="#shift" class="nav-link">The Shift</a></li>
+      <li><a href="#streams" class="nav-link">Seven Streams</a></li>
+      <li><a href="#summary" class="nav-link">At a Glance</a></li>
+      <li><a href="#rollout" class="nav-link">Rollout</a></li>
+    </ul>
+    <a href="#strategic" class="hidden md:inline-flex items-center gap-2 text-sm btn-ghost px-4 py-2 rounded-full">
+      Strategic Point
+      <span class="w-1 h-1 rounded-full bg-[var(--accent)]"></span>
+    </a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="top" class="relative min-h-screen flex items-center tint-warm overflow-hidden">
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Floating labels -->
+  <div class="absolute inset-0 pointer-events-none z-10 hidden lg:block">
+    <div class="absolute top-[22%] left-[6%] flex items-center gap-2 text-xs text-[var(--muted)] bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[var(--border)]">
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+      <span class="tracking-widest uppercase font-medium">Investor</span>
+    </div>
+    <div class="absolute top-[38%] right-[8%] flex items-center gap-2 text-xs text-[var(--muted)] bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[var(--border)]">
+      <span class="tracking-widest uppercase font-medium">Project</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-2)]"></span>
+    </div>
+    <div class="absolute bottom-[30%] left-[14%] flex items-center gap-2 text-xs text-[var(--muted)] bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[var(--border)]">
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-3)]"></span>
+      <span class="tracking-widest uppercase font-medium">Government</span>
+    </div>
+    <div class="absolute bottom-[22%] right-[16%] flex items-center gap-2 text-xs text-[var(--muted)] bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full border border-[var(--border)]">
+      <span class="tracking-widest uppercase font-medium">Deal Room</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]"></span>
+    </div>
+  </div>
+
+  <div class="relative z-20 max-w-7xl mx-auto px-6 lg:px-10 w-full pt-24 pb-16">
+    <div class="grid lg:grid-cols-[1.5fr_1fr] gap-12 items-center">
+      <div class="reveal in">
+        <div class="flex items-center gap-3 mb-8">
+          <span class="pulse-dot w-2 h-2 rounded-full bg-[var(--accent)]"></span>
+          <span class="text-xs tracking-[0.3em] uppercase text-[var(--muted)] font-medium">Revenue Model / 2025</span>
+        </div>
+        <h1 class="font-display font-light text-[clamp(2.8rem,7.5vw,6.5rem)] leading-[0.92] tracking-[-0.04em] text-[var(--fg)]">
+          Turning three days<br/>
+          into <em class="font-normal italic accent-text">twelve months</em><br/>
+          of revenue.
+        </h1>
+        <p class="mt-8 text-lg md:text-xl text-[var(--muted)] max-w-2xl leading-relaxed">
+          How the African Mining Week platform monetizes every feature — mapping concrete, recurring revenue streams that compound between events.
+        </p>
+
+        <div class="mt-10 flex items-center gap-5">
+          <a href="#shift" class="btn-primary inline-flex items-center gap-3 font-medium px-6 py-3.5 rounded-full text-sm">
+            Explore the model
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#streams" class="text-sm text-[var(--muted)] hover:text-[var(--fg)] transition-colors inline-flex items-center gap-2">
+            Skip to streams
+          </a>
+        </div>
+      </div>
+
+      <!-- Logo feature card -->
+      <div class="reveal reveal-delay-2 hidden lg:block">
+        <div class="logo-card rounded-3xl p-10">
+          <div class="relative">
+            <div class="text-xs tracking-[0.25em] uppercase text-[var(--dim)] mb-6 font-medium">Event Portfolio</div>
+            <img src="https://z-cdn-media.chatglm.cn/files/eae02d75-931b-4b3b-a24b-e68a0580cc8e.png?auth_key=1882908811-36065ccce09c49989060ea292fb96bfa-0-24973c87e201892df6b6bcc30e002569"
+                 alt="African Mining Week"
+                 class="w-full h-auto max-h-40 object-contain mb-6"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+            <div class="hidden items-center justify-center gap-3 mb-6">
+              <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-[#c8502e] via-[#b8862f] to-[#2d4a6b] flex items-center justify-center font-display font-bold text-white text-2xl">A</div>
+              <div class="font-display font-semibold text-xl">African Mining Week</div>
+            </div>
+            <div class="border-t border-[var(--border)] pt-5">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-[var(--muted)]">Hosted by</span>
+                <span class="font-medium">Energy Capital & Power</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mt-2">
+                <span class="text-[var(--muted)]">Focus</span>
+                <span class="font-medium">Mining & Investment</span>
+              </div>
+              <div class="flex items-center justify-between text-sm mt-2">
+                <span class="text-[var(--muted)]">Format</span>
+                <span class="font-medium">Hybrid Summit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-3 mt-16 grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 max-w-4xl">
+      <div>
+        <div class="big-num text-5xl md:text-6xl text-[var(--accent)]"><span class="stat-num" data-target="7">0</span></div>
+        <div class="text-xs text-[var(--muted)] tracking-widest uppercase mt-2 font-medium">Revenue Streams</div>
+      </div>
+      <div>
+        <div class="big-num text-5xl md:text-6xl text-[var(--accent-3)]"><span class="stat-num" data-target="3">0</span></div>
+        <div class="text-xs text-[var(--muted)] tracking-widest uppercase mt-2 font-medium">Rollout Phases</div>
+      </div>
+      <div>
+        <div class="big-num text-5xl md:text-6xl text-[var(--fg)]"><span class="stat-num" data-target="365">0</span></div>
+        <div class="text-xs text-[var(--muted)] tracking-widest uppercase mt-2 font-medium">Days of Value</div>
+      </div>
+      <div>
+        <div class="big-num text-5xl md:text-6xl text-[var(--accent-2)]">∞</div>
+        <div class="text-xs text-[var(--muted)] tracking-widest uppercase mt-2 font-medium">Not Seat-Capped</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 text-[var(--muted)] text-[10px] tracking-[0.3em] uppercase font-medium">
+    <span>Scroll</span>
+    <div class="w-px h-12 bg-gradient-to-b from-[var(--accent)] to-transparent"></div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="border-y border-[var(--border)] bg-white overflow-hidden">
+  <div class="marquee-track py-4 text-sm text-[var(--muted)] font-medium">
+    <div class="flex items-center gap-12 px-6 whitespace-nowrap">
+      <span>African Mining Week</span><span class="text-[var(--accent)]">●</span>
+      <span>Angola Oil & Gas</span><span class="text-[var(--accent)]">●</span>
+      <span>Prospect Media</span><span class="text-[var(--accent)]">●</span>
+      <span>Matchmaking Engine</span><span class="text-[var(--accent)]">●</span>
+      <span>Deal-Room Booking</span><span class="text-[var(--accent)]">●</span>
+      <span>Cross-Event CRM</span><span class="text-[var(--accent)]">●</span>
+      <span>AI Briefings</span><span class="text-[var(--accent)]">●</span>
+      <span>White-Label SaaS</span><span class="text-[var(--accent)]">●</span>
+    </div>
+    <div class="flex items-center gap-12 px-6 whitespace-nowrap">
+      <span>African Mining Week</span><span class="text-[var(--accent)]">●</span>
+      <span>Angola Oil & Gas</span><span class="text-[var(--accent)]">●</span>
+      <span>Prospect Media</span><span class="text-[var(--accent)]">●</span>
+      <span>Matchmaking Engine</span><span class="text-[var(--accent)]">●</span>
+      <span>Deal-Room Booking</span><span class="text-[var(--accent)]">●</span>
+      <span>Cross-Event CRM</span><span class="text-[var(--accent)]">●</span>
+      <span>AI Briefings</span><span class="text-[var(--accent)]">●</span>
+      <span>White-Label SaaS</span><span class="text-[var(--accent)]">●</span>
+    </div>
+  </div>
+</div>
+
+<!-- THE SHIFT -->
+<section id="shift" class="relative py-32 lg:py-40 tint-cool">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal max-w-3xl mb-20">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="accent-line"></div>
+        <span class="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">01 / The Strategic Shift</span>
+      </div>
+      <h2 class="font-display font-light text-4xl md:text-6xl leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+        From a <em class="italic text-[var(--dim)]">3-day window</em> to a <em class="italic accent-text">year-round engine</em>.
+      </h2>
+      <p class="mt-8 text-lg text-[var(--muted)] leading-relaxed">
+        ECP's existing business runs on sponsorship, delegate fees, media, and advisory work around its events. A platform turns those one-off, event-bound revenues into recurring, data-driven, and scalable revenue — by digitizing access, matchmaking, and content.
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-[1fr_auto_1.4fr] gap-8 lg:gap-12 items-stretch">
+      <!-- Before -->
+      <div class="reveal reveal-delay-1 p-8 lg:p-10 rounded-2xl border border-[var(--border)] bg-white relative overflow-hidden">
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--dim)] to-transparent"></div>
+        <div class="text-xs tracking-[0.25em] uppercase text-[var(--dim)] mb-6 font-medium">Today / Event-Bound</div>
+        <div class="space-y-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Sponsorship</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Logos on banners</div>
+            </div>
+            <span class="tag">Per-event</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Delegate fees</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Single-pass purchase</div>
+            </div>
+            <span class="tag">Per-event</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Media & advisory</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Custom reports</div>
+            </div>
+            <span class="tag">Project</span>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-[var(--border)]">
+          <div class="text-[var(--dim)] text-xs tracking-widest uppercase mb-2 font-medium">Revenue Window</div>
+          <div class="font-display text-3xl text-[var(--muted)]">3 days</div>
+          <div class="text-xs text-[var(--dim)] mt-1">Capped by physical attendance</div>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div class="flex lg:flex-col items-center justify-center gap-3 reveal reveal-delay-2">
+        <div class="hidden lg:block w-px h-16 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent"></div>
+        <div class="shift-arrow relative w-12 h-12 rounded-full border border-[var(--accent)] bg-white flex items-center justify-center shadow-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="hidden lg:block w-px h-16 bg-gradient-to-b from-transparent via-[var(--accent)] to-transparent"></div>
+      </div>
+
+      <!-- After -->
+      <div class="reveal reveal-delay-3 p-8 lg:p-10 rounded-2xl border border-[rgba(200,80,46,0.25)] bg-gradient-to-br from-[#fff8f3] to-white relative overflow-hidden shadow-md">
+        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"></div>
+        <div class="text-xs tracking-[0.25em] uppercase text-[var(--accent)] mb-6 font-medium">Platform / Year-Round</div>
+        <div class="space-y-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Matchmaking subscriptions</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Intent-based, AI-powered</div>
+            </div>
+            <span class="tag tag-accent">Recurring</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Data & intelligence products</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Reports, CRM, API feeds</div>
+            </div>
+            <span class="tag tag-accent">Recurring</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Platform licensing (B2B2B)</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">White-label SaaS</div>
+            </div>
+            <span class="tag tag-accent">Recurring</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Sponsorship 2.0</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">App-native, measurable</div>
+            </div>
+            <span class="tag tag-warm">Premium</span>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium text-[var(--fg)]">Content & media subscriptions</div>
+              <div class="text-sm text-[var(--muted)] mt-0.5">Paywalled, personalized</div>
+            </div>
+            <span class="tag tag-accent">Recurring</span>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-[var(--border)]">
+          <div class="text-[var(--accent)] text-xs tracking-widest uppercase mb-2 font-medium">Revenue Window</div>
+          <div class="font-display text-3xl text-[var(--fg)]">365 days</div>
+          <div class="text-xs text-[var(--muted)] mt-1">Compounds between summits</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEVEN STREAMS -->
+<section id="streams" class="relative py-32 lg:py-40 bg-white">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal max-w-3xl mb-16">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="accent-line"></div>
+        <span class="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">02 / Seven Revenue Streams</span>
+      </div>
+      <h2 class="font-display font-light text-4xl md:text-6xl leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+        Every feature maps to <em class="italic accent-text">a check</em>.
+      </h2>
+      <p class="mt-8 text-lg text-[var(--muted)] leading-relaxed">
+        Click any stream to expand the full revenue table — mechanisms, the specific platform features that unlock each line, and the strategic context.
+      </p>
+    </div>
+
+    <div id="streams-grid" class="grid gap-4"></div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section id="summary" class="relative py-32 lg:py-40 tint-warm">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal max-w-3xl mb-16">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="accent-line"></div>
+        <span class="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">03 / At a Glance</span>
+      </div>
+      <h2 class="font-display font-light text-4xl md:text-6xl leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+        Margin, recurring, and <em class="italic accent-text">time to launch</em>.
+      </h2>
+      <p class="mt-8 text-lg text-[var(--muted)] leading-relaxed">
+        Hover any row to highlight. The bars show relative margin — longer means more profitable per dollar of revenue.
+      </p>
+    </div>
+
+    <div class="reveal rounded-2xl border border-[var(--border)] bg-white overflow-hidden shadow-md">
+      <div class="grid grid-cols-[2fr_1.2fr_1fr_2fr] gap-4 px-6 lg:px-8 py-5 border-b border-[var(--border)] text-xs tracking-[0.18em] uppercase text-[var(--muted)] font-medium bg-[var(--bg-warm)]">
+        <div>Category</div>
+        <div>Recurring</div>
+        <div>Launch</div>
+        <div class="flex items-center justify-between">
+          <span>Relative Margin</span>
+          <span class="text-[var(--dim)] normal-case tracking-normal text-[10px]">Low → Very High</span>
+        </div>
+      </div>
+      <div id="summary-rows"></div>
+    </div>
+
+    <div class="reveal mt-6 flex flex-wrap items-center gap-4 text-xs text-[var(--muted)]">
+      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[var(--accent)]"></span>Most differentiated</div>
+      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[var(--accent-2)]"></span>Highest long-term upside</div>
+      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[var(--accent-3)]"></span>Fast launch, immediate revenue</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLLOUT -->
+<section id="rollout" class="relative py-32 lg:py-40 bg-white">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal max-w-3xl mb-16">
+      <div class="flex items-center gap-3 mb-5">
+        <div class="accent-line"></div>
+        <span class="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">04 / Suggested Rollout Sequencing</span>
+      </div>
+      <h2 class="font-display font-light text-4xl md:text-6xl leading-[1.02] tracking-[-0.03em] text-[var(--fg)]">
+        Three phases. <em class="italic accent-text">Compounding leverage.</em>
+      </h2>
+      <p class="mt-8 text-lg text-[var(--muted)] leading-relaxed">
+        Start by digitizing what already works. Then monetize the platform's unique matchmaking value. Finally, become infrastructure for the entire sector.
+      </p>
+    </div>
+
+    <div class="space-y-4" id="phases-container">
+      <!-- Phase 1 -->
+      <div class="phase-panel active rounded-2xl overflow-hidden" data-phase="1">
+        <div class="p-7 lg:p-9 flex items-start gap-6 lg:gap-10">
+          <div class="phase-num font-display font-light text-5xl lg:text-7xl text-[var(--dim)] leading-none flex-shrink-0 w-20 lg:w-28">01</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="phase-marker w-2 h-2 rounded-full border border-[var(--dim)]"></span>
+              <span class="text-xs tracking-[0.25em] uppercase text-[var(--accent-3)] font-medium">Low build complexity · Immediate revenue</span>
+            </div>
+            <h3 class="font-display font-normal text-2xl lg:text-3xl tracking-tight text-[var(--fg)]">Monetize what already works, digitally</h3>
+            <p class="mt-3 text-[var(--muted)] max-w-2xl">Tiered access passes, sponsored listings and notifications, paywalled on-demand replay. Low build complexity, immediate revenue, low customer education needed.</p>
+            <div class="phase-content mt-7">
+              <div class="grid md:grid-cols-3 gap-3">
+                <div class="p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-warm)] lift">
+                  <div class="text-xs text-[var(--accent-3)] tracking-widest uppercase mb-2 font-medium">Stream 1</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Tiered delegate passes</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Standard / VIP / Government access</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-warm)] lift">
+                  <div class="text-xs text-[var(--accent-3)] tracking-widest uppercase mb-2 font-medium">Stream 2</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Sponsored listings & push</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Pinned exhibitors, targeted alerts</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[var(--border)] bg-[var(--bg-warm)] lift">
+                  <div class="text-xs text-[var(--accent-3)] tracking-widest uppercase mb-2 font-medium">Stream 5</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Paywalled replay library</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Per-session or subscription</div>
+                </div>
+              </div>
+              <div class="mt-5 flex items-center gap-3 text-xs text-[var(--muted)]">
+                <span class="tag tag-blue">Fast launch</span>
+                <span class="tag">Medium margin</span>
+                <span class="tag">Per-event + partial recurring</span>
+              </div>
+            </div>
+          </div>
+          <svg class="hidden lg:block flex-shrink-0 text-[var(--muted)] mt-2" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="phase-panel rounded-2xl overflow-hidden" data-phase="2">
+        <div class="p-7 lg:p-9 flex items-start gap-6 lg:gap-10">
+          <div class="phase-num font-display font-light text-5xl lg:text-7xl text-[var(--dim)] leading-none flex-shrink-0 w-20 lg:w-28">02</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="phase-marker w-2 h-2 rounded-full border border-[var(--dim)]"></span>
+              <span class="text-xs tracking-[0.25em] uppercase text-[var(--accent)] font-medium">Platform value exceeds event value</span>
+            </div>
+            <h3 class="font-display font-normal text-2xl lg:text-3xl tracking-tight text-[var(--fg)]">Monetize the platform's unique value: matchmaking</h3>
+            <p class="mt-3 text-[var(--muted)] max-w-2xl">Premium matchmaking subscriptions, deal-room bookings, lead-gen packages for sponsors. This is where ECP starts earning more from the platform than from the event itself.</p>
+            <div class="phase-content mt-7">
+              <div class="grid md:grid-cols-3 gap-3">
+                <div class="p-4 rounded-lg border border-[rgba(200,80,46,0.2)] bg-[var(--accent-bg)] lift">
+                  <div class="text-xs text-[var(--accent)] tracking-widest uppercase mb-2 font-medium">Stream 3</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Premium matchmaking subs</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">AI-powered, intent-based</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[rgba(200,80,46,0.2)] bg-[var(--accent-bg)] lift">
+                  <div class="text-xs text-[var(--accent)] tracking-widest uppercase mb-2 font-medium">Stream 2</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Sponsored deal-rooms</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Private, brandable meeting space</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[rgba(200,80,46,0.2)] bg-[var(--accent-bg)] lift">
+                  <div class="text-xs text-[var(--accent)] tracking-widest uppercase mb-2 font-medium">Stream 2</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Lead-gen packages</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Hot leads, warm-intro data</div>
+                </div>
+              </div>
+              <div class="mt-5 flex items-center gap-3 text-xs text-[var(--muted)]">
+                <span class="tag tag-warm">Medium launch</span>
+                <span class="tag tag-accent">Very high margin</span>
+                <span class="tag">Recurring + success fees</span>
+              </div>
+            </div>
+          </div>
+          <svg class="hidden lg:block flex-shrink-0 text-[var(--muted)] mt-2" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="phase-panel rounded-2xl overflow-hidden" data-phase="3">
+        <div class="p-7 lg:p-9 flex items-start gap-6 lg:gap-10">
+          <div class="phase-num font-display font-light text-5xl lg:text-7xl text-[var(--dim)] leading-none flex-shrink-0 w-20 lg:w-28">03</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="phase-marker w-2 h-2 rounded-full border border-[var(--dim)]"></span>
+              <span class="text-xs tracking-[0.25em] uppercase text-[var(--accent-2)] font-medium">Become infrastructure for the sector</span>
+            </div>
+            <h3 class="font-display font-normal text-2xl lg:text-3xl tracking-tight text-[var(--fg)]">Monetize data and expand beyond ECP's own events</h3>
+            <p class="mt-3 text-[var(--muted)] max-w-2xl">Intelligence products, cross-event CRM access, and white-labeling/licensing to third parties. The path from "event organizer with an app" to "investment-matchmaking infrastructure provider for the sector."</p>
+            <div class="phase-content mt-7">
+              <div class="grid md:grid-cols-3 gap-3">
+                <div class="p-4 rounded-lg border border-[rgba(184,134,47,0.25)] bg-[var(--accent-2-bg)] lift">
+                  <div class="text-xs text-[var(--accent-2)] tracking-widest uppercase mb-2 font-medium">Stream 4</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Intelligence products</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Sector interest reports, API feeds</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[rgba(184,134,47,0.25)] bg-[var(--accent-2-bg)] lift">
+                  <div class="text-xs text-[var(--accent-2)] tracking-widest uppercase mb-2 font-medium">Stream 4</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">Cross-event CRM access</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">Structured delegate/investor data</div>
+                </div>
+                <div class="p-4 rounded-lg border border-[rgba(184,134,47,0.25)] bg-[var(--accent-2-bg)] lift">
+                  <div class="text-xs text-[var(--accent-2)] tracking-widest uppercase mb-2 font-medium">Stream 6</div>
+                  <div class="font-medium text-sm text-[var(--fg)]">White-label & licensing</div>
+                  <div class="text-xs text-[var(--muted)] mt-1.5">SaaS to governments, multilaterals</div>
+                </div>
+              </div>
+              <div class="mt-5 flex items-center gap-3 text-xs text-[var(--muted)]">
+                <span class="tag tag-warm">Slow launch</span>
+                <span class="tag tag-accent">Very high margin at scale</span>
+                <span class="tag">Recurring SaaS</span>
+              </div>
+            </div>
+          </div>
+          <svg class="hidden lg:block flex-shrink-0 text-[var(--muted)] mt-2" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGIC POINT -->
+<section id="strategic" class="relative py-32 lg:py-44 tint-warm overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6 lg:px-10">
+    <div class="reveal">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="accent-line"></div>
+        <span class="text-xs tracking-[0.3em] uppercase text-[var(--accent)] font-medium">05 / Key Strategic Point</span>
+      </div>
+      <blockquote class="font-display font-light text-3xl md:text-5xl lg:text-6xl leading-[1.08] tracking-[-0.02em] text-[var(--fg)]">
+        <span class="text-[var(--muted)]">ECP's current revenue is</span> event-bound and seasonal.
+        <span class="text-[var(--muted)]">The platform's biggest opportunity isn't digitizing those existing streams — it's the shift to</span>
+        <em class="italic accent-text">recurring, year-round revenue</em>
+        <span class="text-[var(--muted)]">via matchmaking subscriptions, data products, and licensing, which keep generating value between events and are</span>
+        not capped by how many people can physically attend a single summit.
+      </blockquote>
+    </div>
+
+    <div class="reveal reveal-delay-2 mt-20 grid md:grid-cols-3 gap-6">
+      <div class="p-7 rounded-xl border border-[var(--border)] bg-white lift">
+        <div class="w-11 h-11 rounded-lg bg-[var(--accent-bg)] flex items-center justify-center text-[var(--accent)] mb-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12a9 9 0 11-6.219-8.56"/><path d="M21 3v6h-6"/></svg>
+        </div>
+        <div class="font-display text-xl mb-2 text-[var(--fg)]">Recurring</div>
+        <div class="text-sm text-[var(--muted)]">Subscriptions, success fees, and licensing that compound month over month — not per-event spikes.</div>
+      </div>
+      <div class="p-7 rounded-xl border border-[var(--border)] bg-white lift">
+        <div class="w-11 h-11 rounded-lg bg-[var(--accent-2-bg)] flex items-center justify-center text-[var(--accent-2)] mb-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>
+        </div>
+        <div class="font-display text-xl mb-2 text-[var(--fg)]">Data-Driven</div>
+        <div class="text-sm text-[var(--muted)]">Every interaction becomes sellable signal — intent, demand, sector interest — feeding back into pricing and product.</div>
+      </div>
+      <div class="p-7 rounded-xl border border-[var(--border)] bg-white lift">
+        <div class="w-11 h-11 rounded-lg bg-[var(--accent-3-bg)] flex items-center justify-center text-[var(--accent-3)] mb-4">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="font-display text-xl mb-2 text-[var(--fg)]">Scalable</div>
+        <div class="text-sm text-[var(--muted)]">Not capped by venue capacity or 3-day windows. The platform earns whether 200 or 20,000 delegates engage.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-[var(--border)] bg-white py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <img src="https://z-cdn-media.chatglm.cn/files/eae02d75-931b-4b3b-a24b-e68a0580cc8e.png?auth_key=1882908811-36065ccce09c49989060ea292fb96bfa-0-24973c87e201892df6b6bcc30e002569"
+           alt="African Mining Week"
+           class="h-8 w-auto object-contain"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'" />
+      <div class="hidden items-center gap-2.5">
+        <div class="w-7 h-7 rounded-md bg-gradient-to-br from-[#c8502e] via-[#b8862f] to-[#2d4a6b] flex items-center justify-center font-display font-bold text-white text-sm">A</div>
+        <span class="font-display font-semibold text-sm">African Mining Week</span>
+      </div>
+      <div class="text-sm">
+        <div class="text-[var(--fg)] font-medium">African Mining Week</div>
+        <div class="text-xs text-[var(--muted)]">Event & Investment Platform — Revenue Model</div>
+      </div>
+    </div>
+    <div class="text-xs text-[var(--dim)] tracking-widest uppercase font-medium">
+      Internal Strategy Document / 2025
+    </div>
+  </div>
+</footer>
+
+<script>
+const streams = [
+  {
+    n: '01',
+    title: 'Access & Registration',
+    tagline: 'Digitizes and tiers what ECP already charges for entry — with new tiers the app makes possible.',
+    recurring: 'Partially (annual pass)',
+    launch: 'Fast',
+    margin: 'Medium',
+    marginVal: 0.5,
+    accent: 'blue',
+    items: [
+      { stream: 'Tiered delegate passes (Standard / VIP / Government)', mechanism: 'Different app access levels unlock different features (e.g., VIP gets 1:1 meeting booking, government gets protocol routing).', features: ['Role-based Access & ID', 'Digital Access Pass'] },
+      { stream: 'All-access annual pass across the ECP event portfolio', mechanism: 'One subscription covers Angola Oil & Gas, African Mining Week, etc. instead of paying per event.', features: ['Portfolio-wide SSO'] },
+      { stream: 'Early-bird / dynamic pricing on passes based on in-app demand signals', mechanism: 'App usage data (session interest, matchmaking demand) informs pricing.', features: ['Personalization engine', 'AI recommendations'] },
+      { stream: 'Paid upgrade: extended post-event networking window', mechanism: 'Attendees pay to keep matchmaking/messaging access live longer than the standard 6–9 months.', features: ['Post-event networking window'] },
+      { stream: 'Virtual / hybrid attendance tier', mechanism: 'App delivers streamed sessions, chat, and limited matchmaking to remote delegates.', features: ['Content delivery', 'Live translation', 'On-demand replay'] }
+    ]
+  },
+  {
+    n: '02',
+    title: 'Sponsorship & Exhibitor',
+    tagline: 'Converts sponsorship from "logo on a banner" into measurable, app-native placements — ECP\'s largest existing revenue line, made more valuable and more premium-priced.',
+    recurring: 'Per-event',
+    launch: 'Fast',
+    margin: 'High',
+    marginVal: 0.72,
+    accent: 'warm',
+    featured: true,
+    items: [
+      { stream: 'Featured / pinned exhibitor listings', mechanism: 'Exhibitors pay for top placement in search and directory results.', features: ['Exhibitor & speaker directory', 'Search'] },
+      { stream: 'Sponsored deal-rooms', mechanism: 'Sponsors pay for a private, brandable meeting space in-app for hosting investor meetings.', features: ['Deal-room booking'] },
+      { stream: 'Sponsored push notifications / in-app banners', mechanism: 'Time-slotted, sector-targeted alerts (e.g., "Meet [Company] at Stand 12").', features: ['Push notification infrastructure'] },
+      { stream: 'Paid lead-generation packages', mechanism: 'Sponsors buy access to "hot leads" and warm-intro data on delegates who viewed their profile or attended their session.', features: ['Hot leads / warm intro feature'] },
+      { stream: 'Sponsored AI chatbot responses', mechanism: 'Chatbot surfaces a sponsor\'s project when a delegate asks about a sector/country.', features: ['AI chatbot'] },
+      { stream: 'Branded session/track sponsorship with analytics', mechanism: 'Sponsors get a dashboard showing views, bookmarks, attendance for their sponsored content.', features: ['Session analytics', 'Content module'] },
+      { stream: 'Exhibitor booth QR / badge-scan lead capture', mechanism: 'Exhibitors pay for structured export of everyone who scanned their booth, beyond the free basic count.', features: ['Badge scan / QR exchange'] }
+    ]
+  },
+  {
+    n: '03',
+    title: 'Matchmaking & Deal-Facilitation',
+    tagline: 'The platform\'s most differentiated revenue line — nobody else in ECP\'s category monetizes matchmaking outcomes directly.',
+    recurring: 'Yes (subscriptions + success fees)',
+    launch: 'Medium',
+    margin: 'Very High',
+    marginVal: 0.94,
+    accent: 'accent',
+    featured: true,
+    items: [
+      { stream: 'Premium matchmaking subscription for investors/companies', mechanism: 'Pay for access to AI-powered intent-based matchmaking rather than basic directory browsing.', features: ['AI-powered matchmaking'] },
+      { stream: 'Success-fee or "deal facilitated" fee', mechanism: 'Small fee or revenue share triggered when a tracked meeting converts into a signed MOU/deal (self-reported or verified).', features: ['Deal / outcome tracker'] },
+      { stream: 'Paid "Global Connect" pre-event meeting requests', mechanism: 'First 3 meeting requests free, additional requests paid.', features: ['Pre-event meeting scheduling'] },
+      { stream: 'Government / ministry matchmaking packages', mechanism: 'Governments pay for curated investor introductions tied to specific licensing rounds or projects.', features: ['Deal-stage filtering', 'Project discovery feed'] },
+      { stream: 'Verified "investor-ready" project profile fee', mechanism: 'Project developers pay to have their project featured and pushed into matchmaking recommendations.', features: ['Innovations / projects discovery feed'] }
+    ]
+  },
+  {
+    n: '04',
+    title: 'Data & Intelligence Products',
+    tagline: 'Turns the platform\'s usage data into a sellable intelligence layer — high margin, reusable across ECP\'s Media & Custom Reports business.',
+    recurring: 'Yes (subscriptions)',
+    launch: 'Medium–Slow',
+    margin: 'Very High',
+    marginVal: 0.96,
+    accent: 'accent',
+    items: [
+      { stream: 'Sector / country investment interest reports', mechanism: 'Aggregated, anonymized data on what sectors/countries generated the most matchmaking and session interest across events.', features: ['Search & session analytics'] },
+      { stream: 'Delegate / investor CRM access for corporate clients', mechanism: 'Companies pay for structured access to which governments/investors attended which sessions (with consent).', features: ['Cross-event delegate CRM'] },
+      { stream: 'Custom market intelligence briefings, auto-generated', mechanism: 'AI-generated sector snapshots sold as a premium report product, an extension of ECP\'s existing custom media line.', features: ['AI-generated briefing documents'] },
+      { stream: 'API / data feed licensing to partner organizations', mechanism: 'Sell structured access to project/investment pipeline data surfaced in-app to banks, DFIs, law firms.', features: ['Project discovery feed', 'Deal tracker'] }
+    ]
+  },
+  {
+    n: '05',
+    title: 'Content & Media',
+    tagline: 'Extends ECP\'s existing media arm (Prospect, custom reports) into an always-on, app-native subscription and pay-per-view model.',
+    recurring: 'Yes (subscriptions)',
+    launch: 'Fast',
+    margin: 'High',
+    marginVal: 0.78,
+    accent: 'blue',
+    items: [
+      { stream: 'Paywalled on-demand replay library', mechanism: 'Non-attendees pay per-session or subscribe to watch keynotes/ministerial addresses after the event.', features: ['On-demand replay'] },
+      { stream: 'Prospect premium subscription', mechanism: 'Personalized news feed and analysis behind a paywall, cross-sold to app users.', features: ['Prospect integration'] },
+      { stream: 'Sponsored / branded content placements', mechanism: 'Companies pay for native placements in the personalized content feed.', features: ['Personalized content feed'] },
+      { stream: 'Multi-language translation as a paid add-on', mechanism: 'Live/recorded translation unlocked as a premium feature for non-attendees or smaller delegations.', features: ['Live audio translation', 'Captions'] },
+      { stream: 'Highlight reel and clip licensing to media outlets', mechanism: 'Press pays to license official clipped highlights.', features: ['Session clipping feature'] }
+    ]
+  },
+  {
+    n: '06',
+    title: 'Platform Licensing (B2B2B)',
+    tagline: 'The biggest long-term upside: ECP stops being just an event organizer and becomes an event-tech platform provider to others.',
+    recurring: 'Yes (SaaS)',
+    launch: 'Slow',
+    margin: 'Very High (at scale)',
+    marginVal: 0.98,
+    accent: 'warm',
+    featured: true,
+    items: [
+      { stream: 'White-label the platform to partner governments/agencies', mechanism: 'License the full stack (matchmaking, navigation, access) to a government body hosting its own energy investment forum.', features: ['Entire feature set, packaged as SaaS'] },
+      { stream: 'Platform-as-a-service for other African/LatAm investment conferences', mechanism: 'Sell subscription access to organizers in adjacent sectors (agriculture, infrastructure) outside ECP\'s own portfolio.', features: ['Portfolio architecture', 'Matchmaking engine'] },
+      { stream: 'Co-branded joint ventures with multilateral bodies', mechanism: 'Revenue share on a shared matchmaking platform used across multiple institutions\' events (e.g., AfDB, AU).', features: ['Cross-event CRM', 'Matchmaking'] }
+    ]
+  },
+  {
+    n: '07',
+    title: 'Ancillary & Transactional',
+    tagline: 'Per-transaction add-ons that ride on top of the core platform experience.',
+    recurring: 'Per-transaction',
+    launch: 'Fast',
+    margin: 'Low–Medium',
+    marginVal: 0.35,
+    accent: 'default',
+    items: [
+      { stream: 'In-app travel / logistics bookings', mechanism: 'Partner integrations for delegation travel booked through the app, with referral commission.', features: ['Navigation / logistics module'] },
+      { stream: 'Visa and protocol concierge services', mechanism: 'Given the government-heavy audience, paid concierge for VIP logistics.', features: ['Security / protocol-aware routing'] },
+      { stream: 'Merchandise / official gift store', mechanism: 'Simple e-commerce tie-in for branded merchandise.', features: ['Content module extension'] }
+    ]
+  }
+];
+
+const grid = document.getElementById('streams-grid');
+
+streams.forEach((s, idx) => {
+  const card = document.createElement('div');
+  card.className = 'stream-card rounded-2xl';
+  card.dataset.idx = idx;
+
+  const featured = s.featured ? `<div class="featured-pill">Featured</div>` : '';
+  const accentClass = s.accent === 'accent' ? 'text-[var(--accent)]' : s.accent === 'warm' ? 'text-[var(--accent-2)]' : s.accent === 'blue' ? 'text-[var(--accent-3)]' : 'text-[var(--fg)]';
+  const launchTagClass = s.launch === 'Fast' ? 'tag-blue' : s.launch === 'Medium' || s.launch === 'Medium–Slow' ? 'tag-warm' : '';
+
+  const itemsHTML = s.items.map((it, i) => `
+    <div class="item-row py-5">
+      <div class="flex items-start gap-4">
+        <div class="font-display text-xs text-[var(--dim)] mt-1 w-6 flex-shrink-0">${String(i+1).padStart(2,'0')}</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-medium text-[var(--fg)]">${it.stream}</div>
+          <div class="text-sm text-[var(--muted)] mt-1.5 leading-relaxed">${it.mechanism}</div>
+          <div class="flex flex-wrap gap-1.5 mt-3">
+            ${it.features.map(f => `<span class="tag">${f}</span>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  card.innerHTML = `
+    ${featured}
+    <button class="stream-head w-full text-left p-6 lg:p-8 flex items-start gap-6 lg:gap-8" aria-expanded="false">
+      <div class="font-display font-light text-4xl lg:text-5xl text-[var(--dim)] leading-none w-14 lg:w-20 flex-shrink-0">${s.n}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-xs tracking-[0.2em] uppercase ${accentClass} font-medium">Stream ${s.n}</span>
+          <span class="text-[var(--dim)]">·</span>
+          <span class="text-xs text-[var(--muted)]">${s.items.length} revenue line${s.items.length > 1 ? 's' : ''}</span>
+        </div>
+        <h3 class="font-display font-normal text-2xl lg:text-3xl tracking-tight text-[var(--fg)]">${s.title}</h3>
+        <p class="mt-2 text-[var(--muted)] text-sm lg:text-base max-w-3xl leading-relaxed">${s.tagline}</p>
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          <span class="tag">${s.recurring}</span>
+          <span class="tag ${launchTagClass}">${s.launch} launch</span>
+          <span class="tag ${s.margin.includes('Very High') ? 'tag-accent' : ''}">${s.margin} margin</span>
+        </div>
+      </div>
+      <div class="stream-arrow flex-shrink-0 w-10 h-10 rounded-full border border-[var(--border-strong)] bg-[var(--bg-warm)] flex items-center justify-center text-[var(--muted)]">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      </div>
+    </button>
+    <div class="stream-details">
+      <div class="px-6 lg:px-8 pb-8 pt-2">
+        <div class="border-t border-[var(--border)] pt-2">
+          ${itemsHTML}
+        </div>
+      </div>
+    </div>
+  `;
+
+  grid.appendChild(card);
+
+  const head = card.querySelector('.stream-head');
+  head.addEventListener('click', () => {
+    const expanded = card.classList.toggle('expanded');
+    head.setAttribute('aria-expanded', expanded);
+    if (expanded) {
+      showToast(`Stream ${s.n} expanded — ${s.items.length} revenue lines`);
+    }
+  });
+
+  card.addEventListener('mousemove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--mx', x + '%');
+    card.style.setProperty('--my', y + '%');
+  });
+});
+
+const summaryRows = document.getElementById('summary-rows');
+
+streams.forEach((s, idx) => {
+  const row = document.createElement('a');
+  row.href = '#streams';
+  row.className = 'reveal grid grid-cols-[2fr_1.2fr_1fr_2fr] gap-4 px-6 lg:px-8 py-5 border-b border-[var(--border)] last:border-b-0 hover:bg-[var(--bg-warm)] transition-colors group items-center';
+  row.style.setProperty('--w', s.marginVal);
+
+  const dotClass = s.featured
+    ? (s.accent === 'accent' ? 'bg-[var(--accent)]' : s.accent === 'warm' ? 'bg-[var(--accent-2)]' : 'bg-[var(--accent-3)]')
+    : (s.launch === 'Fast' ? 'bg-[var(--accent-3)]' : 'bg-[var(--muted)]');
+
+  row.innerHTML = `
+    <div class="flex items-center gap-3">
+      <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+      <div>
+        <div class="font-medium text-sm group-hover:text-[var(--accent)] transition-colors text-[var(--fg)]">${s.title}</div>
+        <div class="text-xs text-[var(--dim)] mt-0.5">Stream ${s.n}</div>
+      </div>
+    </div>
+    <div class="text-sm text-[var(--muted)]">${s.recurring}</div>
+    <div class="text-sm text-[var(--muted)]">${s.launch}</div>
+    <div class="flex items-center gap-3">
+      <div class="margin-bar flex-1">
+        <div class="margin-bar-fill"></div>
+      </div>
+      <div class="text-xs text-[var(--muted)] w-24 text-right">${s.margin}</div>
+    </div>
+  `;
+  summaryRows.appendChild(row);
+});
+
+document.querySelectorAll('.phase-panel').forEach(panel => {
+  panel.addEventListener('click', () => {
+    const wasActive = panel.classList.contains('active');
+    document.querySelectorAll('.phase-panel').forEach(p => p.classList.remove('active'));
+    if (!wasActive) {
+      panel.classList.add('active');
+      const phaseNum = panel.dataset.phase;
+      showToast(`Phase ${phaseNum} — ${phaseNum === '1' ? 'monetize what works' : phaseNum === '2' ? 'monetize matchmaking' : 'become infrastructure'}`);
+    }
+  });
+});
+
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+const counters = document.querySelectorAll('.stat-num');
+const counterIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const target = parseInt(el.dataset.target, 10);
+      const duration = 1600;
+      const start = performance.now();
+      function step(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(target * eased);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+      counterIO.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+counters.forEach(c => counterIO.observe(c));
+
+/* Hero Canvas — Very light, airy network */
+const canvas = document.getElementById('hero-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, DPR;
+let nodes = [];
+let pulses = [];
+let mouse = { x: -1000, y: -1000 };
+
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  W = canvas.offsetWidth;
+  H = canvas.offsetHeight;
+  canvas.width = W * DPR;
+  canvas.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  initNodes();
+}
+
+function initNodes() {
+  nodes = [];
+  const count = Math.min(60, Math.max(22, Math.floor((W * H) / 32000)));
+  for (let i = 0; i < count; i++) {
+    const type = Math.random();
+    nodes.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      r: type > 0.82 ? 2.2 : type > 0.55 ? 1.4 : 1,
+      type: type > 0.82 ? 'accent' : type > 0.55 ? 'warm' : 'blue',
+      phase: Math.random() * Math.PI * 2
+    });
+  }
+}
+
+function spawnPulse() {
+  if (nodes.length < 2) return;
+  const i = Math.floor(Math.random() * nodes.length);
+  let j, tries = 0;
+  do {
+    j = Math.floor(Math.random() * nodes.length);
+    tries++;
+  } while (j === i && tries < 5);
+  const dx = nodes[i].x - nodes[j].x;
+  const dy = nodes[i].y - nodes[j].y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  if (dist < 220 && dist > 40) {
+    pulses.push({
+      a: i, b: j,
+      t: 0,
+      speed: 0.008 + Math.random() * 0.01,
+      color: Math.random() > 0.5 ? '200, 80, 46' : '184, 134, 47'
+    });
+  }
+}
+
+setInterval(spawnPulse, 900);
+
+const CONNECTION_DIST = 130;
+
+function draw() {
+  // Very subtle warm fade — keeps the background light
+  ctx.fillStyle = 'rgba(251, 248, 241, 0.5)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Update nodes
+  for (const n of nodes) {
+    n.x += n.vx;
+    n.y += n.vy;
+    n.phase += 0.012;
+
+    if (n.x < -20) n.x = W + 20;
+    if (n.x > W + 20) n.x = -20;
+    if (n.y < -20) n.y = H + 20;
+    if (n.y > H + 20) n.y = -20;
+
+    const dx = mouse.x - n.x;
+    const dy = mouse.y - n.y;
+    const d2 = dx*dx + dy*dy;
+    if (d2 < 14400) {
+      const d = Math.sqrt(d2);
+      const force = (1 - d / 120) * 0.35;
+      n.x -= (dx / d) * force;
+      n.y -= (dy / d) * force;
+    }
+  }
+
+  // Connections — very faint
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      const d2 = dx*dx + dy*dy;
+      if (d2 < CONNECTION_DIST * CONNECTION_DIST) {
+        const d = Math.sqrt(d2);
+        const alpha = (1 - d / CONNECTION_DIST) * 0.1;
+        ctx.strokeStyle = `rgba(200, 80, 46, ${alpha})`;
+        ctx.lineWidth = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Pulses — soft traveling dots
+  pulses = pulses.filter(p => p.t < 1);
+  for (const p of pulses) {
+    p.t += p.speed;
+    const a = nodes[p.a], b = nodes[p.b];
+    if (!a || !b) continue;
+    const x = a.x + (b.x - a.x) * p.t;
+    const y = a.y + (b.y - a.y) * p.t;
+
+    const trailLen = 0.15;
+    const tx = a.x + (b.x - a.x) * Math.max(0, p.t - trailLen);
+    const ty = a.y + (b.y - a.y) * Math.max(0, p.t - trailLen);
+    const grad = ctx.createLinearGradient(tx, ty, x, y);
+    grad.addColorStop(0, `rgba(${p.color}, 0)`);
+    grad.addColorStop(1, `rgba(${p.color}, 0.7)`);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+
+    // Soft head
+    const headGrad = ctx.createRadialGradient(x, y, 0, x, y, 8);
+    headGrad.addColorStop(0, `rgba(${p.color}, 0.3)`);
+    headGrad.addColorStop(1, `rgba(${p.color}, 0)`);
+    ctx.fillStyle = headGrad;
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = `rgba(${p.color}, 0.9)`;
+    ctx.beginPath();
+    ctx.arc(x, y, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Nodes — small, soft colored dots
+  for (const n of nodes) {
+    const pulse = Math.sin(n.phase) * 0.25 + 1;
+    if (n.type === 'accent') {
+      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5 * pulse);
+      g.addColorStop(0, 'rgba(200, 80, 46, 0.15)');
+      g.addColorStop(1, 'rgba(200, 80, 46, 0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r * 5 * pulse, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(200, 80, 46, 0.85)';
+    } else if (n.type === 'warm') {
+      ctx.fillStyle = 'rgba(160, 101, 48, 0.7)';
+    } else {
+      ctx.fillStyle = 'rgba(45, 74, 107, 0.45)';
+    }
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  requestAnimationFrame(draw);
+}
+
+window.addEventListener('resize', resize);
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+canvas.addEventListener('mouseleave', () => {
+  mouse.x = -1000;
+  mouse.y = -1000;
+});
+
+resize();
+draw();
+
+const sections = ['shift', 'streams', 'summary', 'rollout', 'strategic'];
+const navLinks = document.querySelectorAll('.nav-link');
+const sectionIO = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      navLinks.forEach(l => {
+        if (l.getAttribute('href') === '#' + id) {
+          l.style.color = 'var(--accent)';
+        } else {
+          l.style.color = '';
+        }
+      });
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) sectionIO.observe(el);
+});
+
+setTimeout(() => {
+  const first = document.querySelector('.stream-card');
+  if (first) first.classList.add('expanded');
+}, 600);
+</script>
+
+</body>
+</html>

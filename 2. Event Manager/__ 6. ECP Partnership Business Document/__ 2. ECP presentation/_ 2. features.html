@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECP Event App System — Energy Capital & Power</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,800;9..144,900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#F7F2E8;
+    --bg-alt:#EFE8D7;
+    --bg-deep:#E8DFC9;
+    --fg:#161B26;
+    --fg-soft:#2C3344;
+    --muted:#6B7588;
+    --coral:#E94B3C;
+    --amber:#E8743B;
+    --steel:#1F4E66;
+    --gold:#C8A464;
+    --teal:#0E7C7B;
+    --card:#FFFFFF;
+    --border:rgba(22,27,38,0.08);
+    --shadow-sm:0 4px 14px -6px rgba(22,27,38,0.12);
+    --shadow-md:0 18px 50px -22px rgba(22,27,38,0.18);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--fg);
+    margin:0;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+  .font-display{
+    font-family:'Fraunces',serif;
+    font-variation-settings:"opsz" 144,"SOFT" 50;
+    letter-spacing:-0.02em;
+  }
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:0.35;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  
+  .orb{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(80px);
+    opacity:0.45;
+    pointer-events:none;
+    z-index:0;
+  }
+  .orb-1{width:520px;height:520px;background:radial-gradient(circle,#E94B3C,transparent 70%);top:-150px;left:-100px;animation:drift1 22s ease-in-out infinite}
+  .orb-2{width:480px;height:480px;background:radial-gradient(circle,#E8743B,transparent 70%);top:30%;right:-150px;animation:drift2 28s ease-in-out infinite}
+  .orb-3{width:600px;height:600px;background:radial-gradient(circle,#1F4E66,transparent 70%);bottom:-200px;left:30%;animation:drift3 32s ease-in-out infinite}
+  @keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,60px)}}
+  @keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-100px,40px)}}
+  @keyframes drift3{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,-50px)}}
+  
+  .nav-bar{
+    position:fixed;top:0;left:0;right:0;
+    z-index:50;
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    background:rgba(247,242,232,0.7);
+    border-bottom:1px solid var(--border);
+    transition:all .4s ease;
+  }
+  .nav-link{
+    position:relative;
+    color:var(--fg-soft);
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:0.02em;
+    transition:color .3s;
+  }
+  .nav-link:hover{color:var(--coral)}
+  .nav-link::after{
+    content:'';
+    position:absolute;left:0;bottom:-6px;
+    width:0;height:1.5px;
+    background:var(--coral);
+    transition:width .35s ease;
+  }
+  .nav-link:hover::after{width:100%}
+  
+  .hero{
+    position:relative;
+    min-height:100vh;
+    padding-top:90px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .wave-container{
+    position:absolute;
+    bottom:0;left:0;right:0;
+    height:60%;
+    pointer-events:none;
+    z-index:1;
+  }
+  .wave-svg{
+    position:absolute;
+    bottom:0;left:0;
+    width:200%;
+    height:100%;
+    animation:waveSlide 18s linear infinite;
+  }
+  .wave-svg.w2{animation-duration:26s;animation-direction:reverse;opacity:0.6}
+  .wave-svg.w3{animation-duration:34s;opacity:0.4}
+  @keyframes waveSlide{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+  
+  .hero-content{position:relative;z-index:5}
+  
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 16px;
+    background:rgba(255,255,255,0.6);
+    border:1px solid var(--border);
+    border-radius:999px;
+    font-size:12px;font-weight:600;
+    letter-spacing:0.12em;text-transform:uppercase;
+    color:var(--steel);
+    backdrop-filter:blur(8px);
+  }
+  .hero-eyebrow .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--coral);
+    box-shadow:0 0 0 0 rgba(233,75,60,0.6);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(233,75,60,0.6)}
+    70%{box-shadow:0 0 0 10px rgba(233,75,60,0)}
+    100%{box-shadow:0 0 0 0 rgba(233,75,60,0)}
+  }
+  
+  .hero-title{
+    font-size:clamp(48px,8vw,116px);
+    line-height:0.95;
+    font-weight:300;
+    color:var(--fg);
+  }
+  .hero-title em{
+    font-style:italic;
+    font-weight:500;
+    background:linear-gradient(120deg,var(--coral),var(--amber),var(--steel));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  
+  .events-marquee{
+    position:relative;
+    z-index:5;
+    overflow:hidden;
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,0.4);
+    backdrop-filter:blur(8px);
+    padding:18px 0;
+    margin-top:60px;
+  }
+  .marquee-track{
+    display:flex;
+    gap:60px;
+    width:max-content;
+    animation:marquee 40s linear infinite;
+  }
+  .marquee-item{
+    display:flex;align-items:center;gap:14px;
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:400;
+    color:var(--fg-soft);
+    white-space:nowrap;
+  }
+  .marquee-item .sep{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--amber);
+  }
+  @keyframes marquee{
+    from{transform:translateX(0)}
+    to{transform:translateX(-50%)}
+  }
+  
+  .stat-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:32px 28px;
+    transition:all .4s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg,var(--coral),var(--amber),var(--steel));
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .5s ease;
+  }
+  .stat-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .stat-card:hover::before{transform:scaleX(1)}
+  .stat-num{
+    font-family:'Fraunces',serif;
+    font-size:64px;
+    font-weight:600;
+    line-height:1;
+    color:var(--fg);
+  }
+  
+  .section-pad{padding:120px 0}
+  .section-eyebrow{
+    display:flex;align-items:center;gap:14px;
+    font-size:12px;font-weight:600;
+    letter-spacing:0.18em;text-transform:uppercase;
+    color:var(--coral);
+    margin-bottom:24px;
+  }
+  .section-eyebrow .line{
+    width:40px;height:1px;
+    background:var(--coral);
+  }
+  .section-title{
+    font-family:'Fraunces',serif;
+    font-size:clamp(36px,5vw,68px);
+    line-height:1.05;
+    font-weight:400;
+    letter-spacing:-0.02em;
+  }
+  
+  .category-block{
+    position:relative;
+    padding:90px 0;
+    border-top:1px solid var(--border);
+  }
+  .category-block.highlight{
+    background:linear-gradient(180deg,transparent 0%,rgba(233,75,60,0.04) 50%,transparent 100%);
+  }
+  .cat-number{
+    font-family:'Fraunces',serif;
+    font-size:200px;
+    font-weight:200;
+    line-height:0.8;
+    color:transparent;
+    -webkit-text-stroke:1.5px rgba(22,27,38,0.12);
+    position:absolute;
+    top:60px;right:5%;
+    pointer-events:none;
+    user-select:none;
+  }
+  .cat-tag{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px;
+    background:var(--bg-deep);
+    border:1px solid var(--border);
+    border-radius:999px;
+    font-size:11px;font-weight:600;
+    letter-spacing:0.1em;text-transform:uppercase;
+    color:var(--fg-soft);
+  }
+  
+  .feature-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:28px;
+    transition:all .45s cubic-bezier(0.2,0.7,0.3,1);
+    position:relative;
+    overflow:hidden;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  }
+  .feature-card::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    background:linear-gradient(135deg,rgba(233,75,60,0.06),rgba(31,78,102,0.04));
+    opacity:0;
+    transition:opacity .45s ease;
+    pointer-events:none;
+  }
+  .feature-card:hover{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-md);
+    border-color:rgba(233,75,60,0.25);
+  }
+  .feature-card:hover::after{opacity:1}
+  .feature-index{
+    font-family:'Fraunces',serif;
+    font-size:14px;
+    font-weight:500;
+    color:var(--coral);
+    letter-spacing:0.05em;
+    margin-bottom:14px;
+  }
+  .feature-title{
+    font-family:'Fraunces',serif;
+    font-size:21px;
+    font-weight:500;
+    line-height:1.25;
+    color:var(--fg);
+    margin-bottom:10px;
+  }
+  .feature-desc{
+    font-size:14.5px;
+    color:var(--muted);
+    line-height:1.6;
+    flex:1;
+  }
+  .feature-meta{
+    display:flex;flex-wrap:wrap;gap:8px;
+    margin-top:18px;
+    padding-top:18px;
+    border-top:1px dashed var(--border);
+  }
+  .meta-pill{
+    font-size:11px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    background:var(--bg-deep);
+    color:var(--fg-soft);
+    letter-spacing:0.02em;
+  }
+  .meta-pill.bench{
+    background:rgba(31,78,102,0.08);
+    color:var(--steel);
+  }
+  
+  .deal-callout{
+    background:linear-gradient(135deg,#161B26 0%,#1F4E66 100%);
+    border-radius:28px;
+    padding:60px 50px;
+    color:#F7F2E8;
+    position:relative;
+    overflow:hidden;
+  }
+  .deal-callout::before{
+    content:'';
+    position:absolute;
+    top:-50%;right:-20%;
+    width:600px;height:600px;
+    background:radial-gradient(circle,rgba(233,75,60,0.4),transparent 60%);
+    filter:blur(60px);
+  }
+  .deal-callout .quote-mark{
+    font-family:'Fraunces',serif;
+    font-size:140px;
+    line-height:0.5;
+    color:var(--coral);
+    opacity:0.7;
+  }
+  
+  .phase-card{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:40px 32px;
+    transition:all .4s ease;
+    overflow:hidden;
+  }
+  .phase-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .phase-bar{
+    position:absolute;
+    top:0;left:0;right:0;
+    height:5px;
+    background:var(--bg-deep);
+    overflow:hidden;
+  }
+  .phase-bar-fill{
+    height:100%;
+    transform-origin:left;
+    transform:scaleX(0);
+    transition:transform 1.6s cubic-bezier(0.2,0.8,0.3,1);
+  }
+  .phase-card.reveal .phase-bar-fill{transform:scaleX(1)}
+  .phase-1 .phase-bar-fill{background:linear-gradient(90deg,#E94B3C,#E8743B);width:40%}
+  .phase-2 .phase-bar-fill{background:linear-gradient(90deg,#E8743B,#C8A464);width:70%}
+  .phase-3 .phase-bar-fill{background:linear-gradient(90deg,#C8A464,#1F4E66);width:100%}
+  .phase-label{
+    font-family:'Fraunces',serif;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--coral);
+    margin-bottom:12px;
+  }
+  .phase-title{
+    font-family:'Fraunces',serif;
+    font-size:30px;
+    font-weight:500;
+    color:var(--fg);
+    margin-bottom:20px;
+  }
+  .phase-list li{
+    display:flex;align-items:flex-start;gap:10px;
+    padding:8px 0;
+    color:var(--fg-soft);
+    font-size:14.5px;
+    border-top:1px dashed var(--border);
+  }
+  .phase-list li:first-child{border-top:none}
+  .phase-list .check{
+    color:var(--coral);
+    font-size:12px;
+    margin-top:5px;
+    flex-shrink:0;
+  }
+  
+  .diff-block{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:48px;
+    position:relative;
+  }
+  .diff-compare{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+  }
+  .diff-side{
+    padding:32px;
+  }
+  .diff-side.left{background:var(--bg-alt);border-right:1px solid var(--border)}
+  .diff-side.right{background:linear-gradient(135deg,#161B26,#1F4E66);color:#F7F2E8}
+  .diff-side h4{
+    font-family:'Fraunces',serif;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    opacity:0.7;
+  }
+  .diff-side.right h4{color:var(--amber)}
+  
+  footer{
+    background:var(--fg);
+    color:rgba(247,242,232,0.7);
+    padding:80px 0 40px;
+    position:relative;
+    overflow:hidden;
+  }
+  footer::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--coral),var(--amber),var(--steel),transparent);
+  }
+  
+  .reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:opacity .9s cubic-bezier(0.2,0.7,0.3,1),transform .9s cubic-bezier(0.2,0.7,0.3,1);
+  }
+  .reveal.visible{opacity:1;transform:translateY(0)}
+  .reveal-stagger > *{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .8s cubic-bezier(0.2,0.7,0.3,1),transform .8s cubic-bezier(0.2,0.7,0.3,1);
+  }
+  .reveal-stagger.visible > *{opacity:1;transform:translateY(0)}
+  .reveal-stagger.visible > *:nth-child(1){transition-delay:0s}
+  .reveal-stagger.visible > *:nth-child(2){transition-delay:.08s}
+  .reveal-stagger.visible > *:nth-child(3){transition-delay:.16s}
+  .reveal-stagger.visible > *:nth-child(4){transition-delay:.24s}
+  .reveal-stagger.visible > *:nth-child(5){transition-delay:.32s}
+  .reveal-stagger.visible > *:nth-child(6){transition-delay:.40s}
+  .reveal-stagger.visible > *:nth-child(7){transition-delay:.48s}
+  .reveal-stagger.visible > *:nth-child(8){transition-delay:.56s}
+  .reveal-stagger.visible > *:nth-child(9){transition-delay:.64s}
+  
+  .logo-img{
+    height:42px;
+    width:auto;
+    transition:transform .4s ease;
+  }
+  .logo-img:hover{transform:scale(1.03)}
+  .hero-logo{
+    height:90px;
+    width:auto;
+    filter:drop-shadow(0 6px 20px rgba(22,27,38,0.12));
+  }
+  
+  .scroll-ind{
+    position:absolute;
+    bottom:30px;left:50%;
+    transform:translateX(-50%);
+    z-index:5;
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-line{
+    width:1px;height:40px;
+    background:linear-gradient(to bottom,var(--muted),transparent);
+    position:relative;
+    overflow:hidden;
+  }
+  .scroll-line::after{
+    content:'';
+    position:absolute;
+    top:-40px;left:0;
+    width:1px;height:40px;
+    background:var(--coral);
+    animation:scrollDot 2s ease-in-out infinite;
+  }
+  @keyframes scrollDot{
+    0%{top:-40px}
+    100%{top:40px}
+  }
+  
+  @media (max-width:768px){
+    .cat-number{font-size:120px;right:0;top:30px}
+    .hero-title{font-size:54px}
+    .deal-callout{padding:40px 28px}
+    .diff-compare{grid-template-columns:1fr}
+    .diff-side.left{border-right:none;border-bottom:1px solid var(--border)}
+    .diff-block{padding:28px}
+  }
+  
+  ::selection{background:var(--coral);color:#fff}
+  
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--steel);border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--coral)}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<nav class="nav-bar">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <img src="https://z-cdn-media.chatglm.cn/files/df09e943-81d8-4f47-ab95-04a9f962c5aa.png?auth_key=1882910064-91c8f4ce6b0c4b668d39a0271e838f59-0-6b7dbb3365f84438f3764c28c014e0d7" alt="African Mining Week" class="logo-img">
+    </a>
+    <div class="hidden lg:flex items-center gap-9">
+      <a href="#problem" class="nav-link">The Problem</a>
+      <a href="#overview" class="nav-link">Overview</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#roadmap" class="nav-link">Roadmap</a>
+      <a href="#difference" class="nav-link">Difference</a>
+    </div>
+    <a href="#features" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white transition-all hover:shadow-lg" style="background:linear-gradient(120deg,#E94B3C,#E8743B)">
+      Explore System
+      <i class="fa-solid fa-arrow-right text-xs"></i>
+    </a>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="wave-container">
+    <svg class="wave-svg w3" viewBox="0 0 2880 320" preserveAspectRatio="none">
+      <path d="M0,160 C480,260 960,60 1440,140 C1920,220 2400,80 2880,160 L2880,320 L0,320 Z" fill="rgba(31,78,102,0.10)"/>
+    </svg>
+    <svg class="wave-svg w2" viewBox="0 0 2880 320" preserveAspectRatio="none">
+      <path d="M0,200 C480,100 960,280 1440,200 C1920,120 2400,300 2880,200 L2880,320 L0,320 Z" fill="rgba(232,116,59,0.15)"/>
+    </svg>
+    <svg class="wave-svg" viewBox="0 0 2880 320" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="heroWave" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#E94B3C" stop-opacity="0.35"/>
+          <stop offset="50%" stop-color="#E8743B" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#1F4E66" stop-opacity="0.2"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,180 C480,80 960,260 1440,180 C1920,100 2400,280 2880,180 L2880,320 L0,320 Z" fill="url(#heroWave)"/>
+    </svg>
+  </div>
+  
+  <div class="hero-content max-w-7xl mx-auto px-6 lg:px-10 w-full">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10 mb-10">
+      <div class="flex-1">
+        <div class="hero-eyebrow mb-8">
+          <span class="dot"></span>
+          <span>Strategic Product Brief · 2025</span>
+        </div>
+        <h1 class="hero-title font-display">
+          Where the world's<br>
+          energy <em>deals</em><br>
+          get done.
+        </h1>
+      </div>
+      <div class="lg:max-w-sm">
+        <img src="https://z-cdn-media.chatglm.cn/files/df09e943-81d8-4f47-ab95-04a9f962c5aa.png?auth_key=1882910064-91c8f4ce6b0c4b668d39a0271e838f59-0-6b7dbb3365f84438f3764c28c014e0d7" alt="African Mining Week" class="hero-logo mb-6">
+        <p class="text-sm" style="color:var(--fg-soft)">
+          A proposed portfolio-wide event app system for <strong>Energy Capital & Power</strong> — built not for content consumption, but for <em>capital formation</em> across seven high-stakes events.
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="events-marquee">
+    <div class="marquee-track">
+      <div class="marquee-item">Angola Oil & Gas<span class="sep"></span></div>
+      <div class="marquee-item">African Mining Week<span class="sep"></span></div>
+      <div class="marquee-item">Venezuela Energy Week<span class="sep"></span></div>
+      <div class="marquee-item">MSGBC Oil, Gas & Power<span class="sep"></span></div>
+      <div class="marquee-item">Libya Energy & Economic Summit<span class="sep"></span></div>
+      <div class="marquee-item">Invest in Africa Energy<span class="sep"></span></div>
+      <div class="marquee-item">Congo Energy & Investment Forum<span class="sep"></span></div>
+      <div class="marquee-item">Angola Oil & Gas<span class="sep"></span></div>
+      <div class="marquee-item">African Mining Week<span class="sep"></span></div>
+      <div class="marquee-item">Venezuela Energy Week<span class="sep"></span></div>
+      <div class="marquee-item">MSGBC Oil, Gas & Power<span class="sep"></span></div>
+      <div class="marquee-item">Libya Energy & Economic Summit<span class="sep"></span></div>
+      <div class="marquee-item">Invest in Africa Energy<span class="sep"></span></div>
+      <div class="marquee-item">Congo Energy & Investment Forum<span class="sep"></span></div>
+    </div>
+  </div>
+  
+  <div class="scroll-ind">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- Problem & Pain Points Section (Added) -->
+<section class="section-pad" id="problem" style="background:linear-gradient(180deg,var(--bg) 0%,var(--bg-alt) 100%);position:relative;z-index:2">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal mb-16">
+      <div class="section-eyebrow"><span class="line"></span>The Core Problem</div>
+      <h2 class="section-title font-display">
+        Built for content consumption, <br>
+        <em style="font-style:italic;color:var(--coral)">not capital formation.</em>
+      </h2>
+    </div>
+    
+    <div class="grid lg:grid-cols-2 gap-10 mb-20">
+      <div class="reveal">
+        <p class="text-lg mb-6" style="color:var(--fg-soft)">
+          Energy Capital & Power runs high-stakes events where attendees include heads of state, ministers, NOCs/IOCs, and institutional investors. The core purpose is <strong>deal-making</strong>, not just content delivery.
+        </p>
+        <p class="text-lg" style="color:var(--fg-soft)">
+          However, most benchmark conference apps (WEF, SXSW, CES) are built for <strong>single events</strong> and focus on <strong>content consumption</strong>. This creates critical pain points for ECP's unique, multi-event, high-stakes audience.
+        </p>
+      </div>
+      <div class="reveal">
+        <div class="deal-callout h-full" style="padding:40px">
+           <div class="relative z-10 h-full flex flex-col justify-center">
+             <div class="quote-mark font-display mb-4">"</div>
+             <p class="font-display text-xl lg:text-2xl font-light leading-snug" style="color:#F7F2E8">
+               Most benchmark apps are built for content consumption at a single event. ECP needs a system built for <em style="color:var(--amber);font-style:italic">capital formation</em> across a recurring portfolio.
+             </p>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-stagger grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--coral)"><i class="fa-solid fa-ban"></i></div>
+        <h3 class="feature-title">The Single-Event Trap</h3>
+        <p class="feature-desc">Generic apps treat each event in isolation. ECP needs one system spanning a 7-event portfolio, requiring cross-series identity and continuity.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--amber)"><i class="fa-solid fa-user-tie"></i></div>
+        <h3 class="feature-title">VIP & Protocol Complexity</h3>
+        <p class="feature-desc">Heads of state and ministers require role-based access tiers, security-aware routing, and embassy-level discretion that standard apps lack.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--steel)"><i class="fa-solid fa-link-slash"></i></div>
+        <h3 class="feature-title">Lost Deal Continuity</h3>
+        <p class="feature-desc">Deals take time. Standard apps cut access immediately post-event. ECP needs a 6-9 month window to sustain networking and track outcomes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--coral)"><i class="fa-solid fa-language"></i></div>
+        <h3 class="feature-title">Multilingual Barriers</h3>
+        <p class="feature-desc">Francophone, Lusophone, Arabic, and English delegations struggle without live translation and real-time captions tailored to the region.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--amber)"><i class="fa-solid fa-handshake-slash"></i></div>
+        <h3 class="feature-title">Shallow Matchmaking</h3>
+        <p class="feature-desc">Basic directories don't filter by business intent, deal stage, or project size. ECP needs AI-driven matchmaking focused on capital seeking/offering.</p>
+      </div>
+      <div class="feature-card">
+        <div class="text-3xl mb-4" style="color:var(--steel)"><i class="fa-solid fa-chart-line"></i></div>
+        <h3 class="feature-title">Untracked Outcomes</h3>
+        <p class="feature-desc">Without linking meetings to follow-up status, ECP cannot measure its core KPI: "deals facilitated." The ROI gap remains unsolved.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Overview / Stats -->
+<section class="section-pad" id="overview" style="position:relative;z-index:2">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal mb-16">
+      <div class="section-eyebrow"><span class="line"></span>System at a Glance</div>
+      <h2 class="section-title font-display">One system. Seven events.<br>A single mandate: <em style="font-style:italic;color:var(--coral)">bankable deals.</em></h2>
+    </div>
+    
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 reveal-stagger">
+      <div class="stat-card">
+        <div class="stat-num font-display" data-count="7">0</div>
+        <div class="mt-3 text-sm font-semibold uppercase tracking-wider" style="color:var(--muted)">ECP Events</div>
+        <p class="mt-2 text-sm" style="color:var(--fg-soft)">A portfolio spanning Africa, MENA, and Latin America.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num font-display" data-count="45">0</div>
+        <div class="mt-3 text-sm font-semibold uppercase tracking-wider" style="color:var(--muted)">Proposed Features</div>
+        <p class="mt-2 text-sm" style="color:var(--fg-soft)">Across eight integrated functional categories.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num font-display" data-count="9">0</div>
+        <div class="mt-3 text-sm font-semibold uppercase tracking-wider" style="color:var(--muted)">Month Window</div>
+        <p class="mt-2 text-sm" style="color:var(--fg-soft)">Post-event cross-series networking access.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num font-display" data-count="3">0</div>
+        <div class="mt-3 text-sm font-semibold uppercase tracking-wider" style="color:var(--muted)">Build Phases</div>
+        <p class="mt-2 text-sm" style="color:var(--fg-soft)">From MVP to fully cross-event continuity platform.</p>
+      </div>
+    </div>
+    
+    <div class="grid lg:grid-cols-12 gap-10 mt-24 reveal">
+      <div class="lg:col-span-5">
+        <div class="section-eyebrow"><span class="line"></span>The Brief</div>
+        <h3 class="font-display text-3xl lg:text-4xl font-medium leading-tight" style="color:var(--fg)">
+          Adapted from gold-standard conference apps — re-engineered for capital formation.
+        </h3>
+      </div>
+      <div class="lg:col-span-7 space-y-5 text-base" style="color:var(--fg-soft)">
+        <p>
+          Energy Capital & Power runs a portfolio of high-profile energy and mining investment events. Attendees include <strong>heads of state, ministers, NOCs/IOCs, and institutional investors</strong> — and the core purpose of every event is deal-making, not just content delivery.
+        </p>
+        <p>
+          The feature list below adapts patterns from WEF, CES, SXSW, MWC, and FMF — plus gold-standard apps like Salesforce Events, Money 20/20, and AWS re:Invent — to ECP's specific context: a multi-event, high-stakes, government-and-investor audience where facilitating bankable deals is the primary KPI.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" style="position:relative;z-index:2">
+  
+  <div class="category-block">
+    <div class="cat-number font-display">01</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-id-badge text-xs"></i>Access & ID</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Portfolio & Access</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">One system spanning all ECP events — not a single-event app. Cross-series identity, role-aware access, and a long networking tail.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 06</div>
+          <h3 class="feature-title">Cross-event single sign-on</h3>
+          <p class="feature-desc">One account usable across all ECP events — Angola Oil & Gas, African Mining Week, Venezuela Energy Week, and the rest of the portfolio.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access & ID</span>
+            <span class="meta-pill bench">My MWC pattern</span>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 06</div>
+          <h3 class="feature-title">Digital Access Pass / e-badge</h3>
+          <p class="feature-desc">Generated per event and required for venue entry — replacing printed badges with a secure, scannable digital credential.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access & ID</span>
+            <span class="meta-pill bench">My MWC pattern</span>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 06</div>
+          <h3 class="feature-title">Dynamic QR badge verification</h3>
+          <p class="feature-desc">Rotating QR for identity verification and check-in — preventing screenshot fraud while speeding up entry lines.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access & ID</span>
+            <span class="meta-pill bench">CES MagicBadge™</span>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 06</div>
+          <h3 class="feature-title">Role-based access tiers</h3>
+          <p class="feature-desc">Head of State/Minister, Delegate, Investor, Exhibitor, Press, ECP Staff — each with tailored views and permissions.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access & ID</span>
+            <span class="meta-pill bench">ECP-specific</span>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">05 / 06</div>
+          <h3 class="feature-title">SSO with registration system</h3>
+          <p class="feature-desc">Integrated single sign-on with ECP's event registration backend — eliminating duplicate accounts and sync lag.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access & ID</span>
+            <span class="meta-pill bench">AWS re:Invent</span>
+          </div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">06 / 06</div>
+          <h3 class="feature-title">6–9 month post-event window</h3>
+          <p class="feature-desc">Networking access persists for 6–9 months after each event before lapsing — sustaining deal momentum between gatherings.</p>
+          <div class="feature-meta">
+            <span class="meta-pill">Access / Networking</span>
+            <span class="meta-pill bench">My MWC 9-month</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">02</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-regular fa-calendar text-xs"></i>Scheduling</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Scheduling & Agenda</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">Personal agenda building, limited-seat reservations, and pre-event 1:1 meeting calendars for investor–government matchmaking.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 06</div>
+          <h3 class="feature-title">Personal agenda builder</h3>
+          <p class="feature-desc">Filter sessions and panels by sector (oil & gas, mining, power) and country — combining WEF's filtered browse with SXSW's schedule builder.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">WEF + SXSW</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 06</div>
+          <h3 class="feature-title">Calendar-synced bookmarking</h3>
+          <p class="feature-desc">Session bookmarks sync to personal and corporate calendars — ensuring delegates never miss a flagged panel.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">WEF Forum Live</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 06</div>
+          <h3 class="feature-title">Limited-seat reservations</h3>
+          <p class="feature-desc">Reserve spots at ministerial roundtables and closed-door briefings — capacity-controlled, invitation-aware.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">SXSW spot reservation</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 06</div>
+          <h3 class="feature-title">Pre-event 1:1 meeting calendar</h3>
+          <p class="feature-desc">Curated meeting calendar for investor–government matchmaking, scheduled before doors open.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">Money 20/20</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">05 / 06</div>
+          <h3 class="feature-title">Conflict & change push notifications</h3>
+          <p class="feature-desc">Real-time alerts for schedule conflicts and last-minute agenda changes — so delegations can pivot instantly.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">AWS re:Invent</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">06 / 06</div>
+          <h3 class="feature-title">Cross-event consolidated view</h3>
+          <p class="feature-desc">One view of invitations, registered sessions, and confirmed meetings across all ECP events an attendee has joined.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling</span><span class="meta-pill bench">WEF invitations</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block highlight">
+    <div class="cat-number font-display" style="-webkit-text-stroke-color:rgba(233,75,60,0.18)">03</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-14">
+        <span class="cat-tag" style="background:rgba(233,75,60,0.1);color:var(--coral);border-color:rgba(233,75,60,0.2)">
+          <i class="fa-solid fa-handshake text-xs"></i>Highest-Value Category
+        </span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Networking & <em style="font-style:italic;color:var(--coral)">Deal-Making</em></h2>
+        <p class="text-lg max-w-3xl" style="color:var(--muted)">This is the highest-value category for ECP given its "deals are made here" positioning. Every feature exists to shorten the distance between intent and signature.</p>
+      </div>
+      
+      <div class="deal-callout reveal mb-12">
+        <div class="relative z-10 grid lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-2">
+            <div class="quote-mark font-display">"</div>
+          </div>
+          <div class="lg:col-span-10">
+            <p class="font-display text-2xl lg:text-3xl font-light leading-snug" style="color:#F7F2E8">
+              Every feature should ultimately answer: <em style="color:var(--amber);font-style:italic">did this help a government or project developer close a deal with an investor?</em>
+            </p>
+            <div class="mt-6 text-xs uppercase tracking-widest" style="color:rgba(247,242,232,0.6)">— Core design principle, ECP Event App System</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">01 / 09</div>
+          <h3 class="feature-title">AI-powered matchmaking</h3>
+          <p class="feature-desc">Matches investors, governments, and project developers by business intent — capital seeking vs. offering, sector, project stage.</p>
+          <div class="feature-meta"><span class="meta-pill" style="background:rgba(233,75,60,0.1);color:var(--coral)">AI & Networking</span><span class="meta-pill bench">Money 20/20</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">02 / 09</div>
+          <h3 class="feature-title">Deal-stage & company-size filters</h3>
+          <p class="feature-desc">Filter the delegate and investor directory by deal stage and company size — surfacing only the relevant counterparts.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">Money 20/20</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">03 / 09</div>
+          <h3 class="feature-title">Global Connect meeting requests</h3>
+          <p class="feature-desc">Pre-event meeting requests between ministries, NOCs, and investors — modeled on FMF's curated matchmaking layer.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">FMF Global Connect</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">04 / 09</div>
+          <h3 class="feature-title">Digital business card exchange</h3>
+          <p class="feature-desc">Badge-scan delegation profile exchange — replacing paper business cards with structured, CRM-ready records.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">WEF Forum Live</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">05 / 09</div>
+          <h3 class="feature-title">"Hot leads" warm introductions</h3>
+          <p class="feature-desc">A warm-introduction feature for investors and business development teams — prioritizing the highest-potential connections.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">Money 20/20</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">06 / 09</div>
+          <h3 class="feature-title">Private, discreet messaging</h3>
+          <p class="feature-desc">Secure attendee messaging with delegation/embassy-level discretion — end-to-end private, no public channels.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">FMF App</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">07 / 09</div>
+          <h3 class="feature-title">Delegation & sponsor directory</h3>
+          <p class="feature-desc">Government delegations, exhibitors, and sponsors — each with verified profiles and meeting-request routing.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">My MWC</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">08 / 09</div>
+          <h3 class="feature-title">Deal-room booking</h3>
+          <p class="feature-desc">Sponsors and exhibitors book private rooms for meetings and signings — directly inside the app, calendar-aware.</p>
+          <div class="feature-meta"><span class="meta-pill">Scheduling / Networking</span><span class="meta-pill bench">Money 20/20</span></div>
+        </article>
+        <article class="feature-card" style="border-color:rgba(233,75,60,0.2)">
+          <div class="feature-index">09 / 09</div>
+          <h3 class="feature-title">LinkedIn participation sharing</h3>
+          <p class="feature-desc">Delegates share participation and outcomes to LinkedIn — extending reach and reinforcing ECP's brand gravity.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">My MWC</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">04</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-location-dot text-xs"></i>Navigation</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Navigation & On-Site Logistics</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">From blue-dot indoor positioning to protocol-aware VIP routing — built for the scale and security ECP audiences demand.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 05</div>
+          <h3 class="feature-title">Interactive venue maps</h3>
+          <p class="feature-desc">Multi-hall, multi-pavilion maps for every event venue — consistent interaction model across the portfolio.</p>
+          <div class="feature-meta"><span class="meta-pill">Navigation</span><span class="meta-pill bench">My MWC, FMF</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 05</div>
+          <h3 class="feature-title">Turn-by-turn indoor navigation</h3>
+          <p class="feature-desc">Routing to sessions, ministerial pavilions, and meeting rooms — not just a map, but guided directions.</p>
+          <div class="feature-meta"><span class="meta-pill">Navigation</span><span class="meta-pill bench">WEF Forum Live</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 05</div>
+          <h3 class="feature-title">Blue-dot precision positioning</h3>
+          <p class="feature-desc">Pointr-style beacon + WiFi fusion for large convention centers — CTICC, Simon Bolivar, and beyond.</p>
+          <div class="feature-meta"><span class="meta-pill">Navigation</span><span class="meta-pill bench">Salesforce Events</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 05</div>
+          <h3 class="feature-title">Live shuttle & transport info</h3>
+          <p class="feature-desc">Real-time shuttle wait-times and routes for delegations moving between venues and hotels.</p>
+          <div class="feature-meta"><span class="meta-pill">Navigation</span><span class="meta-pill bench">CES 2026</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">05 / 05</div>
+          <h3 class="feature-title">Protocol-aware VIP routing</h3>
+          <p class="feature-desc">Security- and protocol-aware routing for VIP and head-of-state movements — an ECP-specific extension.</p>
+          <div class="feature-meta"><span class="meta-pill">Navigation</span><span class="meta-pill bench">ECP-specific</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">05</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-headphones text-xs"></i>Content</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Content & Session Delivery</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">Multilingual, on-demand, and clipped — content infrastructure for Francophone, Lusophone, Arabic, and English delegations.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 06</div>
+          <h3 class="feature-title">Live multi-language audio translation</h3>
+          <p class="feature-desc">Real-time translation for sessions — relevant given Francophone, Lusophone, Arabic, and English delegations.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">CES 2026, adapted</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 06</div>
+          <h3 class="feature-title">AI real-time captions & transcripts</h3>
+          <p class="feature-desc">Live captions during sessions, with searchable post-session transcripts for follow-up reference.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">Salesforce Events</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 06</div>
+          <h3 class="feature-title">On-demand keynote replay</h3>
+          <p class="feature-desc">Replays of keynotes and ministerial addresses — available shortly after each session ends.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">AWS re:Invent, TED</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 06</div>
+          <h3 class="feature-title">Session clipping & highlight saving</h3>
+          <p class="feature-desc">Press and delegations can save session clips and highlights — quote-ready for coverage and follow-up.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">TED Conference App</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">05 / 06</div>
+          <h3 class="feature-title">Live announcements & breaking updates</h3>
+          <p class="feature-desc">Signed agreements, schedule changes, and breaking news pushed live to all attendees.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">FMF App</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">06 / 06</div>
+          <h3 class="feature-title">Speaker & minister Q&A from app</h3>
+          <p class="feature-desc">Attendees submit questions to speakers and ministers directly from the app — moderated, prioritized.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">TED Conference App</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">06</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-sparkles text-xs"></i>AI & Smart</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">AI & Personalization</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">A multi-language voice + text chatbot, role-aware agendas, and AI-generated briefing documents for every delegation.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 05</div>
+          <h3 class="feature-title">Voice + text AI chatbot</h3>
+          <p class="feature-desc">Multi-language chatbot for agenda, logistics, and venue queries — accessible by voice or text.</p>
+          <div class="feature-meta"><span class="meta-pill">AI & Smart</span><span class="meta-pill bench">CES 2026</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 05</div>
+          <h3 class="feature-title">AI-recommended agenda</h3>
+          <p class="feature-desc">Personalized agendas by role, sector, and investment interest — refined as the delegate engages.</p>
+          <div class="feature-meta"><span class="meta-pill">AI & Smart</span><span class="meta-pill bench">Salesforce Events</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 05</div>
+          <h3 class="feature-title">Hyperlocal real-time personalization</h3>
+          <p class="feature-desc">Surfaces nearby relevant meetings and sessions based on real-time indoor position.</p>
+          <div class="feature-meta"><span class="meta-pill">AI & Smart</span><span class="meta-pill bench">Salesforce Events</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 05</div>
+          <h3 class="feature-title">AI-generated delegation briefings</h3>
+          <p class="feature-desc">"Who to meet" and sector snapshot briefings, auto-generated for each delegation — adapted from Agentforce patterns.</p>
+          <div class="feature-meta"><span class="meta-pill">AI & Smart</span><span class="meta-pill bench">Salesforce Agentforce</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">05 / 05</div>
+          <h3 class="feature-title">Personalized home screen</h3>
+          <p class="feature-desc">Investor, minister, and exhibitor each see a different home view — surface only what matters to their role.</p>
+          <div class="feature-meta"><span class="meta-pill">AI & Smart</span><span class="meta-pill bench">SXSW Discover</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">07</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-magnifying-glass text-xs"></i>Search</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Search & Discovery</h2>
+        <p class="text-lg max-w-2xl" style="color:var(--muted)">Unified search across sessions, speakers, delegations, exhibitors, and projects — plus a project discovery feed for new licensing rounds.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 04</div>
+          <h3 class="feature-title">Unified search across everything</h3>
+          <p class="feature-desc">One search bar across sessions, speakers, delegations, exhibitors, and projects — no more siloed directories.</p>
+          <div class="feature-meta"><span class="meta-pill">Search</span><span class="meta-pill bench">CES 2026</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 04</div>
+          <h3 class="feature-title">Country, sector & project-stage filters</h3>
+          <p class="feature-desc">Drill down by country, sector (oil & gas / mining / power), and project stage — extension of WEF's filtered browse.</p>
+          <div class="feature-meta"><span class="meta-pill">Search</span><span class="meta-pill bench">WEF extension</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 04</div>
+          <h3 class="feature-title">Project & innovation discovery feed</h3>
+          <p class="feature-desc">A feed of new licensing rounds, project announcements, and technologies — the deal pipeline, surfaced.</p>
+          <div class="feature-meta"><span class="meta-pill">Search</span><span class="meta-pill bench">FMF App</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 04</div>
+          <h3 class="feature-title">On-site services search</h3>
+          <p class="feature-desc">Dining, delegation lounges, prayer rooms, business centers — find the on-site amenities that matter.</p>
+          <div class="feature-meta"><span class="meta-pill">Search</span><span class="meta-pill bench">My MWC</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="category-block">
+    <div class="cat-number font-display">08</div>
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
+      <div class="reveal mb-12">
+        <span class="cat-tag"><i class="fa-solid fa-infinity text-xs"></i>Continuity</span>
+        <h2 class="font-display text-4xl lg:text-6xl font-medium mt-5 mb-4" style="color:var(--fg)">Post-Event Value & Continuity</h2>
+        <p class="text-lg max-w-3xl" style="color:var(--muted)">ECP's model depends on continuity between events across the year — a gap none of the benchmark apps fully solve, and a differentiation opportunity.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 reveal-stagger">
+        <article class="feature-card">
+          <div class="feature-index">01 / 04</div>
+          <h3 class="feature-title">Deal & outcome tracker</h3>
+          <p class="feature-desc">Links meetings held at an event to follow-up status — closing the loop on ECP's "deals facilitated" KPI.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking</span><span class="meta-pill bench">ECP-unique</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">02 / 04</div>
+          <h3 class="feature-title">Cross-event delegate CRM</h3>
+          <p class="feature-desc">Internal ECP-team view of which ministers and investors attended which events — supporting business development.</p>
+          <div class="feature-meta"><span class="meta-pill">Networking / Access</span><span class="meta-pill bench">ECP-internal</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">03 / 04</div>
+          <h3 class="feature-title">Prospect news integration</h3>
+          <p class="feature-desc">Integration with ECP's Prospect news platform for a personalized post-event news feed.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">Prospect platform</span></div>
+        </article>
+        <article class="feature-card">
+          <div class="feature-index">04 / 04</div>
+          <h3 class="feature-title">Year-round sector reports</h3>
+          <p class="feature-desc">Access to sector reports and custom media published by ECP — reflecting ECP's Media & Custom Reports service line.</p>
+          <div class="feature-meta"><span class="meta-pill">Content</span><span class="meta-pill bench">ECP media line</span></div>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<section class="section-pad" id="roadmap" style="background:linear-gradient(180deg,transparent,rgba(232,116,59,0.04),transparent);position:relative;z-index:2">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal mb-16">
+      <div class="section-eyebrow"><span class="line"></span>Suggested Prioritization</div>
+      <h2 class="section-title font-display">A three-phase build —<br><em style="font-style:italic;color:var(--coral)">from MVP to platform.</em></h2>
+    </div>
+    
+    <div class="grid lg:grid-cols-3 gap-6">
+      <div class="phase-card phase-1 reveal">
+        <div class="phase-bar"><div class="phase-bar-fill"></div></div>
+        <div class="phase-label">Phase 01 · MVP</div>
+        <h3 class="phase-title">Foundation</h3>
+        <p class="text-sm mb-5" style="color:var(--muted)">Ship the infrastructure required to run any ECP event end-to-end.</p>
+        <ul class="phase-list">
+          <li><i class="fa-solid fa-circle-check check"></i><span>Access & ID — SSO, e-badge, QR, role tiers</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Scheduling — agenda builder, reservations</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Basic networking — directory + messaging</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Navigation — venue maps & routing</span></li>
+        </ul>
+      </div>
+      <div class="phase-card phase-2 reveal" style="transition-delay:.15s">
+        <div class="phase-bar"><div class="phase-bar-fill"></div></div>
+        <div class="phase-label">Phase 02 · Intelligence</div>
+        <h3 class="phase-title">Deal-making layer</h3>
+        <p class="text-sm mb-5" style="color:var(--muted)">Add the AI and content features that turn a conference app into a deal-making instrument.</p>
+        <ul class="phase-list">
+          <li><i class="fa-solid fa-circle-check check"></i><span>AI matchmaking by business intent</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Deal-room booking for sponsors</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Multilingual content & live translation</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Voice + text AI chatbot</span></li>
+        </ul>
+      </div>
+      <div class="phase-card phase-3 reveal" style="transition-delay:.3s">
+        <div class="phase-bar"><div class="phase-bar-fill"></div></div>
+        <div class="phase-label">Phase 03 · Continuity</div>
+        <h3 class="phase-title">Platform moat</h3>
+        <p class="text-sm mb-5" style="color:var(--muted)">Close the loop between events — the differentiation no benchmark app provides.</p>
+        <ul class="phase-list">
+          <li><i class="fa-solid fa-circle-check check"></i><span>Cross-event CRM for ECP teams</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Deal/outcome tracking</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Prospect news integration</span></li>
+          <li><i class="fa-solid fa-circle-check check"></i><span>Hyperlocal real-time personalization</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad" id="difference" style="position:relative;z-index:2">
+  <div class="max-w-7xl mx-auto px-6 lg:px-10">
+    <div class="reveal mb-12">
+      <div class="section-eyebrow"><span class="line"></span>Why This Is Not a Generic Conference App</div>
+      <h2 class="section-title font-display">Built for <em style="font-style:italic;color:var(--coral)">capital formation</em> —<br>not content consumption.</h2>
+    </div>
+    
+    <div class="diff-block reveal">
+      <div class="diff-compare mb-8">
+        <div class="diff-side left">
+          <h4>Generic conference apps</h4>
+          <p class="font-display text-xl font-medium mb-3" style="color:var(--fg)">WEF · SXSW · CES</p>
+          <p class="text-sm" style="color:var(--fg-soft)">Built for <strong>content consumption and general networking</strong> at a single event. The KPI is engagement — sessions attended, messages sent, satisfaction scores.</p>
+        </div>
+        <div class="diff-side right">
+          <h4>ECP Event App System</h4>
+          <p class="font-display text-xl font-medium mb-3" style="color:var(--amber)">Energy Capital & Power</p>
+          <p class="text-sm" style="color:rgba(247,242,232,0.85)">Built for <strong style="color:var(--amber)">capital formation</strong> across a recurring multi-event portfolio. The KPI is deals — meetings held, follow-ups tracked, agreements signed.</p>
+        </div>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-5 mt-8">
+        <div class="p-5 rounded-xl" style="background:var(--bg-alt)">
+          <div class="text-2xl mb-2" style="color:var(--coral)"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+          <h4 class="font-display text-lg font-medium mb-2" style="color:var(--fg)">Networking reframed</h4>
+          <p class="text-sm" style="color:var(--fg-soft)">Matchmaking and post-event continuity become the <em>core system</em>, not add-ons.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--bg-alt)">
+          <div class="text-2xl mb-2" style="color:var(--amber)"><i class="fa-solid fa-layer-group"></i></div>
+          <h4 class="font-display text-lg font-medium mb-2" style="color:var(--fg)">Scheduling as support</h4>
+          <p class="text-sm" style="color:var(--fg-soft)">Scheduling, content, and navigation are <em>supporting infrastructure</em> for the deal-making core.</p>
+        </div>
+        <div class="p-5 rounded-xl" style="background:var(--bg-alt)">
+          <div class="text-2xl mb-2" style="color:var(--steel)"><i class="fa-solid fa-globe"></i></div>
+          <h4 class="font-display text-lg font-medium mb-2" style="color:var(--fg)">Portfolio, not event</h4>
+          <p class="text-sm" style="color:var(--fg-soft)">A recurring multi-event platform — the same delegates, the same system, year after year.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="max-w-7xl mx-auto px-6 lg:px-10 relative z-10">
+    <div class="grid lg:grid-cols-12 gap-10 mb-16">
+      <div class="lg:col-span-5">
+        <img src="https://z-cdn-media.chatglm.cn/files/df09e943-81d8-4f47-ab95-04a9f962c5aa.png?auth_key=1882910064-91c8f4ce6b0c4b668d39a0271e838f59-0-6b7dbb3365f84438f3764c28c014e0d7" alt="African Mining Week" class="h-16 mb-6" style="filter:brightness(0) invert(1)">
+        <p class="font-display text-2xl font-light leading-snug mb-4" style="color:#F7F2E8">
+          A portfolio-wide event app system for <em style="color:var(--amber);font-style:italic">Energy Capital & Power</em>.
+        </p>
+        <p class="text-sm" style="color:rgba(247,242,232,0.6)">Designed for capital formation. Built for deals.</p>
+      </div>
+      <div class="lg:col-span-3">
+        <div class="text-xs uppercase tracking-widest mb-5" style="color:var(--amber)">Portfolio</div>
+        <ul class="space-y-2.5 text-sm">
+          <li>Angola Oil & Gas</li>
+          <li>African Mining Week</li>
+          <li>Venezuela Energy Week</li>
+          <li>MSGBC Oil, Gas & Power</li>
+          <li>Libya Energy & Economic Summit</li>
+          <li>Invest in Africa Energy</li>
+          <li>Congo Energy & Investment Forum</li>
+        </ul>
+      </div>
+      <div class="lg:col-span-4">
+        <div class="text-xs uppercase tracking-widest mb-5" style="color:var(--amber)">System Modules</div>
+        <div class="grid grid-cols-2 gap-2 text-sm">
+          <div>Portfolio & Access</div>
+          <div>Scheduling</div>
+          <div>Networking</div>
+          <div>Navigation</div>
+          <div>Content</div>
+          <div>AI & Personalization</div>
+          <div>Search</div>
+          <div>Continuity</div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-8 border-t flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs" style="border-color:rgba(247,242,232,0.1);color:rgba(247,242,232,0.5)">
+      <div>© 2025 Energy Capital & Power · Proposed Event App System</div>
+      <div>Strategic product brief · Light theme · Animated</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        if (entry.target.classList.contains('phase-card')) {
+          entry.target.classList.add('reveal');
+        }
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  
+  revealEls.forEach(el => observer.observe(el));
+  document.querySelectorAll('.phase-card').forEach(el => observer.observe(el));
+  
+  const counters = document.querySelectorAll('[data-count]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.count, 10);
+        const duration = 1600;
+        const startTime = performance.now();
+        const animate = (now) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(eased * target);
+          if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  counters.forEach(c => counterObserver.observe(c));
+  
+  const waveContainer = document.querySelector('.wave-container');
+  if (waveContainer) {
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      if (scrolled < 800) {
+        waveContainer.style.transform = `translateY(${scrolled * 0.15}px)`;
+      }
+    }, { passive: true });
+  }
+  
+  const nav = document.querySelector('.nav-bar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 50) {
+      nav.style.background = 'rgba(247,242,232,0.92)';
+      nav.style.boxShadow = '0 4px 30px -10px rgba(22,27,38,0.08)';
+    } else {
+      nav.style.background = 'rgba(247,242,232,0.7)';
+      nav.style.boxShadow = 'none';
+    }
+  }, { passive: true });
+</script>
+
+</body>
+</html>
