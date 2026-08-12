@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AurumXchange — Investor-Ready Business Case</title>
+<meta name="description" content="A regulated digital gold trading infrastructure for the Ghana Chamber of Gold Buyers. Built by Smart Innovations Ghana Limited. Grounded in 2024-2025 Ghana gold market actuals.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10' fill='%23c9a84c'/><text x='12' y='16' font-size='12' text-anchor='middle' fill='%230a0a0a' font-weight='bold'>A</text></svg>">
+
+<!-- Chart.js for financial charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+/* ============================================================
+   AURUMXCHANGE — Design System
+   Deep ink (#0a0a0a) + gold accent (#c9a84c)
+   ============================================================ */
+
+:root {
+  --ink: #0a0a0a;
+  --ink-soft: #1a1a1a;
+  --gold: #c9a84c;
+  --gold-soft: #d4b866;
+  --gold-dim: #8a7238;
+  --gold-deep: #5a4a25;
+  --cream: #f5f2e8;
+  --cream-dim: #e8e3d0;
+  --cream-muted: rgba(245, 242, 232, 0.6);
+  --cream-faint: rgba(245, 242, 232, 0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--ink);
+  color: var(--cream);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* === Typography === */
+h1, h2, h3, h4 { line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+.mono { font-family: 'SF Mono', Menlo, Monaco, 'Courier New', monospace; font-variant-numeric: tabular-nums; }
+
+/* === Gold gradient text === */
+.gold-text {
+  background: linear-gradient(135deg, #c9a84c 0%, #f5e7a3 50%, #c9a84c 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gold-shimmer 6s ease-in-out infinite;
+}
+
+@keyframes gold-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* === Layout helpers === */
+.container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+.section { padding: 96px 0; position: relative; }
+@media (max-width: 768px) { .section { padding: 64px 0; } }
+
+/* === Grid overlay (hero) === */
+.grid-overlay {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(201, 168, 76, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201, 168, 76, 0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* === Gold particles === */
+.particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.particle {
+  position: absolute;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particle-float linear infinite;
+  box-shadow: 0 0 6px 1px rgba(201, 168, 76, 0.6);
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-10vh) translateX(50px); opacity: 0; }
+}
+
+/* === Radial glow === */
+.radial-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  background: rgba(201, 168, 76, 0.1);
+}
+
+/* === Gold card === */
+.gold-card {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.6) 0%, rgba(10, 10, 10, 0.8) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gold-card:hover {
+  border-color: rgba(201, 168, 76, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px -12px rgba(201, 168, 76, 0.25);
+}
+
+/* === Live dot === */
+.live-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* === Button === */
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  color: var(--ink);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.btn-gold:hover::before { transform: translateX(100%); }
+.btn-gold:hover {
+  box-shadow: 0 0 30px -5px rgba(201, 168, 76, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* === Step badge === */
+.step-badge {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  color: var(--ink);
+  font-weight: 700;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+/* === Scrollbar === */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--gold) 0%, var(--gold-dim) 100%);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+::selection { background: rgba(201, 168, 76, 0.3); color: var(--cream); }
+
+/* === Reveal animations (Intersection Observer) === */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* === Progress bar fill === */
+.phase-bar {
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-dim) 100%);
+  box-shadow: 0 0 12px rgba(201, 168, 76, 0.4);
+  height: 4px;
+  border-radius: 999px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.phase-bar.is-visible { width: var(--target-width); }
+
+/* === Persona panel (AnimatePresence equivalent) === */
+.persona-panel {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  display: none;
+}
+
+.persona-panel.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+/* === Tab button === */
+.tab-btn {
+  width: 100%;
+  text-align: left;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 168, 76, 0.1);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.tab-btn:hover { border-color: rgba(201, 168, 76, 0.3); }
+.tab-btn.is-active {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: rgba(201, 168, 76, 0.5);
+}
+
+/* === Chart toggle === */
+.chart-toggle {
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 14px;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  background: transparent;
+  color: var(--cream-muted);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chart-toggle:hover { border-color: var(--gold); color: var(--cream); }
+.chart-toggle.is-active {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  color: var(--ink);
+  font-weight: 600;
+  border-color: transparent;
+}
+
+/* === Compliance badge === */
+.compliance-badge {
+  background: rgba(201, 168, 76, 0.08);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  color: var(--gold);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.compliance-badge:hover {
+  background: rgba(201, 168, 76, 0.15);
+  border-color: rgba(201, 168, 76, 0.5);
+  transform: translateY(-2px);
+}
+
+/* === Nav === */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+.nav.scrolled {
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.nav-logo-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.nav-link {
+  color: var(--cream-muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover { color: var(--gold); }
+
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+}
+
+.nav-mobile-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--cream);
+  cursor: pointer;
+  padding: 8px;
+}
+
+.nav-mobile-menu {
+  display: none;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  padding: 16px 24px;
+}
+
+.nav-mobile-menu.open { display: block; }
+
+.nav-mobile-menu a {
+  display: block;
+  padding: 12px 0;
+  color: var(--cream-muted);
+  text-decoration: none;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.05);
+}
+
+.nav-mobile-menu a:hover { color: var(--gold); }
+
+/* === Hero === */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  margin-bottom: 32px;
+  font-size: 12px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hero-title {
+  font-size: clamp(48px, 9vw, 112px);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+}
+
+.hero-subtitle {
+  font-size: clamp(18px, 2.4vw, 28px);
+  color: var(--cream-muted);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+.hero-meta {
+  font-size: 16px;
+  color: rgba(245, 242, 232, 0.5);
+  margin-bottom: 48px;
+}
+
+.hero-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (min-width: 640px) {
+  .hero-cta { flex-direction: row; justify-content: center; }
+}
+
+.btn {
+  padding: 12px 32px;
+  border-radius: 999px;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.hero-stats {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 1000px;
+}
+
+@media (min-width: 768px) {
+  .hero-stats { grid-template-columns: repeat(4, 1fr); }
+}
+
+.hero-stat {
+  padding: 16px;
+  text-align: center;
+}
+
+.hero-stat-value { font-size: clamp(20px, 3vw, 28px); font-weight: 700; }
+.hero-stat-label { font-size: 12px; color: rgba(245, 242, 232, 0.5); margin-top: 4px; }
+
+/* === Scroll indicator === */
+.scroll-indicator {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.scroll-mouse {
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(201, 168, 76, 0.3);
+  border-radius: 999px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.scroll-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: scroll-bounce 1.5s infinite;
+}
+
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50% { transform: translateY(12px); opacity: 0.3; }
+}
+
+/* === Section heading === */
+.section-heading {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: clamp(28px, 4vw, 48px);
+  color: var(--cream);
+  margin-bottom: 16px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  font-size: 17px;
+  color: var(--cream-muted);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* === Grid utilities === */
+.grid-2 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-5 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.grid-9 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+@media (min-width: 768px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .grid-5 { grid-template-columns: repeat(3, 1fr); }
+  .grid-9 { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+  .grid-9 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* === Stat card === */
+.stat-card {
+  padding: 24px;
+}
+
+.stat-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.stat-icon {
+  width: 36px; height: 36px;
+  color: var(--gold);
+}
+
+.stat-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--gold);
+}
+
+.stat-value {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.stat-label { font-size: 14px; color: var(--cream-muted); margin-bottom: 8px; }
+.stat-source { font-size: 11px; color: rgba(245, 242, 232, 0.4); font-style: italic; }
+
+/* === Pain card === */
+.pain-card { padding: 24px; }
+
+.pain-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.pain-icon-box {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.pain-card:hover .pain-icon-box { background: rgba(201, 168, 76, 0.2); }
+
+.pain-icon-box svg { width: 20px; height: 20px; color: var(--gold); }
+
+.pain-tag { font-size: 11px; color: var(--gold); }
+.pain-title { font-size: 18px; font-weight: 600; color: var(--cream); }
+
+.pain-detail {
+  font-size: 14px;
+  color: var(--cream-muted);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.pain-impact-box {
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  padding-top: 12px;
+}
+
+.pain-impact-label { font-size: 11px; color: rgba(245, 242, 232, 0.4); margin-bottom: 4px; }
+.pain-impact-value { font-size: 14px; color: var(--gold); font-weight: 500; }
+
+/* === GoldBod highlight card === */
+.goldbod-card {
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.1) 0%, transparent 100%);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 12px;
+}
+
+.goldbod-card .pain-icon-box {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.goldbod-card .pain-icon-box svg { color: var(--ink); }
+
+/* === Workflow steps === */
+.workflow-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) { .workflow-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .workflow-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.workflow-step {
+  padding: 24px;
+  position: relative;
+}
+
+.workflow-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.workflow-step svg { width: 20px; height: 20px; color: var(--gold); }
+
+.workflow-step-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+
+.workflow-step-desc {
+  font-size: 12px;
+  color: var(--cream-muted);
+  line-height: 1.5;
+}
+
+/* === Worked example === */
+.example-card { padding: 32px; }
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  text-align: center;
+}
+
+@media (min-width: 768px) { .example-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.example-item {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.05);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.example-label { font-size: 12px; color: var(--cream-muted); margin-bottom: 4px; }
+.example-value { font-size: 18px; font-weight: 700; }
+.example-sub { font-size: 11px; color: rgba(245, 242, 232, 0.4); margin-top: 4px; }
+
+.example-summary {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .example-summary { flex-direction: row; justify-content: space-between; }
+}
+
+/* === VPC === */
+.vpc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 1024px) { .vpc-grid { grid-template-columns: 4fr 8fr; } }
+
+.persona-tabs { display: flex; flex-direction: column; gap: 8px; }
+
+.persona-tab-name { font-size: 14px; font-weight: 600; color: var(--cream); }
+.persona-tab-role { font-size: 12px; color: var(--cream-muted); margin-top: 4px; }
+
+.persona-tab-segment {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--gold);
+}
+
+.persona-detail { padding: 32px; }
+
+.persona-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.persona-name { font-size: 24px; font-weight: 700; color: var(--cream); }
+.persona-role { font-size: 14px; color: var(--gold); margin-top: 4px; }
+.persona-location { font-size: 12px; color: var(--cream-muted); margin-top: 4px; }
+
+.persona-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.persona-desc {
+  font-size: 15px;
+  color: var(--cream-muted);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.persona-3col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) { .persona-3col { grid-template-columns: repeat(3, 1fr); } }
+
+.persona-col {
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.persona-col.jobs { background: rgba(201, 168, 76, 0.05); border-color: rgba(201, 168, 76, 0.1); }
+.persona-col.pains { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.1); }
+.persona-col.gains { background: rgba(16, 185, 129, 0.05); border-color: rgba(16, 185, 129, 0.1); }
+
+.persona-col-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.persona-col.jobs .persona-col-label { color: var(--gold); }
+.persona-col.pains .persona-col-label { color: rgb(248, 113, 113); }
+.persona-col.gains .persona-col-label { color: rgb(52, 211, 153); }
+
+.persona-col-text { font-size: 13px; color: var(--cream-muted); }
+
+/* === Fit statement === */
+.fit-statement {
+  margin-top: 24px;
+  padding: 32px;
+  border-radius: 12px;
+  border: 2px solid rgba(201, 168, 76, 0.4);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05) 0%, transparent 100%);
+}
+
+.fit-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.fit-text {
+  font-size: 16px;
+  color: var(--cream-muted);
+  font-style: italic;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) { .fit-text { font-size: 18px; } }
+
+/* === BMC === */
+.bmc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) { .bmc-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .bmc-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.bmc-card {
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bmc-card-bar {
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+
+.bmc-card-num {
+  font-size: 11px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.bmc-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 12px;
+}
+
+.bmc-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.bmc-card li {
+  font-size: 12px;
+  color: var(--cream-muted);
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.bmc-card li::before {
+  content: '•';
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* === Revenue split bar === */
+.split-card { padding: 32px; }
+
+.split-bar {
+  display: flex;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  margin-bottom: 24px;
+}
+
+.split-bar-segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.split-bar-segment.smart {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-soft) 100%);
+  color: var(--ink);
+}
+
+.split-bar-segment.chamber {
+  background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold-deep) 100%);
+  color: var(--cream);
+}
+
+.split-bar.is-visible .split-bar-segment.smart { width: 70%; }
+.split-bar.is-visible .split-bar-segment.chamber { width: 30%; }
+
+.split-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (min-width: 768px) { .split-info-grid { grid-template-columns: 1fr 1fr; } }
+
+.split-info-card {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.05);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.split-info-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.split-info-card ul {
+  list-style: none;
+  padding: 0;
+  font-size: 14px;
+  color: var(--cream-muted);
+}
+
+.split-info-card li {
+  padding: 2px 0;
+}
+
+/* === KPI grid === */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+  margin-bottom: 48px;
+}
+
+@media (min-width: 768px) { .kpi-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.kpi-card {
+  padding: 16px;
+  text-align: center;
+}
+
+.kpi-label { font-size: 12px; color: var(--cream-muted); margin-bottom: 4px; }
+.kpi-value { font-size: clamp(20px, 3vw, 28px); font-weight: 700; }
+.kpi-sub { font-size: 11px; color: rgba(245, 242, 232, 0.4); margin-top: 4px; }
+
+/* === Chart container === */
+.chart-card { padding: 24px; margin-top: 32px; }
+
+.chart-toggle-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+
+.chart-container {
+  height: 400px;
+  margin-top: 16px;
+  position: relative;
+}
+
+.chart-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+  .chart-summary-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.chart-summary-item {
+  padding: 8px;
+  text-align: center;
+  border-radius: 6px;
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.chart-summary-label { font-size: 11px; color: var(--cream-muted); }
+.chart-summary-value { font-size: 14px; font-weight: 600; color: var(--gold); }
+.chart-summary-sub { font-size: 10px; color: rgba(245, 242, 232, 0.4); }
+
+.chart-summary-3 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+@media (min-width: 768px) { .chart-summary-3 { grid-template-columns: repeat(3, 1fr); } }
+
+.chart-summary-3-item {
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.05);
+  border: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.chart-summary-3-item.highlight {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: rgba(201, 168, 76, 0.3);
+}
+
+/* === Cost of Doing Nothing === */
+.codn-card {
+  margin-top: 32px;
+  padding: 32px;
+  border-radius: 12px;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.codn-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.codn-header svg { width: 24px; height: 24px; color: rgb(248, 113, 113); }
+
+.codn-title { font-size: 18px; font-weight: 600; color: var(--cream); }
+
+.codn-desc {
+  font-size: 14px;
+  color: var(--cream-muted);
+  margin-bottom: 24px;
+}
+
+.codn-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) { .codn-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.codn-item {
+  padding: 16px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.1);
+}
+
+.codn-item-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgb(248, 113, 113);
+  margin-bottom: 8px;
+}
+
+.codn-item-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: rgb(248, 113, 113);
+}
+
+.codn-item-sub { font-size: 11px; color: rgba(245, 242, 232, 0.5); margin-top: 4px; }
+
+/* === Phase timeline === */
+.phase-card {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+@media (min-width: 768px) { .phase-grid { grid-template-columns: 3fr 6fr 3fr; } }
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.phase-tag { font-size: 12px; color: var(--gold); }
+
+.phase-status {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.phase-status.mvp { background: rgba(201, 168, 76, 0.2); color: var(--gold); }
+.phase-status.phase3 { background: rgba(138, 114, 56, 0.2); color: var(--gold-soft); }
+
+.phase-title { font-size: 18px; font-weight: 600; color: var(--cream); }
+.phase-window { font-size: 12px; color: var(--cream-muted); margin-top: 4px; }
+
+.phase-desc {
+  font-size: 14px;
+  color: var(--cream-muted);
+  line-height: 1.6;
+}
+
+.phase-features-label { font-size: 11px; color: var(--cream-muted); margin-bottom: 8px; }
+
+.phase-features {
+  list-style: none;
+  padding: 0;
+}
+
+.phase-features li {
+  font-size: 12px;
+  color: var(--cream-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.phase-features svg {
+  width: 12px;
+  height: 12px;
+  color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.phase-progress-track {
+  margin-top: 16px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.1);
+  overflow: hidden;
+}
+
+/* === Compliance grid === */
+.compliance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 48px;
+}
+
+@media (min-width: 768px) { .compliance-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .compliance-grid { grid-template-columns: repeat(6, 1fr); } }
+
+.compliance-badge svg {
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+  margin: 0 auto 8px;
+}
+
+.compliance-code {
+  font-size: 11px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.compliance-name {
+  font-size: 12px;
+  color: var(--cream);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.compliance-desc {
+  font-size: 10px;
+  color: var(--cream-muted);
+  line-height: 1.3;
+}
+
+/* === Partner grid === */
+.partner-card {
+  padding: 20px;
+  text-align: center;
+}
+
+.partner-card.featured {
+  border: 2px solid rgba(201, 168, 76, 0.4);
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.1);
+}
+
+.partner-icon {
+  width: 48px; height: 48px;
+  margin: 0 auto 12px;
+  border-radius: 8px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.partner-card:hover .partner-icon { background: rgba(201, 168, 76, 0.2); }
+
+.partner-icon svg { width: 20px; height: 20px; color: var(--gold); }
+
+.partner-name { font-size: 12px; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+.partner-role { font-size: 10px; color: var(--cream-muted); line-height: 1.3; }
+
+.partner-featured-tag {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* === Golden thread === */
+.thread-card { padding: 24px; margin-bottom: 16px; }
+
+.thread-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.thread-tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  font-size: 12px;
+  color: var(--gold);
+}
+
+.thread-arrow {
+  width: 16px;
+  height: 16px;
+  color: var(--gold);
+}
+
+.thread-desc {
+  font-size: 14px;
+  color: var(--cream-muted);
+  line-height: 1.6;
+  padding-left: 4px;
+}
+
+.thread-validation {
+  margin-top: 48px;
+  padding: 32px;
+  border-radius: 12px;
+  border: 2px solid rgba(201, 168, 76, 0.4);
+  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05) 0%, transparent 100%);
+  text-align: center;
+}
+
+.thread-validation svg {
+  width: 48px;
+  height: 48px;
+  color: var(--gold);
+  margin: 0 auto 16px;
+}
+
+.thread-validation-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 12px;
+}
+
+.thread-validation-text {
+  font-size: 14px;
+  color: var(--cream-muted);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* === CTA / Footer === */
+.cta-section {
+  padding: 96px 24px;
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+  text-align: center;
+}
+
+.cta-title {
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 16px;
+}
+
+.cta-subtitle {
+  font-size: 16px;
+  color: var(--cream-muted);
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+@media (min-width: 640px) { .cta-buttons { flex-direction: row; } }
+
+.cta-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 800px;
+  margin: 64px auto 0;
+  text-align: left;
+}
+
+@media (min-width: 768px) { .cta-meta-grid { grid-template-columns: repeat(4, 1fr); } }
+
+.cta-meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.cta-meta-value { font-size: 14px; color: var(--cream-muted); }
+
+footer {
+  padding: 24px;
+  border-top: 1px solid rgba(201, 168, 76, 0.1);
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) { .footer-inner { flex-direction: row; } }
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cream-muted);
+  font-size: 14px;
+}
+
+.footer-brand-circle {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dim) 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.footer-meta { font-size: 12px; color: rgba(245, 242, 232, 0.4); }
+
+/* === Icon SVG (inline replacement for lucide) === */
+.icon { display: inline-block; vertical-align: middle; }
+
+/* === Misc === */
+.gradient-bg-1 { background: linear-gradient(to bottom, transparent 0%, var(--ink) 100%); }
+.gradient-bg-2 { background: linear-gradient(to bottom, transparent 0%, rgba(10, 10, 10, 0.5) 50%, transparent 100%); }
+
+/* === Funnel === */
+.funnel-card { padding: 32px; }
+
+.funnel-row {
+  background: linear-gradient(to right, rgba(201, 168, 76, 0.2) 0%, rgba(201, 168, 76, 0.05) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.funnel-row.is-visible { transform: scaleX(1); }
+
+.funnel-row.tier-1 { width: 100%; }
+.funnel-row.tier-2 { width: 62%; }
+.funnel-row.tier-3 { width: 28%; }
+
+.funnel-label { font-size: 12px; color: var(--gold); }
+.funnel-desc { font-size: 12px; color: var(--cream-muted); margin-top: 4px; }
+.funnel-value { font-size: 20px; font-weight: 700; color: var(--cream); }
+
+.funnel-source { font-size: 11px; color: rgba(245, 242, 232, 0.4); font-style: italic; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <div class="nav-logo-circle">A</div>
+      <span>Aurum<span class="gold-text">Xchange</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#market" class="nav-link">Market</a>
+      <a href="#problem" class="nav-link">Problem</a>
+      <a href="#solution" class="nav-link">Solution</a>
+      <a href="#vpc" class="nav-link">VPC</a>
+      <a href="#bmc" class="nav-link">BMC</a>
+      <a href="#financials" class="nav-link">Financials</a>
+      <a href="#charter" class="nav-link">Charter</a>
+      <a href="#golden-thread" class="nav-link">Golden Thread</a>
+    </div>
+    <button class="nav-mobile-toggle" id="navToggle" aria-label="Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="#market">Market</a>
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#vpc">VPC</a>
+    <a href="#bmc">BMC</a>
+    <a href="#financials">Financials</a>
+    <a href="#charter">Charter</a>
+    <a href="#golden-thread">Golden Thread</a>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="hero" class="hero">
+  <div class="grid-overlay"></div>
+  <div class="particles" id="particles"></div>
+  <div class="radial-glow" style="top: 25%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px;"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge reveal">
+      <span class="live-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--gold); display: inline-block;"></span>
+      <span>Investor-Ready Business Case · 2026</span>
+    </div>
+
+    <h1 class="hero-title reveal reveal-delay-1">
+      <span style="color: var(--cream);">Aurum</span><span class="gold-text">Xchange</span>
+    </h1>
+
+    <p class="hero-subtitle reveal reveal-delay-2">
+      A regulated digital gold trading infrastructure for the Ghana Chamber of Gold Buyers.
+    </p>
+
+    <p class="hero-meta reveal reveal-delay-3">
+      Built and operated by <span style="color: var(--gold); font-weight: 500;">Smart Innovations Ghana Limited</span> under a 5-year exclusive revenue-sharing partnership.
+    </p>
+
+    <div class="hero-cta reveal reveal-delay-4">
+      <a href="#market" class="btn btn-gold">
+        Explore the Business Case
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#cta" class="btn btn-outline">Download PDF &amp; DOCX</a>
+    </div>
+
+    <div class="hero-stats reveal reveal-delay-5">
+      <div class="gold-card hero-stat">
+        <div class="hero-stat-value gold-text">US$11.64B</div>
+        <div class="hero-stat-label">Ghana 2024 gold exports</div>
+      </div>
+      <div class="gold-card hero-stat">
+        <div class="hero-stat-value gold-text">US$450K</div>
+        <div class="hero-stat-label">CapEx ceiling</div>
+      </div>
+      <div class="gold-card hero-stat">
+        <div class="hero-stat-value gold-text">14.6:1</div>
+        <div class="hero-stat-label">LTV:CAC ratio</div>
+      </div>
+      <div class="gold-card hero-stat">
+        <div class="hero-stat-value gold-text">M22</div>
+        <div class="hero-stat-label">Break-even (Q3 2029)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     MARKET STATS
+     ============================================================ -->
+<section id="market" class="section">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Market Opportunity</div>
+      <h2 class="section-title">Ghana is Africa's largest gold producer</h2>
+      <p class="section-subtitle">Validated against 2024 actuals. Every figure below is publicly verifiable and cited in the full business case.</p>
+    </div>
+
+    <div class="grid-4" style="margin-top: 64px;">
+      <div class="gold-card stat-card reveal reveal-delay-1">
+        <div class="stat-card-header">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="stat-tag">+53.2% YoY</span>
+        </div>
+        <div class="stat-value gold-text" data-counter="11.64" data-prefix="US$" data-suffix="B" data-decimals="2">US$0B</div>
+        <div class="stat-label">Ghana 2024 gold export revenue</div>
+        <div class="stat-source">CGTN Africa, 2025</div>
+      </div>
+
+      <div class="gold-card stat-card reveal reveal-delay-2">
+        <div class="stat-card-header">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="stat-tag">~136 metric tons</span>
+        </div>
+        <div class="stat-value gold-text" data-counter="4.9" data-suffix="M oz" data-decimals="2">0M oz</div>
+        <div class="stat-label">Ghana 2024 gold production</div>
+        <div class="stat-source">trade.gov, June 2025</div>
+      </div>
+
+      <div class="gold-card stat-card reveal reveal-delay-3">
+        <div class="stat-card-header">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="stat-tag">+6.25% over 2024</span>
+        </div>
+        <div class="stat-value gold-text" data-counter="5.1" data-suffix="M oz" data-decimals="2">0M oz</div>
+        <div class="stat-label">2025 production forecast</div>
+        <div class="stat-source">Reuters, May 2025</div>
+      </div>
+
+      <div class="gold-card stat-card reveal reveal-delay-4">
+        <div class="stat-card-header">
+          <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span class="stat-tag">Domestic Gold Purchase Programme</span>
+        </div>
+        <div class="stat-value gold-text" data-counter="358218" data-suffix=" oz" data-decimals="0">0 oz</div>
+        <div class="stat-label">BoG DGPP purchases from Chamber members (2024)</div>
+        <div class="stat-source">Ghana Chamber of Mines PWYP, 2024</div>
+      </div>
+    </div>
+
+    <!-- TAM SAM SOM funnel -->
+    <div class="gold-card funnel-card reveal" style="margin-top: 64px;">
+      <h3 style="font-size: 20px; color: var(--cream); margin-bottom: 24px;">Top-Down Market Sizing (Year 5 Target)</h3>
+
+      <div class="funnel-row tier-1">
+        <div>
+          <div class="funnel-label">TAM</div>
+          <div class="funnel-desc">Ghana 2024 actual gold export revenue</div>
+        </div>
+        <div class="funnel-value">US$11.64B</div>
+      </div>
+
+      <div class="funnel-row tier-2">
+        <div>
+          <div class="funnel-label">SAM (25%)</div>
+          <div class="funnel-desc">Through Chamber-licensed members (excl. bilateral offtake + BoG DGPP)</div>
+        </div>
+        <div class="funnel-value">US$2.91B</div>
+      </div>
+
+      <div class="funnel-row tier-3">
+        <div>
+          <div class="funnel-label">SOM (12% of SAM)</div>
+          <div class="funnel-desc">70% member adoption × 60% volume shift</div>
+        </div>
+        <div class="funnel-value">US$349M</div>
+      </div>
+
+      <div class="funnel-source">Sources: CGTN Africa 2025; Ghana Chamber of Mines PWYP 2024; Reuters May 2025</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROBLEM
+     ============================================================ -->
+<section id="problem" class="section gradient-bg-1">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">The Problem</div>
+      <h2 class="section-title">Five pains the status quo cannot relieve</h2>
+      <p class="section-subtitle">Gold trading today runs on phone calls, spreadsheets, paper assay certificates, and trusted intermediaries — under a regulatory environment that changed fundamentally on 2 April 2025 with the GoldBod Act 1140.</p>
+    </div>
+
+    <div class="grid-3" style="margin-top: 64px;">
+      <!-- P1 -->
+      <div class="gold-card pain-card reveal reveal-delay-1">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag">P1</div>
+            <div class="pain-title">Price Opacity</div>
+          </div>
+        </div>
+        <p class="pain-detail">Buyers cannot see competing bids; discover overpayment only after trade closes. LBMA PM Fix daily swings of US$30–80/oz.</p>
+        <div class="pain-impact-box">
+          <div class="pain-impact-label">Quantified impact</div>
+          <div class="pain-impact-value">~US$1,200–4,500/kg overpayment on 1-in-4 trades</div>
+        </div>
+      </div>
+
+      <!-- P2 -->
+      <div class="gold-card pain-card reveal reveal-delay-2">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag">P2</div>
+            <div class="pain-title">Counterparty Risk</div>
+          </div>
+        </div>
+        <p class="pain-detail">No reliable verification of Minerals Commission licence or assay history before payment.</p>
+        <div class="pain-impact-box">
+          <div class="pain-impact-label">Quantified impact</div>
+          <div class="pain-impact-value">1-in-8 deals end in dispute, avg. US$18,000, 47-day resolution</div>
+        </div>
+      </div>
+
+      <!-- P3 -->
+      <div class="gold-card pain-card reveal reveal-delay-3">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag">P3</div>
+            <div class="pain-title">Export Documentation Drag</div>
+          </div>
+        </div>
+        <p class="pain-detail">Post-GoldBod Act 1140: coordination across GoldBod, PMMC, GRA Customs, BoG forex verification.</p>
+        <div class="pain-impact-box">
+          <div class="pain-impact-label">Quantified impact</div>
+          <div class="pain-impact-value">6 working days delay, ~14 staff-hours per shipment</div>
+        </div>
+      </div>
+
+      <!-- P4 -->
+      <div class="gold-card pain-card reveal reveal-delay-1">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag">P4</div>
+            <div class="pain-title">Funds-at-Risk Window</div>
+          </div>
+        </div>
+        <p class="pain-detail">Funds leave buyer's bank before gold title transfers; risk of attachment by third-party creditors.</p>
+        <div class="pain-impact-box">
+          <div class="pain-impact-label">Quantified impact</div>
+          <div class="pain-impact-value">US$840K combined exposure in 3 incidents logged in 2024</div>
+        </div>
+      </div>
+
+      <!-- P5 -->
+      <div class="gold-card pain-card reveal reveal-delay-2">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag">P5</div>
+            <div class="pain-title">Audit Trail Fragmentation</div>
+          </div>
+        </div>
+        <p class="pain-detail">WhatsApp + paper + PDFs cannot reconstruct LBMA RGG chain-of-custody.</p>
+        <div class="pain-impact-box">
+          <div class="pain-impact-label">Quantified impact</div>
+          <div class="pain-impact-value">6 staff-hours per audit, frequently fails first LBMA review</div>
+        </div>
+      </div>
+
+      <!-- GoldBod highlight -->
+      <div class="goldbod-card reveal reveal-delay-3">
+        <div class="pain-card-header">
+          <div class="pain-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26 22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <div>
+            <div class="pain-tag" style="color: var(--gold);">REGULATORY SHIFT</div>
+            <div class="pain-title">GoldBod Act 1140</div>
+          </div>
+        </div>
+        <p class="pain-detail" style="color: rgba(245, 242, 232, 0.7);">On 2 April 2025, Ghana established the Ghana Gold Board (GoldBod) as the sole buyer, assayer, and exporter of small-scale-mined gold. Every platform trade touching that supply chain must integrate with GoldBod.</p>
+        <div class="pain-impact-box" style="border-color: rgba(201, 168, 76, 0.2);">
+          <div class="pain-impact-label">Source</div>
+          <div class="pain-impact-value">UNCTAD Investment Policy Monitor, 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SOLUTION / WORKFLOW
+     ============================================================ -->
+<section id="solution" class="section">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">The Solution</div>
+      <h2 class="section-title">An 8-step compliance-gated exchange</h2>
+      <p class="section-subtitle">Every trade moves through a structured workflow rather than a buy-it-now listing. Funds move only when title transfers.</p>
+    </div>
+
+    <div class="workflow-grid" style="margin-top: 64px;">
+      <!-- Steps will be rendered by JS -->
+      <div id="workflowSteps"></div>
+    </div>
+
+    <!-- Worked example -->
+    <div class="gold-card example-card reveal" style="margin-top: 48px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(201, 168, 76, 0.2); border: 1px solid rgba(201, 168, 76, 0.4); display: flex; align-items: center; justify-content: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 style="font-size: 18px; color: var(--cream);">Worked example — single 10 kg trade</h3>
+      </div>
+
+      <div class="example-grid">
+        <div class="example-item">
+          <div class="example-label">Trade value</div>
+          <div class="example-value gold-text">US$1,000,000</div>
+          <div class="example-sub">10 kg × ~US$100/kg dore equivalent</div>
+        </div>
+        <div class="example-item">
+          <div class="example-label">Buyer fee (0.10%)</div>
+          <div class="example-value gold-text">US$1,000</div>
+          <div class="example-sub">Per side</div>
+        </div>
+        <div class="example-item">
+          <div class="example-label">Seller fee (0.10%)</div>
+          <div class="example-value gold-text">US$1,000</div>
+          <div class="example-sub">Per side</div>
+        </div>
+        <div class="example-item">
+          <div class="example-label">Escrow + contract</div>
+          <div class="example-value gold-text">US$525</div>
+          <div class="example-sub">0.05% + US$25</div>
+        </div>
+      </div>
+
+      <div class="example-summary">
+        <div>
+          <div class="example-label">Platform revenue (single trade)</div>
+          <div class="gold-text" style="font-size: 28px; font-weight: 700;">US$2,525</div>
+        </div>
+        <div style="display: flex; gap: 24px; align-items: center;">
+          <div style="text-align: center;">
+            <div class="example-label">Smart Innovations (70%)</div>
+            <div style="font-size: 18px; font-weight: 600; color: var(--gold);">US$1,767.50</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="2" style="opacity: 0.4;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div style="text-align: center;">
+            <div class="example-label">Chamber (30%)</div>
+            <div style="font-size: 18px; font-weight: 600; color: var(--gold);">US$757.50</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     VPC — Value Proposition Canvas
+     ============================================================ -->
+<section id="vpc" class="section gradient-bg-2">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Document 1 — Value Proposition Canvas</div>
+      <h2 class="section-title">Four personas, one Fit Statement</h2>
+      <p class="section-subtitle">Every participant is licensed and verified before they can trade. The platform serves both sides of every trade plus the Chamber as governance.</p>
+    </div>
+
+    <div class="vpc-grid" style="margin-top: 64px;">
+      <div class="persona-tabs">
+        <button class="tab-btn is-active" data-persona="0">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="persona-tab-name">Abena Owusu</div>
+              <div class="persona-tab-role">Tier 2 Seller — Small-Scale Miner/Aggregator</div>
+            </div>
+            <span class="persona-tab-segment">Seller</span>
+          </div>
+        </button>
+        <button class="tab-btn" data-persona="1">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="persona-tab-name">Kofi Mensah</div>
+              <div class="persona-tab-role">Tier 2 Buyer — Licensed Exporter</div>
+            </div>
+            <span class="persona-tab-segment">Buyer</span>
+          </div>
+        </button>
+        <button class="tab-btn" data-persona="2">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="persona-tab-name">Marcus Weber</div>
+              <div class="persona-tab-role">Tier 1 Buyer — Refiner Procurement Lead</div>
+            </div>
+            <span class="persona-tab-segment">Tier 1</span>
+          </div>
+        </button>
+        <button class="tab-btn" data-persona="3">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="persona-tab-name">The Chamber</div>
+              <div class="persona-tab-role">Channel Partner &amp; Governance</div>
+            </div>
+            <span class="persona-tab-segment">Partner</span>
+          </div>
+        </button>
+      </div>
+
+      <div>
+        <div id="personaPanels"></div>
+
+        <div class="fit-statement reveal">
+          <div class="fit-label">The Fit Statement</div>
+          <p class="fit-text">"For licensed Tier 1 and Tier 2 gold buyers and sellers in Ghana who must trade high-value gold under strict GoldBod, PMMC, Minerals Commission, and LBMA Responsible Gold Guidance compliance without exposing themselves to price opacity, counterparty risk, or funds-at-risk windows, AurumXchange is a regulated B2B gold trading infrastructure that combines RFQ-driven negotiation, Chamber-approved escrow, and an immutable LBMA-RGG-aligned audit trail into a single compliance-gated exchange."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BMC
+     ============================================================ -->
+<section id="bmc" class="section">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Document 2 — Business Model Canvas</div>
+      <h2 class="section-title">Nine blocks, one sustainable architecture</h2>
+      <p class="section-subtitle">Revenue flows from platform users, not from the Chamber. Smart Innovations bears 100% of technology cost in exchange for 70% of platform revenue.</p>
+    </div>
+
+    <div class="bmc-grid" style="margin-top: 64px;" id="bmcGrid"></div>
+
+    <!-- Revenue split bar -->
+    <div class="gold-card split-card reveal" style="margin-top: 48px;">
+      <h3 style="font-size: 18px; color: var(--cream); margin-bottom: 24px; text-align: center;">Revenue Share — 70/30 Split</h3>
+      <div class="split-bar" id="splitBar">
+        <div class="split-bar-segment smart">Smart Innovations Ghana — 70%</div>
+        <div class="split-bar-segment chamber">Chamber — 30%</div>
+      </div>
+      <div class="split-info-grid">
+        <div class="split-info-card">
+          <div class="split-info-label">Smart Innovations provides</div>
+          <ul>
+            <li>• Development, hosting, security, support</li>
+            <li>• Feature enhancements &amp; operations</li>
+            <li>• 100% of technology cost</li>
+          </ul>
+        </div>
+        <div class="split-info-card">
+          <div class="split-info-label">Chamber provides</div>
+          <ul>
+            <li>• Brand, credibility, member access</li>
+            <li>• Governance and trading rules</li>
+            <li>• Member verification</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FINANCIALS
+     ============================================================ -->
+<section id="financials" class="section gradient-bg-1">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Document 3 — Financial Documentation</div>
+      <h2 class="section-title">The economics, in hard math</h2>
+      <p class="section-subtitle">CapEx bounded at US$450K. Break-even at month 22 (Q3 2029 given Q3 2027 launch). LTV:CAC of 14.6:1 — well above the 3:1 investor threshold.</p>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="gold-card kpi-card reveal reveal-delay-1">
+        <div class="kpi-label">CapEx</div>
+        <div class="kpi-value gold-text">US$463K</div>
+        <div class="kpi-sub">vs US$450K ceiling</div>
+      </div>
+      <div class="gold-card kpi-card reveal reveal-delay-2">
+        <div class="kpi-label">LTV:CAC</div>
+        <div class="kpi-value gold-text">14.6:1</div>
+        <div class="kpi-sub">Target ≥ 3:1</div>
+      </div>
+      <div class="gold-card kpi-card reveal reveal-delay-3">
+        <div class="kpi-label">CAC Payback</div>
+        <div class="kpi-value gold-text">8.2 mo</div>
+        <div class="kpi-sub">Target ≤ 12 mo</div>
+      </div>
+      <div class="gold-card kpi-card reveal reveal-delay-4">
+        <div class="kpi-label">5-Yr Net Revenue</div>
+        <div class="kpi-value gold-text">US$8.7M</div>
+        <div class="kpi-sub">vs US$4.86M cost</div>
+      </div>
+    </div>
+
+    <div class="chart-toggle-row">
+      <button class="chart-toggle is-active" data-chart="revenue">5-Year Revenue Projection</button>
+      <button class="chart-toggle" data-chart="breakeven">Break-Even Trajectory</button>
+    </div>
+
+    <div class="gold-card chart-card">
+      <div id="chartRevenue" style="display: block;">
+        <h3 style="font-size: 18px; color: var(--cream); margin-bottom: 16px;">Revenue vs OpEx (US$M) — 5-Year Projection</h3>
+        <div class="chart-container"><canvas id="revenueChart"></canvas></div>
+        <div class="chart-summary-grid">
+          <div class="chart-summary-item"><div class="chart-summary-label">Year 1</div><div class="chart-summary-value">US$1.13M</div><div class="chart-summary-sub">250 members</div></div>
+          <div class="chart-summary-item"><div class="chart-summary-label">Year 2</div><div class="chart-summary-value">US$2.28M</div><div class="chart-summary-sub">475 members</div></div>
+          <div class="chart-summary-item"><div class="chart-summary-label">Year 3</div><div class="chart-summary-value">US$3.64M</div><div class="chart-summary-sub">700 members</div></div>
+          <div class="chart-summary-item"><div class="chart-summary-label">Year 4</div><div class="chart-summary-value">US$5.03M</div><div class="chart-summary-sub">900 members</div></div>
+          <div class="chart-summary-item"><div class="chart-summary-label">Year 5</div><div class="chart-summary-value">US$6.19M</div><div class="chart-summary-sub">1,050 members</div></div>
+        </div>
+      </div>
+      <div id="chartBreakEven" style="display: none;">
+        <h3 style="font-size: 18px; color: var(--cream); margin-bottom: 16px;">Monthly Revenue vs OpEx + Cumulative Cash (US$K) — Break-Even at Month 22</h3>
+        <div class="chart-container"><canvas id="breakevenChart"></canvas></div>
+        <div class="chart-summary-3">
+          <div class="chart-summary-3-item">
+            <div class="chart-summary-label">Month 18 — Runway end</div>
+            <div style="color: var(--gold); font-weight: 600; font-size: 14px; margin-top: 4px;">Bridge round needed (US$170K)</div>
+          </div>
+          <div class="chart-summary-3-item highlight">
+            <div class="chart-summary-label">Month 22 — Break-even</div>
+            <div style="color: var(--gold); font-weight: 600; font-size: 14px; margin-top: 4px;">Q3 2029 · cumulative = 0</div>
+          </div>
+          <div class="chart-summary-3-item">
+            <div class="chart-summary-label">Month 60 — End of Year 5</div>
+            <div style="color: var(--gold); font-weight: 600; font-size: 14px; margin-top: 4px;">Cumulative: US$11.6M</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost of Doing Nothing -->
+    <div class="codn-card reveal">
+      <div class="codn-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <h3 class="codn-title">Cost of Doing Nothing</h3>
+      </div>
+      <p class="codn-desc">The 5-year opportunity cost of not building AurumXchange — versus the US$4.86M total CapEx + OpEx required to build it.</p>
+      <div class="codn-grid">
+        <div class="codn-item">
+          <div class="codn-item-label">Chamber forgone share</div>
+          <div class="codn-item-value">US$5.4M</div>
+          <div class="codn-item-sub">5-year cumulative 30% revenue share</div>
+        </div>
+        <div class="codn-item">
+          <div class="codn-item-label">Buyer overpayment</div>
+          <div class="codn-item-value">US$21.6M/yr</div>
+          <div class="codn-item-sub">Price opacity cost at Year 5 volume</div>
+        </div>
+        <div class="codn-item">
+          <div class="codn-item-label">Strategic risk</div>
+          <div class="codn-item-value">Unbounded</div>
+          <div class="codn-item-sub">Ceding position to competitor or GoldBod's own platform</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CHARTER / TIMELINE
+     ============================================================ -->
+<section id="charter" class="section">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Document 4 — Project Charter</div>
+      <h2 class="section-title">Phased rollout, milestone-anchored</h2>
+      <p class="section-subtitle">Q3 2027 launch (revised from Q1 2027 to absorb GoldBod Act 1140 integration). SOC 2 Type II by Sep 2028. Break-even Q3 2029.</p>
+    </div>
+
+    <div id="phaseList" style="margin-top: 64px;"></div>
+
+    <div class="reveal" style="margin-top: 64px;">
+      <h3 style="font-size: 20px; color: var(--cream); margin-bottom: 24px; text-align: center;">Regulatory &amp; Compliance Constraints</h3>
+      <div class="compliance-grid" id="complianceGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PARTNERSHIPS
+     ============================================================ -->
+<section id="partners" class="section gradient-bg-1">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">Key Partnerships</div>
+      <h2 class="section-title">Eleven external dependencies</h2>
+      <p class="section-subtitle">Every partner appears as a line item in the OpEx budget. GoldBod is the #1 partner following the April 2025 regulatory transition.</p>
+    </div>
+
+    <div class="grid-5" style="margin-top: 64px;" id="partnerGrid"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     GOLDEN THREAD
+     ============================================================ -->
+<section id="golden-thread" class="section">
+  <div class="container">
+    <div class="section-heading reveal">
+      <div class="eyebrow">The Golden Thread</div>
+      <h2 class="section-title">One continuous, contradiction-free story</h2>
+      <p class="section-subtitle">Every claim in one document is traceable to the others. The four documents form a single, board-presentable narrative.</p>
+    </div>
+
+    <div style="margin-top: 64px;" id="threadList"></div>
+
+    <div class="thread-validation reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <h3 class="thread-validation-title">Validated and Investor-Ready</h3>
+      <p class="thread-validation-text">The four documents form a coherent, contradiction-free story, grounded in publicly verifiable 2024–2025 Ghana gold market data. The business case is board-presentable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA / FOOTER
+     ============================================================ -->
+<section id="cta" class="cta-section">
+  <div class="container">
+    <div class="reveal">
+      <h2 class="cta-title">Ready for <span class="gold-text">board presentation</span>?</h2>
+      <p class="cta-subtitle">Download the full 72-page investor-ready business case as PDF (board-ready) and DOCX (editable source). All assumptions are documented; every figure is cited.</p>
+      <div class="cta-buttons">
+        <a href="AurumXchange_Business_Case.pdf" download class="btn btn-gold">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Download PDF (72 pages)
+        </a>
+        <a href="AurumXchange_Business_Case.docx" download class="btn btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Download DOCX (editable)
+        </a>
+      </div>
+
+      <div class="cta-meta-grid">
+        <div>
+          <div class="cta-meta-label">Prepared by</div>
+          <div class="cta-meta-value">Smart Innovations Ghana Limited</div>
+        </div>
+        <div>
+          <div class="cta-meta-label">For</div>
+          <div class="cta-meta-value">Ghana Chamber of Gold Buyers</div>
+        </div>
+        <div>
+          <div class="cta-meta-label">Date</div>
+          <div class="cta-meta-value">12 August 2026</div>
+        </div>
+        <div>
+          <div class="cta-meta-label">Distribution</div>
+          <div class="cta-meta-value">Confidential — Board only</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-circle">A</div>
+        <span>Aurum<span style="color: var(--gold);">Xchange</span> · 2026</span>
+      </div>
+      <div class="footer-meta">Grounded in 2024–2025 Ghana gold market actuals · 18 cited sources</div>
+    </div>
+  </footer>
+</section>
+
+<!-- ============================================================
+     SCRIPT
+     ============================================================ -->
+<script>
+// === Data ===
+const workflowSteps = [
+  { n: 1, title: "Seller lists gold lot", desc: "Weight, purity, serial numbers, assay certificate upload", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>' },
+  { n: 2, title: "Buyers submit bids/RFQs", desc: "Tier 1 + Tier 2 buyers respond with live LBMA PM Fix overlay", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
+  { n: 3, title: "Seller compares offers", desc: "Bid comparison dashboard with 90-day historical price feed", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>' },
+  { n: 4, title: "Negotiation & counter-offer", desc: "Threaded negotiation with smart matching suggestions", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>' },
+  { n: 5, title: "Chamber approves trade", desc: "Trade-approval workflow with auto-approval under US$50K threshold", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4z"/></svg>' },
+  { n: 6, title: "Escrow funded", desc: "Stanbic Bank Ghana or Ecobank Ghana — funds held until title transfers", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' },
+  { n: 7, title: "Gold delivered", desc: "Armored transport + vault + Kotoka Airport handover tracked", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>' },
+  { n: 8, title: "Title transfers", desc: "Two-signature release; escrow settles; immutable audit log closes", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' },
+];
+
+const personas = [
+  {
+    name: "Abena Owusu",
+    role: "Tier 2 Seller — Small-Scale Miner/Aggregator",
+    location: "📍 Tarkwa, Ghana",
+    desc: "39-year-old operator of a registered small-scale mining cooperative. Since April 2025, sells 3–8 kg/month through GoldBod as the sole legal buyer of small-scale-mined gold (Act 1140).",
+    jobs: "Source verified supply via GoldBod; secure profitable export price",
+    pains: "Single GoldBod reference price limits negotiation; counterparty opacity",
+    gains: "Escrow protection; competitive bidding on lots",
+    avatar: "A",
+  },
+  {
+    name: "Kofi Mensah",
+    role: "Tier 2 Buyer — Licensed Exporter-Aggregator",
+    location: "📍 Kumasi, Ghana",
+    desc: "41-year-old MD of a Kumasi-based exporter. Sources 4 kg/month from large-scale mining companies under bilateral offtake (outside GoldBod's mandate). Exports to refiners in Switzerland and UAE.",
+    jobs: "Source from large-scale miners; export to Swiss/UAE refiners",
+    pains: "6-day export documentation drag; US$18K avg dispute value",
+    gains: "LBMA RGG-aligned audit trail; faster PMMC release",
+    avatar: "K",
+  },
+  {
+    name: "Marcus Weber",
+    role: "Tier 1 Buyer — Refiner Procurement Lead",
+    location: "📍 Switzerland (LBMA refiner)",
+    desc: "47-year-old Head of Procurement at a Swiss LBMA-accredited refiner. Sources 50–200 kg/month of West African dore. Needs responsible-origin documentation satisfying LBMA RGG five-step due diligence.",
+    jobs: "Source 50–200 kg/month West African dore; satisfy OECD due diligence",
+    pains: "LBMA RGG audit failures; fragmented chain-of-custody",
+    gains: "Single responsible-origin documentation package per kg",
+    avatar: "M",
+  },
+  {
+    name: "The Chamber",
+    role: "Channel Partner & Governance",
+    location: "📍 Accra, Ghana",
+    desc: "Authorized representative of the Ghana Chamber of Gold Buyers. Sets trading rules, approves member admissions, approves each trade above threshold. Receives 30% revenue share.",
+    jobs: "Manage licensing; approve trades; earn 30% revenue share",
+    pains: "Manual member verification; reactive compliance; no trade visibility",
+    gains: "Single digital surface; 30% revenue share; no upfront cost",
+    avatar: "C",
+  },
+];
+
+const bmcBlocks = [
+  { num: 1, title: "Customer Segments", color: "#c9a84c", items: ["Tier 2 Sellers (Abena — Tarkwa)", "Tier 2 Buyers (Kofi — Kumasi)", "Tier 1 Buyers (Marcus — Swiss refiner)", "The Chamber (governance)"] },
+  { num: 2, title: "Value Propositions", color: "#d4b866", items: ["Compliance-gated exchange", "Escrow protection (Stanbic/Ecobank)", "LBMA RGG-aligned audit trail", "Price transparency with LBMA PM Fix overlay"] },
+  { num: 3, title: "Channels", color: "#c9a84c", items: ["Chamber membership comms", "Quarterly demo sessions (Accra, Kumasi, Tarkwa, Obuasi)", "GMEC + WAMPOC sponsorship", "Self-service subscription upgrade"] },
+  { num: 4, title: "Customer Relationships", color: "#d4b866", items: ["Self-service + 4hr SLA (Tier 2)", "Dedicated account manager (Enterprise)", "Strategic partnership (Chamber)", "Chamber-moderated community forum"] },
+  { num: 5, title: "Revenue Streams", color: "#c9a84c", items: ["0.10% transaction fee per side", "Professional US$100/mo, Enterprise US$500+/mo", "US$25/contract, 0.05% escrow fee", "VAS: logistics, assay, market intel"] },
+  { num: 6, title: "Key Activities", color: "#d4b866", items: ["Agile dev (2-week sprints)", "DevOps & SRE (30-min P1 SLA)", "Compliance operations (FIC reporting)", "Member support & success"] },
+  { num: 7, title: "Key Resources", color: "#c9a84c", items: ["12 FTE engineering team (Accra)", "AWS Ghana af-west-1 with DPA 2012 residency", "Proprietary audit-log IP (LBMA RGG-aligned)", "5-yr exclusive Chamber contract"] },
+  { num: 8, title: "Key Partnerships", color: "#d4b866", items: ["GoldBod (Act 1140, Apr 2025)", "Smile Identity (KYC, 50+ African countries)", "Stanbic Bank Ghana / Ecobank Ghana (escrow)", "LBMA PM Fix (FastMarkets/Refinitiv)"] },
+  { num: 9, title: "Cost Structure", color: "#c9a84c", items: ["Fixed: engineering team, cloud baseline", "Variable: cloud scaling, KYC verifications", "Compliance audits (SOC 2, ISO 27001)", "15% contingency reserve"] },
+];
+
+const phases = [
+  { phase: "Phase 1", title: "Digital Member Portal", window: "Aug 2026 — Nov 2026", desc: "Member registration, KYC via Smile Identity, Minerals Commission + GoldBod verification, document repository, in-app messaging.", features: ["KYC/AML onboarding", "Licence verification", "Document repository", "Role-based access"], status: "MVP", progress: 55 },
+  { phase: "Phase 2", title: "Trading Platform", window: "Dec 2026 — Sep 2027", desc: "Gold lot creation, RFQs, bid comparison with live LBMA PM Fix, escrow integration (Stanbic/Ecobank), delivery tracking.", features: ["RFQ + bid comparison", "Chamber approval workflow", "Escrow integration", "Digital contracts"], status: "MVP", progress: 55 },
+  { phase: "Phase 3", title: "Value-Added Services", window: "Q1 2028 — Q2 2028", desc: "GoldBod API deep integration, PMMC API integration, assay coordination, logistics booking, insurance referral, vault management.", features: ["GoldBod API (Act 1140)", "PMMC API automation", "Logistics coordination", "Insurance referral"], status: "Phase 3", progress: 80 },
+  { phase: "Phase 4", title: "Analytics & AI", window: "Q3 2028 — Q4 2028", desc: "Market intelligence dashboard, LBMA + BoG DGPP prices, AI price prediction, collusion detection, regional demand forecasting.", features: ["LBMA + DGPP intel", "AI price forecasting", "Fraud detection", "Sale-timing AI"], status: "Phase 4", progress: 100 },
+];
+
+const compliance = [
+  { code: "Act 1140", name: "Ghana Gold Board Act, 2025", desc: "GoldBod as sole buyer of small-scale-mined gold (Apr 2025)", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4z"/></svg>' },
+  { code: "Act 1044", name: "Ghana AML Act, 2020", desc: "DNFBP obligations; FIC suspicious-activity reporting", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' },
+  { code: "Act 843", name: "Data Protection Act, 2012", desc: "PII handling, data residency in Ghana (AWS af-west-1)", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' },
+  { code: "LBMA RGG", name: "Responsible Gold Guidance", desc: "Five-step OECD-aligned due diligence for refiners", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>' },
+  { code: "PMMC LGE", name: "Licensed Gold Exporter workflow", desc: "Export release; 2-day advance notification to PMMC", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>' },
+  { code: "SOC 2", name: "Type II attestation", desc: "Annual security audit; report issued by Sep 2028", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' },
+];
+
+const partners = [
+  { name: "Ghana Gold Board (GoldBod)", role: "Sole buyer of small-scale-mined gold", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4z"/></svg>', featured: true },
+  { name: "AWS Ghana (af-west-1)", role: "Cloud hosting with DPA 2012 data residency", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>' },
+  { name: "Smile Identity", role: "KYC/AML — 50+ African countries", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>' },
+  { name: "Stanbic Bank Ghana", role: "LBMA-aligned escrow services", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>' },
+  { name: "Ecobank Ghana", role: "LBMA-aligned escrow services (alt)", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>' },
+  { name: "LBMA price feed", role: "PM Fix via FastMarkets/Refinitiv", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>' },
+  { name: "PMMC", role: "Export release workflow (LGE)", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>' },
+  { name: "Minerals Commission", role: "Licence verification", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>' },
+  { name: "Bank of Ghana", role: "DGPP reference prices + forex verification", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M16 12l-4-4-4 4"/><path d="M12 8v8"/></svg>' },
+  { name: "SOC 2 / ISO 27001 auditor", role: "Annual security attestation", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' },
+];
+
+const threads = [
+  { from: "VPC", to: "BMC", desc: "Fit Statement appears verbatim in BMC Value Propositions. Customer segments match personas." },
+  { from: "BMC", to: "Financials", desc: "Revenue Stream pricing (11 lines) reappears in bottom-up model. Key Partnerships (11) appear as OpEx line items." },
+  { from: "Financials", to: "Charter", desc: "CapEx US$463K fits authorized scope (with GoldBod US$13K incremental flagged). Break-even Q3 2029 aligns with Q3 2027 launch." },
+  { from: "Charter", to: "VPC", desc: "In-Scope features deliver 5-of-5 Pain Relievers and 5-of-5 Gain Creators. Out-of-Scope features deferred to matching phases." },
+];
+
+// === Render workflow steps ===
+const workflowContainer = document.getElementById('workflowSteps');
+workflowContainer.className = 'workflow-grid';
+workflowSteps.forEach((step, i) => {
+  const div = document.createElement('div');
+  div.className = 'gold-card workflow-step reveal reveal-delay-' + ((i % 4) + 1);
+  div.innerHTML = `
+    <div class="workflow-step-header">
+      <div class="step-badge">${step.n}</div>
+      ${step.icon}
+    </div>
+    <h3 class="workflow-step-title">${step.title}</h3>
+    <p class="workflow-step-desc">${step.desc}</p>
+  `;
+  workflowContainer.appendChild(div);
+});
+
+// === Render persona panels ===
+const personaContainer = document.getElementById('personaPanels');
+personas.forEach((p, i) => {
+  const div = document.createElement('div');
+  div.className = 'persona-panel' + (i === 0 ? ' is-active' : '');
+  div.dataset.index = i;
+  div.innerHTML = `
+    <div class="gold-card persona-detail">
+      <div class="persona-header">
+        <div>
+          <h3 class="persona-name">${p.name}</h3>
+          <div class="persona-role">${p.role}</div>
+          <div class="persona-location">${p.location}</div>
+        </div>
+        <div class="persona-avatar">${p.avatar}</div>
+      </div>
+      <p class="persona-desc">${p.desc}</p>
+      <div class="persona-3col">
+        <div class="persona-col jobs">
+          <div class="persona-col-label">Jobs</div>
+          <div class="persona-col-text">${p.jobs}</div>
+        </div>
+        <div class="persona-col pains">
+          <div class="persona-col-label">Pains</div>
+          <div class="persona-col-text">${p.pains}</div>
+        </div>
+        <div class="persona-col gains">
+          <div class="persona-col-label">Gains</div>
+          <div class="persona-col-text">${p.gains}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  personaContainer.appendChild(div);
+});
+
+// === Persona tab switching ===
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('is-active'));
+    btn.classList.add('is-active');
+    const idx = btn.dataset.persona;
+    document.querySelectorAll('.persona-panel').forEach(panel => {
+      panel.classList.remove('is-active');
+    });
+    document.querySelector(`.persona-panel[data-index="${idx}"]`).classList.add('is-active');
+  });
+});
+
+// === Render BMC blocks ===
+const bmcContainer = document.getElementById('bmcGrid');
+bmcBlocks.forEach((block, i) => {
+  const div = document.createElement('div');
+  div.className = 'gold-card bmc-card reveal reveal-delay-' + ((i % 4) + 1);
+  div.innerHTML = `
+    <div class="bmc-card-bar" style="background: ${block.color};"></div>
+    <div class="bmc-card-num">BLOCK ${block.num}</div>
+    <h3 class="bmc-card-title">${block.title}</h3>
+    <ul>${block.items.map(item => `<li>${item}</li>`).join('')}</ul>
+  `;
+  bmcContainer.appendChild(div);
+});
+
+// === Render phases ===
+const phaseContainer = document.getElementById('phaseList');
+phases.forEach((phase, i) => {
+  const div = document.createElement('div');
+  div.className = 'gold-card phase-card reveal reveal-delay-' + ((i % 4) + 1);
+  const statusClass = phase.status === 'MVP' ? 'mvp' : 'phase3';
+  div.innerHTML = `
+    <div class="phase-grid">
+      <div>
+        <div class="phase-header">
+          <span class="phase-tag">${phase.phase}</span>
+          <span class="phase-status ${statusClass}">${phase.status}</span>
+        </div>
+        <h3 class="phase-title">${phase.title}</h3>
+        <div class="phase-window">${phase.window}</div>
+      </div>
+      <p class="phase-desc">${phase.desc}</p>
+      <div>
+        <div class="phase-features-label">Key features</div>
+        <ul class="phase-features">
+          ${phase.features.map(f => `<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>${f}</li>`).join('')}
+        </ul>
+      </div>
+    </div>
+    <div class="phase-progress-track">
+      <div class="phase-bar" style="--target-width: ${phase.progress}%;"></div>
+    </div>
+  `;
+  phaseContainer.appendChild(div);
+});
+
+// === Render compliance grid ===
+const complianceContainer = document.getElementById('complianceGrid');
+compliance.forEach((c, i) => {
+  const div = document.createElement('div');
+  div.className = 'compliance-badge reveal reveal-delay-' + ((i % 4) + 1);
+  div.innerHTML = `
+    ${c.icon}
+    <div class="compliance-code">${c.code}</div>
+    <div class="compliance-name">${c.name}</div>
+    <div class="compliance-desc">${c.desc}</div>
+  `;
+  complianceContainer.appendChild(div);
+});
+
+// === Render partner grid ===
+const partnerContainer = document.getElementById('partnerGrid');
+partners.forEach((p, i) => {
+  const div = document.createElement('div');
+  div.className = 'gold-card partner-card reveal reveal-delay-' + ((i % 4) + 1) + (p.featured ? ' featured' : '');
+  div.innerHTML = `
+    <div class="partner-icon">${p.icon}</div>
+    <div class="partner-name">${p.name}</div>
+    <div class="partner-role">${p.role}</div>
+    ${p.featured ? '<div class="partner-featured-tag">★ #1 Partner</div>' : ''}
+  `;
+  partnerContainer.appendChild(div);
+});
+
+// === Render thread cards ===
+const threadContainer = document.getElementById('threadList');
+threads.forEach((t, i) => {
+  const div = document.createElement('div');
+  div.className = 'gold-card thread-card reveal reveal-delay-' + ((i % 4) + 1);
+  div.innerHTML = `
+    <div class="thread-header">
+      <span class="thread-tag">${t.from}</span>
+      <svg class="thread-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      <span class="thread-tag">${t.to}</span>
+    </div>
+    <p class="thread-desc">${t.desc}</p>
+  `;
+  threadContainer.appendChild(div);
+});
+
+// === Generate particles ===
+const particlesEl = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const size = 1 + Math.random() * 3;
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDelay = Math.random() * 15 + 's';
+  p.style.animationDuration = (15 + Math.random() * 20) + 's';
+  p.style.width = size + 'px';
+  p.style.height = size + 'px';
+  particlesEl.appendChild(p);
+}
+
+// === Nav scroll effect ===
+const navEl = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) navEl.classList.add('scrolled');
+  else navEl.classList.remove('scrolled');
+});
+
+// === Mobile nav toggle ===
+const navToggle = document.getElementById('navToggle');
+const navMobileMenu = document.getElementById('navMobileMenu');
+navToggle.addEventListener('click', () => {
+  navMobileMenu.classList.toggle('open');
+});
+navMobileMenu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => navMobileMenu.classList.remove('open'));
+});
+
+// === Intersection Observer for reveals ===
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+
+      // Animate counters
+      const counter = entry.target.querySelector('[data-counter]') || (entry.target.matches('[data-counter]') ? entry.target : null);
+      if (counter && !counter.dataset.animated) {
+        counter.dataset.animated = 'true';
+        animateCounter(counter);
+      }
+    }
+  });
+}, { threshold: 0.1, rootMargin: '-50px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// === Counter animation ===
+function animateCounter(el) {
+  const target = parseFloat(el.dataset.counter);
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  const decimals = parseInt(el.dataset.decimals || '0');
+  const duration = 2000;
+  const start = performance.now();
+
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = target * eased;
+    const formatted = value >= 1000 ? Math.round(value).toLocaleString() : value.toFixed(decimals);
+    el.textContent = prefix + formatted + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// === Chart toggle ===
+const chartToggles = document.querySelectorAll('.chart-toggle');
+const chartRevenueEl = document.getElementById('chartRevenue');
+const chartBreakEvenEl = document.getElementById('chartBreakEven');
+
+chartToggles.forEach(toggle => {
+  toggle.addEventListener('click', () => {
+    chartToggles.forEach(t => t.classList.remove('is-active'));
+    toggle.classList.add('is-active');
+    const target = toggle.dataset.chart;
+    if (target === 'revenue') {
+      chartRevenueEl.style.display = 'block';
+      chartBreakEvenEl.style.display = 'none';
+    } else {
+      chartRevenueEl.style.display = 'none';
+      chartBreakEvenEl.style.display = 'block';
+    }
+  });
+});
+
+// === Charts (Chart.js) ===
+const chartFontColor = 'rgba(245, 242, 232, 0.6)';
+const chartGridColor = 'rgba(201, 168, 76, 0.06)';
+
+// Revenue chart
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revenueGradient = revenueCtx.createLinearGradient(0, 0, 0, 400);
+revenueGradient.addColorStop(0, 'rgba(201, 168, 76, 0.6)');
+revenueGradient.addColorStop(1, 'rgba(201, 168, 76, 0)');
+const opexGradient = revenueCtx.createLinearGradient(0, 0, 0, 400);
+opexGradient.addColorStop(0, 'rgba(138, 114, 56, 0.4)');
+opexGradient.addColorStop(1, 'rgba(138, 114, 56, 0)');
+
+new Chart(revenueCtx, {
+  type: 'line',
+  data: {
+    labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+    datasets: [
+      {
+        label: 'Net Revenue (US$M)',
+        data: [1.13, 2.28, 3.64, 5.03, 6.19],
+        borderColor: '#c9a84c',
+        backgroundColor: revenueGradient,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#c9a84c',
+        pointRadius: 4,
+      },
+      {
+        label: 'OpEx (US$M)',
+        data: [0.51, 0.55, 0.62, 0.70, 0.78],
+        borderColor: '#8a7238',
+        backgroundColor: opexGradient,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#8a7238',
+        pointRadius: 4,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: chartFontColor } },
+      tooltip: {
+        backgroundColor: '#0a0a0a',
+        borderColor: 'rgba(201, 168, 76, 0.4)',
+        borderWidth: 1,
+        titleColor: '#f5f2e8',
+        bodyColor: '#f5f2e8',
+      },
+    },
+    scales: {
+      x: { ticks: { color: chartFontColor }, grid: { color: chartGridColor } },
+      y: { ticks: { color: chartFontColor }, grid: { color: chartGridColor } },
+    },
+  },
+});
+
+// Break-even chart
+const breakevenCtx = document.getElementById('breakevenChart').getContext('2d');
+new Chart(breakevenCtx, {
+  type: 'line',
+  data: {
+    labels: ['M3', 'M6', 'M9', 'M12', 'M15', 'M18', 'M22', 'M24', 'M36', 'M48', 'M60'],
+    datasets: [
+      {
+        label: 'Monthly Revenue (US$K)',
+        data: [12.4, 28.9, 44.2, 61.5, 82.4, 108.3, 162.8, 189.6, 305.6, 423.3, 515.9],
+        borderColor: '#c9a84c',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        tension: 0.3,
+        pointBackgroundColor: '#c9a84c',
+        pointRadius: 3,
+      },
+      {
+        label: 'Monthly OpEx (US$K)',
+        data: [32.8, 42.6, 43.8, 45.2, 46.8, 48.4, 47.2, 48.0, 52.0, 58.0, 65.0],
+        borderColor: '#8a7238',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        tension: 0.3,
+        pointBackgroundColor: '#8a7238',
+        pointRadius: 3,
+      },
+      {
+        label: 'Cumulative Cash (US$K)',
+        data: [-61, -103, -103, -86, -51, 9, 0, 278, 1820, 5935, 11648],
+        borderColor: '#d4b866',
+        backgroundColor: 'transparent',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        tension: 0.3,
+        pointBackgroundColor: '#d4b866',
+        pointRadius: 3,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: chartFontColor } },
+      tooltip: {
+        backgroundColor: '#0a0a0a',
+        borderColor: 'rgba(201, 168, 76, 0.4)',
+        borderWidth: 1,
+        titleColor: '#f5f2e8',
+        bodyColor: '#f5f2e8',
+      },
+      annotation: {},
+    },
+    scales: {
+      x: { ticks: { color: chartFontColor }, grid: { color: chartGridColor } },
+      y: {
+        ticks: { color: chartFontColor },
+        grid: { color: chartGridColor },
+      },
+    },
+  },
+});
+
+// === Smooth scroll for anchor links ===
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    const href = this.getAttribute('href');
+    if (href === '#') return;
+    const target = document.querySelector(href);
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

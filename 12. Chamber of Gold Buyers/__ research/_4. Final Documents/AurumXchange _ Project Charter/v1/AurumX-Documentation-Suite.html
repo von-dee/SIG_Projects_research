@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AurumX — Ghana Gold Exchange Platform | Documentation Suite</title>
+<meta name="description" content="AurumX — Digital Trading Infrastructure for the Chamber of Gold Buyers. Project documentation suite.">
+
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<!-- Mermaid -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        },
+      }
+    }
+  }
+</script>
+
+<style>
+  /* ========== THEME TOKENS ========== */
+  :root {
+    --bg: #0B1220;
+    --bg-2: #0E1726;
+    --surface: #101828;
+    --surface-2: #182238;
+    --text: #E5E7EB;
+    --muted: #94A3B8;
+    --gold: #D4AF37;
+    --gold-light: #FCEFC7;
+    --gold-soft: rgba(212, 175, 55, 0.12);
+    --border: rgba(212, 175, 55, 0.2);
+    --border-soft: rgba(148, 163, 184, 0.14);
+    --shadow-glow: 0 0 0 1px rgba(212,175,55,0.18), 0 18px 50px -12px rgba(212,175,55,0.22);
+    --hero-radial: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55,0.18) 0%, rgba(11,18,32,0) 60%);
+    --body-radial: radial-gradient(ellipse 60% 40% at 80% 10%, rgba(212,175,55,0.06) 0%, rgba(11,18,32,0) 55%);
+  }
+  html.light {
+    --bg: #FAFAF7;
+    --bg-2: #F4F2EC;
+    --surface: #FFFFFF;
+    --surface-2: #F7F5EE;
+    --text: #1A2B4A;
+    --muted: #6B7280;
+    --gold: #B8860B;
+    --gold-light: #D4AF37;
+    --gold-soft: rgba(184, 134, 11, 0.10);
+    --border: rgba(184, 134, 11, 0.25);
+    --border-soft: rgba(26, 43, 74, 0.12);
+    --shadow-glow: 0 0 0 1px rgba(184,134,11,0.20), 0 18px 50px -12px rgba(184,134,11,0.18);
+    --hero-radial: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(184,134,11,0.16) 0%, rgba(250,250,247,0) 60%);
+    --body-radial: radial-gradient(ellipse 60% 40% at 80% 10%, rgba(184,134,11,0.06) 0%, rgba(250,250,247,0) 55%);
+  }
+
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: "ss01", "cv11";
+    transition: background-color .5s ease, color .5s ease;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: var(--body-radial);
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity .5s ease;
+  }
+
+  .font-serif { font-family: 'Playfair Display', Georgia, serif; }
+
+  /* ========== PROGRESS BAR ========== */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+    box-shadow: 0 0 14px rgba(212,175,55,0.7);
+    z-index: 100; transition: width .08s linear;
+  }
+
+  /* ========== SIDEBAR ========== */
+  #sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 280px;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border-soft);
+    z-index: 60; display: flex; flex-direction: column;
+    transition: transform .35s cubic-bezier(.4,0,.2,1), background-color .5s ease;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 11px 18px; cursor: pointer;
+    color: var(--muted); position: relative;
+    border-left: 3px solid transparent;
+    transition: color .25s ease, background-color .25s ease, border-color .25s ease;
+    text-decoration: none;
+  }
+  .nav-item:hover { color: var(--text); background: var(--gold-soft); }
+  .nav-item .nav-num {
+    font-family: 'Playfair Display', serif; font-weight: 600;
+    color: var(--gold); font-size: 13px; width: 26px; flex-shrink: 0;
+    letter-spacing: .04em;
+  }
+  .nav-item .nav-title { font-size: 13.5px; font-weight: 500; line-height: 1.3; }
+  .nav-item.active {
+    color: var(--gold-light); background: var(--gold-soft);
+    border-left-color: var(--gold);
+  }
+  .nav-item.active .nav-num { color: var(--gold-light); }
+
+  /* ========== MAIN CONTENT ========== */
+  #main-content { margin-left: 280px; position: relative; z-index: 1; }
+  @media (max-width: 1024px) {
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); box-shadow: 0 0 60px rgba(0,0,0,.5); }
+    #main-content { margin-left: 0; }
+    #menu-toggle { display: flex !important; }
+    #sidebar-backdrop { display: block; }
+  }
+  #menu-toggle {
+    display: none; position: fixed; top: 16px; left: 16px; z-index: 70;
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    align-items: center; justify-content: center; color: var(--gold);
+    box-shadow: var(--shadow-glow);
+  }
+  #sidebar-backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    z-index: 55; opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  #sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
+
+  /* ========== HERO ========== */
+  #hero {
+    min-height: 100vh; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+  }
+  #hero::before {
+    content: ""; position: absolute; inset: 0;
+    background: var(--hero-radial);
+    z-index: 0;
+  }
+  #hero-canvas { position: absolute; inset: 0; z-index: 1; }
+  .hero-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    border: 1px solid var(--border); background: var(--gold-soft);
+    color: var(--gold-light); font-size: 12px; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 5.2rem); line-height: 1.05;
+    letter-spacing: -.02em; margin: 22px 0 16px;
+    background: linear-gradient(180deg, var(--text) 0%, var(--gold-light) 130%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-sub {
+    font-size: clamp(1rem, 1.8vw, 1.3rem); color: var(--muted);
+    max-width: 680px; margin: 0 auto 10px; font-weight: 400;
+  }
+  .hero-codename {
+    font-size: 13px; color: var(--gold); letter-spacing: .15em;
+    text-transform: uppercase; font-weight: 500; margin-top: 14px;
+  }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: all .25s ease; text-decoration: none;
+    border: 1px solid transparent;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%);
+    color: #1A1408; box-shadow: 0 8px 28px -8px rgba(212,175,55,.6);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px -8px rgba(212,175,55,.8); }
+  .btn-ghost {
+    background: var(--surface); color: var(--text);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); transform: translateY(-2px); }
+
+  .scroll-indicator {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    z-index: 3; color: var(--muted); display: flex; flex-direction: column;
+    align-items: center; gap: 8px; font-size: 11px; letter-spacing: .2em;
+    text-transform: uppercase;
+  }
+  .scroll-chevron {
+    animation: bob 2s ease-in-out infinite;
+  }
+  @keyframes bob {
+    0%,100% { transform: translateY(0); opacity: .6; }
+    50% { transform: translateY(6px); opacity: 1; }
+  }
+
+  /* ========== SECTIONS ========== */
+  section.doc {
+    padding: 90px 56px 70px;
+    position: relative;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  @media (max-width: 768px) { section.doc { padding: 70px 22px 56px; } }
+
+  .section-header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 44px; }
+  .section-num {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: 64px; line-height: .9; color: var(--gold);
+    flex-shrink: 0; letter-spacing: -.02em;
+  }
+  .section-bar {
+    width: 4px; min-height: 64px; border-radius: 2px;
+    background: linear-gradient(180deg, var(--gold) 0%, transparent 100%);
+    flex-shrink: 0; margin-top: 6px;
+  }
+  .section-title { font-size: clamp(1.7rem, 3vw, 2.5rem); font-weight: 700; letter-spacing: -.01em; line-height: 1.1; }
+  .section-sub { color: var(--muted); font-size: 15px; margin-top: 8px; font-weight: 400; }
+
+  /* ========== CARDS ========== */
+  .card {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 14px; padding: 22px; position: relative;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    will-change: transform;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+    border-color: var(--border);
+  }
+
+  .stat-card {
+    text-align: left; padding: 24px;
+    background: linear-gradient(160deg, var(--surface) 0%, var(--surface-2) 100%);
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif; font-weight: 700;
+    font-size: clamp(2rem, 3.6vw, 2.9rem); line-height: 1;
+    background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 120%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -.02em;
+  }
+  .stat-label { color: var(--muted); font-size: 13px; margin-top: 8px; line-height: 1.4; }
+
+  /* ========== TABLES ========== */
+  .table-wrap {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 14px; overflow: hidden;
+  }
+  table.ax {
+    width: 100%; border-collapse: collapse; font-size: 13.5px;
+  }
+  table.ax thead th {
+    text-align: left; padding: 13px 16px; font-weight: 600;
+    color: var(--gold-light); font-size: 11.5px; letter-spacing: .08em;
+    text-transform: uppercase;
+    background: var(--surface-2); border-bottom: 1px solid var(--border-soft);
+  }
+  table.ax tbody td {
+    padding: 12px 16px; border-bottom: 1px solid var(--border-soft);
+    color: var(--text); vertical-align: top;
+  }
+  table.ax tbody tr:last-child td { border-bottom: none; }
+  table.ax tbody tr { transition: background-color .2s ease; }
+  table.ax tbody tr:hover { background: var(--gold-soft); }
+  table.ax .num { font-family: 'Playfair Display', serif; color: var(--gold); font-weight: 600; }
+
+  /* ========== BADGES ========== */
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: .03em;
+    border: 1px solid transparent; white-space: nowrap;
+  }
+  .b-critical { background: rgba(220,38,38,.15); color: #FCA5A5; border-color: rgba(220,38,38,.4); }
+  .b-high { background: rgba(234,88,12,.15); color: #FDBA74; border-color: rgba(234,88,12,.4); }
+  .b-medium { background: rgba(202,138,4,.15); color: #FCD34D; border-color: rgba(202,138,4,.4); }
+  .b-low { background: rgba(100,116,139,.15); color: #CBD5E1; border-color: rgba(100,116,139,.4); }
+  .b-gold { background: var(--gold-soft); color: var(--gold-light); border-color: var(--border); }
+  html.light .b-critical { background: rgba(220,38,38,.12); color: #B91C1C; }
+  html.light .b-high { background: rgba(234,88,12,.12); color: #C2410C; }
+  html.light .b-medium { background: rgba(202,138,4,.12); color: #A16207; }
+  html.light .b-low { background: rgba(100,116,139,.12); color: #475569; }
+  html.light .b-gold { background: rgba(184,134,11,.12); color: #92740A; }
+
+  /* SEV badges for DevOps/Security */
+  .sev-1 { background: rgba(220,38,38,.18); color: #FCA5A5; border-color: rgba(220,38,38,.5); }
+  .sev-2 { background: rgba(234,88,12,.18); color: #FDBA74; border-color: rgba(234,88,12,.5); }
+  .sev-3 { background: rgba(202,138,4,.18); color: #FCD34D; border-color: rgba(202,138,4,.5); }
+  .sev-4 { background: rgba(100,116,139,.18); color: #CBD5E1; border-color: rgba(100,116,139,.5); }
+  html.light .sev-1 { background: rgba(220,38,38,.14); color: #B91C1C; }
+  html.light .sev-2 { background: rgba(234,88,12,.14); color: #C2410C; }
+  html.light .sev-3 { background: rgba(202,138,4,.14); color: #A16207; }
+  html.light .sev-4 { background: rgba(100,116,139,.14); color: #475569; }
+
+  /* ========== PERSONA ========== */
+  .persona-card { padding: 0; overflow: hidden; }
+  .persona-head {
+    padding: 22px 22px 18px; display: flex; align-items: center; gap: 16px;
+    border-bottom: 1px solid var(--border-soft);
+    background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+  }
+  .persona-avatar {
+    width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0;
+    background: var(--gold-soft); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+  }
+  .persona-body { padding: 20px 22px; }
+  .persona-quote {
+    margin: 16px 0 0; padding: 14px 16px; border-left: 3px solid var(--gold);
+    background: var(--gold-soft); border-radius: 0 8px 8px 0;
+    font-style: italic; font-size: 13.5px; color: var(--text); line-height: 1.55;
+  }
+  .mini-table { width: 100%; font-size: 12.5px; border-collapse: collapse; margin-top: 14px; }
+  .mini-table td { padding: 7px 0; border-bottom: 1px dashed var(--border-soft); vertical-align: top; }
+  .mini-table td:first-child { color: var(--muted); width: 45%; }
+  .mini-table tr:last-child td { border-bottom: none; }
+
+  /* ========== JOURNEY TIMELINE ========== */
+  .stage-timeline { display: flex; align-items: flex-start; gap: 4px; margin: 18px 0; }
+  .stage {
+    flex: 1; text-align: center; position: relative;
+  }
+  .stage-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--surface); border: 2px solid var(--gold);
+    margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 11px; font-weight: 700; font-family: 'Playfair Display', serif;
+    position: relative; z-index: 2;
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+  .stage::after {
+    content: ""; position: absolute; top: 13px; left: 50%; width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--border) 100%);
+    z-index: 1;
+  }
+  .stage:last-child::after { display: none; }
+  .stage-label { font-size: 11px; color: var(--muted); line-height: 1.3; padding: 0 2px; }
+  @media (max-width: 640px) {
+    .stage-timeline { flex-direction: column; gap: 16px; }
+    .stage { display: flex; align-items: center; gap: 12px; text-align: left; }
+    .stage-dot { margin: 0; }
+    .stage::after { display: none; }
+  }
+
+  /* ========== ACCORDION (ADR) ========== */
+  .accordion-item {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 12px; margin-bottom: 12px; overflow: hidden;
+    transition: border-color .25s ease, box-shadow .25s ease;
+  }
+  .accordion-item:hover { border-color: var(--border); }
+  .accordion-item.open { border-color: var(--gold); box-shadow: var(--shadow-glow); }
+  .accordion-head {
+    display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+    cursor: pointer; user-select: none;
+  }
+  .accordion-head .adr-id {
+    font-family: 'Playfair Display', serif; color: var(--gold); font-weight: 600; font-size: 14px;
+    flex-shrink: 0; width: 70px;
+  }
+  .accordion-head .adr-title { font-size: 14.5px; font-weight: 500; flex: 1; }
+  .accordion-head .chev { color: var(--muted); transition: transform .3s ease; }
+  .accordion-item.open .chev { transform: rotate(180deg); color: var(--gold); }
+  .accordion-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s cubic-bezier(.4,0,.2,1);
+  }
+  .accordion-item.open .accordion-body { max-height: 600px; }
+  .accordion-body-inner { padding: 0 20px 18px; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+
+  /* ========== MERMAID ========== */
+  .mermaid-wrap {
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 14px; padding: 28px; overflow-x: auto;
+  }
+  .mermaid { display: flex; justify-content: center; }
+
+  /* ========== FLOW CARDS ========== */
+  .flow-card { padding: 18px; }
+  .flow-id {
+    font-family: 'Playfair Display', serif; color: var(--gold);
+    font-weight: 600; font-size: 13px; letter-spacing: .04em;
+  }
+  .flow-title { font-size: 14.5px; font-weight: 600; margin: 6px 0 8px; line-height: 1.3; }
+  .flow-meta { font-size: 11.5px; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* ========== CI/CD PIPELINE ========== */
+  .pipeline { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; }
+  .pipe-step {
+    flex: 1; min-width: 120px; padding: 16px 14px;
+    background: var(--surface); border: 1px solid var(--border-soft);
+    border-radius: 10px; text-align: center; position: relative;
+    transition: transform .25s ease, border-color .25s ease;
+  }
+  .pipe-step:hover { transform: translateY(-3px); border-color: var(--gold); }
+  .pipe-step + .pipe-step { margin-left: -1px; }
+  .pipe-arrow {
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; color: var(--gold); flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    .pipeline { flex-direction: column; }
+    .pipe-arrow { transform: rotate(90deg); width: 100%; height: 28px; }
+  }
+  .pipe-icon { color: var(--gold); margin-bottom: 8px; display: flex; justify-content: center; }
+  .pipe-title { font-size: 12.5px; font-weight: 600; }
+  .pipe-desc { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+
+  /* ========== SECURITY PRINCIPLE CARDS ========== */
+  .principle-card { padding: 22px; }
+  .principle-id {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--gold-soft); border: 1px solid var(--border);
+    color: var(--gold); font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 14px; margin-bottom: 14px;
+  }
+
+  /* ========== CALLOUT ========== */
+  .callout {
+    padding: 16px 18px; border-radius: 10px;
+    background: var(--gold-soft); border: 1px solid var(--border);
+    font-size: 13.5px; line-height: 1.55; margin-top: 14px;
+  }
+  .callout strong { color: var(--gold-light); }
+
+  /* ========== SIGNOFF ========== */
+  .signoff {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 20px; border-radius: 10px;
+    background: linear-gradient(120deg, var(--gold-soft) 0%, transparent 100%);
+    border: 1px solid var(--border); border-left: 3px solid var(--gold);
+    margin-top: 28px;
+  }
+  .signoff-label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  .signoff-date { font-family: 'Playfair Display', serif; color: var(--gold-light); font-weight: 600; font-size: 16px; }
+
+  /* ========== THEME TOGGLE ========== */
+  .theme-toggle {
+    width: 42px; height: 42px; border-radius: 10px;
+    border: 1px solid var(--border-soft); background: var(--surface);
+    color: var(--gold); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .25s ease;
+  }
+  .theme-toggle:hover { border-color: var(--gold); color: var(--gold-light); }
+
+  /* ========== REVEAL ANIMATION ========== */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1);
+    will-change: opacity, transform;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+  .stagger > * {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1);
+  }
+  .stagger.in > * { opacity: 1; transform: translateY(0); }
+  .stagger.in > *:nth-child(1) { transition-delay: .05s; }
+  .stagger.in > *:nth-child(2) { transition-delay: .15s; }
+  .stagger.in > *:nth-child(3) { transition-delay: .25s; }
+  .stagger.in > *:nth-child(4) { transition-delay: .35s; }
+  .stagger.in > *:nth-child(5) { transition-delay: .45s; }
+  .stagger.in > *:nth-child(6) { transition-delay: .55s; }
+  .stagger.in > *:nth-child(7) { transition-delay: .65s; }
+  .stagger.in > *:nth-child(8) { transition-delay: .75s; }
+  .stagger.in > *:nth-child(9) { transition-delay: .85s; }
+
+  /* ========== CROSS-REFERENCE MAP ========== */
+  .xref-map {
+    display: flex; flex-wrap: wrap; gap: 0; justify-content: center; align-items: center;
+    padding: 30px 10px;
+  }
+  .xref-node {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 16px; text-align: center;
+    min-width: 110px; position: relative; z-index: 2;
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .xref-node:hover { transform: translateY(-3px); box-shadow: var(--shadow-glow); }
+  .xref-num { font-family: 'Playfair Display', serif; color: var(--gold); font-weight: 700; font-size: 22px; line-height: 1; }
+  .xref-label { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.2; }
+  .xref-connector {
+    display: flex; align-items: center; color: var(--gold);
+    font-size: 18px; padding: 0 4px;
+  }
+  @media (max-width: 768px) {
+    .xref-map { flex-direction: column; }
+    .xref-connector { transform: rotate(90deg); padding: 8px 0; }
+  }
+
+  /* ========== FOOTER ========== */
+  footer {
+    padding: 56px 56px 40px; background: var(--bg-2);
+    border-top: 1px solid var(--border-soft);
+  }
+  @media (max-width: 768px) { footer { padding: 40px 22px; } }
+
+  /* Subtle grid texture on hero */
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: .25;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 0%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 0%, transparent 70%);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    .reveal, .stagger > * { opacity: 1 !important; transform: none !important; }
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+  /* Mermaid diagram text color override */
+  .mermaid-wrap .nodeLabel, .mermaid-wrap .edgeLabel {
+    color: var(--text) !important;
+  }
+</style>
+</head>
+<body>
+
+<!-- Progress Bar -->
+<div id="progress-bar"></div>
+
+<!-- Mobile Menu Toggle -->
+<button id="menu-toggle" aria-label="Open navigation">
+  <i data-lucide="menu" style="width:20px;height:20px;"></i>
+</button>
+<div id="sidebar-backdrop"></div>
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div style="padding: 22px 20px 18px; border-bottom: 1px solid var(--border-soft);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%);display:flex;align-items:center;justify-content:center;color:#1A1408;font-family:'Playfair Display',serif;font-weight:800;font-size:18px;">A</div>
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:17px;letter-spacing:-.01em;">AurumX</div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;">Documentation Suite</div>
+      </div>
+    </div>
+  </div>
+
+  <nav style="flex:1; overflow-y:auto; padding: 14px 0;">
+    <div class="nav-item" data-target="hero">
+      <span class="nav-num">00</span><span class="nav-title">Overview</span>
+    </div>
+    <div class="nav-item" data-target="charter">
+      <span class="nav-num">01</span><span class="nav-title">Project Charter — The Why</span>
+    </div>
+    <div class="nav-item" data-target="personas">
+      <span class="nav-num">02</span><span class="nav-title">User Personas — The Who</span>
+    </div>
+    <div class="nav-item" data-target="journeys">
+      <span class="nav-num">03</span><span class="nav-title">User Success Journeys</span>
+    </div>
+    <div class="nav-item" data-target="architecture">
+      <span class="nav-num">04</span><span class="nav-title">System Architecture & Design</span>
+    </div>
+    <div class="nav-item" data-target="flows">
+      <span class="nav-num">05</span><span class="nav-title">User & System Flows</span>
+    </div>
+    <div class="nav-item" data-target="devops">
+      <span class="nav-num">06</span><span class="nav-title">Development & Operations</span>
+    </div>
+    <div class="nav-item" data-target="security">
+      <span class="nav-num">07</span><span class="nav-title">Security & Compliance</span>
+    </div>
+  </nav>
+
+  <div style="padding: 16px 20px; border-top: 1px solid var(--border-soft); display:flex; align-items:center; justify-content:space-between;">
+    <div style="font-size:11px;color:var(--muted);line-height:1.4;">
+      <div style="color:var(--gold-light);font-weight:600;">v1.0</div>
+      <div>15 August 2026</div>
+    </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+      <i data-lucide="sun" id="theme-icon" style="width:18px;height:18px;"></i>
+    </button>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div id="main-content">
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-content reveal">
+    <span class="hero-eyebrow"><i data-lucide="layers" style="width:13px;height:13px;"></i> Documentation Suite · 7 Documents</span>
+    <h1 class="hero-title">Ghana Gold<br>Exchange Platform</h1>
+    <p class="hero-sub">Digital trading infrastructure for the Chamber of Gold Buyers — a verified, escrow-backed marketplace built for a US$2.3&nbsp;billion informal sector.</p>
+    <div class="hero-codename">Project Aurum · Codename AurumX</div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" data-nav="charter"><i data-lucide="scroll-text" style="width:16px;height:16px;"></i> View Charter</a>
+      <a class="btn btn-ghost" data-nav="architecture"><i data-lucide="cpu" style="width:16px;height:16px;"></i> Explore Architecture</a>
+      <a class="btn btn-ghost" data-nav="security"><i data-lucide="shield-check" style="width:16px;height:16px;"></i> Read Security</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll</span>
+    <i data-lucide="chevron-down" class="scroll-chevron" style="width:20px;height:20px;"></i>
+  </div>
+</section>
+
+<!-- ============ 01 — PROJECT CHARTER ============ -->
+<section id="charter" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">01</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">Project Charter</h2>
+      <p class="section-sub">The Why — purpose, scope, objectives, risks, and the path from informal trade to a regulated digital exchange.</p>
+    </div>
+  </div>
+
+  <!-- Problem statement -->
+  <div class="callout reveal" style="margin-bottom: 36px;">
+    <strong>Problem.</strong> Ghana's informal gold trade loses an estimated <strong>US$2.3 billion annually</strong> to leakage, fraud, tax evasion, and unbanked transactions. There is no single source of truth connecting licensed buyers, sellers, escrow, and regulators. AurumX exists to close that gap with verified counterparties, atomic escrow settlement, and tamper-evident audit trails.
+  </div>
+
+  <!-- Stat cards -->
+  <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:44px;">
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="2.3" data-suffix="B" data-prefix="US$" data-decimals="1">0</span></div>
+      <div class="stat-label">Annual sector loss from informal gold trade</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="5">0</span></div>
+      <div class="stat-label">SMART objectives anchoring the programme</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="7">0</span></div>
+      <div class="stat-label">Top risks with named mitigations & owners</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="14">0</span></div>
+      <div class="stat-label">Key performance indicators tracked weekly</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="23">0</span><span style="font-size:.5em;color:var(--muted);"> mo</span></div>
+      <div class="stat-label">From kickoff (Aug 2026) to full rollout (Jul 2028)</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="1.32" data-suffix="M" data-prefix="US$" data-decimals="2">0</span></div>
+      <div class="stat-label">Year 1 vendor cost (build & deliver)</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="16" data-prefix="~">0</span><span style="font-size:.5em;color:var(--muted);"> FTE</span></div>
+      <div class="stat-label">Core delivery team across vendor & Chamber</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num"><span class="count" data-to="70" data-suffix="%">0</span><span style="font-size:.5em;color:var(--muted);"> / 30%</span></div>
+      <div class="stat-label">Revenue share — Vendor / Chamber</div>
+    </div>
+  </div>
+
+  <!-- Phased Timeline -->
+  <div class="reveal" style="margin-bottom:44px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="calendar-clock" style="width:18px;height:18px;color:var(--gold);"></i> Phased Delivery Timeline
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:90px;">Phase</th><th>Scope</th><th style="width:170px;">Target Date</th><th style="width:160px;">Status</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Phase 1</td><td>Member Portal — KYC, onboarding, directory, vault intake</td><td>28 February 2027</td><td><span class="badge b-gold">Foundational</span></td></tr>
+          <tr><td class="num">Phase 2</td><td>Trading — RFQ, quotes, escrow funding, settlement</td><td>31 August 2027</td><td><span class="badge b-medium">Core value</span></td></tr>
+          <tr><td class="num">Phase 3</td><td>Value-Added Services — export permits, logistics, financing</td><td>28 February 2028</td><td><span class="badge b-low">Expansion</span></td></tr>
+          <tr><td class="num">Phase 4</td><td>Analytics, Marketplace Intelligence & SOC 2 Type II attestation</td><td>31 July 2028</td><td><span class="badge b-high">Closure</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SMART Objectives -->
+  <div class="reveal" style="margin-bottom:44px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="target" style="width:18px;height:18px;color:var(--gold);"></i> Five SMART Objectives
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:60px;">#</th><th>Objective</th><th style="width:170px;">Target Date</th></tr></thead>
+        <tbody>
+          <tr><td class="num">O1</td><td>Reduce informal gold trade leakage by <strong>40%</strong> within 18 months of Phase 2 launch through verified-counterparty matching and escrow enforcement.</td><td>Feb 2029</td></tr>
+          <tr><td class="num">O2</td><td>Achieve <strong>99.95% platform availability</strong> per region with a mean time-to-troubleshoot of ≤ 48 hours (P90).</td><td>Aug 2027</td></tr>
+          <tr><td class="num">O3</td><td>Onboard <strong>1,200 verified members</strong> (buyers, sellers, exporters) by end of Phase 2, each passing KYC/AML screening.</td><td>Aug 2027</td></tr>
+          <tr><td class="num">O4</td><td>Process escrow-funded settlements with a <strong>≥ 99.5% success rate</strong> and zero fund-loss incidents attributable to platform fault.</td><td>Continuous</td></tr>
+          <tr><td class="num">O5</td><td>Attain <strong>SOC 2 Type II</strong> certification by Q3 2028 and <strong>ISO 27001:2022</strong> readiness by 2029.</td><td>Jul 2028</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RACI Matrix -->
+  <div class="reveal" style="margin-bottom:44px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="users" style="width:18px;height:18px;color:var(--gold);"></i> RACI Matrix (selected workstreams)
+    </h3>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table class="ax">
+        <thead>
+          <tr>
+            <th>Workstream</th><th>Chamber Board</th><th>Project Sponsor</th><th>Vendor PM</th><th>Tech Lead</th><th>Compliance</th><th>Security</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Scope & charter</td><td><span class="badge b-gold">A</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">I</span></td><td><span class="badge b-low">I</span></td></tr>
+          <tr><td>Architecture & ADRs</td><td><span class="badge b-low">I</span></td><td><span class="badge b-gold">A</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td></tr>
+          <tr><td>KYC / AML screening</td><td><span class="badge b-low">I</span></td><td><span class="badge b-gold">A</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">C</span></td></tr>
+          <tr><td>Escrow & settlement</td><td><span class="badge b-low">I</span></td><td><span class="badge b-gold">A</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td></tr>
+          <tr><td>Security & DR</td><td><span class="badge b-low">I</span></td><td><span class="badge b-gold">A</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-gold">R</span></td></tr>
+          <tr><td>Regulatory reporting</td><td><span class="badge b-gold">A</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">I</span></td><td><span class="badge b-low">I</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">I</span></td></tr>
+          <tr><td>Go/No-Go (each phase)</td><td><span class="badge b-gold">A</span></td><td><span class="badge b-gold">R</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td><td><span class="badge b-low">C</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:11.5px;color:var(--muted);margin-top:8px;">R = Responsible · A = Accountable · C = Consulted · I = Informed</p>
+  </div>
+
+  <!-- Key Risks -->
+  <div class="reveal" style="margin-bottom:44px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="alert-triangle" style="width:18px;height:18px;color:var(--gold);"></i> Top 7 Risks & Mitigations
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:60px;">ID</th><th>Risk</th><th>Severity</th><th>Mitigation & Owner</th></tr></thead>
+        <tbody>
+          <tr><td class="num">R1</td><td>Cybersecurity breach compromising escrow funds or member identities</td><td><span class="badge b-critical">Critical</span></td><td>Auth0 B2B + MFA, KMS-managed keys, WAF, SOC 2 controls — <em>Security Lead</em></td></tr>
+          <tr><td class="num">R2</td><td>Regulatory non-compliance (BoG AML/CFT/CPF, DPA 843)</td><td><span class="badge b-high">High</span></td><td>Compliance-by-design, automated SAR generation, regulator portal — <em>Director of Compliance</em></td></tr>
+          <tr><td class="num">R3</td><td>Adoption resistance from informal / unbanked sellers</td><td><span class="badge b-high">High</span></td><td>Tier-2 agent network, mobile-first PWA, escrow trust-building — <em>Chamber Member Affairs</em></td></tr>
+          <tr><td class="num">R4</td><td>Audit log tampering undermining regulatory trust</td><td><span class="badge b-high">High</span></td><td>Append-only, hash-chained events (Outbox), Tier-0 DR, quarterly attestation — <em>Tech Lead</em></td></tr>
+          <tr><td class="num">R5</td><td>AWS regional outage (af-west-1 primary)</td><td><span class="badge b-medium">Medium</span></td><td>Active-passive to eu-west-1, RTO 4h / RPO 5min for Tier-0 — <em>DevOps Lead</em></td></tr>
+          <tr><td class="num">R6</td><td>Gold price volatility between quote and settlement</td><td><span class="badge b-medium">Medium</span></td><td>LBMA-anchored pricing, 15-min quote validity, slippage guardrails — <em>Product</em></td></tr>
+          <tr><td class="num">R7</td><td>Vendor lock-in / key-person dependency on vendor</td><td><span class="badge b-medium">Medium</span></td><td>OpenADR documentation, escrow source clause, Chamber shadow team — <em>Project Sponsor</em></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="reveal" style="margin-bottom:28px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="gauge" style="width:18px;height:18px;color:var(--gold);"></i> 14 Key Performance Indicators
+    </h3>
+    <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;">
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K1</span> · Verified member count <span style="color:var(--muted);font-size:12px;">(target 1,200)</span></div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K2</span> · Monthly active traders</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K3</span> · Gold lots listed / month</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K4</span> · Trade completion rate</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K5</span> · Escrow success rate <span style="color:var(--muted);font-size:12px;">(≥ 99.5%)</span></div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K6</span> · Avg settlement time</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K7</span> · API availability <span style="color:var(--muted);font-size:12px;">(99.95%)</span></div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K8</span> · MTTTS <span style="color:var(--muted);font-size:12px;">(≤ 48h P90)</span></div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K9</span> · Audit log integrity <span style="color:var(--muted);font-size:12px;">(100%)</span></div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K10</span> · Compliance alert MTTR</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K11</span> · Export permit turnaround</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K12</span> · Informal sector leakage reduction</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K13</span> · Platform NPS / member satisfaction</div>
+      <div class="card" style="padding:14px 16px;"><span style="color:var(--gold);font-family:'Playfair Display',serif;font-weight:600;">K14</span> · Vendor cost vs. budget burn</div>
+    </div>
+  </div>
+
+  <div class="signoff reveal">
+    <i data-lucide="badge-check" style="width:22px;height:22px;color:var(--gold);"></i>
+    <div>
+      <div class="signoff-label">Authorized</div>
+      <div class="signoff-date">15 August 2026 · Chamber of Gold Buyers</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 — USER PERSONAS ============ -->
+<section id="personas" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">02</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">User Personas</h2>
+      <p class="section-sub">The Who — four archetypes spanning Tier 1 buyers, Tier 2 exporters, sellers, and the regulator-facing compliance office.</p>
+    </div>
+  </div>
+
+  <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;">
+
+    <!-- Persona 1: Kwame -->
+    <div class="card persona-card">
+      <div class="persona-head">
+        <div class="persona-avatar">👔</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Kwame Asare</div>
+          <div style="font-size:12px;color:var(--muted);">52 · Head of West African Sourcing</div>
+          <div style="font-size:12px;color:var(--gold);">Helvetia Refining AG</div>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div style="margin-bottom:6px;"><span class="badge b-gold">Tier 1 Buyer</span></div>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:12px;margin-bottom:4px;">Goals</div>
+        <ul style="font-size:13px;line-height:1.55;padding-left:16px;margin:0;">
+          <li>Source verified kilobar from licensed Ghanaian counterparties at volume</li>
+          <li>Generate audit-grade documentation for FINMA and LBMA refiner obligations</li>
+          <li>Reduce per-shipment friction from weeks to days</li>
+        </ul>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:14px;margin-bottom:4px;">Pain Points</div>
+        <p style="font-size:13px;line-height:1.55;margin:0;color:var(--text);">Counterparty due diligence is manual and inconsistent. Paper trails rarely survive a Swiss regulator's review. He loses weeks per shipment to verification.</p>
+        <div class="persona-quote">"I do not need another marketplace. I need a verified counterparty on the other side of every kilogram, with paper that survives a FINMA audit."</div>
+        <table class="mini-table">
+          <tr><td>Product Implication</td><td>Verified-counterparty badges, LBMA-grade provenance chain, downloadable audit dossier per trade</td></tr>
+          <tr><td>Primary flow</td><td>UF-04 Quote Comparison & Acceptance</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Persona 2: Abena -->
+    <div class="card persona-card">
+      <div class="persona-head">
+        <div class="persona-avatar">💼</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Abena Owusu</div>
+          <div style="font-size:12px;color:var(--muted);">34 · Managing Director</div>
+          <div style="font-size:12px;color:var(--gold);">GoldLink Exports Ltd</div>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div style="margin-bottom:6px;"><span class="badge b-gold">Tier 2 Buyer / Exporter</span></div>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:12px;margin-bottom:4px;">Goals</div>
+        <ul style="font-size:13px;line-height:1.55;padding-left:16px;margin:0;">
+          <li>Compress vault-to-export-permit cycle from 14 days to 5</li>
+          <li>Take three additional shipments per month at current capacity</li>
+          <li>Prove Minerals Commission and BoG compliance on demand</li>
+        </ul>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:14px;margin-bottom:4px;">Pain Points</div>
+        <p style="font-size:13px;line-height:1.55;margin:0;color:var(--text);">Permit windows are unpredictable. Capital is parked in slow settlements. Manual paperwork across three agencies eats a quarter of her operating margin.</p>
+        <div class="persona-quote">"If I can move gold from vault to export permit in five days instead of fourteen, I can take three more shipments a month. That is the difference between surviving and growing."</div>
+        <table class="mini-table">
+          <tr><td>Product Implication</td><td>One-click export permit bundling, escrow-funded financing, integrated logistics booking</td></tr>
+          <tr><td>Primary flow</td><td>UF-08 Export Permit Generation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Persona 3: Ibrahim -->
+    <div class="card persona-card">
+      <div class="persona-head">
+        <div class="persona-avatar">⛏️</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Ibrahim Toure</div>
+          <div style="font-size:12px;color:var(--muted);">48 · General Secretary</div>
+          <div style="font-size:12px;color:var(--gold);">Banda Small-Scale Miners Cooperative</div>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div style="margin-bottom:6px;"><span class="badge b-gold">Seller</span></div>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:12px;margin-bottom:4px;">Goals</div>
+        <ul style="font-size:13px;line-height:1.55;padding-left:16px;margin:0;">
+          <li>See competing offers before committing gold to a single buyer</li>
+          <li>Receive payment into escrow before gold leaves cooperative custody</li>
+          <li>Operate from a mobile device with intermittent connectivity</li>
+        </ul>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:14px;margin-bottom:4px;">Pain Points</div>
+        <p style="font-size:13px;line-height:1.55;margin:0;color:var(--text);">Prices are dictated, not negotiated. Cash settlement creates theft and default risk. The cooperative has no leverage and no audit trail of prior sales.</p>
+        <div class="persona-quote">"We mine the gold. Someone else sets the price. If this platform lets me see three offers before I sell, and the money is in escrow before the gold leaves my hand, I will use it every week."</div>
+        <table class="mini-table">
+          <tr><td>Product Implication</td><td>Mobile-first PWA, offline-tolerant lot listing, escrow-first settlement, multi-quote RFQ</td></tr>
+          <tr><td>Primary flow</td><td>UF-02 Gold Lot Listing</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Persona 4: Efua -->
+    <div class="card persona-card">
+      <div class="persona-head">
+        <div class="persona-avatar">🛡️</div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Efua Boateng</div>
+          <div style="font-size:12px;color:var(--muted);">44 · Director of Compliance & Member Affairs</div>
+          <div style="font-size:12px;color:var(--gold);">Ghana Chamber of Gold Buyers</div>
+        </div>
+      </div>
+      <div class="persona-body">
+        <div style="margin-bottom:6px;"><span class="badge b-gold">Compliance</span></div>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:12px;margin-bottom:4px;">Goals</div>
+        <ul style="font-size:13px;line-height:1.55;padding-left:16px;margin:0;">
+          <li>Hand examiners a single source of truth with timestamps on demand</li>
+          <li>Detect and escalate suspicious patterns before regulators do</li>
+          <li>Prove chain-of-custody from mine site to export across all members</li>
+        </ul>
+        <div style="font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-top:14px;margin-bottom:4px;">Pain Points</div>
+        <p style="font-size:13px;line-height:1.55;margin:0;color:var(--text);">Data is fragmented across member systems. SAR generation is reactive. A BoG examiner's request can take days to assemble from spreadsheets and PDFs.</p>
+        <div class="persona-quote">"I am not asking for magic. I am asking for one source of truth, with timestamps, that I can hand to a Bank of Ghana examiner at 9 AM on a Monday."</div>
+        <table class="mini-table">
+          <tr><td>Product Implication</td><td>Tamper-evident audit log, regulator portal, automated SAR drafting, alert investigation workspace</td></tr>
+          <tr><td>Primary flow</td><td>UF-07 Compliance Alert Investigation</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 — USER SUCCESS JOURNEYS ============ -->
+<section id="journeys" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">03</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">User Success Journeys</h2>
+      <p class="section-sub">End-to-end value paths from first discovery to habitual use — one per persona, mapped to a five-stage arc.</p>
+    </div>
+  </div>
+
+  <div class="grid stagger reveal" style="display:grid;grid-template-columns:1fr;gap:18px;">
+
+    <!-- Journey 1: Kwame -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+        <span class="persona-avatar" style="width:40px;height:40px;font-size:20px;border-radius:10px;">👔</span>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Kwame Asare — Tier 1 Buyer</div>
+          <div style="font-size:12px;color:var(--gold);">Critical Goal: Source verified kilobar with audit-grade provenance</div>
+        </div>
+      </div>
+      <div class="stage-timeline">
+        <div class="stage"><div class="stage-dot">1</div><div class="stage-label">Discover</div></div>
+        <div class="stage"><div class="stage-dot">2</div><div class="stage-label">Validate</div></div>
+        <div class="stage"><div class="stage-dot">3</div><div class="stage-label">First Trade</div></div>
+        <div class="stage"><div class="stage-dot">4</div><div class="stage-label">Settle & Deliver</div></div>
+        <div class="stage"><div class="stage-dot">5</div><div class="stage-label">Habitual Use</div></div>
+      </div>
+      <div class="callout"><strong>Discover</strong> · Referred by Chamber directory → views verified-counterparty badges. <strong>Validate</strong> · Downloads LBMA-grade provenance dossier. <strong>First Trade</strong> · Accepts quote, escrow funds in 3 hours. <strong>Settle & Deliver</strong> · Kilobar arrives at Helvetia vault with chain-of-custody intact. <strong>Habitual Use</strong> · Becomes a weekly buyer, FINMA-ready exports on demand.</div>
+    </div>
+
+    <!-- Journey 2: Abena -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+        <span class="persona-avatar" style="width:40px;height:40px;font-size:20px;border-radius:10px;">💼</span>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Abena Owusu — Tier 2 Buyer / Exporter</div>
+          <div style="font-size:12px;color:var(--gold);">Critical Goal: Vault-to-export-permit in 5 days, 3 extra shipments/month</div>
+        </div>
+      </div>
+      <div class="stage-timeline">
+        <div class="stage"><div class="stage-dot">1</div><div class="stage-label">Discover</div></div>
+        <div class="stage"><div class="stage-dot">2</div><div class="stage-label">Validate</div></div>
+        <div class="stage"><div class="stage-dot">3</div><div class="stage-label">First Trade</div></div>
+        <div class="stage"><div class="stage-dot">4</div><div class="stage-label">Settle & Deliver</div></div>
+        <div class="stage"><div class="stage-dot">5</div><div class="stage-label">Habitual Use</div></div>
+      </div>
+      <div class="callout"><strong>Discover</strong> · Chambers webinar introduces export-permit bundling. <strong>Validate</strong> · Confirms BoG/Minerals Commission form pre-fill. <strong>First Trade</strong> · Escrow-financed purchase, logistics booked in-platform. <strong>Settle & Deliver</strong> · Permit issued in 4 days vs. 14-day baseline. <strong>Habitual Use</strong> · Scales to 3 additional shipments per month; financing facility unlocked after 5 trades.</div>
+    </div>
+
+    <!-- Journey 3: Ibrahim -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+        <span class="persona-avatar" style="width:40px;height:40px;font-size:20px;border-radius:10px;">⛏️</span>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Ibrahim Toure — Seller (Cooperative)</div>
+          <div style="font-size:12px;color:var(--gold);">Critical Goal: See three offers before selling, escrow before gold leaves hand</div>
+        </div>
+      </div>
+      <div class="stage-timeline">
+        <div class="stage"><div class="stage-dot">1</div><div class="stage-label">Discover</div></div>
+        <div class="stage"><div class="stage-dot">2</div><div class="stage-label">Validate</div></div>
+        <div class="stage"><div class="stage-dot">3</div><div class="stage-label">First Trade</div></div>
+        <div class="stage"><div class="stage-dot">4</div><div class="stage-label">Settle & Deliver</div></div>
+        <div class="stage"><div class="stage-dot">5</div><div class="stage-label">Habitual Use</div></div>
+      </div>
+      <div class="callout"><strong>Discover</strong> · Tier-2 agent onboarded the cooperative on a tablet. <strong>Validate</strong> · Cooperative KYC + mine-site GPS verification. <strong>First Trade</strong> · Lists lot, receives 4 quotes within 2 hours, accepts best — escrow funded before gold leaves vault. <strong>Settle & Deliver</strong> · Mobile money payout to cooperative account, chain-of-custody hash recorded. <strong>Habitual Use</strong> · Weekly listings; cooperative reinvests in equipment from improved margins.</div>
+    </div>
+
+    <!-- Journey 4: Efua -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+        <span class="persona-avatar" style="width:40px;height:40px;font-size:20px;border-radius:10px;">🛡️</span>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Efua Boateng — Compliance Director</div>
+          <div style="font-size:12px;color:var(--gold);">Critical Goal: One source of truth, timestamps, examiner-ready in minutes</div>
+        </div>
+      </div>
+      <div class="stage-timeline">
+        <div class="stage"><div class="stage-dot">1</div><div class="stage-label">Discover</div></div>
+        <div class="stage"><div class="stage-dot">2</div><div class="stage-label">Validate</div></div>
+        <div class="stage"><div class="stage-dot">3</div><div class="stage-label">First Trade</div></div>
+        <div class="stage"><div class="stage-dot">4</div><div class="stage-label">Settle & Deliver</div></div>
+        <div class="stage"><div class="stage-dot">5</div><div class="stage-label">Habitual Use</div></div>
+      </div>
+      <div class="callout"><strong>Discover</strong> · Briefed on regulator portal in kickoff. <strong>Validate</strong> · Confirms audit log hash-chaining and SAR auto-draft. <strong>First Trade</strong> · Observes first escrow settlement end-to-end with full event trail. <strong>Settle & Deliver</strong> · Generates examiner-ready dossier for a BoG request in 9 minutes vs. 3 days. <strong>Habitual Use</strong> · Weekly compliance review; proactive alert investigation replaces reactive fire-fighting.</div>
+    </div>
+  </div>
+
+  <!-- Cross-reference table -->
+  <div class="reveal" style="margin-top:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="git-compare" style="width:18px;height:18px;color:var(--gold);"></i> Journey → Charter Cross-Reference
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th>Persona</th><th>Critical Goal</th><th>Charter Objective</th><th>Primary KPI</th></tr></thead>
+        <tbody>
+          <tr><td>Kwame (Tier 1)</td><td>Verified counterparty + audit-grade paper</td><td>O1 — reduce leakage 40%</td><td>K4 Trade completion · K13 NPS</td></tr>
+          <tr><td>Abena (Tier 2)</td><td>5-day vault-to-permit cycle</td><td>O3 — 1,200 verified members</td><td>K11 Export permit turnaround</td></tr>
+          <tr><td>Ibrahim (Seller)</td><td>Three offers + escrow-first</td><td>O4 — escrow ≥ 99.5% success</td><td>K5 Escrow success · K6 Settlement time</td></tr>
+          <tr><td>Efua (Compliance)</td><td>Single source of truth, examiner-ready</td><td>O5 — SOC 2 Type II by Q3 2028</td><td>K9 Audit log integrity · K10 Alert MTTR</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 — SYSTEM ARCHITECTURE ============ -->
+<section id="architecture" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">04</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">System Architecture &amp; Design</h2>
+      <p class="section-sub">An event-driven, service-oriented platform built for auditability, regional resilience, and regulated scale.</p>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="layers-3" style="width:18px;height:18px;color:var(--gold);"></i> Technology Stack
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:160px;">Layer</th><th>Technology</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Next.js 16 · React 19 · TypeScript · Tailwind CSS</td><td>PWA-first, SSR for SEO/security, shared types with backend, offline-tolerant for sellers</td></tr>
+          <tr><td>Backend</td><td>NestJS (Node.js 22 LTS, TypeScript)</td><td>Modular DI, first-class OpenAPI, event-driven providers, strong typing end-to-end</td></tr>
+          <tr><td>Database</td><td>PostgreSQL 16 · Redis 7 · Elasticsearch 8</td><td>Transactional truth (PG), caching/sessions (Redis), full-text & audit search (ES)</td></tr>
+          <tr><td>Event bus</td><td>Apache Kafka (AWS MSK)</td><td>Durable, replayable event log; enables Outbox pattern, audit chain, and async integration</td></tr>
+          <tr><td>Identity</td><td>Auth0 B2B</td><td>Enterprise SSO, MFA, fine-grained RBAC, regulator-grade identity lifecycle</td></tr>
+          <tr><td>Cloud</td><td>AWS — af-west-1 (primary) · eu-west-1 (DR)</td><td>Regional data sovereignty for Ghana; cross-region active-passive DR</td></tr>
+          <tr><td>Observability</td><td>Datadog · Sentry</td><td>Unified metrics/logs/traces + error tracking tied to release health</td></tr>
+          <tr><td>Infrastructure-as-Code</td><td>Terraform · Helm</td><td>Reproducible environments, drift detection, GitOps-driven Kubernetes deploys</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Component Map (Mermaid) -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="network" style="width:18px;height:18px;color:var(--gold);"></i> Component Map
+    </h3>
+    <div class="mermaid-wrap">
+      <pre class="mermaid">
+flowchart LR
+  subgraph Client["Client Tier"]
+    PWA["Next.js PWA<br/>Buyer / Seller / Compliance"]
+  end
+  subgraph Edge["Edge & Identity"]
+    CDN["CloudFront + WAF"]
+    AUTH["Auth0 B2B<br/>SSO · MFA · RBAC"]
+  end
+  subgraph Services["Domain Services (NestJS)"]
+    MS["Member & KYC"]
+    LOT["Gold Lot"]
+    RFQ["RFQ & Quote"]
+    TRD["Trade"]
+    ESC["Escrow & Settlement"]
+    CMP["Compliance & SAR"]
+    AUD["Audit & Provenance"]
+  end
+  subgraph Data["Data Tier"]
+    PG[("PostgreSQL 16")]
+    RD[("Redis 7")]
+    ES[("Elasticsearch 8")]
+  end
+  subgraph Bus["Event Backbone"]
+    KAFKA{{"Apache Kafka (MSK)<br/>+ Outbox"}}
+  end
+  subgraph Infra["Platform"]
+    TF["Terraform / Helm"]
+    DD["Datadog · Sentry"]
+  end
+
+  PWA --> CDN --> AUTH
+  AUTH --> PWA
+  CDN --> MS & LOT & RFQ & TRD & ESC & CMP & AUD
+  MS --> PG & RD
+  LOT --> PG
+  RFQ --> PG
+  TRD --> PG & ESC
+  ESC --> PG & RD
+  CMP --> ES
+  AUD --> ES
+  MS & LOT & RFQ & TRD & ESC & CMP & AUD --> KAFKA
+  KAFKA --> AUD
+  KAFKA --> CMP
+  TF -. provisions .-> Services & Data & Bus
+  DD -. observes .-> Services & Data & Bus
+      </pre>
+    </div>
+  </div>
+
+  <!-- ADRs (Accordion) -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="file-code-2" style="width:18px;height:18px;color:var(--gold);"></i> Architecture Decision Records
+    </h3>
+
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span class="adr-id">ADR-001</span>
+        <span class="adr-title">Event-Driven SOA over Monolith</span>
+        <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;"></i>
+      </div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <strong>Context.</strong> The platform must scale across member onboarding, real-time trading, escrow, and regulator reporting independently — each with different load and compliance profiles.<br><br>
+        <strong>Decision.</strong> Adopt an event-driven, service-oriented architecture with domain services (Member, Lot, RFQ, Trade, Escrow, Compliance, Audit) communicating via Kafka. A monolith would couple release cadences and complicate regulator-scoped audits.<br><br>
+        <strong>Consequences.</strong> + Independent deployability, clearer audit boundaries, replayable event log. − Higher operational complexity, requires Outbox pattern (ADR-004) and distributed tracing.
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span class="adr-id">ADR-002</span>
+        <span class="adr-title">Auth0 B2B for Identity</span>
+        <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;"></i>
+      </div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <strong>Context.</strong> Members range from multinational refiners (SSO with Entra ID) to rural cooperatives (mobile OTP). Regulators require MFA and lifecycle controls.<br><br>
+        <strong>Decision.</strong> Standardize on Auth0 B2B for identity, federation, MFA, and RBAC — avoiding bespoke identity code.<br><br>
+        <strong>Consequences.</strong> + Faster compliance, enterprise SSO, auditable access. − Vendor dependency; mitigated via standard OIDC and exportable user store.
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span class="adr-id">ADR-003</span>
+        <span class="adr-title">Kafka (MSK) over RabbitMQ / SQS</span>
+        <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;"></i>
+      </div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <strong>Context.</strong> Audit requirements demand a durable, replayable, ordered event log spanning years. Escrow settlement and compliance alerting depend on event history.<br><br>
+        <strong>Decision.</strong> Use AWS MSK (Kafka) as the event backbone. RabbitMQ/SQS lack durable multi-consumer replay at the required retention horizon.<br><br>
+        <strong>Consequences.</strong> + Long-term retention, exactly-once semantics, replay for audit/SAR reconstruction. − Operational overhead; mitigated via MSK managed brokers.
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span class="adr-id">ADR-004</span>
+        <span class="adr-title">Outbox Pattern for Atomic Event Publish</span>
+        <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;"></i>
+      </div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <strong>Context.</strong> A trade state change and the corresponding event must be atomic — never a committed trade without an event, never an event without a committed trade.<br><br>
+        <strong>Decision.</strong> Write domain state and an outbox row in the same PostgreSQL transaction; a relay publishes to Kafka. This guarantees audit completeness.<br><br>
+        <strong>Consequences.</strong> + No lost events, audit-ready. − Relay component to operate; idempotent consumers required.
+      </div></div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-head">
+        <span class="adr-id">ADR-005</span>
+        <span class="adr-title">Next.js PWA, no native apps in Phases 1–4</span>
+        <i data-lucide="chevron-down" class="chev" style="width:18px;height:18px;"></i>
+      </div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <strong>Context.</strong> Sellers operate on low-end Android devices with intermittent connectivity; buyers use desktops; compliance uses tablets. Native apps would triple delivery cost.<br><br>
+        <strong>Decision.</strong> Ship a single Next.js PWA with offline-tolerant lot listing and background sync. Revisit native only if a Phase-5 offline requirement emerges.<br><br>
+        <strong>Consequences.</strong> + One codebase, faster shipping, app-store-free distribution. − Push-notification limits on iOS; mitigated via SMS fallback for escrow events.
+      </div></div>
+    </div>
+  </div>
+
+  <!-- API Endpoints -->
+  <div class="reveal">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="webhook" style="width:18px;height:18px;color:var(--gold);"></i> Selected API Endpoints
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:80px;">Method</th><th>Endpoint</th><th>Purpose</th><th style="width:120px;">Auth</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/auth/login</code></td><td>Auth0 token exchange, MFA challenge</td><td>Public</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/members/verify</code></td><td>KYC / AML screening, document upload</td><td>Member</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/gold-lots</code></td><td>Seller creates a verified gold lot</td><td>Seller</td></tr>
+          <tr><td><span class="badge b-gold">GET</span></td><td><code>/v1/gold-lots/:id</code></td><td>Lot detail with provenance chain</td><td>Authenticated</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/rfqs</code></td><td>Buyer issues a request-for-quote</td><td>Buyer</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/trades</code></td><td>Execute trade from accepted quote</td><td>Buyer</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/escrow/fund</code></td><td>Fund escrow for a pending trade</td><td>Buyer</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/escrow/release</code></td><td>Release escrow on delivery confirmation</td><td>System</td></tr>
+          <tr><td><span class="badge b-gold">POST</span></td><td><code>/v1/compliance/alerts</code></td><td>Create SAR / compliance alert</td><td>Compliance</td></tr>
+          <tr><td><span class="badge b-gold">GET</span></td><td><code>/v1/audit/events</code></td><td>Query hash-chained audit log</td><td>Compliance / Regulator</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 — USER & SYSTEM FLOWS ============ -->
+<section id="flows" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">05</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">User Flows &amp; System Flows</h2>
+      <p class="section-sub">Nine numbered user flows and the state machines that govern gold lots, trades, escrow, and compliance alerts.</p>
+    </div>
+  </div>
+
+  <!-- User Flow Cards -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="route" style="width:18px;height:18px;color:var(--gold);"></i> Nine User Flows
+    </h3>
+    <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;">
+      <div class="card flow-card"><div class="flow-id">UF-01</div><div class="flow-title">Member Onboarding &amp; KYC</div><div class="flow-meta"><span>👔 Kwame</span> · <span>Discover</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-02</div><div class="flow-title">Gold Lot Listing</div><div class="flow-meta"><span>⛏️ Ibrahim</span> · <span>First Trade</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-03</div><div class="flow-title">RFQ Creation</div><div class="flow-meta"><span>💼 Abena</span> · <span>Validate</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-04</div><div class="flow-title">Quote Comparison &amp; Acceptance</div><div class="flow-meta"><span>👔 Kwame</span> · <span>First Trade</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-05</div><div class="flow-title">Escrow Funding</div><div class="flow-meta"><span>💼 Abena</span> · <span>Settle &amp; Deliver</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-06</div><div class="flow-title">Physical Delivery &amp; Settlement</div><div class="flow-meta"><span>⛏️ Ibrahim</span> · <span>Settle &amp; Deliver</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-07</div><div class="flow-title">Compliance Alert Investigation</div><div class="flow-meta"><span>🛡️ Efua</span> · <span>Habitual Use</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-08</div><div class="flow-title">Export Permit Generation</div><div class="flow-meta"><span>💼 Abena</span> · <span>Habitual Use</span></div></div>
+      <div class="card flow-card"><div class="flow-id">UF-09</div><div class="flow-title">Audit Trail Export</div><div class="flow-meta"><span>🛡️ Efua</span> · <span>Habitual Use</span></div></div>
+    </div>
+  </div>
+
+  <!-- State Machines -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="git-branch" style="width:18px;height:18px;color:var(--gold);"></i> State Machines
+    </h3>
+    <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;">
+      <div>
+        <div style="font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:600;">Gold Lot Lifecycle</div>
+        <div class="mermaid-wrap"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> Draft
+  Draft --> Verified: KYC + GPS check
+  Verified --> Listed: Seller publishes
+  Listed --> Quoted: Buyer issues RFQ
+  Quoted --> Reserved: Quote accepted
+  Reserved --> Settled: Escrow released
+  Quoted --> Listed: Quote expired/rejected
+  Reserved --> Disputed: Delivery discrepancy
+  Disputed --> Settled: Resolution
+  Settled --> [*]
+        </pre></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:600;">Trade Lifecycle</div>
+        <div class="mermaid-wrap"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> Initiated
+  Initiated --> Quoted: Seller responds
+  Quoted --> Accepted: Buyer accepts
+  Accepted --> Funded: Escrow funded
+  Funded --> InDelivery: Vault releases
+  InDelivery --> Delivered: Buyer confirms
+  Delivered --> Settled: Escrow released
+  Accepted --> Cancelled: Timeout / cancel
+  Cancelled --> [*]
+  Settled --> [*]
+        </pre></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:600;">Escrow Lifecycle</div>
+        <div class="mermaid-wrap"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> Pending
+  Pending --> Funded: Buyer payment confirmed
+  Funded --> Held: Funds locked to trade
+  Held --> Released: Delivery confirmed
+  Held --> Refunded: Dispute resolved
+  Released --> [*]
+  Refunded --> [*]
+        </pre></div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-weight:600;">Compliance Alert</div>
+        <div class="mermaid-wrap"><pre class="mermaid">
+stateDiagram-v2
+  [*] --> Triggered
+  Triggered --> Triaged: Analyst reviews
+  Triaged --> Investigating: Confirmed
+  Triaged --> Closed: False positive
+  Investigating --> SARFiled: Report submitted
+  Investigating --> Closed: Resolved
+  SARFiled --> Monitor: 30-day watch
+  Monitor --> [*]
+  Closed --> [*]
+        </pre></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sequence Diagram -->
+  <div class="reveal">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="arrow-right-left" style="width:18px;height:18px;color:var(--gold);"></i> Sequence: RFQ → Escrow Funding
+    </h3>
+    <div class="mermaid-wrap">
+      <pre class="mermaid">
+sequenceDiagram
+  participant B as Buyer (Abena)
+  participant API as API Gateway
+  participant RFQ as RFQ Service
+  participant LOT as Gold Lot Service
+  participant ESC as Escrow Service
+  participant K as Kafka
+  participant AUD as Audit Service
+
+  B->>API: POST /v1/rfqs (lotId, qty)
+  API->>RFQ: create RFQ
+  RFQ->>LOT: verify lot availability
+  LOT-->>RFQ: ok
+  RFQ->>K: publish RFQCreated (outbox)
+  K->>AUD: record event
+  RFQ-->>API: 201 Created
+  API-->>B: rfqId
+
+  Note over B,LOT: Sellers submit quotes (async via Kafka)
+
+  B->>API: POST /v1/trades (acceptedQuoteId)
+  API->>RFQ: lock quote
+  RFQ->>K: publish TradeAccepted
+  K->>AUD: record event
+  API->>ESC: create escrow hold
+  ESC->>K: publish EscrowPending
+  K->>AUD: record event
+  ESC-->>API: escrowId
+  API-->>B: 201 tradeId + escrowId
+
+  B->>API: POST /v1/escrow/fund (escrowId)
+  API->>ESC: confirm funding
+  ESC->>K: publish EscrowFunded
+  K->>AUD: record event
+  ESC-->>API: funded
+  API-->>B: 200 funded
+  Note over B,ESC: Funds held until delivery confirmation
+      </pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 — DEVOPS ============ -->
+<section id="devops" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">06</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">Development &amp; Operations</h2>
+      <p class="section-sub">CI/CD, observability, service-level objectives, disaster-recovery tiers, and the alert triggers that page the on-call.</p>
+    </div>
+  </div>
+
+  <!-- CI/CD Pipeline -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="git-merge" style="width:18px;height:18px;color:var(--gold);"></i> CI/CD Pipeline
+    </h3>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="git-pull-request" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Pull Request</div>
+        <div class="pipe-desc">Feature branch · conventional commits</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="flask-conical" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Lint &amp; Unit Test</div>
+        <div class="pipe-desc">ESLint · Jest · 80% coverage gate</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="package" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Build &amp; Scan</div>
+        <div class="pipe-desc">Docker · Trivy · SAST · SBOM</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="flask-round" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Integration Test</div>
+        <div class="pipe-desc">E2E against ephemeral env</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="cloud-upload" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Deploy Staging</div>
+        <div class="pipe-desc">Helm · ArgoCD · canary 10%</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="shield-check" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Approve</div>
+        <div class="pipe-desc">Compliance + Tech Lead sign-off</div>
+      </div>
+      <div class="pipe-arrow"><i data-lucide="chevron-right" style="width:22px;height:22px;"></i></div>
+      <div class="pipe-step">
+        <div class="pipe-icon"><i data-lucide="rocket" style="width:22px;height:22px;"></i></div>
+        <div class="pipe-title">Deploy Prod</div>
+        <div class="pipe-desc">Canary 10 → 50 → 100% · auto-rollback</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLOs -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="activity" style="width:18px;height:18px;color:var(--gold);"></i> Monitoring &amp; Service Level Objectives
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th>SLO</th><th>Target</th><th>Measurement Window</th><th>Owner</th></tr></thead>
+        <tbody>
+          <tr><td>API availability (per region)</td><td class="num">99.95%</td><td>Rolling 30 days</td><td>DevOps Lead</td></tr>
+          <tr><td>Mean Time To Troubleshoot (MTTTS)</td><td class="num">≤ 48 hours</td><td>90th percentile</td><td>SRE</td></tr>
+          <tr><td>Audit log integrity</td><td class="num">100%</td><td>Continuous — zero breaks</td><td>Tech Lead</td></tr>
+          <tr><td>Escrow funding success</td><td class="num">≥ 99.5%</td><td>Rolling 7 days</td><td>Escrow Service Owner</td></tr>
+          <tr><td>P95 API latency (RFQ + Trade)</td><td class="num">≤ 350 ms</td><td>Rolling 24 hours</td><td>SRE</td></tr>
+          <tr><td>Deploy frequency</td><td class="num">≥ 3 / week</td><td>Continuous</td><td>DevOps Lead</td></tr>
+          <tr><td>Change failure rate</td><td class="num">≤ 5%</td><td>Rolling 30 days</td><td>SRE</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DR Tiers -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="life-buoy" style="width:18px;height:18px;color:var(--gold);"></i> Disaster Recovery Tiers
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:90px;">Tier</th><th>Systems</th><th>RTO</th><th>RPO</th><th>Strategy</th></tr></thead>
+        <tbody>
+          <tr><td class="num">Tier 0</td><td>Trade · Escrow · Audit Log</td><td class="num">4 h</td><td class="num">5 min</td><td>Active-passive cross-region (af-west-1 → eu-west-1), synchronous replication for audit log</td></tr>
+          <tr><td class="num">Tier 1</td><td>Member · RFQ · Gold Lot · Identity</td><td class="num">8 h</td><td class="num">15 min</td><td>Async replication; warm standby</td></tr>
+          <tr><td class="num">Tier 2</td><td>Analytics · Notification · Reporting</td><td class="num">24 h</td><td class="num">1 h</td><td>Rebuild from snapshots; Kafka replay for analytics</td></tr>
+          <tr><td class="num">Tier 3</td><td>Marketing · static content</td><td class="num">48 h</td><td class="num">24 h</td><td>CDN-cached; redeploy on demand</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Alert Triggers -->
+  <div class="reveal">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="bell-ring" style="width:18px;height:18px;color:var(--gold);"></i> Alert Triggers &amp; Severity
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:80px;">Severity</th><th>Trigger</th><th style="width:160px;">Response</th><th style="width:130px;">Escalation</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge sev-1">SEV-1</span></td><td>Escrow service down · audit log integrity break · data breach</td><td>Page on-call + backup + incident commander</td><td>CISO · CTO · Chamber Board</td></tr>
+          <tr><td><span class="badge sev-2">SEV-2</span></td><td>Trade API availability &lt; 99% · RFQ latency P95 &gt; 1s</td><td>Page on-call</td><td>Tech Lead · DevOps Lead</td></tr>
+          <tr><td><span class="badge sev-3">SEV-3</span></td><td>Single service degradation · deploy failure in staging</td><td>Notify on-call Slack channel</td><td>Service Owner</td></tr>
+          <tr><td><span class="badge sev-4">SEV-4</span></td><td>Info: capacity threshold · scheduled job delay</td><td>Log to dashboard</td><td>None (review weekly)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 — SECURITY & COMPLIANCE ============ -->
+<section id="security" class="doc">
+  <div class="section-header reveal">
+    <div class="section-num">07</div>
+    <div class="section-bar"></div>
+    <div>
+      <h2 class="section-title">Security &amp; Compliance</h2>
+      <p class="section-sub">Seven security principles, the regulatory landscape, encryption strategy, and the audit cadence that keeps the platform trustworthy.</p>
+    </div>
+  </div>
+
+  <!-- Security Principles -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="shield" style="width:18px;height:18px;color:var(--gold);"></i> Seven Security Principles
+    </h3>
+    <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;">
+      <div class="card principle-card">
+        <div class="principle-id">S1</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Least Privilege</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">Role-bound access via Auth0 RBAC. Just-in-time elevation. Quarterly access recertification.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S2</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Defense in Depth</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">WAF, network segmentation, service mesh mTLS, secrets in AWS KMS / Secrets Manager.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S3</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Encryption Everywhere</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">TLS 1.3 in transit, AES-256 at rest, envelope encryption for PII and audit payloads.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S4</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Tamper-Evident Audit</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">Append-only, hash-chained events via Outbox + Kafka. Independent integrity attestation.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S5</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Secure by Default</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">No secrets in code, SAST/DAST in CI, SBOM per release, signed container images.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S6</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Privacy by Design</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">DPA 843 alignment, data minimization, purpose-limited retention, member consent ledger.</div>
+      </div>
+      <div class="card principle-card">
+        <div class="principle-id">S7</div>
+        <div style="font-weight:600;font-size:14.5px;margin-bottom:6px;">Continuous Assurance</div>
+        <div style="font-size:12.5px;color:var(--muted);line-height:1.5;">SOC 2 controls automated in CI, quarterly pen-tests, annual red-team, ISO 27001 readiness.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance Landscape -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="scale" style="width:18px;height:18px;color:var(--gold);"></i> Compliance Landscape
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th>Regulation / Standard</th><th style="width:160px;">Jurisdiction</th><th style="width:160px;">Applicability</th></tr></thead>
+        <tbody>
+          <tr><td>Ghana Data Protection Act, 2012 (Act 843)</td><td>Ghana</td><td><span class="badge b-gold">Mandatory</span></td></tr>
+          <tr><td>Bank of Ghana AML/CFT/CPF Directives (2022)</td><td>Ghana</td><td><span class="badge b-gold">Mandatory</span></td></tr>
+          <tr><td>Ghana Minerals &amp; Mining Act, 2006 (Act 703)</td><td>Ghana</td><td><span class="badge b-gold">Mandatory</span></td></tr>
+          <tr><td>FATF Recommendation 22 (Precious Metals)</td><td>International</td><td><span class="badge b-gold">Mandatory</span></td></tr>
+          <tr><td>OECD Due Diligence Guidance (Annex II)</td><td>International</td><td><span class="badge b-high">Expected</span></td></tr>
+          <tr><td>LBMA Responsible Gold Guidance</td><td>Industry</td><td><span class="badge b-high">Expected</span></td></tr>
+          <tr><td>SOC 2 Type II</td><td>Industry</td><td><span class="badge b-medium">Target Q3 2028</span></td></tr>
+          <tr><td>ISO 27001:2022</td><td>Industry</td><td><span class="badge b-low">Target 2029</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Encryption -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="key-round" style="width:18px;height:18px;color:var(--gold);"></i> Encryption Strategy
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th>Data Store</th><th>Method</th><th>Key Management</th></tr></thead>
+        <tbody>
+          <tr><td>API traffic (client ↔ edge)</td><td>TLS 1.3 · HSTS</td><td>ACM-managed certs, auto-rotated</td></tr>
+          <tr><td>Inter-service traffic</td><td>mTLS via service mesh</td><td>Istio Citadel, SPIFFE identities</td></tr>
+          <tr><td>PostgreSQL (PII, trades, escrow)</td><td>AES-256 at rest · column-level for PII</td><td>AWS KMS, envelope encryption, CMK per domain</td></tr>
+          <tr><td>Kafka event log</td><td>AES-256 at rest · payload field-level</td><td>MSK + KMS; per-topic keys</td></tr>
+          <tr><td>Elasticsearch (audit search)</td><td>AES-256 at rest</td><td>KMS; search via Lucene codec</td></tr>
+          <tr><td>Object storage (documents, KYC)</td><td>S3 SSE-KMS · per-object key</td><td>KMS; bucket policies + Macie scanning</td></tr>
+          <tr><td>Backups &amp; snapshots</td><td>AES-256 · cross-region copy</td><td>KMS; separate key per region</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Audit & Assurance -->
+  <div class="reveal" style="margin-bottom:36px;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="calendar-check" style="width:18px;height:18px;color:var(--gold);"></i> Audit &amp; Assurance Cadence
+    </h3>
+    <div class="table-wrap">
+      <table class="ax">
+        <thead><tr><th style="width:130px;">Activity</th><th>Cadence</th><th>Owner / External</th></tr></thead>
+        <tbody>
+          <tr><td>Continuous control monitoring</td><td>Real-time</td><td>SRE + Compliance (automated)</td></tr>
+          <tr><td>Access recertification</td><td>Quarterly</td><td>Compliance</td></tr>
+          <tr><td>Vulnerability scan</td><td>Weekly + on-deploy</td><td>DevOps (Trivy, SAST)</td></tr>
+          <tr><td>Penetration test</td><td>Quarterly</td><td>External firm</td></tr>
+          <tr><td>Red team exercise</td><td>Annual</td><td>External firm</td></tr>
+          <tr><td>Audit log integrity attestation</td><td>Monthly</td><td>Tech Lead + Compliance</td></tr>
+          <tr><td>SOC 2 Type II attestation</td><td>Annual (from Q3 2028)</td><td>External auditor</td></tr>
+          <tr><td>Regulator readiness review</td><td>Bi-annual</td><td>Compliance + BoG liaison</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Incident Response -->
+  <div class="reveal">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+      <i data-lucide="siren" style="width:18px;height:18px;color:var(--gold);"></i> Incident Response Severity
+    </h3>
+    <div class="grid stagger reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;">
+      <div class="card" style="padding:18px;">
+        <span class="badge sev-1" style="font-size:13px;padding:5px 14px;">SEV-1 · Critical</span>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;">Breach, escrow compromise, audit integrity break. <strong style="color:var(--text);">Ack &lt; 15 min</strong>, resolve &lt; 4 h. CISO-led.</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <span class="badge sev-2" style="font-size:13px;padding:5px 14px;">SEV-2 · High</span>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;">Major service degradation. <strong style="color:var(--text);">Ack &lt; 30 min</strong>, resolve &lt; 8 h. Tech Lead-led.</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <span class="badge sev-3" style="font-size:13px;padding:5px 14px;">SEV-3 · Medium</span>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;">Single-service impact. <strong style="color:var(--text);">Ack &lt; 2 h</strong>, resolve &lt; 24 h. Service Owner-led.</div>
+      </div>
+      <div class="card" style="padding:18px;">
+        <span class="badge sev-4" style="font-size:13px;padding:5px 14px;">SEV-4 · Low</span>
+        <div style="font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5;">Info / capacity / cosmetic. <strong style="color:var(--text);">Review weekly</strong>. No page.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="reveal" style="max-width:1100px;margin:0 auto;">
+    <h3 style="font-size:18px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:10px;justify-content:center;">
+      <i data-lucide="share-2" style="width:18px;height:18px;color:var(--gold);"></i> Documentation Cross-Reference Map
+    </h3>
+    <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;">Seven documents form a single, bidirectionally-linked narrative — from why to how to assurance.</p>
+
+    <div class="xref-map">
+      <div class="xref-node"><div class="xref-num">01</div><div class="xref-label">Charter</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">02</div><div class="xref-label">Personas</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">03</div><div class="xref-label">Journeys</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">04</div><div class="xref-label">Architecture</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">05</div><div class="xref-label">Flows</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">06</div><div class="xref-label">DevOps</div></div>
+      <div class="xref-connector">↔</div>
+      <div class="xref-node"><div class="xref-num">07</div><div class="xref-label">Security</div></div>
+    </div>
+
+    <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--border-soft);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-weight:700;font-size:18px;color:var(--gold-light);">AurumX</div>
+        <div style="font-size:12px;color:var(--muted);">Ghana Gold Exchange Platform · Project Aurum</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;color:var(--muted);">Confidential — Chamber &amp; Vendor Internal</div>
+        <div style="font-size:12px;color:var(--gold);">Version 1.0 — 15 August 2026</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /main-content -->
+
+<script>
+(function() {
+  'use strict';
+
+  // ============ INIT LUCIDE ICONS ============
+  if (window.lucide) lucide.createIcons();
+
+  // ============ MERMAID INIT (theme-aware) ============
+  function getMermaidTheme() {
+    return document.documentElement.classList.contains('light') ? 'default' : 'dark';
+  }
+  function mermaidThemeVars() {
+    const isLight = document.documentElement.classList.contains('light');
+    return {
+      theme: isLight ? 'default' : 'dark',
+      themeVariables: isLight ? {
+        primaryColor: '#FFFFFF',
+        primaryTextColor: '#1A2B4A',
+        primaryBorderColor: '#B8860B',
+        lineColor: '#B8860B',
+        secondaryColor: '#F7F5EE',
+        tertiaryColor: '#FAFAF7',
+        textColor: '#1A2B4A',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      } : {
+        primaryColor: '#101828',
+        primaryTextColor: '#E5E7EB',
+        primaryBorderColor: '#D4AF37',
+        lineColor: '#D4AF37',
+        secondaryColor: '#182238',
+        tertiaryColor: '#0E1726',
+        textColor: '#E5E7EB',
+        fontFamily: 'Inter, system-ui, sans-serif',
+      }
+    };
+  }
+  // Capture original mermaid sources BEFORE mermaid processes them (it replaces text with SVG)
+  const mermaidSources = new Map();
+  document.querySelectorAll('.mermaid').forEach(el => {
+    mermaidSources.set(el, el.textContent);
+  });
+
+  if (window.mermaid) {
+    mermaid.initialize({ startOnLoad: true, securityLevel: 'loose', flowchart: { curve: 'basis' }, ...mermaidThemeVars() });
+  }
+
+  function rerenderMermaid() {
+    if (!window.mermaid) return;
+    mermaid.initialize({ startOnLoad: false, securityLevel: 'loose', flowchart: { curve: 'basis' }, ...mermaidThemeVars() });
+    document.querySelectorAll('.mermaid').forEach(el => {
+      const src = mermaidSources.get(el);
+      if (!src) return;
+      try {
+        el.removeAttribute('data-processed');
+        el.innerHTML = src;
+        mermaid.run({ nodes: [el] });
+      } catch (e) { /* noop */ }
+    });
+  }
+
+  // ============ HERO PARTICLE CANVAS ============
+  (function particles() {
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let w, h, animId;
+
+    function resize() {
+      w = canvas.width = canvas.offsetWidth;
+      h = canvas.height = canvas.offsetHeight;
+      const count = Math.min(50, Math.floor(w / 30));
+      particles = [];
+      for (let i = 0; i < count; i++) particles.push(makeParticle());
+    }
+    function makeParticle() {
+      return {
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.6 + 0.4,
+        vy: -(Math.random() * 0.35 + 0.08),
+        vx: (Math.random() - 0.5) * 0.15,
+        alpha: Math.random() * 0.5 + 0.2,
+        twinkle: Math.random() * 0.02,
+        phase: Math.random() * Math.PI * 2,
+      };
+    }
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      const isLight = document.documentElement.classList.contains('light');
+      const gold = isLight ? '184, 134, 11' : '212, 175, 55';
+      for (const p of particles) {
+        p.phase += p.twinkle;
+        const a = p.alpha * (0.6 + 0.4 * Math.sin(p.phase));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, Math.max(0.2, p.r), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${gold}, ${a})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = `rgba(${gold}, ${a * 0.6})`;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        p.y += p.vy;
+        p.x += p.vx;
+        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+        if (p.x < -10) p.x = w + 10;
+        if (p.x > w + 10) p.x = -10;
+      }
+      animId = requestAnimationFrame(draw);
+    }
+    function start() { cancelAnimationFrame(animId); resize(); draw(); }
+    start();
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(start, 200);
+    });
+  })();
+
+  // ============ SCROLL PROGRESS BAR ============
+  const progressBar = document.getElementById('progress-bar');
+  function updateProgress() {
+    const st = document.documentElement.scrollTop || document.body.scrollTop;
+    const sh = (document.documentElement.scrollHeight || document.body.scrollHeight) - document.documentElement.clientHeight;
+    const pct = sh > 0 ? (st / sh) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+
+  // ============ SIDEBAR NAV + ACTIVE TRACKING ============
+  const navItems = document.querySelectorAll('.nav-item');
+  const sections = ['hero','charter','personas','journeys','architecture','flows','devops','security']
+    .map(id => document.getElementById(id)).filter(Boolean);
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.pageYOffset - 20;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+
+  navItems.forEach(item => {
+    item.addEventListener('click', function() {
+      const target = this.getAttribute('data-target');
+      scrollToSection(target);
+      closeSidebarMobile();
+    });
+  });
+
+  document.querySelectorAll('[data-nav]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      scrollToSection(this.getAttribute('data-nav'));
+    });
+  });
+
+  // Active section via IntersectionObserver
+  const navMap = {};
+  navItems.forEach(item => { navMap[item.getAttribute('data-target')] = item; });
+
+  const io = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const nav = navMap[entry.target.id];
+        if (nav) nav.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+  sections.forEach(s => io.observe(s));
+
+  // ============ REVEAL ON SCROLL ============
+  const revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ============ COUNT-UP ============
+  function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+  function animateCount(el) {
+    const to = parseFloat(el.getAttribute('data-to'));
+    const decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    const prefix = el.getAttribute('data-prefix') || '';
+    const suffix = el.getAttribute('data-suffix') || '';
+    const duration = 2000;
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const v = to * easeOutCubic(t);
+      el.textContent = prefix + v.toFixed(decimals) + suffix;
+      if (t < 1) requestAnimationFrame(frame);
+      else el.textContent = prefix + to.toFixed(decimals) + suffix;
+    }
+    requestAnimationFrame(frame);
+  }
+  const countObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCount(entry.target);
+        countObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll('.count').forEach(el => countObserver.observe(el));
+
+  // ============ ACCORDION (ADRs) ============
+  document.querySelectorAll('.accordion-head').forEach(head => {
+    head.addEventListener('click', function() {
+      const item = this.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+
+  // ============ THEME TOGGLE ============
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+  function setTheme(light) {
+    const html = document.documentElement;
+    if (light) {
+      html.classList.remove('dark');
+      html.classList.add('light');
+      themeIcon.setAttribute('data-lucide', 'moon');
+    } else {
+      html.classList.remove('light');
+      html.classList.add('dark');
+      themeIcon.setAttribute('data-lucide', 'sun');
+    }
+    if (window.lucide) lucide.createIcons();
+    // Re-render mermaid diagrams in the new theme
+    rerenderMermaid();
+  }
+  themeToggle.addEventListener('click', function() {
+    const isLight = document.documentElement.classList.contains('light');
+    setTheme(!isLight);
+  });
+
+  // ============ MOBILE SIDEBAR ============
+  const menuToggle = document.getElementById('menu-toggle');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  function closeSidebarMobile() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('show');
+  }
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function() {
+      sidebar.classList.toggle('open');
+      backdrop.classList.toggle('show');
+    });
+  }
+  if (backdrop) backdrop.addEventListener('click', closeSidebarMobile);
+
+  // ============ SCROLL HANDLER (RAF-debounced) ============
+  let ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateProgress();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  updateProgress();
+
+})();
+</script>
+</body>
+</html>
