@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TerraPulze — Persona &amp; Workflow Gap Analysis</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: { DEFAULT: '#E8B84B', dark: '#C48E1C' }, intel: '#3B82F6', cyan: '#22D3EE', alert: '#F43F5E',
+                        txt1: '#111827', txt2: '#4B5563', txt3: '#6B7280',
+                        bdr1: '#E5E7EB', bdr2: '#D1D5DB',
+                        pg: '#FAFBFC', sec: '#F4F6F8', sfc: '#FFFFFF'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #111827;
+            background: #FAFBFC
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F4F6F8
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px
+        }
+
+        .nl {
+            transition: all .15s;
+            border-left: 2px solid transparent
+        }
+
+        .nl:hover {
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+            background: rgba(59, 130, 246, .04)
+        }
+
+        .ep:hover {
+            background: #E5E7EB
+        }
+
+        .ss {
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0
+        }
+
+        .sp {
+            background: #FFFBEB;
+            color: #92400E;
+            border: 1px solid #FDE68A
+        }
+
+        .sg {
+            background: #FFF1F2;
+            color: #9F1239;
+            border: 1px solid #FECDD3
+        }
+
+        .si {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border: 1px solid #BFDBFE
+        }
+
+        .sx {
+            background: #F5F3FF;
+            color: #5B21B6;
+            border: 1px solid #DDD6FE
+        }
+
+        .dv {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E5E7EB, transparent)
+        }
+
+        .cl {
+            transition: box-shadow .2s, transform .2s
+        }
+
+        .cl:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+            transform: translateY(-1px)
+        }
+
+        .mp {
+            color: #065F46;
+            font-weight: 700
+        }
+
+        .mg {
+            color: #3B82F6;
+            font-weight: 700
+        }
+
+        .mt {
+            color: #92400E;
+            font-weight: 700
+        }
+
+        .md {
+            color: #9F1239;
+            font-weight: 700
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 700
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <header class="relative overflow-hidden"
+        style="background:linear-gradient(135deg,#111827,#1E293B 35%,#0F172A 65%,#111827)">
+        <div class="absolute inset-0 pointer-events-none" style="opacity:.12">
+            <div class="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full"
+                style="background:radial-gradient(circle,#E8B84B,transparent 70%)"></div>
+            <div class="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full"
+                style="background:radial-gradient(circle,#22D3EE,transparent 70%)"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-xl" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#E8B84B">TerraPulze</span>
+            </div>
+            <h1 style="font-size:40px;font-weight:800;line-height:1.1;letter-spacing:-.02em"
+                class="md:text-[50px] text-white">Persona &amp; Workflow<br><span style="color:#E8B84B">Gap
+                    Analysis</span></h1>
+            <p class="mt-6 max-w-2xl leading-relaxed" style="color:#94A3B8">A comprehensive mapping of six user personas
+                against TerraPulze's current capabilities, identifying resolved workflows, partial coverage, and
+                critical product gaps.</p>
+            <div class="flex flex-wrap gap-3 mt-8 text-sm text-white">
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#E8B84B" data-icon="lucide:users"></span>6 Personas</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#22D3EE" data-icon="lucide:git-branch"></span>50+ Workflows</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#3B82F6" data-icon="lucide:code-2"></span>12 API Domains</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#E8B84B" data-icon="lucide:layers"></span>4 Roadmap Phases</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <div class="max-w-7xl mx-auto px-6 flex">
+        <!-- SIDEBAR -->
+        <nav class="hidden lg:block w-60 shrink-0 sticky top-6 self-start py-8 pr-5"
+            style="border-right:1px solid #E5E7EB;max-height:calc(100vh - 48px);overflow-y:auto">
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2" style="color:#6B7280">Overview</div>
+            <a href="#workflow-model" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5"
+                style="color:#4B5563">Workflow Model</a>
+            <a href="#coverage-summary" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5"
+                style="color:#4B5563">Coverage Summary</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Personas</div>
+            <a href="#p1" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Field
+                Geologist</a>
+            <a href="#p2" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Exploration
+                Manager</a>
+            <a href="#p3" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining CEO /
+                Major</a>
+            <a href="#p4" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Investor /
+                Consultant</a>
+            <a href="#p5" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining
+                Finance</a>
+            <a href="#p6" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Government
+                Regulator</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Architecture
+            </div>
+            <a href="#cross" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Cross-Persona
+                Flow</a>
+            <a href="#gaps" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Gap
+                Summary</a>
+            <a href="#api" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">API
+                Architecture</a>
+            <a href="#roadmap" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Priority
+                Roadmap</a>
+            <a href="#final" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Final
+                Comparison</a>
+        </nav>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0 py-8 lg:pl-10">
+
+            <!-- Callout -->
+            <div class="rounded-xl p-5 mb-10" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                <div class="flex items-start gap-3"><span class="iconify text-intel text-lg mt-.5 shrink-0"
+                        data-icon="lucide:info"></span>
+                    <div>
+                        <h4 class="font-bold mb-1" style="color:#1E40AF">Important Distinction</h4>
+                        <p class="text-sm leading-relaxed" style="color:#1E40AF">TerraPulze is strongest in the
+                            <strong>exploration intelligence workflow</strong> — data ingestion → interpretation →
+                            target generation → evidence/reporting — rather than being a complete mining ERP,
+                            field-management system, finance platform, or regulatory case-management system.</p>
+                        <p class="text-sm leading-relaxed mt-2" style="color:#1E40AF">All API endpoints listed are
+                            <strong>Proposed endpoints</strong> — recommendations for the product/API architecture, not
+                            claims that these routes already exist.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WORKFLOW MODEL -->
+            <section id="workflow-model" class="mb-16">
+                <h2 class="mb-6">Overall Workflow Model</h2>
+                <p class="leading-relaxed mb-8 max-w-3xl" style="color:#4B5563">Map the twelve-step exploration
+                    lifecycle and identify where TerraPulze has strong, partial, or no coverage.</p>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 mb-8">
+                    <div class="rounded-lg p-3 text-center" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#92400E">Step 1
+                        </div>
+                        <div class="text-sm font-bold">Define Project</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 2
+                        </div>
+                        <div class="text-sm font-bold">Acquire Data</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 3
+                        </div>
+                        <div class="text-sm font-bold">Prepare Data</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 4
+                        </div>
+                        <div class="text-sm font-bold">Interpret Data</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 5
+                        </div>
+                        <div class="text-sm font-bold">Generate Targets</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 6
+                        </div>
+                        <div class="text-sm font-bold">Validate Targets</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#92400E">Step 7
+                        </div>
+                        <div class="text-sm font-bold">Plan Field Work</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#92400E">Step 8
+                        </div>
+                        <div class="text-sm font-bold">Collect Evidence</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#92400E">Step 9
+                        </div>
+                        <div class="text-sm font-bold">Exploration Decision</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#065F46">Step 10
+                        </div>
+                        <div class="text-sm font-bold">Technical Docs</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#92400E">Step 11
+                        </div>
+                        <div class="text-sm font-bold">Investment/Reg Review</div>
+                    </div>
+                    <div class="rounded-lg p-3 text-center" style="background:#FFF1F2;border:1px solid #FECDD3">
+                        <div class="text-[10px] font-bold uppercase tracking-wider mb-1" style="color:#9F1239">Step 12
+                        </div>
+                        <div class="text-sm font-bold">Drill/Develop</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <p class="text-sm leading-relaxed mb-2" style="color:#4B5563"><strong>Strong coverage:</strong>
+                        Steps 2 → 3 → 4 → 5 → 6 → 10</p>
+                    <p class="text-sm leading-relaxed mb-2" style="color:#4B5563"><strong>Partial coverage:</strong>
+                        Steps 1 → 7 → 8 → 9 → 11</p>
+                    <p class="text-sm leading-relaxed" style="color:#4B5563"><strong>Significant gaps:</strong> Drilling
+                        execution, laboratory management, resource estimation, mine planning, financial management,
+                        permitting workflow, procurement, production/operational mine management.</p>
+                </div>
+            </section>
+
+            <!-- COVERAGE SUMMARY -->
+            <section id="coverage-summary" class="mb-16">
+                <h2 class="mb-6">Coverage Summary</h2>
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-6"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-2 mb-4"><span class="iconify text-lg" style="color:#065F46"
+                                data-icon="lucide:check-circle-2"></span>
+                            <h3 style="color:#065F46">Strong (18)</h3>
+                        </div>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Exploration data ingestion</li>
+                            <li>Geophysics/geochemistry integration</li>
+                            <li>PDF assay ingestion</li>
+                            <li>Sentinel-2/SWIR contextual analysis</li>
+                            <li>Structural/alteration interpretation</li>
+                            <li>Interactive exploration map</li>
+                            <li>AI prospectivity scoring</li>
+                            <li>SHAP explanations</li>
+                            <li>Offline field maps</li>
+                            <li>Offline target annotation</li>
+                            <li>Synchronization</li>
+                            <li>QP-oriented reporting</li>
+                            <li>Investor summaries</li>
+                            <li>Provenance/methodology disclosure</li>
+                            <li>QGIS/KML/CSV/GIS exports</li>
+                            <li>Ghana licence/compliance overlays</li>
+                            <li>WDPA screening</li>
+                            <li>Ghana data residency</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-6"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-2 mb-4"><span class="iconify text-lg" style="color:#92400E"
+                                data-icon="lucide:alert-triangle"></span>
+                            <h3 style="color:#92400E">Partial (10)</h3>
+                        </div>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Project creation</li>
+                            <li>Dataset quality control</li>
+                            <li>Field planning</li>
+                            <li>Team management</li>
+                            <li>Target prioritization</li>
+                            <li>Target economics</li>
+                            <li>Executive dashboards</li>
+                            <li>Investor analysis</li>
+                            <li>Environmental compliance</li>
+                            <li>Regulatory reporting</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-6"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-2 mb-4"><span class="iconify text-lg" style="color:#9F1239"
+                                data-icon="lucide:x-circle"></span>
+                            <h3 style="color:#9F1239">Critical (12)</h3>
+                        </div>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Structured field observation mgmt</li>
+                            <li>Sample management</li>
+                            <li>Laboratory/assay workflow</li>
+                            <li>Target → field validation loop</li>
+                            <li>Exploration task management</li>
+                            <li>Portfolio management</li>
+                            <li>Exploration budget management</li>
+                            <li>Drilling workflow</li>
+                            <li>Financial modelling integration</li>
+                            <li>Due-diligence workspace</li>
+                            <li>Regulatory case management</li>
+                            <li>Formal approval/decision workflow</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 1: FIELD GEOLOGIST -->
+            <section id="p1" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-white text-2xl"
+                            data-icon="lucide:compass"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 1
+                        </div>
+                        <h2>Field Geologist</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Primary objective: move between
+                    <strong>desktop interpretation and physical field investigation</strong>, collect reliable
+                    geological evidence and determine whether generated targets are worth additional exploration.</p>
+
+                <!-- J1 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">1</span>
+                        <h3>Receive Exploration Assignment</h3>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-bold mb-2">Current Workflow</h4>
+                            <p class="text-sm mb-3" style="color:#4B5563">Receives: Project/AOI, geological objectives,
+                                commodity, existing maps, previous reports, known prospects, drill holes, sampling
+                                requirements, field schedule.</p>
+                            <h4 class="text-sm font-bold mb-2" style="color:#F43F5E">Problem</h4>
+                            <p class="text-sm" style="color:#4B5563">No centralized project briefing — creates
+                                unnecessary back-and-forth before fieldwork begins.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold mb-2" style="color:#3B82F6">Opportunity: Project Workspace</h4>
+                            <div class="rounded-lg p-4 mb-4" style="background:#F4F6F8">
+                                <div class="text-xs mono leading-relaxed" style="color:#4B5563">Project<br>├──
+                                    Commodity<br>├── AOI<br>├── Exploration objective<br>├── Geological model<br>├──
+                                    Datasets<br>├── Targets<br>├── Field observations<br>├── Team members<br>├──
+                                    Reports<br>└── Audit history</div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                                    /api/v1/projects</div>
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                                    /api/v1/projects/{projectId}</div>
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mt">PATCH</span>
+                                    /api/v1/projects/{projectId}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- J2 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">2</span>
+                        <h3>Gather Existing Exploration Data</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Resolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Supports uploading geophysics, geochemistry and PDF
+                        assay reports with automatic CRS detection, kriging grids and column mappings. <strong>Data
+                            ingestion is a strong fit.</strong></p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-bold mb-2">Proposed Endpoints</h4>
+                            <div class="space-y-1.5">
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                                    /api/v1/projects/{projectId}/datasets</div>
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                                    /api/v1/projects/{projectId}/datasets</div>
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                                    /api/v1/datasets/{datasetId}</div>
+                                <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                                    style="background:#F4F6F8;color:#4B5563"><span class="md">DELETE</span>
+                                    /api/v1/datasets/{datasetId}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold mb-2" style="color:#3B82F6">Dataset Validation Pipeline</h4>
+                            <div class="rounded-lg p-4" style="background:#F4F6F8">
+                                <div class="text-xs mono leading-loose" style="color:#4B5563">File received → Format
+                                    validation → CRS detection → Coordinate validation → Column detection →
+                                    Missing-value check → Duplicate check → Spatial extent check → Quality score → Ready
+                                    for analysis</div>
+                            </div>
+                            <p class="text-xs mt-2 italic" style="color:#6B7280">Turns ingestion from merely uploading
+                                data into quality-controlled exploration data management.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- J3 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">3</span>
+                        <h3>Review Geological Data</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strongly Resolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Interactive map allows simultaneous viewing of
+                        magnetics, geochemistry, Sentinel-2 bands, structural overlays and WDPA protected areas.</p>
+                    <div class="space-y-1.5 mb-4">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/layers</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/layers/{layerId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/projects/{projectId}/layers/toggle</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/map</div>
+                    </div>
+                    <div class="rounded-lg p-4" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                        <p class="text-sm" style="color:#1E40AF"><strong>Recommendation:</strong> Allow saving a <em>Map
+                                View</em> (e.g., "Gold Structural Target View") containing selected layers and
+                            visualization settings.</p>
+                    </div>
+                </div>
+
+                <!-- J4 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">4</span>
+                        <h3>Satellite Interpretation</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Resolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">One click triggers Sentinel-2 SWIR data for the AOI —
+                        automatically maps structural lineaments, alteration halos and iron oxide anomalies.</p>
+                    <div class="space-y-1.5 mb-4">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/projects/{projectId}/satellite-analysis</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/satellite-analysis/{analysisId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/satellite-layers</div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm" style="border-collapse:collapse">
+                            <thead>
+                                <tr style="border-bottom:1px solid #E5E7EB">
+                                    <th class="text-left py-2 pr-4 font-bold" style="color:#6B7280">Layer</th>
+                                    <th class="text-left py-2 pr-4 font-bold" style="color:#6B7280">Finding</th>
+                                    <th class="text-right py-2 font-bold" style="color:#6B7280">Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">SWIR</td>
+                                    <td class="py-2 pr-4">Alteration zone</td>
+                                    <td class="py-2 text-right mono">91%</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Iron oxide</td>
+                                    <td class="py-2 pr-4">Anomaly</td>
+                                    <td class="py-2 text-right mono">86%</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Structure</td>
+                                    <td class="py-2 pr-4">NE trend</td>
+                                    <td class="py-2 text-right mono">88%</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-4">NDVI</td>
+                                    <td class="py-2 pr-4">Vegetation effect</td>
+                                    <td class="py-2 text-right mono">72%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- J5 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">5</span>
+                        <h3>Generate Exploration Targets</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Core Capability</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Expert-weighted feature matrices using magnetics,
+                        geochemistry, structure and alteration, with SHAP explanations.</p>
+                    <div class="space-y-1.5 mb-4">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/projects/{projectId}/targets/generate</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/targets</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/targets/{targetId}</div>
+                    </div>
+                    <h4 class="text-sm font-bold mb-2">Recommended Target Record</h4>
+                    <div class="rounded-lg p-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-relaxed" style="color:#4B5563">Target ID · Target Score ·
+                            Commodity · Coordinates · Estimated depth · Strike · Dip · Geochemical evidence ·
+                            Geophysical evidence · Satellite evidence · Structural evidence · Confidence · SHAP
+                            explanation · Data freshness · Recommended next action</div>
+                    </div>
+                </div>
+
+                <!-- J6 -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">6</span>
+                        <h3>Understand Why a Target Was Selected</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Resolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">SHAP explanation directly addresses: <em>"Why does the
+                            system think this is a target?"</em></p>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-4"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/targets/{targetId}/explanation</div>
+                    <div class="rounded-lg p-5" style="background:#F4F6F8">
+                        <div class="text-sm font-bold mb-3">Target Score: 91.4</div>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 text-xs"><span class="w-28"
+                                    style="color:#6B7280">Geochemistry</span>
+                                <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:#E5E7EB">
+                                    <div class="h-full rounded-full" style="width:28%;background:#3B82F6"></div>
+                                </div><span class="mono" style="color:#4B5563">+28%</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs"><span class="w-28"
+                                    style="color:#6B7280">Structure</span>
+                                <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:#E5E7EB">
+                                    <div class="h-full rounded-full" style="width:24%;background:#3B82F6"></div>
+                                </div><span class="mono" style="color:#4B5563">+24%</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs"><span class="w-28"
+                                    style="color:#6B7280">Magnetics</span>
+                                <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:#E5E7EB">
+                                    <div class="h-full rounded-full" style="width:21%;background:#22D3EE"></div>
+                                </div><span class="mono" style="color:#4B5563">+21%</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs"><span class="w-28"
+                                    style="color:#6B7280">Alteration</span>
+                                <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:#E5E7EB">
+                                    <div class="h-full rounded-full" style="width:18%;background:#22D3EE"></div>
+                                </div><span class="mono" style="color:#4B5563">+18%</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs"><span class="w-28"
+                                    style="color:#6B7280">Satellite</span>
+                                <div class="flex-1 h-3 rounded-full overflow-hidden" style="background:#E5E7EB">
+                                    <div class="h-full rounded-full" style="width:9%;background:#E8B84B"></div>
+                                </div><span class="mono" style="color:#4B5563">+9%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- J7-J11 condensed -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">7</span>
+                        <h3>Prepare Field Visit</h3><span
+                            class="ml-auto sp text-xs font-bold px-2.5 py-1 rounded-full">Unresolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Convert targets into a practical field plan. <strong
+                            style="color:#3B82F6">Proposed: Field Mission Planner</strong></p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/projects/{projectId}/field-missions</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/field-missions/{missionId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/field-missions/{missionId}/targets</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">8</span>
+                        <h3>Work Offline in the Field</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Resolved</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Map tiles cached locally, annotations added without
+                        connectivity, automatic sync after returning to camp.</p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span> /api/v1/field/sync
+                        </div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/field/{projectId}/offline-package</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/field/observations</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">9</span>
+                        <h3>Collect Field Observations</h3><span
+                            class="ml-auto sx text-xs font-bold px-2.5 py-1 rounded-full">Major Opportunity</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Offline mapping ≠ complete field-data capture. Build a
+                        structured <strong>Field Observation Form</strong>.</p>
+                    <div class="space-y-1.5 mb-4">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/field-observations</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/field-observations/{id}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mt">PATCH</span>
+                            /api/v1/field-observations/{id}</div>
+                    </div>
+                    <div class="rounded-lg p-4" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                        <p class="text-sm" style="color:#1E40AF"><strong>Major opportunity:</strong> Auto-associate
+                            every observation with the AI target: <em>Target TP-024 → Observation 1 → Sample GS-109 →
+                                Photo IMG-109 → Geologist interpretation</em></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">10</span>
+                        <h3>Collect Samples</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Gap</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Complete sample chain-of-custody/laboratory workflow
+                        not presented as a core capability.</p>
+                    <div class="rounded-lg p-4 mb-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Sample generated → Sample ID → GPS
+                            → Target → Collector → Laboratory → Assay result → Validation → Target model update</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span> /api/v1/samples</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/samples/{sampleId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/samples/{sampleId}/assay</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/samples/{sampleId}/chain-of-custody</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">11</span>
+                        <h3>Update Target After Fieldwork</h3><span
+                            class="ml-auto sx text-xs font-bold px-2.5 py-1 rounded-full">Major Opportunity</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563"><strong>AI target → field evidence → new data →
+                            revised target score</strong></p>
+                    <div class="space-y-1.5 mb-4">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/targets/{targetId}/validation</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/targets/{targetId}/recalculate</div>
+                    </div>
+                    <div class="rounded-lg p-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Generated → Desktop Validated →
+                            Field Validated → High Priority → Drill Candidate → Drilled → Confirmed / Rejected</div>
+                    </div>
+                </div>
+
+                <!-- Assessment Table -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mt-8"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <h3 class="mb-4">Field Geologist — Overall Assessment</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm" style="border-collapse:collapse">
+                            <thead>
+                                <tr style="border-bottom:1px solid #E5E7EB">
+                                    <th class="text-left py-2.5 pr-4 font-bold" style="color:#6B7280">Workflow</th>
+                                    <th class="text-left py-2.5 font-bold" style="color:#6B7280">TerraPulze</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Project setup</td>
+                                    <td><span class="sp text-xs font-bold px-2 py-0.5 rounded-full">Partial</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Data ingestion</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Data validation</td>
+                                    <td><span class="si text-xs font-bold px-2 py-0.5 rounded-full">Improve</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">GIS interpretation</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Satellite interpretation</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">AI target generation</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Target explanation</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Field planning</td>
+                                    <td><span class="sp text-xs font-bold px-2 py-0.5 rounded-full">Partial</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Offline field work</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Field observations</td>
+                                    <td><span class="sx text-xs font-bold px-2 py-0.5 rounded-full">Expand</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Sample management</td>
+                                    <td><span class="sg text-xs font-bold px-2 py-0.5 rounded-full">Gap</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Laboratory workflow</td>
+                                    <td><span class="sg text-xs font-bold px-2 py-0.5 rounded-full">Gap</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Target validation</td>
+                                    <td><span class="sx text-xs font-bold px-2 py-0.5 rounded-full">Expand</span></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Drill execution</td>
+                                    <td><span class="sg text-xs font-bold px-2 py-0.5 rounded-full">Gap</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-4">Reporting</td>
+                                    <td><span class="ss text-xs font-bold px-2 py-0.5 rounded-full">Strong</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 2: EXPLORATION MANAGER -->
+            <section id="p2" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#E8B84B"><span class="iconify text-[#111827] text-2xl"
+                            data-icon="lucide:briefcase"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 2
+                        </div>
+                        <h2>Junior Explorer / Exploration Manager</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Responsible for <strong>people,
+                        projects, budgets, prioritization and results</strong>. Multi-project portfolios, team
+                    management and Ghana data residency.</p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">1</span>
+                        <h3>Build Exploration Portfolio</h3>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">Needs: What projects exist? Where? What
+                        commodity/stage/targets? How much spent? Next decision?</p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/portfolio/projects</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/portfolio/summary</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/portfolio/targets</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">2</span>
+                        <h3>Assign Work to Geologists</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Gap</span>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">Coordinate: geologists, field crews, consultants,
+                        laboratories, GIS specialists, drilling contractors.</p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span> /api/v1/tasks</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/tasks</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mt">PATCH</span>
+                            /api/v1/tasks/{taskId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/tasks/{taskId}/assign</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">3</span>
+                        <h3>Monitor Project Progress</h3><span
+                            class="ml-auto sp text-xs font-bold px-2.5 py-1 rounded-full">Unresolved</span>
+                    </div>
+                    <div class="rounded-lg p-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Data uploaded → Analysis complete
+                            → Targets generated → Targets field validated → Samples submitted → Assays received →
+                            Targets updated → Drill decision</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">4</span>
+                        <h3>Compare Targets</h3>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563"><em>"Which five targets should receive the next
+                            exploration budget?"</em></p>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-3"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/projects/{projectId}/targets/ranking</div>
+                    <div class="rounded-lg p-4" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                        <p class="text-xs" style="color:#1E40AF"><strong>Multi-criteria:</strong> AI score + Geological
+                            confidence + Field validation + Expected depth + Accessibility + Land constraints + Cost +
+                            Historical evidence</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">5</span>
+                        <h3>Budget Allocation</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Major Gap</span>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563"><em>"What will it cost to test this target?"</em></p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/targets/{targetId}/economics</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/targets/{targetId}/scenario</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">6</span>
+                        <h3>Decide Whether to Drill</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-3"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/targets/{targetId}/decision</div>
+                    <p class="text-sm" style="color:#4B5563">Values: Continue exploration · Collect more data · Field
+                        validate · Drill · Deprioritize · Reject</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-[#111827] text-xs font-bold"
+                            style="background:#E8B84B">7</span>
+                        <h3>Generate Management Reports</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strong Fit</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">QP-ready PDFs and investor summaries with provenance and
+                        methodology disclosure.</p>
+                </div>
+
+                <div class="rounded-xl p-6 mt-8" style="background:#FFF1F2;border:1px solid #FECDD3">
+                    <h3 class="font-bold mb-3 flex items-center gap-2" style="color:#9F1239"><span
+                            class="iconify text-lg" data-icon="lucide:alert-circle"></span>Biggest Unresolved</h3>
+                    <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#9F1239">
+                        <li>Team management</li>
+                        <li>Task assignment</li>
+                        <li>Portfolio management</li>
+                        <li>Budget management</li>
+                        <li>Exploration scheduling</li>
+                        <li>Laboratory tracking</li>
+                        <li>Drilling contractor management</li>
+                        <li>Target economics</li>
+                        <li>Resource estimation</li>
+                        <li>Decision tracking</li>
+                    </ol>
+                    <p class="text-sm mt-4 italic" style="color:#9F1239">The manager's problem is not simply "Find
+                        targets." It is: <strong>"Decide where my organization should spend its next dollar."</strong>
+                    </p>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 3: MINING CEO -->
+            <section id="p3" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#111827"><span class="iconify text-2xl" style="color:#E8B84B"
+                            data-icon="lucide:crown"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 3
+                        </div>
+                        <h2>Junior Mining CEO / Major Mining Corporation</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Interested in: opportunity, risk,
+                    capital, valuation, compliance, investor confidence, strategic acquisition, project advancement.</p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">1</span>
+                        <h3>Identify Opportunity</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/executive/opportunities</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">2</span>
+                        <h3>Understand Project Quality</h3>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">CEO needs a <strong>Project Intelligence
+                            Score</strong>.</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div class="rounded-lg p-3 text-center" style="background:#F4F6F8">
+                            <div class="text-xs" style="color:#6B7280">Geological potential</div>
+                            <div class="mono text-lg font-bold" style="color:#3B82F6">88%</div>
+                        </div>
+                        <div class="rounded-lg p-3 text-center" style="background:#F4F6F8">
+                            <div class="text-xs" style="color:#6B7280">Data confidence</div>
+                            <div class="mono text-lg font-bold" style="color:#3B82F6">91%</div>
+                        </div>
+                        <div class="rounded-lg p-3 text-center" style="background:#F4F6F8">
+                            <div class="text-xs" style="color:#6B7280">Target confidence</div>
+                            <div class="mono text-lg font-bold" style="color:#3B82F6">87%</div>
+                        </div>
+                        <div class="rounded-lg p-3 text-center" style="background:#F4F6F8">
+                            <div class="text-xs" style="color:#6B7280">Licence security</div>
+                            <div class="mono text-lg font-bold" style="color:#3B82F6">95%</div>
+                        </div>
+                        <div class="rounded-lg p-3 text-center" style="background:#F4F6F8">
+                            <div class="text-xs" style="color:#6B7280">Field validation</div>
+                            <div class="mono text-lg font-bold" style="color:#C48E1C">73%</div>
+                        </div>
+                        <div class="rounded-lg p-3 text-center" style="background:#EFF6FF;border:2px solid #BFDBFE">
+                            <div class="text-xs" style="color:#6B7280">Overall score</div>
+                            <div class="mono text-lg font-bold" style="color:#1E40AF">86%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">3</span>
+                        <h3>Prepare Board Presentation</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strong Fit</span>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/reports/investor</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/reports/{reportId}</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">4</span>
+                        <h3>Regulatory Documentation</h3><span
+                            class="ml-auto sp text-xs font-bold px-2.5 py-1 rounded-full">Strong but Incomplete</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Distinguish <strong>"Compliance evidence provided"</strong>
+                        from <strong>"Regulatory submission completed."</strong></p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">5</span>
+                        <h3>Evaluate Acquisition / Farm-in</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Major Gap</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Geological side covered; acquisition requires: licence
+                        ownership, tenure, encumbrances, historical expenditure, liabilities, royalties, legal
+                        agreements, environmental obligations, infrastructure, financial model. <strong
+                            style="color:#3B82F6">Recommendation: Project Due Diligence Workspace</strong></p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#111827">6</span>
+                        <h3>Corporate Decision</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-3"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/projects/{projectId}/investment-decision</div>
+                    <p class="text-sm" style="color:#4B5563">Outcomes: Advance · Hold · Acquire · Farm-in · Joint
+                        venture · Divest · Reject</p>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 4: INVESTOR/CONSULTANT -->
+            <section id="p4" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#4B5563"><span class="iconify text-2xl" style="color:#22D3EE"
+                            data-icon="lucide:search"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#6B7280">Persona 4
+                        </div>
+                        <h2>Investor / Independent Consultant</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563"><strong>"Can I trust the
+                        information I'm being given?"</strong> White-label reporting, NI 43-101-style reporting and
+                    structured exports.</p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">1</span>
+                        <h3>Receive Client/Project Information</h3>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">Recommendation: <strong>Due Diligence Data
+                            Room</strong></p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span> /api/v1/datarooms
+                        </div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/datarooms/{id}/documents</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span> /api/v1/datarooms/{id}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">2</span>
+                        <h3>Verify Data Provenance</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Major Opportunity</span>
+                    </div>
+                    <div class="rounded-lg p-4 mb-3" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Original dataset → Upload date →
+                            Source → Transformation → Analysis → AI model → Target → Report</div>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/data/{datasetId}/provenance</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">3</span>
+                        <h3>Independently Review Target</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/targets/{targetId}/evidence</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">4</span>
+                        <h3>Generate Independent Report</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strong Fit</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">QP-oriented reporting with <strong>Client
+                            branding</strong>: logo, company name, consultant name, disclaimer, report template.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">5</span>
+                        <h3>Export Data</h3><span class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strong
+                            Fit</span>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">QGIS, shapefile, COG raster, KML and CSV exports.</p>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/projects/{projectId}/exports</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/projects/{projectId}/exports</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#4B5563">6</span>
+                        <h3>Make Recommendation</h3>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">Evidence Matrix:</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm" style="border-collapse:collapse">
+                            <thead>
+                                <tr style="border-bottom:1px solid #E5E7EB">
+                                    <th class="text-left py-2 pr-4 font-bold" style="color:#6B7280">Evidence</th>
+                                    <th class="text-left py-2 pr-4 font-bold" style="color:#6B7280">Result</th>
+                                    <th class="text-right py-2 font-bold" style="color:#6B7280">Confidence</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Geochemistry</td>
+                                    <td class="py-2 pr-4">Positive</td>
+                                    <td class="py-2 text-right">High</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Geophysics</td>
+                                    <td class="py-2 pr-4">Positive</td>
+                                    <td class="py-2 text-right">High</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Structure</td>
+                                    <td class="py-2 pr-4">Positive</td>
+                                    <td class="py-2 text-right">Medium</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4">Satellite</td>
+                                    <td class="py-2 pr-4">Positive</td>
+                                    <td class="py-2 text-right">High</td>
+                                </tr>
+                                <tr style="border-bottom:1px solid #F4F6F8">
+                                    <td class="py-2 pr-4" style="color:#6B7280">Field validation</td>
+                                    <td class="py-2 pr-4" style="color:#6B7280">Pending</td>
+                                    <td class="py-2 text-right" style="color:#6B7280">—</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 pr-4" style="color:#6B7280">Assay</td>
+                                    <td class="py-2 pr-4" style="color:#6B7280">Pending</td>
+                                    <td class="py-2 text-right" style="color:#6B7280">—</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 5: MINING FINANCE -->
+            <section id="p5" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#C48E1C"><span class="iconify text-white text-2xl"
+                            data-icon="lucide:landmark"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 5
+                        </div>
+                        <h2>Investment Firms / Mining Finance</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">One of the most commercially
+                    valuable personas — the platform can become part of the <strong>technical due-diligence
+                        pipeline</strong>.</p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">1</span>
+                        <h3>Investment Opportunity Arrives</h3>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><em>"Company X wants $50m to develop Project Y."</em>
+                        Upload the exploration package into a due-diligence workspace.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">2</span>
+                        <h3>Assess Technical Evidence</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/due-diligence/projects</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">3</span>
+                        <h3>Detect Inconsistencies</h3><span
+                            class="ml-auto sx text-xs font-bold px-2.5 py-1 rounded-full">New Feature</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Compare <strong>Company claim</strong> against
+                        <strong>available evidence</strong>. Returns: <strong style="color:#3B82F6">Evidence alignment:
+                            78%</strong></p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">4</span>
+                        <h3>Technical Risk Scoring</h3>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-3 mb-4">
+                        <div class="rounded-lg p-3 flex justify-between items-center"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0"><span class="text-sm"
+                                style="color:#4B5563">Data quality</span><span class="text-xs font-bold"
+                                style="color:#065F46">Low risk</span></div>
+                        <div class="rounded-lg p-3 flex justify-between items-center"
+                            style="background:#FFFBEB;border:1px solid #FDE68A"><span class="text-sm"
+                                style="color:#4B5563">Geological uncertainty</span><span class="text-xs font-bold"
+                                style="color:#92400E">Medium</span></div>
+                        <div class="rounded-lg p-3 flex justify-between items-center"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0"><span class="text-sm"
+                                style="color:#4B5563">Target confidence</span><span class="text-xs font-bold"
+                                style="color:#065F46">Low risk</span></div>
+                        <div class="rounded-lg p-3 flex justify-between items-center"
+                            style="background:#FFF1F2;border:1px solid #FECDD3"><span class="text-sm"
+                                style="color:#4B5563">Field validation</span><span class="text-xs font-bold"
+                                style="color:#9F1239">High</span></div>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/due-diligence/{projectId}/risk</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">5</span>
+                        <h3>Financial Model Integration</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Major Gap</span>
+                    </div>
+                    <p class="text-sm mb-3" style="color:#4B5563">Do <strong>not</strong> make TerraPulze a full
+                        financial platform. Instead provide a clean integration layer.</p>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-3"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/projects/{projectId}/financial-inputs</div>
+                    <div class="rounded-lg p-4" style="background:#F4F6F8">
+                        <div class="text-xs mono" style="color:#4B5563">{ "target_count": 12, "priority_targets": 4,
+                            "estimated_depths": [], "geological_confidence": 0.87 }</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#C48E1C">6</span>
+                        <h3>Investment Committee</h3>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Generate <strong>Investment Technical Summary</strong>:
+                        Project overview · Licence position · Geological model · Exploration evidence · Target ranking ·
+                        Data quality · Technical risks · Missing information · Recommended diligence · Investment
+                        recommendation</p>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PERSONA 6: GOVERNMENT REGULATOR -->
+            <section id="p6" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-2xl" style="color:#22D3EE"
+                            data-icon="lucide:shield-check"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 6
+                        </div>
+                        <h2>Government Regulator</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563"><strong>"Is this exploration
+                        activity legitimate, compliant, properly documented and within the permitted area?"</strong></p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">1</span>
+                        <h3>Receive Licence Application</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/regulatory/applications</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">2</span>
+                        <h3>Validate Licence Boundary</h3><span
+                            class="ml-auto ss text-xs font-bold px-2.5 py-1 rounded-full">Strong Fit</span>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-3"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/compliance/licence-check</div>
+                    <div class="rounded-lg p-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Boundary valid: YES · Overlap
+                            detected: NO · Protected area overlap: NO · Licence status: VALID</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">3</span>
+                        <h3>Environmental Screening</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                        /api/v1/compliance/environmental-screen</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">4</span>
+                        <h3>Verify Exploration Evidence</h3>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/regulatory/projects/{projectId}/evidence</div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">5</span>
+                        <h3>Audit Data</h3><span class="ml-auto sx text-xs font-bold px-2.5 py-1 rounded-full">Critical
+                            Addition</span>
+                    </div>
+                    <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono mb-2"
+                        style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                        /api/v1/audit/projects/{projectId}</div>
+                    <p class="text-xs font-bold" style="color:#3B82F6">One of the most important additions for a
+                        regulatory product.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex items-center gap-2 mb-4"><span
+                            class="inline-flex items-center justify-center w-7 h-7 rounded-full text-white text-xs font-bold"
+                            style="background:#3B82F6">6</span>
+                        <h3>Approve / Reject / Request Correction</h3><span
+                            class="ml-auto sg text-xs font-bold px-2.5 py-1 rounded-full">Gap</span>
+                    </div>
+                    <p class="text-sm mb-4" style="color:#4B5563">Create <strong>Regulatory Case Management</strong>.
+                    </p>
+                    <div class="rounded-lg p-4 mb-4" style="background:#F4F6F8">
+                        <div class="text-xs mono leading-loose" style="color:#4B5563">Submitted → Under Review →
+                            Additional Information Required → Technical Review → Environmental Review → Approved /
+                            Rejected</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/regulatory/cases</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mt">PATCH</span>
+                            /api/v1/regulatory/cases/{caseId}</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mp">POST</span>
+                            /api/v1/regulatory/cases/{caseId}/decision</div>
+                        <div class="ep flex items-center gap-2 rounded-md px-3 py-1.5 text-xs mono"
+                            style="background:#F4F6F8;color:#4B5563"><span class="mg">GET</span>
+                            /api/v1/regulatory/cases/{caseId}/audit</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- CROSS-PERSONA -->
+            <section id="cross" class="mb-20">
+                <h2 class="mb-4">Cross-Persona Workflow</h2>
+                <p class="leading-relaxed mb-8 max-w-3xl" style="color:#4B5563">The biggest product opportunity: connect
+                    all personas through one <strong>exploration evidence chain</strong>.</p>
+                <div class="bg-white rounded-xl p-6 md:p-10 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <div class="min-w-[480px] flex flex-col items-center gap-3">
+                        <div class="rounded-xl px-8 py-3 font-bold text-base text-white" style="background:#111827">
+                            TerraPulze</div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="rounded-lg px-6 py-2 font-bold"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Project Workspace</div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="flex items-center gap-3 flex-wrap justify-center">
+                            <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                                style="background:#F4F6F8;border:1px solid #E5E7EB">Datasets</div>
+                            <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                                style="background:#F4F6F8;border:1px solid #E5E7EB">Maps</div>
+                            <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                                style="background:#F4F6F8;border:1px solid #E5E7EB">Licences</div>
+                        </div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="rounded-lg px-6 py-2 font-bold"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">AI Interpretation</div>
+                        <div style="color:#E8B84B" class="text-lg">↓</div>
+                        <div class="rounded-lg px-6 py-2 font-bold"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Target Generation</div>
+                        <div style="color:#E8B84B" class="text-lg">↓</div>
+                        <div class="rounded-lg px-6 py-2 font-bold"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Target Evidence</div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="flex items-center gap-3 flex-wrap justify-center">
+                            <div class="rounded-lg px-4 py-2 text-xs font-bold"
+                                style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Field Geologist</div>
+                            <div class="rounded-lg px-4 py-2 text-xs font-bold"
+                                style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Exploration Mgr</div>
+                            <div class="rounded-lg px-4 py-2 text-xs font-bold"
+                                style="background:#F4F6F8;border:1px solid #E5E7EB;color:#4B5563">Consultant</div>
+                        </div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="rounded-lg px-6 py-2 font-bold"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Technical Report</div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="flex items-center gap-3 flex-wrap justify-center">
+                            <div class="rounded-lg px-4 py-2 text-xs font-bold text-white" style="background:#111827">
+                                Mining CEO</div>
+                            <div class="rounded-lg px-4 py-2 text-xs font-bold text-white" style="background:#C48E1C">
+                                Investment Firm</div>
+                        </div>
+                        <div style="color:#3B82F6" class="text-lg">↓</div>
+                        <div class="rounded-xl px-6 py-2 font-bold text-white" style="background:#3B82F6">Regulatory
+                            Review</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- GAP SUMMARY -->
+            <section id="gaps" class="mb-20">
+                <h2 class="mb-8">Most Important Unresolved Workflow Steps</h2>
+                <div class="space-y-5">
+                    <div class="rounded-xl p-6" style="background:#FFF1F2;border:1px solid #FECDD3">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color:#9F1239"><span
+                                class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white"
+                                style="background:#F43F5E">!</span>Critical Gaps</h3>
+                        <div class="grid sm:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Structured field observation
+                                management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Sample management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Laboratory/assay workflow</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Target → field validation loop
+                            </div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Exploration task management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Portfolio management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Exploration budget management
+                            </div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Drilling workflow</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Financial modelling integration
+                            </div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Due-diligence workspace</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Regulatory case management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#9F1239"><span class="iconify"
+                                    style="color:#F43F5E" data-icon="lucide:x"></span>Formal approval/decision workflow
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-xl p-6" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color:#92400E"><span
+                                class="w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                                style="background:#E8B84B;color:#111827">~</span>Partial Gaps</h3>
+                        <div class="grid sm:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Project creation</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Dataset quality control</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Field planning</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Team management</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Target prioritization</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Target economics</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Executive dashboards</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Investor analysis</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Environmental compliance</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#92400E"><span class="iconify"
+                                    style="color:#C48E1C" data-icon="lucide:minus"></span>Regulatory reporting</div>
+                        </div>
+                    </div>
+                    <div class="rounded-xl p-6" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <h3 class="font-bold mb-4 flex items-center gap-2" style="color:#065F46"><span
+                                class="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white"
+                                style="background:#065F46">✓</span>Strong (18)</h3>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Exploration data ingestion</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Geophysics/geochemistry integration</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>PDF assay ingestion</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Sentinel-2/SWIR analysis</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Structural/alteration interpretation</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Interactive exploration map</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>AI prospectivity scoring</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>SHAP explanations</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Offline field maps &amp; annotation</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Synchronization</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>QP-oriented reporting</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Investor summaries</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Provenance/methodology disclosure</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>QGIS/KML/CSV/GIS exports</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Ghana licence/compliance overlays</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>WDPA screening</div>
+                            <div class="flex items-center gap-2 text-sm" style="color:#065F46"><span class="iconify"
+                                    data-icon="lucide:check"></span>Ghana data residency</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- API ARCHITECTURE -->
+            <section id="api" class="mb-20">
+                <h2 class="mb-4">Recommended API Architecture</h2>
+                <p class="leading-relaxed mb-8 max-w-3xl" style="color:#4B5563">Organized around
+                    <strong>domains</strong>, rather than random endpoints for each screen.</p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:folder"></span>
+                            <h4 class="font-bold text-sm">1. Projects</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /api/v1/projects</div>
+                            <div><span class="mg">GET</span> /api/v1/projects</div>
+                            <div><span class="mg">GET</span> /api/v1/projects/{id}</div>
+                            <div><span class="mt">PATCH</span> /api/v1/projects/{id}</div>
+                            <div><span class="md">DELETE</span> /api/v1/projects/{id}</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:database"></span>
+                            <h4 class="font-bold text-sm">2. Datasets</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /projects/{id}/datasets</div>
+                            <div><span class="mg">GET</span> /projects/{id}/datasets</div>
+                            <div><span class="mg">GET</span> /datasets/{id}</div>
+                            <div><span class="mg">GET</span> /datasets/{id}/quality</div>
+                            <div><span class="mg">GET</span> /datasets/{id}/provenance</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:scan"></span>
+                            <h4 class="font-bold text-sm">3. Analysis</h4>
+                        </div>
+                        <div classA="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /projects/{id}/satellite-analysis</div>
+                            <div><span class="mp">POST</span> /projects/{id}/geophysics-analysis</div>
+                            <div><span class="mp">POST</span> /projects/{id}/geochemistry-analysis</div>
+                            <div><span class="mg">GET</span> /projects/{id}/analyses</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">4. Targets</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /projects/{id}/targets/generate</div>
+                            <div><span class="mg">GET</span> /projects/{id}/targets</div>
+                            <div><span class="mg">GET</span> /targets/{id}</div>
+                            <div><span class="mg">GET</span> /targets/{id}/evidence</div>
+                            <div><span class="mg">GET</span> /targets/{id}/explanation</div>
+                            <div><span class="mp">POST</span> /targets/{id}/validation</div>
+                            <div><span class="mp">POST</span> /targets/{id}/recalculate</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:compass"></span>
+                            <h4 class="font-bold text-sm">5. Field</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /field-missions</div>
+                            <div><span class="mg">GET</span> /field-missions/{id}</div>
+                            <div><span class="mp">POST</span> /field-observations</div>
+                            <div><span class="mg">GET</span> /field-observations/{id}</div>
+                            <div><span class="mp">POST</span> /field/sync</div>
+                            <div><span class="mg">GET</span> /field/{id}/offline-package</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:flask-conical"></span>
+                            <h4 class="font-bold text-sm">6. Samples</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /samples</div>
+                            <div><span class="mg">GET</span> /samples/{id}</div>
+                            <div><span class="mp">POST</span> /samples/{id}/assay</div>
+                            <div><span class="mg">GET</span> /samples/{id}/chain-of-custody</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:layout-dashboard"></span>
+                            <h4 class="font-bold text-sm">7. Portfolio</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mg">GET</span> /portfolio/projects</div>
+                            <div><span class="mg">GET</span> /portfolio/summary</div>
+                            <div><span class="mg">GET</span> /portfolio/targets</div>
+                            <div><span class="mg">GET</span> /portfolio/risks</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:file-text"></span>
+                            <h4 class="font-bold text-sm">8. Reports</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /reports/technical</div>
+                            <div><span class="mp">POST</span> /reports/investor</div>
+                            <div><span class="mp">POST</span> /reports/regulatory</div>
+                            <div><span class="mp">POST</span> /reports/due-diligence</div>
+                            <div><span class="mg">GET</span> /reports/{id}</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:search"></span>
+                            <h4 class="font-bold text-sm">9. Due Diligence</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /datarooms</div>
+                            <div><span class="mp">POST</span> /datarooms/{id}/documents</div>
+                            <div><span class="mg">GET</span> /datarooms/{id}</div>
+                            <div><span class="mg">GET</span> /due-diligence/{id}/risk</div>
+                            <div><span class="mg">GET</span> /due-diligence/{id}/evidence</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:shield"></span>
+                            <h4 class="font-bold text-sm">10. Compliance</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /compliance/licence-check</div>
+                            <div><span class="mp">POST</span> /compliance/environmental-screen</div>
+                            <div><span class="mg">GET</span> /compliance/{id}/results</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:scale"></span>
+                            <h4 class="font-bold text-sm">11. Regulatory</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mp">POST</span> /regulatory/cases</div>
+                            <div><span class="mg">GET</span> /regulatory/cases</div>
+                            <div><span class="mg">GET</span> /regulatory/cases/{id}</div>
+                            <div><span class="mp">POST</span> /regulatory/cases/{id}/decision</div>
+                            <div><span class="mg">GET</span> /regulatory/cases/{id}/audit</div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3"><span class="iconify" style="color:#3B82F6"
+                                data-icon="lucide:history"></span>
+                            <h4 class="font-bold text-sm">12. Audit</h4>
+                        </div>
+                        <div class="space-y-1.5 text-xs mono" style="color:#4B5563">
+                            <div><span class="mg">GET</span> /audit/projects/{id}</div>
+                            <div><span class="mg">GET</span> /audit/datasets/{id}</div>
+                            <div><span class="mg">GET</span> /audit/targets/{id}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- PRIORITY ROADMAP -->
+            <section id="roadmap" class="mb-20">
+                <h2 class="mb-8">Priority Roadmap</h2>
+                <div class="space-y-6">
+                    <div class="bg-white rounded-xl p-6 md:p-8"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#3B82F6">1</div>
+                            <div>
+                                <h3 style="color:#3B82F6">Strengthen the Core</h3>
+                                <p class="text-sm" style="color:#6B7280">Data → AI → Target → Field</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#4B5563">
+                            <li>Project workspace</li>
+                            <li>Dataset validation</li>
+                            <li>Target evidence</li>
+                            <li>Field observations</li>
+                            <li>Offline field packages</li>
+                            <li>Target validation</li>
+                            <li>Sample management</li>
+                            <li>Assay integration</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 md:p-8"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#E8B84B">2</div>
+                            <div>
+                                <h3 style="color:#C48E1C">Management Layer</h3>
+                                <p class="text-sm" style="color:#6B7280">Target → Exploration decision</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#4B5563">
+                            <li>Team management</li>
+                            <li>Task management</li>
+                            <li>Portfolio dashboard</li>
+                            <li>Target ranking</li>
+                            <li>Budget/scenario planning</li>
+                            <li>Exploration decision workflow</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 md:p-8"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold"
+                                style="background:#111827;color:#E8B84B">3</div>
+                            <div>
+                                <h3>Commercial Layer</h3>
+                                <p class="text-sm" style="color:#6B7280">Exploration → Investment</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#4B5563">
+                            <li>Due-diligence workspace</li>
+                            <li>Data room</li>
+                            <li>Technical risk scoring</li>
+                            <li>Investor reports</li>
+                            <li>Financial-model integration</li>
+                            <li>Acquisition/farm-in analysis</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 md:p-8"
+                        style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#22D3EE">4</div>
+                            <div>
+                                <h3 style="color:#0E7490">Government Layer</h3>
+                                <p class="text-sm" style="color:#6B7280">Exploration → Compliance → Regulation</p>
+                            </div>
+                        </div>
+                        <ol class="text-sm space-y-1 list-decimal list-inside" style="color:#4B5563">
+                            <li>Licence validation</li>
+                            <li>Environmental screening</li>
+                            <li>Regulatory case management</li>
+                            <li>Audit trail</li>
+                            <li>Approval workflow</li>
+                            <li>Regulatory reporting</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- FINAL COMPARISON -->
+            <section id="final" class="mb-20">
+                <h2 class="mb-8">Final Persona Comparison</h2>
+                <div class="bg-white rounded-xl p-6 md:p-8 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <table class="w-full text-sm" style="border-collapse:collapse;min-width:700px">
+                        <thead>
+                            <tr style="border-bottom:2px solid #E5E7EB">
+                                <th class="text-left py-3 pr-4 font-bold" style="color:#6B7280">Persona</th>
+                                <th class="text-left py-3 pr-4 font-bold" style="color:#6B7280">Main Job</th>
+                                <th class="text-left py-3 pr-4 font-bold" style="color:#6B7280">Strongest Value</th>
+                                <th class="text-left py-3 font-bold" style="color:#6B7280">Biggest Unresolved</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">Field Geologist</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Find and validate targets</td>
+                                <td class="py-3 pr-4" style="color:#065F46">AI targets + offline field mode</td>
+                                <td class="py-3" style="color:#9F1239">Samples, observations, assays</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">Exploration Manager</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Decide where to spend exploration resources
+                                </td>
+                                <td class="py-3 pr-4" style="color:#065F46">Target ranking + project evidence</td>
+                                <td class="py-3" style="color:#9F1239">Team, portfolio, budget, scheduling</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">Mining CEO</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Make strategic project decisions</td>
+                                <td class="py-3 pr-4" style="color:#065F46">Technical intelligence + reports</td>
+                                <td class="py-3" style="color:#9F1239">Financial/corporate decision support</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">Investor / Consultant</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Verify technical claims</td>
+                                <td class="py-3 pr-4" style="color:#065F46">Provenance + evidence + reports</td>
+                                <td class="py-3" style="color:#9F1239">Due-diligence/data-room workflow</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">Investment Firm / Finance</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Assess technical investment risk</td>
+                                <td class="py-3 pr-4" style="color:#065F46">Structured technical evidence</td>
+                                <td class="py-3" style="color:#9F1239">Financial modelling + risk integration</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 pr-4 font-bold">Government Regulator</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Verify compliance and legitimacy</td>
+                                <td class="py-3 pr-4" style="color:#065F46">Licence/WDPA layers + provenance</td>
+                                <td class="py-3" style="color:#9F1239">Regulatory case/approval workflow</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="rounded-xl p-6 md:p-8 mt-8" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <h3 class="font-bold mb-3" style="color:#1E40AF">The Central Product Insight</h3>
+                    <p class="leading-relaxed mb-4" style="color:#1E40AF">Document TerraPulze <strong>not as "software
+                            that replaces the geologist"</strong>, but as:</p>
+                    <p class="text-lg font-bold mb-4" style="color:#111827">An exploration intelligence and evidence
+                        platform that connects raw geological data to defensible exploration decisions.</p>
+                    <p class="leading-relaxed mb-4" style="color:#4B5563"><strong>Current strongest workflow:</strong>
+                        Data → Interpretation → Target → Evidence → Report</p>
+                    <p class="leading-relaxed mb-4" style="color:#4B5563"><strong>Next major product
+                            opportunity:</strong> Data → Interpretation → Target → Field Validation → Assay → Target
+                        Update → Exploration Decision → Investment/Regulatory Decision</p>
+                    <p class="leading-relaxed" style="color:#4B5563">That second loop is where the six personas begin to
+                        share the <strong>same underlying evidence</strong>, rather than each persona working from
+                        separate spreadsheets, PDFs, GIS projects and reports.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-20 py-10" style="background:#F4F6F8;border-top:1px solid #E5E7EB">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-sm" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#C48E1C">TerraPulze</span>
+            </div>
+            <p class="text-sm" style="color:#6B7280">Persona &amp; Workflow Gap Analysis — Confidential</p>
+            <p class="text-xs mt-2" style="color:#6B7280">All proposed endpoints are architectural recommendations, not
+                verified production routes.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

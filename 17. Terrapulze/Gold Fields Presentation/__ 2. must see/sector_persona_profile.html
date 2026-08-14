@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TerraPulze — Sector Persona Profiles</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors):{ },
+        gold: { DEFAULT: '#E8B84B', dark: '#C48E1C' }, intel: '#3B82F6', cyan: '#22D3EE', alert: '#F43F5E',
+            t1: '#111827', t2: '#4B5563', t3: '#6B7280',
+                b1: '#E5E7EB', b2: '#D1D5DB',
+                    pg: '#FAFBFC', sec: '#F4F6F8', sfc: '#FFFFFF'
+}}}}
+    </script>
+    <style>
+        * {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #111827;
+            background: #FAFBFC
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F4F6F8
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px
+        }
+
+        .nl {
+            transition: all .15s;
+            border-left: 2px solid transparent
+        }
+
+        .nl:hover {
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+            background: rgba(59, 130, 246, .04)
+        }
+
+        .ep:hover {
+            background: #E5E7EB
+        }
+
+        .dv {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E5E7EB, transparent)
+        }
+
+        .cl {
+            transition: box-shadow .2s, transform .2s
+        }
+
+        .cl:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+            transform: translateY(-1px)
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -.02em
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 700
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+
+        .pain-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .io-card {
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <header class="relative overflow-hidden"
+        style="background:linear-gradient(135deg,#111827,#1E293B 35%,#0F172A 65%,#111827)">
+        <div class="absolute inset-0 pointer-events-none" style="opacity:.12">
+            <div class="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full"
+                style="background:radial-gradient(circle,#E8B84B,transparent 70%)"></div>
+            <div class="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full"
+                style="background:radial-gradient(circle,#22D3EE,transparent 70%)"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-xl" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#E8B84B">TerraPulze</span>
+            </div>
+            <h1 class="text-white md:text-[50px]">Sector Persona<br><span style="color:#E8B84B">Profiles</span></h1>
+            <p class="mt-6 max-w-2xl leading-relaxed" style="color:#94A3B8">Six key user personas across the mining
+                &amp; minerals value chain — structured around job description, responsibilities, workflow, pain points,
+                decisions, inputs/outputs and end goals.</p>
+            <div class="flex flex-wrap gap-3 mt-8 text-sm text-white">
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#E8B84B" data-icon="lucide:users"></span>6 Personas</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#22D3EE" data-icon="lucide:git-branch"></span>Full Value Chain
+                </div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#3B82F6" data-icon="lucide:workflow"></span>Connected Workflow
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- LAYOUT -->
+    <div class="max-w-7xl mx-auto px-6 flex">
+        <!-- SIDEBAR -->
+        <nav class="hidden lg:block w-60 shrink-0 sticky top-6 self-start py-8 pr-5"
+            style="border-right:1px solid #E5E7EB;max-height:calc(100vh - 48px);overflow-y:auto">
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2" style="color:#6B7280">Overview</div>
+            <a href="#overview" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Value
+                Chain</a>
+            <a href="#comparison" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5"
+                style="color:#4B5563">Cross-Persona</a>
+            <a href="#connected" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Connected
+                Flow</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Personas</div>
+            <a href="#p1" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Field
+                Geologist</a>
+            <a href="#p2" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Exploration
+                Manager</a>
+            <a href="#p3" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining CEO</a>
+            <a href="#p4" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Investor /
+                Consultant</a>
+            <a href="#p5" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining
+                Finance</a>
+            <a href="#p6" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Government
+                Regulator</a>
+        </nav>
+
+        <!-- MAIN -->
+        <main class="flex-1 min-w-0 py-8 lg:pl-10">
+
+            <!-- VALUE CHAIN OVERVIEW -->
+            <section id="overview" class="mb-16">
+                <h2 class="mb-6">Value-Chain Overview</h2>
+                <p class="leading-relaxed mb-8 max-w-3xl" style="color:#4B5563">The six personas positioned across the
+                    mining lifecycle: <strong>Exploration → Evaluation → Corporate Decision → Due Diligence → Financing
+                        → Regulation</strong></p>
+
+                <div class="grid gap-3 mb-8">
+                    <!-- Chain visual -->
+                    <div class="flex flex-wrap items-center gap-2 justify-center py-6"
+                        style="background:#F4F6F8;border-radius:12px">
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Exploration</div><span
+                            style="color:#6B7280">→</span>
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Evaluation</div><span
+                            style="color:#6B7280">→</span>
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Corporate Decision</div>
+                        <span style="color:#6B7280">→</span>
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Due Diligence</div><span
+                            style="color:#6B7280">→</span>
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Financing</div><span
+                            style="color:#6B7280">→</span>
+                        <div class="rounded-lg px-4 py-2 text-sm font-bold"
+                            style="background:#FFF1F2;border:1px solid #FECDD3;color:#9F1239">Regulation</div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm" style="border-collapse:collapse;min-width:600px">
+                        <thead>
+                            <tr style="border-bottom:2px solid #E5E7EB">
+                                <th class="text-left py-3 pr-4 font-bold" style="color:#6B7280">Persona</th>
+                                <th class="text-left py-3 pr-4 font-bold" style="color:#6B7280">Value-Chain Position
+                                </th>
+                                <th class="text-left py-3 font-bold" style="color:#6B7280">Core Question</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">1. Field Geologist</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Field exploration</td>
+                                <td class="py-3" style="color:#4B5563"><em>What is actually on the ground?</em></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">2. Exploration Manager</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Exploration management</td>
+                                <td class="py-3" style="color:#4B5563"><em>Where should we spend our exploration
+                                        budget?</em></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">3. Mining CEO</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Corporate strategy</td>
+                                <td class="py-3" style="color:#4B5563"><em>Which assets should the company advance,
+                                        acquire, or abandon?</em></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">4. Investor / Consultant</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Technical evaluation</td>
+                                <td class="py-3" style="color:#4B5563"><em>Can I trust the project's technical
+                                        claims?</em></td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-4 font-bold">5. Mining Finance</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Capital allocation</td>
+                                <td class="py-3" style="color:#4B5563"><em>Is this project worth financing?</em></td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 pr-4 font-bold">6. Government Regulator</td>
+                                <td class="py-3 pr-4" style="color:#4B5563">Governance &amp; compliance</td>
+                                <td class="py-3" style="color:#4B5563"><em>Is this activity legal, compliant, and
+                                        responsibly conducted?</em></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 1: FIELD GEOLOGIST ==================== -->
+            <section id="p1" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-white text-3xl"
+                            data-icon="lucide:compass"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 1
+                        </div>
+                        <h2>Field Geologist</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Responsible for collecting,
+                    interpreting, validating and documenting geological information directly from the field.
+                    <strong>Converts desktop exploration hypotheses into physical geological evidence.</strong></p>
+
+                <!-- Job Description -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Job Description</h3>
+                    <p class="text-sm leading-relaxed mb-6" style="color:#4B5563">A Field Geologist investigates
+                        geological formations, identifies mineralization, collects samples, maps structures, records
+                        observations and validates exploration targets generated from geological, geochemical,
+                        geophysical and remote-sensing data.</p>
+                    <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Primary Responsibilities</h4>
+                    <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Conduct geological mapping</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Identify lithologies, structures, alteration &amp;
+                            mineralization</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Collect rock, soil &amp; stream sediment samples</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Record GPS coordinates &amp; field observations</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Validate remotely generated exploration targets</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Interpret geological &amp; geophysical information</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Take &amp; organize field photographs</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Maintain field notebooks &amp; digital records</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Prepare samples for laboratory analysis</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Coordinate with laboratories &amp; field crews</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Compare observations with exploration models</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Provide follow-up recommendations</div>
+                    </div>
+                </div>
+
+                <!-- Workflow -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <!-- Morning -->
+                    <div class="mb-5">
+                        <div class="flex items-center gap-2 mb-2"><span class="tag"
+                                style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE"><span class="iconify"
+                                    data-icon="lucide:sunrise"></span>Morning — Planning</span></div>
+                        <p class="text-sm mb-2" style="color:#4B5563">Reviews: current targets, previous observations,
+                            geological maps, satellite imagery, geophysical/geochemical anomalies, weather,
+                            accessibility, field objectives.</p>
+                        <p class="text-sm font-bold" style="color:#111827"><em>"Which areas and targets do I need to
+                                investigate today?"</em></p>
+                    </div>
+                    <!-- Steps -->
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Travel to Target</div>
+                                <p class="text-sm" style="color:#4B5563">Navigate using GPS, GIS maps, offline maps,
+                                    mobile devices, physical maps.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Geological Observation</div>
+                                <p class="text-sm" style="color:#4B5563">Examine: rock type, mineralization, alteration,
+                                    veining, structures, contacts, weathering, outcrop conditions.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Record Observations</div>
+                                <p class="text-sm" style="color:#4B5563">Capture: coordinates, geological description,
+                                    structural measurements, photographs, field notes, confidence/interpretation.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Collect Samples</div>
+                                <p class="text-sm" style="color:#4B5563">Identified → Labelled → Logged → Bagged →
+                                    Associated with coordinates → Sent for laboratory analysis.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Validate Target</div>
+                                <p class="text-sm" style="color:#4B5563">Compare physical evidence with original
+                                    exploration hypothesis. <em>"Do I actually see alteration, structure and
+                                        mineralization here?"</em></p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">6</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">End-of-Day Synchronization</div>
+                                <p class="text-sm" style="color:#4B5563">Data uploaded/synchronized when connectivity
+                                    becomes available.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">7</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Interpretation</div>
+                                <p class="text-sm" style="color:#4B5563">Review findings: Target confirmed / Partially
+                                    confirmed / Rejected / More data required.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pain Points -->
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Data Fragmentation</span></div>
+                            <p class="text-xs" style="color:#9F1239">Excel, GIS, PDFs, paper notebooks, lab reports, GPS
+                                devices, cloud drives</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Poor Connectivity</span></div>
+                            <p class="text-xs" style="color:#9F1239">No internet, weak mobile, limited electricity in
+                                field locations</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Repetitive Data Entry</span></div>
+                            <p class="text-xs" style="color:#92400E">Same information entered into multiple systems</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Combining Datasets</span></div>
+                            <p class="text-xs" style="color:#92400E">Manual comparison of geochemistry + geophysics +
+                                geology + satellite + field</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Target Uncertainty</span></div>
+                            <p class="text-xs" style="color:#92400E">AI/GIS anomaly ≠ meaningful mineralization —
+                                requires field validation</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Sample Tracking</span></div>
+                            <p class="text-xs" style="color:#92400E">Difficult to maintain: sample → location → target →
+                                lab → assay → interpretation</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Data Quality</span></div>
+                            <p class="text-xs" style="color:#92400E">Incorrect coordinates, sample IDs, missing
+                                observations, duplicate samples, wrong CRS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inputs / Outputs / End Goal -->
+                <div class="grid md:grid-cols-3 gap-4 mb-5">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Geological maps</li>
+                            <li>Geophysical data</li>
+                            <li>Geochemical data</li>
+                            <li>Satellite imagery</li>
+                            <li>Historical reports</li>
+                            <li>Existing targets</li>
+                            <li>Licence boundaries</li>
+                            <li>Field observations</li>
+                            <li>Laboratory results</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Geological maps</li>
+                            <li>Field observations</li>
+                            <li>Sample records</li>
+                            <li>Target validation</li>
+                            <li>Geological interpretations</li>
+                            <li>Updated targets</li>
+                            <li>Technical recommendations</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Generate reliable physical and
+                            geological evidence that determines whether a target is worth further investigation,
+                            sampling or drilling.</p>
+                        <div class="mt-3 rounded-lg p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"There is sufficient geological evidence
+                                here to justify the next exploration activity."</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 2: EXPLORATION MANAGER ==================== -->
+            <section id="p2" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#E8B84B"><span class="iconify text-[#111827] text-3xl"
+                            data-icon="lucide:briefcase"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 2
+                        </div>
+                        <h2>Junior Explorer / Exploration Manager</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Oversees exploration activities and
+                    translates geological information into exploration programs and investment decisions.
+                    <strong>Primary job: "Where should the company spend its limited exploration resources?"</strong>
+                </p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Job Description</h3>
+                    <p class="text-sm leading-relaxed mb-6" style="color:#4B5563">The Junior Explorer may be more
+                        operational, while the Exploration Manager has greater responsibility for strategy, people,
+                        budgets, schedules, contractors, targets, reporting and project progression.</p>
+                    <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Primary Responsibilities</h4>
+                    <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Develop exploration programs</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Define exploration objectives</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Manage licences/projects</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Review geological information</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Rank exploration targets</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Coordinate field geologists</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Manage contractors</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Plan surveys &amp; drilling</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Manage exploration budgets</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Review laboratory results</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Evaluate exploration risks</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#E8B84B"
+                                data-icon="lucide:check"></span>Recommend targets for drilling</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <div class="mb-5">
+                        <div class="flex items-center gap-2 mb-2"><span class="tag"
+                                style="background:#FFFBEB;color:#92400E;border:1px solid #FDE68A"><span class="iconify"
+                                    data-icon="lucide:sunrise"></span>Morning Review</span></div>
+                        <p class="text-sm" style="color:#4B5563">Project status, field activities, target progress, lab
+                            results, contractor activities, budget, safety, schedule.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Review New Data</div>
+                                <p class="text-sm" style="color:#4B5563">Assays, geological mapping, geophysical
+                                    surveys, satellite analysis, field observations.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Review Targets</div>
+                                <p class="text-sm" style="color:#4B5563">Rank by: geological evidence, geochemical
+                                    strength, geophysical response, structural interpretation, historical evidence,
+                                    field validation.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Assign Activities</div>
+                                <p class="text-sm" style="color:#4B5563">Which target needs mapping? Sampling?
+                                    Additional geophysics? Drilling?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Manage Field Team</div>
+                                <p class="text-sm" style="color:#4B5563">Communicate with geologists, GIS specialists,
+                                    technicians, survey teams, drilling contractors, laboratories.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Review Budget</div>
+                                <p class="text-sm" style="color:#4B5563">Planned expenditure vs actual expenditure.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">6</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Make Decisions</div>
+                                <p class="text-sm" style="color:#4B5563">Each target: Continue / Investigate / Validate
+                                    / Drill / Hold / Reject.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-[#111827]"
+                                style="background:#E8B84B">7</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Report</div>
+                                <p class="text-sm" style="color:#4B5563">Communicate project status to senior
+                                    management.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Too Much Data</span></div>
+                            <p class="text-xs" style="color:#9F1239">Challenge isn't obtaining data — it's determining
+                                which information actually matters.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Fragmented Information</span></div>
+                            <p class="text-xs" style="color:#9F1239">GIS, Excel, email, cloud, PDFs, laboratory systems.
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Target Prioritization</span></div>
+                            <p class="text-xs" style="color:#92400E">Dozens/hundreds of anomalies — which deserve money?
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Budget Constraints</span></div>
+                            <p class="text-xs" style="color:#92400E">Technically attractive target may be too expensive
+                                to test.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Poor Visibility</span></div>
+                            <p class="text-xs" style="color:#92400E">Cannot see status of all projects at once.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Communication</span></div>
+                            <p class="text-xs" style="color:#92400E">Every handoff (Field → Mgr → CEO → Investors →
+                                Regulators) introduces delays or information loss.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Geological/geochemical data</li>
+                            <li>Geophysical surveys</li>
+                            <li>Satellite analysis</li>
+                            <li>Field observations</li>
+                            <li>Laboratory results</li>
+                            <li>Budgets &amp; plans</li>
+                            <li>Licence information</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Exploration plans</li>
+                            <li>Target rankings</li>
+                            <li>Field programs</li>
+                            <li>Drill recommendations</li>
+                            <li>Budget forecasts</li>
+                            <li>Progress &amp; technical reports</li>
+                            <li>Management recommendations</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Maximize geological value from the
+                            exploration budget by identifying, validating and advancing the highest-potential targets.
+                        </p>
+                        <div class="mt-3 rounded-lg p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"Where should we spend the next dollar?"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 3: MINING CEO ==================== -->
+            <section id="p3" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#111827"><span class="iconify text-3xl" style="color:#E8B84B"
+                            data-icon="lucide:crown"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 3
+                        </div>
+                        <h2>Junior Mining CEO / Major Mining Corporation</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Responsible for strategic decisions
+                    affecting the company's mineral assets, capital allocation, growth and long-term value.</p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Job Description</h3>
+                    <p class="text-sm leading-relaxed mb-6" style="color:#4B5563">For a junior: decide whether to
+                        advance, raise capital, acquire, JV, farm out, or sell. For a major: manage a larger portfolio
+                        of exploration, development and producing assets.</p>
+                    <h4 class="text-sm font-bold mb-3" style="color:#111827">Primary Responsibilities</h4>
+                    <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Define corporate strategy</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Evaluate mineral assets</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Allocate capital</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Approve exploration budgets</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Evaluate acquisitions</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Negotiate partnerships</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Manage investors &amp; boards</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Evaluate project economics</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Monitor regulatory risks</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#111827"
+                                data-icon="lucide:check"></span>Decide whether projects advance or stop</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <div class="mb-5">
+                        <div class="flex items-center gap-2 mb-2"><span class="tag"
+                                style="background:#F4F6F8;color:#4B5563;border:1px solid #E5E7EB"><span class="iconify"
+                                    data-icon="lucide:sunrise"></span>Morning Review</span></div>
+                        <p class="text-sm" style="color:#4B5563">High-level information: project status, major risks,
+                            budget, exploration results, significant discoveries, regulatory issues, investor concerns.
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#111827">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Review Portfolio</div>
+                                <p class="text-sm" style="color:#4B5563">Which projects performing? Consuming capital?
+                                    Highest potential?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#111827">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Review Exploration Results</div>
+                                <p class="text-sm" style="color:#4B5563">New targets, assays, interpretations, drill
+                                    results, updated resources.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#111827">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Challenge Assumptions</div>
+                                <p class="text-sm" style="color:#4B5563">How reliable is the evidence? What is still
+                                    unknown? What could invalidate the project?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#111827">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Make Capital Decisions</div>
+                                <p class="text-sm" style="color:#4B5563">Advance / Hold / Acquire / Farm-in / Joint
+                                    Venture / Divest / Abandon.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#111827">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Communicate Externally</div>
+                                <p class="text-sm" style="color:#4B5563">Board presentations, investor updates,
+                                    corporate announcements, regulatory disclosures.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Technical Information Overload</span></div>
+                            <p class="text-xs" style="color:#92400E">Need concise information without losing critical
+                                technical evidence.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Non-Standardized Reporting</span></div>
+                            <p class="text-xs" style="color:#92400E">Different teams present information differently.
+                            </p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Difficulty Comparing Assets</span></div>
+                            <p class="text-xs" style="color:#92400E">Different methodologies across projects.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Information Trust</span></div>
+                            <p class="text-xs" style="color:#92400E">Need confidence data is accurate, current,
+                                traceable, professionally reviewed.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Slow Decision-Making</span></div>
+                            <p class="text-xs" style="color:#92400E">Waiting for multiple reports delays capital
+                                allocation.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Disintegrated Intelligence</span></div>
+                            <p class="text-xs" style="color:#92400E">Geology, licences, environment, economics stored
+                                separately.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Exploration reports</li>
+                            <li>Target rankings</li>
+                            <li>Drill results &amp; resources</li>
+                            <li>Budgets</li>
+                            <li>Licence information</li>
+                            <li>Financial models</li>
+                            <li>Regulatory information</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Capital allocation decisions</li>
+                            <li>Acquisition decisions</li>
+                            <li>Investment proposals</li>
+                            <li>Board reports</li>
+                            <li>Investor communications</li>
+                            <li>Strategic plans</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Increase shareholder value by
+                            identifying the right mineral assets and allocating capital to projects with the strongest
+                            risk-adjusted potential.</p>
+                        <div class="mt-3 rounded-lgC p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"Which asset should the company bet on?"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 4: INVESTOR/CONSULTANT ==================== -->
+            <section id="p4" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#4B5563"><span class="iconify text-3xl" style="color:#22D3EE"
+                            data-icon="lucide:search"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#6B7280">Persona 4
+                        </div>
+                        <h2>Investor / Independent Consultant</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Provides objective technical
+                    analysis of mineral projects. <strong>Central question: "Can I independently verify what the company
+                        is telling me?"</strong></p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Job Description</h3>
+                    <p class="text-sm leading-relaxed mb-4" style="color:#4B5563">The Consultant reviews exploration
+                        data, geological models, resource estimates, technical reports, sampling, assays, methodologies
+                        and project risks. The Investor uses technical information to assess investment merit.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="text-sm font-bold mb-2" style="color:#22D3EE">Consultant Responsibilities</h4>
+                            <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                                <li>Review exploration datasets</li>
+                                <li>Verify technical claims</li>
+                                <li>Assess data quality</li>
+                                <li>Review geological interpretations</li>
+                                <li>Evaluate targets &amp; risks</li>
+                                <li>Prepare independent reports</li>
+                                <li>Provide recommendations</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold mb-2" style="color:#3B82F6">Investor Responsibilities</h4>
+                            <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                                <li>Understand project potential</li>
+                                <li>Assess technical credibility</li>
+                                <li>Evaluate risk</li>
+                                <li>Compare projects</li>
+                                <li>Determine investment justification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Receive Project Information</div>
+                                <p class="text-sm" style="color:#4B5563">Reports, maps, assays, GIS data, drill
+                                    information, licences, historical data.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Organize Information</div>
+                                <p class="text-sm" style="color:#4B5563">What exists? What is missing? Which datasets
+                                    are reliable?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Validate Provenance</div>
+                                <p class="text-sm" style="color:#4B5563">Where did this data come from? When collected?
+                                    Modified? Who generated it?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Reinterpret Data</div>
+                                <p class="text-sm" style="color:#4B5563">Independently review geology, geochemistry,
+                                    geophysics, structure, satellite.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Compare Claims vs Evidence</div>
+                                <p class="text-sm" style="color:#4B5563"><em>"High-potential gold corridor"</em> — Does
+                                    the evidence support this?</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">6</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Identify Risks</div>
+                                <p class="text-sm" style="color:#4B5563">Poor sampling, insufficient drilling, data
+                                    gaps, geological/licence uncertainty, environmental constraints.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#4B5563">7</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Prepare Recommendation</div>
+                                <p class="text-sm" style="color:#4B5563">Proceed / Proceed with conditions / Additional
+                                    exploration required / Insufficient evidence / Do not proceed.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Data-Room Chaos</span></div>
+                            <p class="text-xs" style="color:#9F1239">Documents from many sources and formats.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Poor Data Provenance</span></div>
+                            <p class="text-xs" style="color:#9F1239">Difficult to establish original source of
+                                information.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Manual Verification</span></div>
+                            <p class="text-xs" style="color:#92400E">Large amounts of time checking datasets.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Inconsistent Formats</span></div>
+                            <p class="text-xs" style="color:#92400E">GIS, Excel, PDFs and databases don't align.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Time Pressure</span></div>
+                            <p class="text-xs" style="color:#92400E">Expected to produce defensible reports quickly.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Independence</span></div>
+                            <p class="text-xs" style="color:#92400E">Must demonstrate conclusions are evidence-based,
+                                not company claims.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Client datasets</li>
+                            <li>Exploration reports</li>
+                            <li>Assays &amp; GIS</li>
+                            <li>Geological models</li>
+                            <li>Satellite imagery</li>
+                            <li>Licence information</li>
+                            <li>Historical reports</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Independent assessment</li>
+                            <li>Due diligence report</li>
+                            <li>Risk assessment</li>
+                            <li>Target evaluation</li>
+                            <li>Technical recommendations</li>
+                            <li>Investor briefing</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Provide an independent, evidence-based
+                            assessment for a defensible decision.</p>
+                        <div class="mt-3 rounded-lg p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"Can I independently verify what the
+                                company is telling me?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 5: MINING FINANCE ==================== -->
+            <section id="p5" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#C48E1C"><span class="iconify text-white text-3xl"
+                            data-icon="lucide:landmark"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 5
+                        </div>
+                        <h2>Investment Firm / Mining Finance Professional</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Evaluates mineral projects from an
+                    investment and risk perspective. <strong>"Can this geological opportunity become an economically
+                        viable investment?"</strong></p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Primary Responsibilities</h3>
+                    <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Evaluate mining investment opportunities</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Conduct technical due diligence</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Assess project risks</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Review financial models</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Analyze CAPEX/OPEX</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Calculate investment returns</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Compare investment opportunities</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#C48E1C"
+                                data-icon="lucide:check"></span>Prepare investment committee materials</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Receive Investment Proposal</div>
+                                <p class="text-sm" style="color:#4B5563">Business plan, technical reports, exploration
+                                    results, financial model, licence documentation.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Initial Screening</div>
+                                <p class="text-sm" style="color:#4B5563">Commodity, location, licence, stage, company,
+                                    capital requirement, potential scale.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Technical Due Diligence</div>
+                                <p class="text-sm" style="color:#4B5563">Geological model, exploration data, targets,
+                                    drilling, assays, resource estimates.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Financial Analysis</div>
+                                <p class="text-sm" style="color:#4B5563">CAPEX, OPEX, revenue, commodity prices, NPV,
+                                    IRR, payback, sensitivity.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Risk Assessment</div>
+                                <p class="text-sm" style="color:#4B5563">Geological, technical, financial, regulatory,
+                                    environmental, political risks.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">6</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Investment Committee</div>
+                                <p class="text-sm" style="color:#4B5563">Invest / Do not invest / Invest with conditions
+                                    / Request additional information.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#C48E1C">7</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Monitor Investment</div>
+                                <p class="text-sm" style="color:#4B5563">Exploration progress, spending, milestones,
+                                    results, regulatory, performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Technical-Financial Disconnect</span></div>
+                            <p class="text-xs" style="color:#9F1239">"High-priority target" — what does that mean
+                                financially?</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Technical Info Difficult for Finance</span></div>
+                            <p class="text-xs" style="color:#92400E">Financial professionals may not be geologists.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Due Diligence Is Slow</span></div>
+                            <p class="text-xs" style="color:#92400E">Large amounts of information reviewed manually.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Hidden Risks</span></div>
+                            <p class="text-xs" style="color:#92400E">Data gaps hidden inside large technical reports.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Technical reports</li>
+                            <li>Exploration datasets</li>
+                            <li>Resource estimates</li>
+                            <li>Financial models</li>
+                            <li>Commodity prices</li>
+                            <li>Licence &amp; enviro docs</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Investment recommendation</li>
+                            <li>Technical risk assessment</li>
+                            <li>Financial model</li>
+                            <li>Committee report</li>
+                            <li>Monitoring report</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Allocate capital to projects with
+                            acceptable balance of geological potential, financial return and risk.</p>
+                        <div class="mt-3 rounded-lg p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"Is the potential return worth the
+                                technical and financial risk?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== PERSONA 6: GOVERNMENT REGULATOR ==================== -->
+            <section id="p6" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-3xl" style="color:#22D3EE"
+                            data-icon="lucide:shield-check"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 6
+                        </div>
+                        <h2>Government Regulator</h2>
+                    </div>
+                </div>
+                <p class="leading-relaxed mt-4 mb-8 max-w-3xl" style="color:#4B5563">Oversees mineral exploration and
+                    mining to ensure companies operate within legal, environmental, technical and reporting
+                    requirements. <strong>"Is this activity legitimate, compliant and in the public interest?"</strong>
+                </p>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Primary Responsibilities</h3>
+                    <div class="grid sm:grid-cols-2 gap-x-6 gap-y-1.5">
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Review licence applications</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Validate licence boundaries</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Monitor licence holders</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Check compliance</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Identify licence overlaps</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Review environmental constraints</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Conduct inspections</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Approve/reject applications</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Maintain government records</div>
+                        <div class="flex items-start gap-2 text-sm" style="color:#4B5563"><span
+                                class="iconify mt-0.5 shrink-0" style="color:#3B82F6"
+                                data-icon="lucide:check"></span>Investigate violations</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Day-to-Day Workflow</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">1</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Receive Application/Report</div>
+                                <p class="text-sm" style="color:#4B5563">Licence application, exploration program,
+                                    coordinates, technical report, environmental info, company details.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">2</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Validate Information</div>
+                                <p class="text-sm" style="color:#4B5563">Applicant identity, licence area, coordinates,
+                                    commodity, existing rights, overlaps.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">3</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Spatial Analysis</div>
+                                <p class="text-sm" style="color:#4B5563">Check overlaps: existing licences, protected
+                                    areas, restricted zones, water bodies, sensitive areas.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">4</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Technical Review</div>
+                                <p class="text-sm" style="color:#4B5563">Proposed program, technical capability,
+                                    expenditure, geological info, previous work.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">5</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Environmental Review</div>
+                                <p class="text-sm" style="color:#4B5563">Check environmental requirements and
+                                    constraints.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">6</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Decision</div>
+                                <p class="text-sm" style="color:#4B5563">Approved / Rejected / Approved with conditions
+                                    / Additional information required.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3"><span class="step-num text-white" style="background:#3B82F6">7</span>
+                            <div>
+                                <div class="font-bold text-sm mb-1">Monitoring &amp; Audit</div>
+                                <p class="text-sm" style="color:#4B5563">Exploration activities, reporting, licence
+                                    conditions, expenditure, environmental obligations. Full audit trail.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-5 cl" style="border:1px solid #E5E7EB">
+                    <h3 class="mb-4">Major Pain Points</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Large Volumes</span></div>
+                            <p class="text-xs" style="color:#9F1239">Many projects processed simultaneously.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFF1F2;border:1px solid #FECDD3">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#F43F5E"></span><span class="font-bold text-sm"
+                                    style="color:#9F1239">Manual Document Review</span></div>
+                            <p class="text-xs" style="color:#9F1239">PDFs, Excel, paper, GIS, email.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Spatial Complexity</span></div>
+                            <p class="text-xs" style="color:#92400E">Overlaps difficult without good GIS.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Compliance Monitoring</span></div>
+                            <p class="text-xs" style="color:#92400E">Difficult to continuously monitor after licences
+                                granted.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Limited Visibility</span></div>
+                            <p class="text-xs" style="color:#92400E">No single real-time view of mining landscape.</p>
+                        </div>
+                        <div class="rounded-lg p-4" style="background:#FFFBEB;border:1px solid #FDE68A">
+                            <div class="flex items-center gap-2 mb-2"><span class="pain-dot"
+                                    style="background:#E8B84B"></span><span class="font-bold text-sm"
+                                    style="color:#92400E">Auditability</span></div>
+                            <p class="text-xs" style="color:#92400E">Must be able to defend decisions.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#3B82F6">Inputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Licence applications</li>
+                            <li>GIS coordinates</li>
+                            <li>Company information</li>
+                            <li>Exploration programs</li>
+                            <li>Geological reports</li>
+                            <li>Environmental documents</li>
+                            <li>Production/expenditure reports</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#C48E1C">Outputs</h4>
+                        <ul class="text-sm space-y-1.5" style="color:#4B5563">
+                            <li>Licence decisions</li>
+                            <li>Compliance reports</li>
+                            <li>Inspection reports</li>
+                            <li>Regulatory decisions</li>
+                            <li>Licence databases</li>
+                            <li>Environmental screening</li>
+                            <li>Sector intelligence</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <h4 class="text-sm font-bold mb-3" style="color:#065F46">End Goal</h4>
+                        <p class="text-sm leading-relaxed" style="color:#4B5563">Ensure mineral resources are explored
+                            and developed legally, transparently, responsibly.</p>
+                        <div class="mt-3 rounded-lg p-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                            <p class="text-xs font-bold" style="color:#065F46">"Is this activity legitimate, compliant
+                                and in the public interest?"</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== CROSS-PERSONA COMPARISON ==================== -->
+            <section id="comparison" class="mb-20">
+                <h2 class="mb-6">Cross-Persona Comparison</h2>
+                <div class="bg-white rounded-xl p-6 md:p-8 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <table class="w-full text-sm" style="border-collapse:collapse;min-width:800px">
+                        <thead>
+                            <tr style="border-bottom:2px solid #E5E7EB">
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#6B7280">Persona</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#6B7280">Primary Task</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#6B7280">Main Pain</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#6B7280">Critical Decision</th>
+                                <th class="text-left py-3 font-bold" style="color:#6B7280">End Goal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-3 font-bold">Field Geologist</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Collect &amp; validate evidence</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Fragmented workflows</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Is this target real?</td>
+                                <td class="py-3" style="color:#4B5563">Reliable geological evidence</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-3 font-bold">Exploration Manager</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Prioritize exploration</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Too many targets / limited budget</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Where should we spend?</td>
+                                <td class="py-3" style="color:#4B5563">Maximize exploration value</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-3 font-bold">Mining CEO</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Manage strategic assets</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Complex information overload</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Which asset to advance?</td>
+                                <td class="py-3" style="color:#4B5563">Increase company value</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-3 font-bold">Investor / Consultant</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Independently evaluate</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Poor provenance</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Can I trust the evidence?</td>
+                                <td class="py-3" style="color:#4B5563">Defensible decisions</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-3 pr-3 font-bold">Investment Firm</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Allocate capital</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Technical-financial disconnect</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Is return worth the risk?</td>
+                                <td class="py-3" style="color:#4B5563">Invest capital effectively</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 pr-3 font-bold">Government Regulator</td>
+                                <td class="py-3 pr-3" style="color:#4B5563">Govern mining activity</td>
+                                <td class="py-3 pr-3" style="color:#9F1239">Fragmented compliance info</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#3B82F6">Is it legal/compliant?</td>
+                                <td class="py-3" style="color:#4B5563">Protect resources/public interest</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ==================== CONNECTED WORKFLOW ==================== -->
+            <section id="connected" class="mb-20">
+                <h2 class="mb-4">The Six Personas as a Connected Workflow</h2>
+                <p class="leading-relaxed mb-8 max-w-3xl" style="color:#4B5563">These are not six isolated users. They
+                    form a chain — and information also flows backwards, creating an important product opportunity for
+                    TerraPulze.</p>
+
+                <!-- Forward flow -->
+                <div class="bg-white rounded-xl p-6 md:p-10 mb-6 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <h4 class="font-bold mb-4" style="color:#3B82F6">Evidence Flow (Forward)</h4>
+                    <div class="min-w-[420px] flex flex-col items-center gap-2.5">
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Field Geologist</div>
+                        <div style="color:#065F46" class="text-sm">↓ Collects geological evidence</div>
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Exploration Manager</div>
+                        <div style="color:#92400E" class="text-sm">↓ Prioritizes targets &amp; allocates budget</div>
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Mining CEO</div>
+                        <div style="color:#1E40AF" class="text-sm">↓ Makes corporate/project decisions</div>
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#F5F3FF;border:1px solid #DDD6FE;color:#5B21B6">Consultant / Investor
+                        </div>
+                        <div style="color:#5B21B6" class="text-sm">↓ Independently verifies evidence</div>
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Investment Firm</div>
+                        <div style="color:#92400E" class="text-sm">↓ Evaluates financial risk &amp; allocates capital
+                        </div>
+                        <div class="rounded-lg px-5 py-2.5 font-bold text-sm"
+                            style="background:#FFF1F2;border:1px solid #FECDD3;color:#9F1239">Government Regulator</div>
+                        <div style="color:#9F1239" class="text-sm">↓ Reviews legality &amp; compliance</div>
+                        <div class="rounded-xl px-5 py-2.5 font-bold text-sm text-white" style="background:#111827">
+                            Mining / Exploration Project</div>
+                    </div>
+                </div>
+
+                <!-- Backward flow -->
+                <div class="bg-white rounded-xl p-6 md:p-10 mb-6 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <h4 class="font-bold mb-4" style="color:#C48E1C">Requirements Flow (Backward)</h4>
+                    <div class="min-w-[420px] flex flex-col items-center gap-2.5">
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#FFF1F2;border:1px solid #FECDD3;color:#9F1239">Regulatory requirements
+                        </div>
+                        <div style="color:#9F1239">↑</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Investment requirements
+                        </div>
+                        <div style="color:#92400E">↑</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">CEO decisions</div>
+                        <div style="color:#1E40AF">↑</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Exploration priorities
+                        </div>
+                        <div style="color:#92400E">↑</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Field work</div>
+                        <div style="color:#065F46">↑</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-xs"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">New geological evidence →
+                            Updated model → New targets</div>
+                    </div>
+                </div>
+
+                <!-- Product opportunity -->
+                <div class="rounded-xl p-6 md:p-8" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <h3 class="font-bold mb-4" style="color:#1E40AF">Product Opportunity for TerraPulze</h3>
+                    <p class="leading-relaxed mb-6" style="color:#1E40AF"><strong>One shared source of geological
+                            evidence</strong> that can serve different decision-makers at different stages of the mining
+                        value chain.</p>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">Field Geologist</div>
+                            <p class="text-xs" style="color:#4B5563">Needs the <strong>raw evidence</strong></p>
+                        </div>
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">Exploration Manager</div>
+                            <p class="text-xs" style="color:#4B5563">Needs <strong>target intelligence</strong></p>
+                        </div>
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">CEO</div>
+                            <p class="text-xs" style="color:#4B5563">Needs <strong>strategic intelligence</strong></p>
+                        </div>
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">Consultant</div>
+                            <p class="text-xs" style="color:#4B5563">Needs <strong>verifiable evidence</strong></p>
+                        </div>
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">Investment Firm</div>
+                            <p class="text-xs" style="color:#4B5563">Needs <strong>risk-adjusted technical
+                                    intelligence</strong></p>
+                        </div>
+                        <div class="rounded-lg p-3" style="background:white;border:1px solid #BFDBFE">
+                            <div class="text-xs font-bold mb-1" style="color:#111827">Regulator</div>
+                            <p class="text-xs" style="color:#4B5563">Needs <strong>traceable compliance
+                                    evidence</strong></p>
+                        </div>
+                    </div>
+                    <p class="text-sm mt-6 leading-relaxed" style="color:#1E40AF">The underlying data remains the same,
+                        while the <strong>interface, analysis, workflow and output change according to the
+                            persona</strong>. This is a strong foundation for mapping: <em>Persona → Journey Step → Pain
+                            Point → TerraPulze Capability → Unresolved Workflow → Proposed Feature → Proposed Endpoint →
+                            Expected Outcome</em>.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="mt-20 py-10" style="background:#F4F6F8;border-top:1px solid #E5E7EB">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-sm" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#C48E1C">TerraPulze</span>
+            </div>
+            <p class="text-sm" style="color:#6B7280">Sector Persona Profiles — Mining &amp; Minerals Value Chain</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

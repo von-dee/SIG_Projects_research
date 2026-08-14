@@ -1,0 +1,96 @@
+<h2 class="sr-only">Interactive toolkit: rank mobile data offenders and follow live steps to cut hidden data usage on Android or iPhone</h2>
+<div style="display:flex; gap:8px; margin-bottom:1.5rem;">
+  <button id="tab-rank" style="flex:1; font-weight:500;">Offender ranking</button>
+  <button id="tab-fix" style="flex:1;">3 switches to flip live</button>
+</div>
+
+<div id="panel-rank">
+  <div id="rank-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+</div>
+
+<div id="panel-fix" style="display:none;">
+  <div style="display:flex; gap:8px; margin-bottom:1rem;">
+    <button id="os-android" style="flex:1; font-weight:500;">Android</button>
+    <button id="os-ios" style="flex:1;">iPhone</button>
+  </div>
+  <div id="fix-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+</div>
+
+<script>
+const offenders = [
+  {name:"Auto-play video (social feeds)", share:35, color:"c-coral", detail:"TikTok, Instagram, Facebook, X — video streams the moment it scrolls into view, sound off, data on."},
+  {name:"Cloud photo/video backup", share:25, color:"c-amber", detail:"Google Photos, iCloud — silently uploads every new video shot, often the single biggest spike."},
+  {name:"App auto-updates", share:15, color:"c-purple", detail:"Play Store / App Store update apps over any connection unless restricted to Wi-Fi only."},
+  {name:"Messaging auto-download", share:12, color:"c-teal", detail:"WhatsApp/Telegram auto-fetch every photo, video, voice note sent to you in group chats."},
+  {name:"Background sync + ads", share:13, color:"c-gray", detail:"Mail, weather, ad SDKs, and analytics pings check in constantly, even app-closed."}
+];
+
+function renderRank(){
+  const el = document.getElementById('rank-list');
+  el.innerHTML = offenders.map(o => `
+    <div class="${o.color}" style="border-radius:12px; padding:12px 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span class="t" style="font-size:14px; font-weight:500;">${o.name}</span>
+        <span class="t" style="font-size:13px; font-weight:500;">~${o.share}%</span>
+      </div>
+      <div style="background:rgba(0,0,0,0.08); border-radius:6px; height:6px; overflow:hidden;">
+        <div style="width:${o.share*2}%; height:100%; background:currentColor; opacity:0.5;"></div>
+      </div>
+      <p class="ts" style="font-size:12px; margin:6px 0 0;">${o.detail}</p>
+    </div>
+  `).join('');
+}
+renderRank();
+
+const fixes = {
+  android: [
+    {t:"Restrict background data per app", d:"Settings > Apps > [app] > Mobile data & Wi-Fi > turn off Background data. Do this first for social apps."},
+    {t:"Set app updates to Wi-Fi only", d:"Play Store > Settings > Network preferences > Auto-update apps > Over Wi-Fi only."},
+    {t:"Turn off media auto-download in WhatsApp", d:"WhatsApp > Settings > Storage and data > Media auto-download > set all three (photos, audio, video) to Wi-Fi only."}
+  ],
+  ios: [
+    {t:"Turn off Background App Refresh", d:"Settings > General > Background App Refresh > switch off entirely, or per app for social/news apps."},
+    {t:"Restrict cellular data per app", d:"Settings > Cellular > scroll down and toggle off cellular data for social, video, and cloud-backup apps."},
+    {t:"Disable auto-play and Wi-Fi Assist", d:"Settings > Cellular > scroll to Wi-Fi Assist and turn off; in Settings > Safari, turn off Auto-Play for videos."}
+  ]
+};
+
+function renderFix(os){
+  const el = document.getElementById('fix-list');
+  el.innerHTML = fixes[os].map((f,i) => `
+    <div style="border:0.5px solid var(--border); border-radius:var(--radius); padding:12px 14px;">
+      <div style="display:flex; gap:10px; align-items:flex-start;">
+        <span style="width:22px; height:22px; border-radius:50%; background:var(--bg-accent); color:var(--text-accent); font-size:12px; font-weight:500; display:flex; align-items:center; justify-content:center; flex-shrink:0;">${i+1}</span>
+        <div>
+          <p style="font-size:14px; font-weight:500; margin:0 0 4px;">${f.t}</p>
+          <p style="font-size:13px; color:var(--text-secondary); margin:0;">${f.d}</p>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+renderFix('android');
+
+document.getElementById('tab-rank').onclick = () => {
+  document.getElementById('panel-rank').style.display = 'block';
+  document.getElementById('panel-fix').style.display = 'none';
+  document.getElementById('tab-rank').style.fontWeight = '500';
+  document.getElementById('tab-fix').style.fontWeight = '400';
+};
+document.getElementById('tab-fix').onclick = () => {
+  document.getElementById('panel-rank').style.display = 'none';
+  document.getElementById('panel-fix').style.display = 'block';
+  document.getElementById('tab-fix').style.fontWeight = '500';
+  document.getElementById('tab-rank').style.fontWeight = '400';
+};
+document.getElementById('os-android').onclick = () => {
+  renderFix('android');
+  document.getElementById('os-android').style.fontWeight = '500';
+  document.getElementById('os-ios').style.fontWeight = '400';
+};
+document.getElementById('os-ios').onclick = () => {
+  renderFix('ios');
+  document.getElementById('os-ios').style.fontWeight = '500';
+  document.getElementById('os-android').style.fontWeight = '400';
+};
+</script>
