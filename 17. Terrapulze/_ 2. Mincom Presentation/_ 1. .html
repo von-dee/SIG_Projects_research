@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraPulze: Exploration Workflow & User Activity Flow</title>
+    <style>
+        :root {
+            --primary: #1a3626;
+            --secondary: #2c5e4a;
+            --accent: #d4a373;
+            --bg: #f4f1ea;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #555555;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background: var(--primary);
+            color: var(--bg);
+            width: 100%;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: var(--bg);
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin: 3rem 0 1.5rem;
+            display: inline-block;
+        }
+
+        /* Stage Flow Layout */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .flow-container::before {
+            content: "";
+            position: absolute;
+            left: 24px;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background: var(--secondary);
+            z-index: 0;
+        }
+
+        .stage-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            position: relative;
+            margin-left: 60px;
+            transition: transform 0.2s ease;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stage-card::before {
+            content: attr(data-stage);
+            position: absolute;
+            left: -60px;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--secondary);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 4px solid var(--bg);
+            z-index: 1;
+        }
+
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stage-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .user-badge {
+            background: var(--accent);
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .activity-box, .forms-box, .ideas-box {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-left: 4px solid var(--secondary);
+            background: #f8f9fa;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .activity-box h4, .forms-box h4, .ideas-box h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .forms-box {
+            border-left-color: var(--accent);
+        }
+
+        .ideas-box {
+            border-left-color: #8a4b08;
+            background: #fff8f0;
+        }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 0.5rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        /* Navigation Guide */
+        .nav-guide {
+            background: var(--primary);
+            color: var(--bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            margin-top: 3rem;
+        }
+
+        .nav-guide h2 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-step {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-step:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .nav-step h3 {
+            color: var(--bg);
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-step p {
+            color: rgba(255,255,255,0.85);
+        }
+
+        footer {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .stage-card {
+                margin-left: 0;
+                margin-top: 40px;
+            }
+            .stage-card::before {
+                top: -40px;
+                left: 20px;
+            }
+            .flow-container::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TerraPulze System Flow</h1>
+        <p>An end-to-end map of user activities, data inputs, and shared technical ideas for mineral exploration target ranking and drilling.</p>
+    </header>
+
+    <main>
+        <h2 class="section-title">User & Activity Flow by Stage</h2>
+        
+        <div class="flow-container">
+
+            <!-- Stage 1 -->
+            <div class="stage-card" data-stage="1">
+                <div class="stage-header">
+                    <div>
+                        <span class="user-badge">Geologists / Field Data Collectors</span>
+                        <h3 class="stage-title">Data Aggregation & Ingestion</h3>
+                    </div>
+                </div>
+                <div class="activity-box">
+                    <h4>What Users Do</h4>
+                    <ul>
+                        <li>Collect physical and remote sensing data points from the ground.</li>
+                        <li>Upload gathered datasets into the TerraPulze system for processing.</li>
+                        <li>Instead of manually hunting for satellite bands online, users rely on the system to pull and synthesize imagery.</li>
+                    </ul>
+                </div>
+                <div class="forms-box">
+                    <h4>Data & Forms Filled</h4>
+                    <ul>
+                        <li><strong>Geochemistry Data:</strong> Soil sample coordinates and chemical analysis (C-Log data).</li>
+                        <li><strong>Geophysics Data:</strong> Magnetic data (e.g., LOAA).</li>
+                        <li><strong>Satellite Imagery:</strong> Sentinel-2 (vegetation and moisture bands), Copernicus DEM (terrain data).</li>
+                        <li><strong>Geological Data:</strong> Lithology, structures, imported from sources like Wakusta's and One Geology.</li>
+                        <li><strong>Infrastructure Layers:</strong> Protected areas (from Forestry Commission), road networks.</li>
+                    </ul>
+                </div>
+                <div class="ideas-box">
+                    <h4>Ideas & Concepts Shared</h4>
+                    <ul>
+                        <li><em>"Terra"</em> means earth; <em>"Pulze"</em> means finding minerals the way you'd search for a pulse—identifying the lifeline of the earth.</li>
+                        <li>Replacing the tedious, manual process of picking data points and hunting for satellite bands with an automated, mathematical algorithmic approach.</li>
+                        <li>Machines can put the data "dots" together faster and more accurately than the normal human eye.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="stage-card" data-stage="2">
+                <div class="stage-header">
+                    <div>
+                        <span class="user-badge">System AI / Exploration Managers</span>
+                        <h3 class="stage-title">Automated Target Ranking & Gridding</h3>
+                    </div>
+                </div>
+                <div class="activity-box">
+                    <h4>What Users Do</h4>
+                    <ul>
+                        <li>System automatically processes combined data points to identify optimal drill locations.</li>
+                        <li>System generates a grid overlay over the area, cutting lines (baselines and cross-lines) to show exact hole positions.</li>
+                        <li>Managers view target percentages and confidence scores (e.g., 72% to 99% confidence).</li>
+                        <li>Users click the "eye" button on targets to view detailed scientific reasoning for why a hole was placed there.</li>
+                    </ul>
+                </div>
+                <div class="forms-box">
+                    <h4>Data & Forms Filled</h4>
+                    <ul>
+                        <li><strong>Project Overview Dashboard:</strong> Displays area measured, number of targets identified, average target scope, and confidence percentages.</li>
+                        <li><strong>Target Info Card:</strong> Shows target score, number of cells in cluster, estimated depth, and coordinates.</li>
+                        <li><strong>Automated Report:</strong> System generates a detailed explanation of the data synthesis on the fly (in under a minute).</li>
+                    </ul>
+                </div>
+                <div class="ideas-box">
+                    <h4>Ideas & Concepts Shared</h4>
+                    <ul>
+                        <li>The system acts as a "partner" that gives detailed reasons for choosing one point over another, removing the need to manually write justification reports.</li>
+                        <li>If probability is high, the system estimates depth; if unsure, it leaves depth out to avoid false predictions.</li>
+                        <li>Targets are defined as specific drill holes, currently limited to surface positioning, but intended to expand to angles and deviations.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="stage-card" data-stage="3">
+                <div class="stage-header">
+                    <div>
+                        <span class="user-badge">Geologists / Drilling Engineers</span>
+                        <h3 class="stage-title">Drilling Parameter & Deviation Configuration</h3>
+                    </div>
+                </div>
+                <div class="activity-box">
+                    <h4>What Users Do</h4>
+                    <ul>
+                        <li>Review proposed drill targets and assess physical terrain constraints (e.g., surface disturbances, accessible paths for rigs).</li>
+                        <li>Input desired drilling parameters to calculate deviation and error margins.</li>
+                        <li>Toggle map layers (terrain, geology, roads, protected areas) to ensure the rig can physically access the proposed target location.</li>
+                    </ul>
+                </div>
+                <div class="forms-box">
+                    <h4>Data & Forms Filled</h4>
+                    <ul>
+                        <li><strong>Hole Diameter Specs:</strong> E.g., 165mm, 89mm, 76mm (dictates when deviation begins).</li>
+                        <li><strong>Drill Angle Input:</strong> Angular vs. Vertical holes.</li>
+                        <li><strong>Rig & Rod Specs:</strong> Rod strength, drill string strain, feed force limits.</li>
+                        <li><strong>Target Depth:</strong> E.g., predicting depths between 100 and 300 meters.</li>
+                    </ul>
+                </div>
+                <div class="ideas-box">
+                    <h4>Ideas & Concepts Shared</h4>
+                    <ul>
+                        <li><strong>Precision Drilling Physics:</strong> Smaller holes (e.g., 76mm) deviate after 8 meters, especially in hard granite; larger holes (165mm) can go beyond 12 meters. The drill string becomes a "strain" that bends.</li>
+                        <li><strong>Angular vs. Vertical:</strong> Angular holes are better for deviation control; vertical holes in exploration are prone to missing targets.</li>
+                        <li><strong>Remote Control History:</strong> Referenced a 1999 remote-controlled drilling operation where the controller in Australia adjusted feed force every 30 minutes to prevent missing the target.</li>
+                        <li><strong>Terrain Access:</strong> The system must account for the fact that you can't always put a rig directly over the geological target; you must climb to an accessible point and drill at an angle to hit the vein.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="stage-card" data-stage="4">
+                <div class="stage-header">
+                    <div>
+                        <span class="user-badge">Exploration Managers / Geologists</span>
+                        <h3 class="stage-title">Re-analysis & Scenario Testing</h3>
+                    </div>
+                </div>
+                <div class="activity-box">
+                    <h4>What Users Do</h4>
+                    <ul>
+                        <li>Run background analyses while continuing other work in the system.</li>
+                        <li>Add or remove specific data layers (e.g., run analysis with only Wakusta's data, then run it combined with One Geology data).</li>
+                        <li>Compare reports to see how removing a specific data point impacts the overall target confidence and positioning.</li>
+                    </ul>
+                </div>
+                <div class="forms-box">
+                    <h4>Data & Forms Filled</h4>
+                    <ul>
+                        <li><strong>Layer Toggle Controls:</strong> Switch between light, dark, satellite, terrain, and hyperspectral base maps.</li>
+                        <li><strong>Data Point Exclusion/Inclusion Forms:</strong> Selecting/deselecting specific geochemistry or geophysical datasets on the fly.</li>
+                    </ul>
+                </div>
+                <div class="ideas-box">
+                    <h4>Ideas & Concepts Shared</h4>
+                    <ul>
+                        <li>Flexibility is key: geologists need to test hypotheses dynamically rather than being locked into one dataset.</li>
+                        <li>The system should explain <em>how</em> adding or removing a data point impacted the analysis.</li>
+                        <li>Need to segment exploration into phases (e.g., Phase 1: soil/auger work to locate the zone; Phase 2: deep drilling parameters).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="stage-card" data-stage="5">
+                <div class="stage-header">
+                    <div>
+                        <span class="user-badge">Minerals Commission / Regulators</span>
+                        <h3 class="stage-title">Regulatory Oversight & Monitoring</h3>
+                    </div>
+                </div>
+                <div class="activity-box">
+                    <h4>What Users Do</h4>
+                    <ul>
+                        <li>Access a plugin/portal to view exploration activities conducted by mining companies in real-time.</li>
+                        <li>Review automated reports generated by the system instead of reading manual, subjective reports submitted by companies.</li>
+                    </ul>
+                </div>
+                <div class="forms-box">
+                    <h4>Data & Forms Filled</h4>
+                    <ul>
+                        <li><strong>Compliance Dashboard:</strong> Viewing company activities, target outputs, and drilling parameters.</li>
+                    </ul>
+                </div>
+                <div class="ideas-box">
+                    <h4>Ideas & Concepts Shared</h4>
+                    <ul>
+                        <li>Regulators shouldn't just sit in their offices waiting for paper reports; they should be able to monitor live activities so they can proactively schedule meetings before the companies even come to them.</li>
+                        <li>Creating a standardized, home-grown Ghanaian solution to support local mining services and tech development.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navigation Guide -->
+        <div class="nav-guide">
+            <h2>How an Exploration Team Can Navigate This Flow</h2>
+            <p>Based on the meeting insights, here is the step-by-step roadmap for an exploration team (like the Gold Fields pilot) to successfully use and validate the TerraPulze system:</p>
+            
+            <div class="nav-step">
+                <h3>1. Define the Scope & Fundamentals</h3>
+                <p>Before touching the software, the team must clearly define what the system will solve. Does it end at placing the hole, or does it extend to planning the deviation profile? Ensure a dedicated, experienced geologist is paired with the computer science team to bridge the gap between computing and geological fundamentals.</p>
+            </div>
+
+            <div class="nav-step">
+                <h3>2. Provide Real Historical Data</h3>
+                <p>Move away from "made-up/test" data. The exploration team must supply real geochemistry, magnetic, and structural data (e.g., data from depths of 100 to 300 meters) to feed into the system for a valid trial run.</p>
+            </div>
+
+            <div class="nav-step">
+                <h3>3. Integrate Structural Data for Angles</h3>
+                <p>The current demo lacks structural data. The team must input structural geology data to allow the system to calculate the angle of planning, collar deviation, and target intersection, not just the surface X,Y position of the hole.</p>
+            </div>
+
+            <div class="nav-step">
+                <h3>4. Conduct a Pilot Test on the Ground</h3>
+                <p>Select an ideal candidate site (like a Gold Fields target). Run the system to generate targets, apply the deviation parameters (hole size, rod strength, angle), and physically mobilize a rig to test if the system's predictions hit the ore vein accurately.</p>
+            </div>
+
+            <div class="nav-step">
+                <h3>5. Expand to Multinational Competitiveness</h3>
+                <p>To compete with existing GIS software (like Hillfrog, KTIs), the team must use the pilot results to make the system robust. Add features like dispatch integration and underground drilling modules to scale the home-grown solution into an international system.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 TerraPulze Conceptual Workflow. Based on strategic meeting transcripts.</p>
+    </footer>
+
+</body>
+</html>

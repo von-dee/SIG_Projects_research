@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIMS Strategy & Feature Viewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --sidebar-bg: #1e1e1e;
+            --content-bg: #1a1a1a;
+            --text-color: #e0e0e0;
+            --accent-color: #d4af37; /* Gold */
+            --accent-hover: #f0c94a;
+            --border-color: #333333;
+            --category-feature: #4caf50;
+            --category-benefit: #2196f3;
+            --category-limitation: #f44336;
+            --category-opportunity: #ff9800;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        #sidebar {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        #sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--sidebar-bg);
+            z-index: 10;
+        }
+
+        #sidebar-header h1 {
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        #sidebar-header p {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .category-section {
+            margin-top: 10px;
+        }
+
+        .category-title {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #aaa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .file-item {
+            padding: 10px 20px 10px 30px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #ccc;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: #2a2a2a;
+            color: var(--accent-color);
+        }
+
+        .file-item.active {
+            background-color: #2a2a2a;
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* Main Content */
+        #main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        #content-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--content-bg);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Markdown Styles */
+        #content-container h1 {
+            color: var(--accent-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        #content-container h2 {
+            color: #fff;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        #content-container p, #content-container li {
+            line-height: 1.6;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        #content-container ul {
+            padding-left: 20px;
+        }
+
+        #content-container strong {
+            color: #fff;
+        }
+
+        /* Mobile Toggle */
+        #menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 100;
+            background-color: var(--accent-color);
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                z-index: 90;
+            }
+            #sidebar.open {
+                transform: translateX(0);
+            }
+            #menu-toggle {
+                display: block;
+            }
+            #main {
+                padding: 60px 15px 15px;
+            }
+            #content-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="menu-toggle">☰ Menu</button>
+
+    <div id="sidebar">
+        <div id="sidebar-header">
+            <h1>LIMS Blueprint</h1>
+            <p>Gold Mining Sector</p>
+        </div>
+        <div id="file-list"></div>
+    </div>
+
+    <div id="main">
+        <div id="content-container">
+            <h1>Welcome</h1>
+            <p>Select a file from the sidebar to view the detailed breakdown.</p>
+        </div>
+    </div>
+
+    <script>
+        const filesData = [
+            { id: "f1", cat: "Features", title: "1. Sample & Batch Tracking", content: "# Feature 01: Sample & Batch Tracking\n## Core Capability\nThe system must provide end-to-end lifecycle tracking of all geological and metallurgical samples using barcode and QR code technology.\n\n## Technical Details\n- **Barcode/QR Generation:** Auto-generation of 2D QR codes encoding Sample ID, Timestamp, Origin, and Requested Assays.\n- **Material Types:** Must support varying data models for Drill Core, RC Chips, Soil Samples, Concentrates, Slag, Lead Collectors, Gold Buttons, and Doré Bullion.\n- **Batch Genealogy:** Visual tracking of parent-child relationships (e.g., how a 1kg bulk sample is split into multiple 30g fire assay charges).\n- **Status States:** Real-time status updates (Received -> Dried -> Crushed -> Pulverized -> Weighed -> Fused -> Cupelled -> Analyzed -> Reported).\n\n## Business Value\nPrevents sample mix-ups which can lead to millions of dollars in misallocated resources. Allows lab managers to instantly locate any physical sample within the lab." },
+            { id: "f2", cat: "Features", title: "2. Instrument Integration", content: "# Feature 02: Instrument Integration (Direct APIs)\n## Core Capability\nSeamless, plug-and-play connectivity with laboratory hardware to eliminate manual data entry.\n\n## Technical Details\n- **Supported Protocols:** RS-232, TCP/IP, USB, and modern REST APIs.\n- **Analytical Balances:** Direct integration with Mettler Toledo and Sartorius balances to capture exact weights (down to 0.0001g) instantly into the LIMS.\n- **XRF & AAS Integration:** Bidirectional communication with Thermo Fisher, PANalytical, and Agilent machines. The LIMS should push worklists to the machine and pull result files via CSV, XML, or direct database hooks.\n- **Auto-Parsing:** Real-time parsing of instrument output files to extract Au (Gold), Ag (Silver), and PGE concentrations.\n\n## Business Value\nEliminates 'fat-finger' transcription errors. Dramatically increases lab throughput by removing the bottleneck of manual data logging at the instrument terminal." },
+            { id: "f3", cat: "Features", title: "3. Fire Assay Workflow", content: "# Feature 03: Fire Assay Workflow Management\n## Core Capability\nA dedicated module built specifically for the nuances of the Fire Assay process (Pb-Collection).\n\n## Technical Details\n- **Flux Calculator:** Algorithmic calculation of flux recipe (Lead Oxide, Soda Ash, Borax, Silica) based on the specific ore matrix and expected sulfur/content.\n- **Fusion Tracking:** Logging of fusion furnace temperatures, time cycles, and operator IDs.\n- **Cupellation Monitoring:** Tracking of cupellation stages, ensuring lead is properly driven off, leaving behind the Gold/Ag prill.\n- **Parting & Weighing:** Workflow for acid parting (removing Ag) and final micro-weighing of the gold prill, with direct scale integration.\n\n## Business Value\nStandardizes the fire assay process across all shifts. Ensures flux recipes are optimized, reducing consumable waste and improving assay accuracy." },
+            { id: "f4", cat: "Features", title: "4. Chain of Custody", content: "# Feature 04: Chain of Custody (CoC)\n## Core Capability\nImmutable, cryptographically secure audit trails for every physical and digital interaction with a sample.\n\n## Technical Details\n- **Automated Logging:** Every scan, status change, and data entry is logged with User ID, Timestamp, IP address, and terminal location.\n- **Physical Handovers:** Requires digital sign-off (PIN or biometric) when a sample batch changes hands between shifts.\n- **Tamper-Proofing:** Database write-once/read-only architecture for CoC logs. Even administrators cannot alter historical CoC data.\n\n## Business Value\nLegally defensible data. If a high-grade assay result is contested, the CoC proves exactly who handled the sample and when, mitigating fraud and theft." },
+            { id: "f5", cat: "Features", title: "5. Bullion Bar Certification", content: "# Feature 05: Bullion Bar Certification\n## Core Capability\nGeneration of globally recognized Certificates of Analysis (CoA) for final doré or refined gold bars.\n\n## Technical Details\n- **Bar Registration:** Assignment of unique serial numbers (often laser-etched onto the bar).\n- **Purity & Density:** Integration with specific gravity (density) testing tools and spectrometers to record exact purity (e.g., 99.99%).\n- **Impurity Tracking:** Detailed breakdown of trace elements (Cu, Ag, Pt, Pd, Fe, Pb).\n- **LBMA Compliance:** Templates formatted to meet London Bullion Market Association (LBMA) standards for global trade.\n\n## Business Value\nEnables the mine to sell its gold directly to international markets at spot price, rather than relying on a third-party refiner to issue certifications." },
+            { id: "f6", cat: "Features", title: "6. QC & Assurance", content: "# Feature 06: Quality Control (QC) & Assurance\n## Core Capability\nBuilt-in statistical process control to ensure assay results are accurate and reproducible.\n\n## Technical Details\n- **QC Types:** Support for Blanks (contamination check), Duplicates (precision check), and Certified Reference Materials (CRMs - accuracy check).\n- **Insertion Rules:** Automated insertion of QC samples at defined intervals (e.g., 1 blank every 20 samples) to blind the operator.\n- **Control Charts:** Real-time Shewhart charts with Westgard rules automatically applied.\n- **Auto-Flagging:** System automatically locks batches and alerts supervisors if a QC sample falls outside 2 or 3 standard deviations.\n\n## Business Value\nPrevents the release of bad data to geologists and metallurgists. Reduces the need for costly re-assays by catching systematic errors early in the shift." },
+            { id: "f7", cat: "Features", title: "7. Inventory Management", content: "# Feature 07: Inventory Management\n## Core Capability\nComprehensive tracking of laboratory consumables, reagents, and gases.\n\n## Technical Details\n- **Consumables:** Tracking of crucibles, cupels, scorifiers, and fusion fluxes.\n- **Hazardous Materials:** Strict lot-tracking for highly sensitive and dangerous goods (Nitric Acid, Hydrochloric Acid, Sodium Cyanide, Lead Oxide).\n- **Automated Reordering:** Minimum stock level alerts sent to procurement when supplies drop below a defined threshold.\n- **Gas Monitoring:** Integration with argon and acetylene tank telemetry for AAS machines.\n\n## Business Value\nPrevents lab downtime caused by running out of critical consumables. Ensures compliance with hazardous materials regulations." },
+            { id: "f8", cat: "Features", title: "8. Reporting & Dashboards", content: "# Feature 08: Reporting & Dashboards\n## Core Capability\nReal-time data visualization and automated, customizable reporting.\n\n## Technical Details\n- **Dashboards:** Live screens showing TAT (Turnaround Time), Samples Processed per Shift, and Equipment Utilization.\n- **Geological Reports:** Exportable CSV/XML files formatted for direct import into geological modeling software (e.g., Leapfrog, Datamine, Micromine).\n- **Shift Handovers:** Automated generation of PDF reports detailing work completed, work in progress, and issues encountered during the shift.\n- **Custom Query Builder:** Allowing managers to slice data by ore type, drill hole ID, or date range without SQL knowledge.\n\n## Business Value\nSpeeds up decision-making. Mill managers can see incoming ore grades in real-time and adjust cyanide levels or grind size on the fly, optimizing gold recovery." },
+            { id: "f9", cat: "Features", title: "9. Role-Based Access", content: "# Feature 09: Role-Based Access Control (RBAC)\n## Core Capability\nGranular, strict user permissions to ensure data integrity and security.\n\n## Technical Details\n- **Roles:** Pre-defined roles (Lab Tech, Senior Chemist, QC Manager, Lab Manager, Auditor, Read-Only).\n- **Permissions:** Granular control over who can Create, Read, Update, Approve, or Delete data.\n- **Electronic Signatures:** Compliance with 21 CFR Part 11 standards, requiring dual signatures for result approval or overwrites.\n- **Active Directory:** SSO (Single Sign-On) integration with corporate Microsoft Entra ID / Active Directory.\n\n## Business Value\nEnsures that only qualified chemists can sign off on high-grade assays, satisfying ISO 17025 auditing requirements." },
+            
+            { id: "b1", cat: "Benefits", title: "1. Elimination of Human Error", content: "# Benefit 01: Elimination of Human Error\n## Overview\nDirect integration with scales and analytical instruments removes manual transcription errors, which are exceptionally costly in high-value gold assays.\n\n## Impact\nA single transposition error (e.g., logging 15.5 g/t instead of 51.5 g/t) can lead a mining operation to misclassify waste as ore (or vice versa), resulting in millions of dollars in misallocated processing costs. Automated data capture effectively eliminates this risk." },
+            { id: "b2", cat: "Benefits", title: "2. Regulatory Compliance", content: "# Benefit 02: Regulatory Compliance\n## Overview\nAutomated audit trails satisfy international mining and metallurgical accounting standards.\n\n## Impact\nSystems must comply with ISO 17025 (testing and calibration labs), JORC Code (Australasian), and NI 43-101 (Canada) for reporting mineral resources. A modern LIMS makes the mine's reported gold reserves legally defensible to investors and regulatory bodies by proving data integrity." },
+            { id: "b3", cat: "Benefits", title: "3. Increased Throughput", content: "# Benefit 03: Increased Throughput\n## Overview\nAutomation of workflows and reporting allows the lab to process more samples per shift.\n\n## Impact\nBy removing manual data logging, label printing, and report generation, a lab can increase its daily throughput by 20-30%. This speeds up the mine's decision-making process regarding which ore to process, directly impacting daily gold production." },
+            { id: "b4", cat: "Benefits", title: "4. Loss Prevention & Security", content: "# Benefit 04: Loss Prevention & Security\n## Overview\nStrict chain-of-custody and bullion tracking drastically reduce the risk of theft, tampering, or misplacement of precious metal samples.\n\n## Impact\nGold mining labs are high-security environments. By enforcing digital sign-offs and tracking the exact location of high-grade samples and final bullion bars, the LIMS acts as a digital security guard, deterring internal theft and identifying bottlenecks where samples go missing." },
+            { id: "b5", cat: "Benefits", title: "5. Real-Time Visibility", content: "# Benefit 05: Real-Time Visibility\n## Overview\nMill managers can see assay results in real-time, allowing them to adjust the processing plant.\n\n## Impact\nIf a mine knows the exact grade of the ore entering the mill at any given moment, they can optimize reagent addition (cyanide, lime) and grind size. This maximizes gold recovery rates and saves millions in unnecessary reagent costs." },
+            { id: "b6", cat: "Benefits", title: "6. Cost Reduction", content: "# Benefit 06: Cost Reduction\n## Overview\nOptimized inventory tracking prevents over-ordering of expensive consumables and reduces the need for costly re-assays due to lab errors.\n\n## Impact\nLabs waste significant money on re-running samples that failed QC. A robust LIMS catches errors early. Furthermore, tracking expensive consumables (like high-purity acids and lead collectors) reduces waste and shrinkage." },
+
+            { id: "l1", cat: "Limitations", title: "1. High Implementation Costs", content: "# Limitation 01: High Implementation Costs\n## Issue\nEnterprise LIMS like Thermo Fisher SampleManager require massive upfront capital.\n\n## Details\nBeyond the software licensing (often $100k+), mines must pay for expensive implementation consultants, custom development, and long deployment cycles (6–12 months). This prices all but the largest multi-billion dollar conglomerates out of the market." },
+            { id: "l2", cat: "Limitations", title: "2. Steep Learning Curve", content: "# Limitation 02: Steep Learning Curve\n## Issue\nThese systems are highly complex and suffer from clunky, legacy user interfaces.\n\n## Details\nLab technicians in remote mining camps often struggle with dense, menu-driven interfaces. This leads to user resistance, workarounds, and ultimately, bad data entry. Training new staff on these legacy systems can take weeks." },
+            { id: "l3", cat: "Limitations", title: "3. Hardware Dependency", content: "# Limitation 03: Hardware Dependency\n## Issue\nIntegrating older or obscure XRF/AAS models can be a nightmare.\n\n## Details\nIf a mine uses a 15-year-old AAS machine with a proprietary serial protocol, integrating it into a legacy LIMS can require custom, expensive driver development. Many LIMS vendors refuse to support older hardware, forcing mines to buy new equipment just to match the software." },
+            { id: "l4", cat: "Limitations", title: "4. Connectivity Issues", content: "# Limitation 04: Connectivity Issues in Remote Areas\n## Issue\nGold mines are often located in remote areas with unstable internet.\n\n## Details\nMany modern cloud-dependent LIMS fail if they experience latency or dropouts. If the lab cannot access the server, work stops. Legacy systems often lack robust offline-sync capabilities, creating data silos." },
+            { id: "l5", cat: "Limitations", title: "5. Rigidity", content: "# Limitation 05: Rigidity\n## Issue\nCustomizing workflows in legacy LIMS to fit a specific mine’s unique fire assay method is incredibly difficult.\n\n## Details\nEvery mine has slightly different ore mineralogy, requiring customized flux recipes and assay workflows. Legacy systems require proprietary coding knowledge or expensive change-orders from the vendor just to add a new data field or workflow step." },
+
+            { id: "o1", cat: "Opportunities", title: "1. Offline-First Architecture", content: "# Opportunity 01: Cloud-Native with Offline-First Architecture\n## Concept\nBuild a modern web app that works seamlessly offline on local lab servers and auto-syncs to the cloud.\n\n## Execution\nUse technologies like Progressive Web Apps (PWAs) or local edge servers with conflict-resolution algorithms (like CRDTs). The lab runs at full speed on a local network; when the satellite internet connection is restored, data seamlessly syncs to the cloud for corporate reporting." },
+            { id: "o2", cat: "Opportunities", title: "2. Blockchain Provenance", content: "# Opportunity 02: Blockchain for Bullion Provenance\n## Concept\nIntegrate blockchain technology to create an immutable ledger for gold bar provenance.\n\n## Execution\nMint an NFT or a hash on a public/private blockchain for every bullion bar produced. Link the assay data, CoC, and source mine data to this hash. This allows the mine to sell 'Ethically Sourced Gold' with verifiable, tamper-proof data from ore to final bar, commanding a premium on the open market." },
+            { id: "o3", cat: "Opportunities", title: "3. AI & Machine Learning", content: "# Opportunity 03: AI & Machine Learning Integration\n## Concept\nLeverage data to predict issues before they happen.\n\n## Execution\n- *Predictive Maintenance:* Use AI to analyze AAS argon gas consumption or XRF x-ray tube degradation, predicting when a machine needs calibration before it fails a QC check.\n- *Anomaly Detection:* Train ML models on historical assay data to spot patterns of potential theft or assay manipulation that a human manager might miss (e.g., a specific technician consistently logging slightly lower grades)." },
+            { id: "o4", cat: "Opportunities", title: "4. SaaS Pricing Model", content: "# Opportunity 04: SaaS / Pay-Per-Assay Pricing Model\n## Concept\nDisrupt the pricing model of legacy vendors.\n\n## Execution\nInstead of massive upfront licensing fees, offer a Software-as-a-Service (SaaS) subscription based on lab size, or a usage-based model (e.g., priced per 1,000 samples processed). This lowers the barrier to entry for mid-tier and junior mining companies." },
+            { id: "o5", cat: "Opportunities", title: "5. Mobile-First Design", content: "# Opportunity 05: Mobile-First Design\n## Concept\nCreate a highly intuitive, tablet-friendly interface designed for the physical lab environment.\n\n## Execution\nLab technicians wear PPE (gloves, safety glasses, face shields). The UI must have large, touch-friendly buttons, high-contrast text, voice-to-text capabilities for note-taking, and easy barcode scanning via tablet cameras. A modern UI reduces training time from weeks to days." },
+            { id: "o6", cat: "Opportunities", title: "6. Open API Ecosystem", content: "# Opportunity 06: Open API Ecosystem\n## Concept\nBuild your LIMS with an open API architecture.\n\n## Execution\nUnlike closed systems, provide robust REST/GraphQL APIs and webhooks. Allow third-party mining software (like SAP ERP, GEOVIA geological modeling, or fleet management systems) to easily pull assay data. Make your LIMS the central data hub of the mine." },
+            { id: "o7", cat: "Opportunities", title: "7. Target the Mid-Market", content: "# Opportunity 07: Target the 'Mid-Market'\n## Concept\nFocus on the neglected mid-tier gold mines.\n\n## Execution\nThermo Fisher targets massive, multi-billion dollar mining conglomerates. Labsols targets the niche precious metal labs. Your company can target mid-tier gold mines (producing 100k - 500k oz/year) that need enterprise features but cannot afford Thermo Fisher’s price tag or 12-month implementation cycle." }
+        ];
+
+        const categoryColors = {
+            "Features": "var(--category-feature)",
+            "Benefits": "var(--category-benefit)",
+            "Limitations": "var(--category-limitation)",
+            "Opportunities": "var(--category-opportunity)"
+        };
+
+        const fileList = document.getElementById('file-list');
+        const contentContainer = document.getElementById('content-container');
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        // Group files by category
+        const grouped = filesData.reduce((acc, file) => {
+            if (!acc[file.cat]) acc[file.cat] = [];
+            acc[file.cat].push(file);
+            return acc;
+        }, {});
+
+        // Render Sidebar
+        for (const [cat, items] of Object.entries(grouped)) {
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            
+            const title = document.createElement('div');
+            title.className = 'category-title';
+            title.innerHTML = `<span class="category-dot" style="background:${categoryColors[cat]}"></span>${cat}`;
+            
+            section.appendChild(title);
+
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerText = item.title;
+                div.onclick = () => loadContent(item.content, div);
+                section.appendChild(div);
+            });
+
+            fileList.appendChild(section);
+        }
+
+        // Load Content
+        function loadContent(markdown, element) {
+            contentContainer.innerHTML = marked.parse(markdown);
+            
+            // Remove active class from all
+            document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+            // Add active to clicked
+            element.classList.add('active');
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Mobile Menu Toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Initial Load
+        if(filesData.length > 0) {
+            const firstItem = document.querySelector('.file-item');
+            if(firstItem) loadContent(filesData[0].content, firstItem);
+        }
+
+    </script>
+</body>
+</html>

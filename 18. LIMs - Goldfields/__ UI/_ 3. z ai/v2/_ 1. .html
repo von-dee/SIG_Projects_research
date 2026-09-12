@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire Assay Sample Lineage · Eleven Stages, Eleven Edges</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0a08;
+    --bg-2: #14110d;
+    --surface: #181410;
+    --surface-2: #221d17;
+    --border: #2e271f;
+    --border-hot: #4a3a23;
+    --fg: #f5efe6;
+    --muted: #a89884;
+    --dim: #6b5e4d;
+    --ember: #f97316;
+    --ember-deep: #c2410c;
+    --ember-hot: #ef4444;
+    --gold: #fbbf24;
+    --steel: #94a3b8;
+    --clay: #c2847a;
+    --moss: #84a98c;
+    --field: #84a98c;
+    --intake: #94a3b8;
+    --prep: #c2847a;
+    --assay: #f97316;
+    --qa: #fbbf24;
+    --report: #e7e5e4;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Manrope', sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(249, 115, 22, 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 95% 110%, rgba(220, 38, 38, 0.06), transparent 60%),
+      radial-gradient(ellipse 50% 30% at 5% 50%, rgba(132, 169, 140, 0.04), transparent 60%);
+    background-attachment: fixed;
+  }
+  .font-display { font-family: 'Fraunces', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* top nav */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(12, 10, 8, 0.78);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* hero */
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    font-size: clamp(2.75rem, 9vw, 7.5rem);
+  }
+  .hero-italic {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ember);
+  }
+
+  /* core log visual */
+  .core-log {
+    width: 60px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .core-segment {
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    position: relative;
+    transition: all 0.4s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+  .core-segment:last-child { border-bottom: none; }
+  .core-segment.active {
+    box-shadow: inset 0 0 0 2px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+    z-index: 2;
+  }
+  .core-segment:hover {
+    transform: translateX(3px);
+  }
+
+  /* heat backgrounds */
+  .heat-cool { background: linear-gradient(180deg, #1e3a5f, #0c4a6e); }
+  .heat-warm { background: linear-gradient(180deg, #c2410c, #7c2d12); }
+  .heat-hot  { background: linear-gradient(180deg, #fbbf24, #dc2626 60%, #7f1d1d); }
+
+  .heat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .heat-cool-bg { background: #0c4a6e; }
+  .heat-warm-bg { background: #c2410c; }
+  .heat-hot-bg  { background: linear-gradient(180deg, #fbbf24, #dc2626); }
+
+  /* stage card */
+  .stage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--card-accent, var(--border));
+    transition: width 0.3s ease;
+  }
+  .stage-card:hover {
+    border-color: var(--border-hot);
+    transform: translateX(2px);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.6);
+  }
+  .stage-card:hover::before { width: 5px; }
+  .stage-card.is-active, .stage-card.graph-hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold), 0 20px 60px -20px rgba(251,191,36,0.3);
+  }
+
+  .stage-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4.5rem;
+    line-height: 1;
+    color: var(--dim);
+    letter-spacing: -0.05em;
+    transition: color 0.3s;
+  }
+  .stage-card:hover .stage-num {
+    color: var(--card-accent, var(--ember));
+  }
+
+  /* form ticket — looks like a lab form stub */
+  .form-ticket {
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.05), rgba(249, 115, 22, 0.01));
+    border: 1px dashed rgba(249, 115, 22, 0.4);
+    border-left: 3px solid var(--ember);
+    border-radius: 6px;
+    position: relative;
+    padding: 16px 18px;
+  }
+  .form-ticket::before, .form-ticket::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--bg);
+    border: 1px dashed rgba(249, 115, 22, 0.4);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .form-ticket::before { left: -6px; }
+  .form-ticket::after { right: -6px; }
+
+  .capture-chip {
+    padding: 3px 8px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .zone-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  .zone-field   { color: var(--field); background: rgba(132,169,140,0.10); border: 1px solid rgba(132,169,140,0.30); }
+  .zone-intake  { color: var(--intake); background: rgba(148,163,184,0.10); border: 1px solid rgba(148,163,184,0.30); }
+  .zone-prep    { color: var(--prep); background: rgba(194,132,122,0.10); border: 1px solid rgba(194,132,122,0.30); }
+  .zone-assay   { color: var(--assay); background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.35); }
+  .zone-qa      { color: var(--qa); background: rgba(251,191,36,0.10); border: 1px solid rgba(251,191,36,0.35); }
+  .zone-report  { color: var(--report); background: rgba(231,229,228,0.08); border: 1px solid rgba(231,229,228,0.25); }
+
+  .io-block {
+    border-left: 2px solid var(--card-accent, var(--border));
+    padding-left: 12px;
+  }
+
+  /* timeline chips */
+  .timeline-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: all 0.3s;
+    text-decoration: none;
+    min-width: 145px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .timeline-chip:hover {
+    border-color: var(--card-accent, var(--ember));
+    transform: translateY(-2px);
+    background: var(--surface-2);
+  }
+  .timeline-chip .accent-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent, var(--ember));
+    border-radius: 8px 0 0 8px;
+  }
+
+  /* forms table */
+  .forms-table { width: 100%; border-collapse: collapse; }
+  .forms-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+    background: var(--surface);
+  }
+  .forms-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 0.875rem;
+  }
+  .forms-table tr { transition: background 0.2s; }
+  .forms-table tr:hover td { background: rgba(249, 115, 22, 0.04); }
+  .forms-table tr:last-child td { border-bottom: none; }
+
+  /* schema */
+  .schema-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color 0.3s;
+  }
+  .schema-card:hover { border-color: var(--border-hot); }
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--muted);
+    overflow-x: auto;
+  }
+  .code-block .k { color: var(--ember); }
+  .code-block .s { color: var(--moss); }
+  .code-block .c { color: var(--dim); font-style: italic; }
+  .code-block .n { color: var(--gold); }
+
+  /* graph */
+  .graph-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .graph-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.25s ease;
+    cursor: pointer;
+  }
+  .graph-node:hover { transform: scale(1.25); }
+  .graph-node text { pointer-events: none; }
+
+  /* section heading */
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--ember);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  /* duration badge */
+  .duration-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.2);
+  }
+
+  /* animations */
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  .pulse { animation: pulse-soft 2.8s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+
+  /* reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+  @media (max-width: 768px) {
+    .stage-num { font-size: 3rem; }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hot); }
+</style>
+</head>
+<body>
+
+<!-- ─────────── TOP NAV ─────────── -->
+<nav class="topnav">
+  <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-sm relative overflow-hidden" style="background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);">
+        <div class="absolute inset-0 opacity-40" style="background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.35) 3px, rgba(0,0,0,0.35) 4px);"></div>
+      </div>
+      <div>
+        <div class="font-mono text-[9px] tracking-[0.2em] text-[color:var(--muted)]">LAB · FA-001</div>
+        <div class="font-display font-medium text-sm leading-tight">Sample Lineage Atlas</div>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-1 text-[11px] font-mono">
+      <a href="#flow" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">FLOW</a>
+      <a href="#graph" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">GRAPH</a>
+      <a href="#forms" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">FORMS</a>
+      <a href="#schema" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">SCHEMA</a>
+    </div>
+    <div class="font-mono text-[10px] text-[color:var(--dim)] hidden lg:block">REV 2.4 · 11 STAGES · Pb-FA / GRAV</div>
+  </div>
+</nav>
+
+<!-- ─────────── HERO ─────────── -->
+<header class="hero relative max-w-[1400px] mx-auto px-6 pt-20 pb-16">
+  <div class="grid lg:grid-cols-12 gap-12 items-end">
+    <div class="lg:col-span-8">
+      <div class="font-mono text-[11px] tracking-[0.3em] text-[color:var(--ember)] mb-10">
+        GEOCHEMISTRY LAB · FIRE ASSAY · Pb-COLLECTION / GRAVIMETRIC FINISH
+      </div>
+      <h1>
+        Eleven hands<br>
+        <span class="hero-italic">on a single</span> core.
+      </h1>
+      <p class="mt-10 text-lg max-w-2xl text-[color:var(--muted)] leading-relaxed">
+        A stage-by-stage map of every operator who touches a sample between the drill rig and the Certificate of Analysis — what they do, the form they sign, and the record that becomes an edge in the lineage graph.
+      </p>
+    </div>
+    <div class="lg:col-span-4 space-y-5">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light text-[color:var(--ember)]">11</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">STAGES</div>
+        </div>
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light">07</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">ROLES</div>
+        </div>
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light">11</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">RECORDS</div>
+        </div>
+      </div>
+      <div class="text-xs font-mono text-[color:var(--dim)] leading-relaxed border-l-2 border-[color:var(--ember)] pl-4">
+        Every record listed here becomes an edge property in the lineage graph. Operator, timestamp and instrument are pulled straight from these forms — never re-keyed.
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── TIMELINE OVERVIEW ─────────── -->
+<section class="max-w-[1400px] mx-auto px-6 pb-8">
+  <div class="border-y border-[color:var(--border)] py-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)]">SECTION 00</span>
+      <span class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--muted)]">·  STAGE INDEX</span>
+    </div>
+    <div id="timeline" class="flex gap-2 overflow-x-auto pb-2"></div>
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-[10px] font-mono">
+      <span class="text-[color:var(--dim)] tracking-widest">ZONES:</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--field)"></span>01 FIELD</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--intake)"></span>02 INTAKE</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--prep)"></span>03–05 PREP</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--assay)"></span>06–09 ASSAY</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--qa)"></span>10 QA</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--report)"></span>11 REPORT</span>
+      <span class="ml-auto text-[color:var(--dim)]">TEMP: <span class="heat-dot heat-cool-bg ml-1"></span> COOL <span class="heat-dot heat-warm-bg ml-2"></span> WARM <span class="heat-dot heat-hot-bg ml-2"></span> HOT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── MAIN FLOW ─────────── -->
+<section id="flow" class="max-w-[1400px] mx-auto px-6 py-16">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 01 · THE FLOW</div>
+    <h2 class="section-title">Each stage, one operator,<br><span class="italic font-light" style="color: var(--ember);">one signed record.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      The sample descends through eleven stratigraphic stages. At each, a single operator performs a discrete action and signs a specific form — that form is the durable artifact that anchors the lineage edge.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-10">
+    <!-- sticky core log -->
+    <aside class="lg:col-span-2 hidden lg:block">
+      <div class="sticky top-24 space-y-4">
+        <div class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)]">CORE LOG</div>
+        <div id="core-log" class="core-log"></div>
+        <div class="text-[10px] font-mono text-[color:var(--dim)] leading-relaxed pt-2">
+          Depth proxy for sample state. Color encodes process temperature.
+        </div>
+      </div>
+    </aside>
+
+    <!-- stage cards -->
+    <div class="lg:col-span-10 space-y-6" id="flow-cards"></div>
+  </div>
+</section>
+
+<!-- ─────────── MATERIAL FLOW GRAPH ─────────── -->
+<section id="graph" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 02 · MATERIAL & DATA FLOW</div>
+    <h2 class="section-title">The sample loses mass.<br><span class="italic font-light" style="color: var(--ember);">The record gains edges.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      A 3 kg interval of drill core reduces to a prill weighing micrograms. At each handoff, material branches off — rejects, archive pulps, slag, absorbed lead — and a signed record becomes a new edge in the lineage graph. Path thickness tracks remaining mass.
+    </p>
+  </div>
+
+  <div class="graph-container">
+    <div id="graph-svg"></div>
+    <div class="grid md:grid-cols-3 gap-6 mt-8 pt-8 border-t border-[color:var(--border)] text-sm">
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">MAIN PATH</div>
+        <div class="text-[color:var(--muted)]">Sample-to-certificate flow. Each transition is logged by a single operator on a single form.</div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">BRANCHES</div>
+        <div class="text-[color:var(--muted)]">Material that exits the main path — rejects, archive pulps, slag, cupelled lead. Each is a separate downstream node.</div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">EDGES</div>
+        <div class="text-[color:var(--muted)]">Each form filled becomes an edge carrying operator, timestamp and instrument as properties.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FORMS INDEX ─────────── -->
+<section id="forms" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 03 · RECORDS INDEX</div>
+    <h2 class="section-title">Eleven forms,<br><span class="italic font-light" style="color: var(--ember);">eleven edges.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Each record is the durable artifact of one stage. Together they form the provenance chain that survives long after the sample itself has been consumed.
+    </p>
+  </div>
+
+  <div class="border border-[color:var(--border)] rounded-xl overflow-hidden bg-[color:var(--surface)]">
+    <table class="forms-table">
+      <thead>
+        <tr>
+          <th style="width: 50px;">#</th>
+          <th style="width: 150px;">STAGE</th>
+          <th style="width: 170px;">OPERATOR</th>
+          <th>RECORD / FORM</th>
+          <th style="width: 260px;">CAPTURES → EDGE PROPERTIES</th>
+          <th style="width: 90px;">EDGE ID</th>
+        </tr>
+      </thead>
+      <tbody id="forms-tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────── SCHEMA ─────────── -->
+<section id="schema" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 04 · LINEAGE EDGE SCHEMA</div>
+    <h2 class="section-title">From paper form<br><span class="italic font-light" style="color: var(--ember);">to graph edge.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      A form is the static artifact. An edge is its living representation in the lineage graph — linking the upstream node (sample state) to the downstream node (transformed state), annotated with the operator, instrument and timestamp that produced it.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">EDGE STRUCTURE</div>
+      <div class="font-display text-2xl mb-4">stage_N <span style="color:var(--ember)">→</span> stage_N+1</div>
+      <div class="code-block">
+<span class="c">// one edge per filled form</span>
+{
+  <span class="k">"edge_id"</span>: <span class="s">"FA-2024-0847-e04"</span>,
+  <span class="k">"from"</span>: <span class="s">"node/03-drying"</span>,
+  <span class="k">"to"</span>: <span class="s">"node/04-crush-split"</span>,
+  <span class="k">"form"</span>: <span class="s">"Drying log sheet"</span>,
+  <span class="k">"form_version"</span>: <span class="s">"v2.4"</span>,
+  <span class="k">"operator"</span>: {
+    <span class="k">"id"</span>: <span class="s">"u/m.kovac"</span>,
+    <span class="k">"role"</span>: <span class="s">"prep_technician"</span>
+  },
+  <span class="k">"instrument"</span>: {
+    <span class="k">"id"</span>: <span class="s">"oven/OV-04"</span>,
+    <span class="k">"cal_due"</span>: <span class="s">"2024-11-12"</span>
+  },
+  <span class="k">"timestamp"</span>: <span class="s">"2024-08-14T03:42:11Z"</span>,
+  <span class="k">"captures"</span>: [
+    <span class="s">"oven_id"</span>, <span class="s">"temp_setpoint"</span>,
+    <span class="s">"duration"</span>, <span class="s">"dry_mass"</span>
+  ],
+  <span class="k">"signature"</span>: <span class="s">"sha256:9f3a…b21c"</span>
+}
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <div class="schema-card">
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 01</div>
+        <div class="font-display text-xl mb-2">No re-keying.</div>
+        <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+          Operator, timestamp and instrument are captured at the moment of action by the LIMS or instrument client. The graph ingests the structured record — nobody copies values between systems.
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 02</div>
+        <div class="font-display text-xl mb-2">One form, one edge.</div>
+        <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+          Each completed record corresponds to exactly one edge. The edge inherits the form's identity (form type, version, signed PDF) and its captured fields become edge properties.
+        </div>
+      </div>
+      <div class="schema-card">
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 03</div>
+        <div class="font-display text-xl mb-2">Branches are first-class.</div>
+        <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+          Rejects, archive pulps and slag are not "lost" — they are separate downstream nodes with their own edges. Any stored material can be re-entered into the workflow and re-traced.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FOOTER ─────────── -->
+<footer class="border-t border-[color:var(--border)] mt-12">
+  <div class="max-w-[1400px] mx-auto px-6 py-12">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-7 h-7 rounded-sm relative overflow-hidden" style="background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);"></div>
+          <div class="font-display font-medium">Sample Lineage Atlas</div>
+        </div>
+        <div class="text-xs text-[color:var(--muted)] leading-relaxed max-w-sm">
+          A reference model for fire-assay sample tracking — from field collection to certified result.
+        </div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-3">REFERENCE</div>
+        <ul class="space-y-1 text-xs text-[color:var(--muted)]">
+          <li>Method: Pb fire assay / gravimetric finish</li>
+          <li>Standard charge: 10–30 g pulp</li>
+          <li>Fusion temperature: ~1100 °C</li>
+          <li>Cupellation: ~1000 °C</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-3">META</div>
+        <ul class="space-y-1 text-xs text-[color:var(--muted)]">
+          <li>Revision: 2.4</li>
+          <li>Issued: 2024-08-14</li>
+          <li>Owner: Geochemistry Operations</li>
+          <li>Format: page/HTML · printable</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-10 pt-6 border-t border-[color:var(--border)] flex flex-wrap justify-between items-center gap-3 text-[10px] font-mono text-[color:var(--dim)]">
+      <span>LAB · FA-001 · SAMPLE LINEAGE ATLAS</span>
+      <span>11 STAGES · 7 ROLES · 11 RECORDS · 11 EDGES</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─────────── STAGE DATA ───────────
+const stages = [
+  {
+    n: "01", name: "Field sampling", operator: "Field geologist",
+    zone: "field", zoneLabel: "FIELD", heat: "cool",
+    duration: "~5 min / sample",
+    activity: "Cuts or collects the ~3 kg interval from drill core, bags and tags it with the hole ID and from–to depth, and initiates chain of custody.",
+    form: "Sample submission / chain-of-custody form",
+    captures: ["Sampling geologist", "Timestamp", "Hole ID", "From–to depth", "Sample mass", "GPS", "Field conditions"],
+    instrument: "Core saw · sample bags · tamper-evident tags · GPS",
+    input: "Drill core on site",
+    output: "Bagged, tagged sample with custody opened",
+    byproducts: "—"
+  },
+  {
+    n: "02", name: "Receiving & login", operator: "Receiving clerk",
+    zone: "intake", zoneLabel: "INTAKE", heat: "cool",
+    duration: "~3 min / sample",
+    activity: "Checks the bag against the submission sheet, records gross wet mass, and assigns a lab sample ID and barcode in the LIMS.",
+    form: "Sample intake log (LIMS)",
+    captures: ["Receiving clerk", "Receipt timestamp", "Gross wet mass", "Lab sample ID", "Barcode", "Condition on arrival", "Submitter"],
+    instrument: "Balance · barcode scanner · LIMS client",
+    input: "Bagged sample from field",
+    output: "Registered sample with LIMS ID",
+    byproducts: "—"
+  },
+  {
+    n: "03", name: "Drying", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "8–12 h (batch)",
+    activity: "Loads the sample into the oven, sets temperature and duration, then unloads it and records the dry mass.",
+    form: "Drying log sheet",
+    captures: ["Prep tech", "Oven ID", "Load timestamp", "Unload timestamp", "Temperature setpoint", "Duration", "Dry mass", "Moisture loss (calc)"],
+    instrument: "Drying oven · balance",
+    input: "Wet sample",
+    output: "Dried sample",
+    byproducts: "Moisture (vented)"
+  },
+  {
+    n: "04", name: "Crushing & splitting", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "~8 min / sample",
+    activity: "Runs the jaw crusher, riffle-splits the dried sample, and bags and shelves the reject with a retrieval location.",
+    form: "Crush / split worksheet",
+    captures: ["Prep tech", "Jaw crusher ID", "Riffle splitter ID", "Start / end timestamps", "Split ratio", "Reject bag ID", "Shelf location"],
+    instrument: "Jaw crusher · riffle splitter",
+    input: "Dried sample",
+    output: "Split portion (to pulverising)",
+    byproducts: "Coarse reject (archived on shelf)"
+  },
+  {
+    n: "05", name: "Pulverising", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "~4 min / sample",
+    activity: "Runs the ring mill, pulls a sieve cut to check P80 fineness, and signs off once the grind meets spec.",
+    form: "Pulverising & sieve QC form",
+    captures: ["Prep tech", "Ring mill ID", "Bowl ID", "Start / stop timestamps", "P80 sieve result", "Pass / fail", "Regrind count"],
+    instrument: "Ring mill · test sieves · sieve shaker",
+    input: "Crushed split",
+    output: "Pulp (fine ground)",
+    byproducts: "—"
+  },
+  {
+    n: "06", name: "Charge weigh-out", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "cool",
+    duration: "~1 min / charge",
+    activity: "Weighs the assay charge from the pulp on an analytical balance and shelves the remaining pulp as archive.",
+    form: "Charge weigh ticket",
+    captures: ["Assay tech", "Balance ID", "Weigh timestamp", "Charge mass (±0.01 mg)", "Pulp archive ID", "Archive shelf"],
+    instrument: "Analytical balance (5-decimal) · pulp archive cabinet",
+    input: "Pulp",
+    output: "Assay charge (typically 10–30 g)",
+    byproducts: "Archive pulp (shelved)"
+  },
+  {
+    n: "07", name: "Fusion", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "hot",
+    duration: "45–60 min (batch)",
+    activity: "Adds flux to the charge and loads the crucible into the furnace at a logged tray position, alongside standards, blanks and duplicates.",
+    form: "Furnace batch sheet",
+    captures: ["Assay tech", "Furnace ID", "Tray position", "Flux recipe + mass", "Fusion temperature", "Duration", "QC standards + positions", "Batch ID"],
+    instrument: "Fusion furnace · crucibles · fluxing balance",
+    input: "Assay charge + flux",
+    output: "Fused lead button + slag",
+    byproducts: "Slag (discarded)"
+  },
+  {
+    n: "08", name: "Cupellation", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "hot",
+    duration: "60–90 min (batch)",
+    activity: "Transfers the lead button onto a cupel, runs the cupellation furnace, and recovers the prill once lead absorption is complete.",
+    form: "Cupellation log",
+    captures: ["Assay tech", "Muffle ID", "Cupel ID", "Load timestamp", "Unload timestamp", "Temperature", "Visual end-point sign-off"],
+    instrument: "Cupellation muffle · cupels · tongs",
+    input: "Lead button",
+    output: "Precious-metal prill",
+    byproducts: "Absorbed lead (cupel waste)"
+  },
+  {
+    n: "09", name: "Finish", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "warm",
+    duration: "5–30 min / sample",
+    activity: "Weighs the prill on a microbalance and completes the finish — parting for a gravimetric result, or dissolution and instrumental read for ICP/AAS.",
+    form: "Finish & prill weight record",
+    captures: ["Assay tech", "Microbalance ID", "Prill mass (µg)", "Finish method", "Instrument read", "Calculated grade (g/t)"],
+    instrument: "Microbalance · parting acids · ICP-OES / AAS",
+    input: "Prill",
+    output: "Assay result (g/t or ppm)",
+    byproducts: "—"
+  },
+  {
+    n: "10", name: "QA review", operator: "Senior chemist / QA",
+    zone: "qa", zoneLabel: "QA", heat: "cool",
+    duration: "15–60 min / batch",
+    activity: "Checks standards, blanks and duplicates against control charts, reviews any mass-balance flags from prep, and approves or rejects the batch.",
+    form: "QA review checklist",
+    captures: ["QA officer", "Review timestamp", "Standard recovery %", "Blank value", "Duplicate RPD %", "Mass-balance flags", "Decision (approve / reject / re-run)"],
+    instrument: "Control charts · LIMS QA module",
+    input: "Assay results + QC data",
+    output: "Approved (or rejected) batch",
+    byproducts: "Re-run requests (if any)"
+  },
+  {
+    n: "11", name: "Reporting", operator: "LIMS administrator",
+    zone: "report", zoneLabel: "REPORT", heat: "cool",
+    duration: "~5 min / batch",
+    activity: "Compiles the approved results into a client-facing report, referencing the original hole and interval, and releases it.",
+    form: "Certificate of Analysis",
+    captures: ["LIMS admin", "Issue timestamp", "Report version", "Digital signature", "Original hole + interval", "Method codes", "Distribution list"],
+    instrument: "LIMS reporting module · digital signature",
+    input: "Approved batch",
+    output: "Released Certificate of Analysis",
+    byproducts: "—"
+  }
+];
+
+// ─────────── RENDER TIMELINE CHIPS ───────────
+const tl = document.getElementById('timeline');
+stages.forEach(s => {
+  tl.insertAdjacentHTML('beforeend', `
+    <a href="#stage-${s.n}" class="timeline-chip" style="--card-accent: var(--${s.zone});">
+      <span class="accent-bar"></span>
+      <span class="font-mono text-[9px] tracking-widest text-[color:var(--dim)] mb-1 pl-2">STAGE ${s.n}</span>
+      <span class="text-xs font-medium text-[color:var(--fg)] pl-2">${s.name}</span>
+      <span class="font-mono text-[9px] text-[color:var(--muted)] mt-1 pl-2">${s.operator.split(' / ')[0]}</span>
+    </a>
+  `);
+});
+
+// ─────────── RENDER CORE LOG ───────────
+const cl = document.getElementById('core-log');
+stages.forEach(s => {
+  cl.insertAdjacentHTML('beforeend', `
+    <div class="core-segment heat-${s.heat}" data-zone="${s.zoneLabel}" data-n="${s.n}" title="${s.n} · ${s.name}">${s.n}</div>
+  `);
+});
+
+// ─────────── RENDER STAGE CARDS ───────────
+const fc = document.getElementById('flow-cards');
+stages.forEach(s => {
+  const capturesHtml = s.captures.map(c => `<span class="capture-chip">${c}</span>`).join('');
+  fc.insertAdjacentHTML('beforeend', `
+    <article class="stage-card reveal" id="stage-${s.n}" style="--card-accent: var(--${s.zone});">
+      <div class="grid grid-cols-12 gap-6 p-6 md:p-8">
+        <div class="col-span-12 md:col-span-2">
+          <div class="flex md:flex-col items-start gap-3 md:gap-2">
+            <div class="stage-num">${s.n}</div>
+            <div class="flex flex-col gap-2 mt-2">
+              <span class="zone-tag zone-${s.zone}">${s.zoneLabel}</span>
+              <div class="flex items-center gap-1.5 text-[10px] font-mono text-[color:var(--dim)]">
+                <span class="heat-dot heat-${s.heat}-bg"></span>
+                <span>${s.heat.toUpperCase()}</span>
+              </div>
+              <div class="duration-badge mt-1">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                ${s.duration}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-7">
+          <h3 class="font-display text-3xl md:text-4xl font-medium mb-1 tracking-tight">${s.name}</h3>
+          <div class="font-mono text-xs text-[color:var(--muted)] mb-5">
+            OPERATOR · <span class="text-[color:var(--fg)]">${s.operator}</span>
+          </div>
+          <p class="text-[color:var(--fg)] leading-relaxed mb-6 text-[15px]">
+            ${s.activity}
+          </p>
+
+          <div class="form-ticket">
+            <div class="flex items-center justify-between mb-2">
+              <div class="font-mono text-[10px] tracking-[0.18em] text-[color:var(--ember)]">RECORD FILLED</div>
+              <div class="font-mono text-[10px] text-[color:var(--dim)]">edge_${s.n}</div>
+            </div>
+            <div class="font-display text-lg md:text-xl font-medium mb-4">${s.form}</div>
+            <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-2">CAPTURES → EDGE PROPERTIES</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${capturesHtml}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-3 space-y-4 text-xs">
+          <div class="io-block">
+            <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">INSTRUMENT</div>
+            <div class="text-[color:var(--fg)] leading-relaxed">${s.instrument}</div>
+          </div>
+          <div class="io-block">
+            <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">INPUT</div>
+            <div class="text-[color:var(--fg)] leading-relaxed">${s.input}</div>
+          </div>
+          <div class="io-block">
+            <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">OUTPUT</div>
+            <div class="text-[color:var(--fg)] leading-relaxed">${s.output}</div>
+          </div>
+          <div class="io-block" style="border-left-color: var(--dim);">
+            <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">BYPRODUCTS / EXIT</div>
+            <div class="text-[color:var(--muted)] leading-relaxed">${s.byproducts}</div>
+          </div>
+        </div>
+      </div>
+    </article>
+  `);
+});
+
+// ─────────── RENDER FORMS TABLE ───────────
+const ft = document.getElementById('forms-tbody');
+stages.forEach(s => {
+  const capturesPreview = s.captures.slice(0, 4).map(c => `<span class="capture-chip">${c}</span>`).join('');
+  const extra = s.captures.length > 4 ? `<span class="capture-chip" style="color: var(--ember); border-color: var(--ember-deep);">+${s.captures.length - 4}</span>` : '';
+  ft.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td><span class="font-display text-2xl font-light text-[color:var(--dim)]">${s.n}</span></td>
+      <td>
+        <span class="zone-tag zone-${s.zone} mb-1">${s.zoneLabel}</span>
+        <div class="text-sm mt-2">${s.name}</div>
+      </td>
+      <td><span class="text-sm">${s.operator}</span></td>
+      <td><div class="font-display text-base font-medium">${s.form}</div></td>
+      <td>
+        <div class="flex flex-wrap gap-1">${capturesPreview}${extra}</div>
+      </td>
+      <td><span class="font-mono text-xs text-[color:var(--ember)]">edge_${s.n}</span></td>
+    </tr>
+  `);
+});
+
+// ─────────── RENDER MATERIAL FLOW GRAPH ───────────
+function buildGraph() {
+  const W = 1140, H = 540;
+  const stageY = 250;
+  const margin = 70;
+  const innerW = W - 2 * margin;
+  const stageXs = stages.map((_, i) => margin + (i * innerW / (stages.length - 1)));
+  const zoneColors = { field: '#84a98c', intake: '#94a3b8', prep: '#c2847a', assay: '#f97316', qa: '#fbbf24', report: '#e7e5e4' };
+
+  // mass per transition (grams); null = data-only edge
+  const masses = [3000, 2900, 1500, 1500, 30, 30, 1, 0.005, null, null];
+  const widths = masses.map(m => m === null ? 2 : Math.max(2.5, Math.min(15, Math.log10(m + 1) * 3)));
+
+  // branches
+  const branches = [
+    { stageIdx: 3, label: 'Coarse reject', sub: 'bagged · shelved', color: '#c2847a' },
+    { stageIdx: 5, label: 'Archive pulp',  sub: 'shelved for re-test', color: '#c2847a' },
+    { stageIdx: 6, label: 'Slag',          sub: 'discarded', color: '#6b5e4d' },
+    { stageIdx: 7, label: 'Absorbed Pb',   sub: 'cupel waste', color: '#6b5e4d' }
+  ];
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:960px;display:block;">`;
+
+  // defs
+  svg += `
+    <defs>
+      <linearGradient id="mainPath" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#84a98c"/>
+        <stop offset="12%" stop-color="#94a3b8"/>
+        <stop offset="30%" stop-color="#c2847a"/>
+        <stop offset="48%" stop-color="#f97316"/>
+        <stop offset="68%" stop-color="#dc2626"/>
+        <stop offset="82%" stop-color="#fbbf24"/>
+        <stop offset="100%" stop-color="#e7e5e4"/>
+      </linearGradient>
+    </defs>
+  `;
+
+  // vertical gridlines
+  stageXs.forEach(x => {
+    svg += `<line x1="${x}" y1="100" x2="${x}" y2="460" stroke="#2e271f" stroke-width="1" stroke-dasharray="2 5" opacity="0.4"/>`;
+  });
+
+  // main path segments with varying widths
+  for (let i = 0; i < stages.length - 1; i++) {
+    const x1 = stageXs[i], x2 = stageXs[i + 1];
+    const w = widths[i];
+    const isData = masses[i] === null;
+    if (isData) {
+      svg += `<line x1="${x1}" y1="${stageY}" x2="${x2}" y2="${stageY}" stroke="url(#mainPath)" stroke-width="${w}" stroke-dasharray="4 4" opacity="0.55" stroke-linecap="round"/>`;
+    } else {
+      svg += `<line x1="${x1}" y1="${stageY}" x2="${x2}" y2="${stageY}" stroke="url(#mainPath)" stroke-width="${w}" stroke-linecap="round" opacity="0.92"/>`;
+    }
+  }
+
+  // form labels above each segment
+  for (let i = 0; i < stages.length - 1; i++) {
+    const x = (stageXs[i] + stageXs[i + 1]) / 2;
+    const shortForm = stages[i].form.split(' / ')[0].split(' (')[0];
+    svg += `
+      <text x="${x}" y="${stageY - 56}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="1">FORM ${stages[i].n}→${stages[i + 1].n}</text>
+      <text x="${x}" y="${stageY - 42}" text-anchor="middle" font-family="Manrope" font-size="9.5" fill="#a89884">${shortForm}</text>
+    `;
+  }
+
+  // branches
+  branches.forEach(b => {
+    const x = stageXs[b.stageIdx];
+    const yEnd = 410;
+    svg += `
+      <path d="M ${x} ${stageY + 10} C ${x} ${stageY + 55}, ${x + 15} ${yEnd - 35}, ${x + 15} ${yEnd}"
+            stroke="${b.color}" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.6"/>
+      <rect x="${x - 65}" y="${yEnd}" width="160" height="42" fill="#181410" stroke="#2e271f" rx="4"/>
+      <text x="${x + 15}" y="${yEnd + 18}" text-anchor="middle" font-family="Manrope" font-size="10.5" font-weight="500" fill="${b.color}">${b.label}</text>
+      <text x="${x + 15}" y="${yEnd + 32}" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#6b5e4d">${b.sub}</text>
+    `;
+  });
+
+  // stage nodes
+  stages.forEach((s, i) => {
+    const x = stageXs[i];
+    const c = zoneColors[s.zone];
+    const label = s.name.split(' & ')[0].split(' / ')[0];
+    svg += `
+      <g transform="translate(${x}, ${stageY})">
+        <g class="graph-node" data-n="${s.n}">
+          <circle r="16" fill="#0c0a08" stroke="${c}" stroke-width="2"/>
+          <circle r="9" fill="${c}"/>
+          <circle r="16" fill="none" stroke="${c}" stroke-width="1" opacity="0.3" class="pulse"/>
+        </g>
+        <text y="-28" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="500" fill="${c}">${s.n}</text>
+        <text y="40" text-anchor="middle" font-family="Manrope" font-size="10.5" fill="#f5efe6">${label}</text>
+      </g>
+    `;
+  });
+
+  // axis labels
+  svg += `
+    <text x="20" y="${stageY + 4}" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">SAMPLE PATH</text>
+    <text x="20" y="410" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">BYPRODUCTS</text>
+    <text x="20" y="170" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">FORMS / EDGES</text>
+    <text x="${W - 20}" y="${stageY + 4}" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="1">→ 3 kg → μg →</text>
+  `;
+
+  svg += '</svg>';
+  return svg;
+}
+document.getElementById('graph-svg').innerHTML = buildGraph();
+
+// ─────────── INTERACTIVITY ───────────
+// Graph node hover → highlight stage card
+document.querySelectorAll('.graph-node').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const n = node.dataset.n;
+    const card = document.getElementById(`stage-${n}`);
+    if (card) card.classList.add('graph-hover');
+  });
+  node.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('graph-hover'));
+  });
+  node.addEventListener('click', () => {
+    const n = node.dataset.n;
+    document.getElementById(`stage-${n}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+// Core log click → scroll to stage
+document.querySelectorAll('.core-segment').forEach(seg => {
+  seg.addEventListener('click', () => {
+    const n = seg.dataset.n;
+    document.getElementById(`stage-${n}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+// Scroll → update active core segment
+const coreSegments = document.querySelectorAll('.core-segment');
+const stageObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const n = entry.target.id.replace('stage-', '');
+      coreSegments.forEach(seg => seg.classList.toggle('active', seg.dataset.n === n));
+      entry.target.classList.add('is-active');
+    } else {
+      entry.target.classList.remove('is-active');
+    }
+  });
+}, { rootMargin: '-30% 0px -50% 0px' });
+document.querySelectorAll('.stage-card').forEach(card => stageObserver.observe(card));
+
+// Reveal animations
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+</script>
+
+</body>
+</html>

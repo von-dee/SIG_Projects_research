@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TerraPulze — User Flow, Stages & Ideas Map</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --border:#2d3646;
+    --gold:#e3b341; --gold-dim:#8a6d2b; --text:#dce3ec; --muted:#8b98a8;
+    --blue:#58a6ff; --green:#3fb950; --red:#f85149; --purple:#bc8cff;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+  nav{position:sticky;top:0;z-index:100;background:rgba(13,17,23,.95);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;backdrop-filter:blur(8px);}
+  nav .logo{font-weight:700;color:var(--gold);margin-right:18px;font-size:18px;}
+  nav a{color:var(--muted);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:6px;transition:.2s;}
+  nav a:hover{color:var(--gold);background:var(--panel2);}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px 80px;}
+  header.hero{padding:70px 20px 50px;text-align:center;background:linear-gradient(180deg,#1a1508 0%,var(--bg) 100%);border-bottom:1px solid var(--border);}
+  .hero h1{font-size:42px;color:var(--gold);margin-bottom:10px;}
+  .hero .sub{color:var(--muted);max-width:720px;margin:0 auto;font-size:17px;}
+  .hero .tags{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .tag{background:var(--panel2);border:1px solid var(--border);padding:5px 14px;border-radius:20px;font-size:12px;color:var(--blue);}
+  section{margin-top:70px;}
+  h2.sec{font-size:28px;color:var(--gold);border-bottom:2px solid var(--gold-dim);padding-bottom:10px;margin-bottom:8px;}
+  .sec-desc{color:var(--muted);margin-bottom:28px;font-size:14.5px;}
+  /* Cards */
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:16px;}
+  .card h3{color:var(--gold);font-size:17px;margin-bottom:8px;}
+  .card p{font-size:14px;color:var(--text);}
+  /* Ideas grid */
+  .ideas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;}
+  .idea{background:var(--panel);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:8px;padding:18px;}
+  .idea.blue{border-left-color:var(--blue);}
+  .idea.green{border-left-color:var(--green);}
+  .idea.red{border-left-color:var(--red);}
+  .idea.purple{border-left-color:var(--purple);}
+  .idea h4{font-size:15px;margin-bottom:8px;color:#fff;}
+  .idea ul{padding-left:18px;font-size:13.5px;color:var(--muted);}
+  .idea li{margin-bottom:5px;}
+  /* Flow */
+  .flow{position:relative;padding-left:56px;}
+  .flow::before{content:'';position:absolute;left:24px;top:10px;bottom:10px;width:3px;background:linear-gradient(180deg,var(--gold),var(--blue),var(--green));border-radius:2px;}
+  .stage{position:relative;margin-bottom:34px;}
+  .stage .dot{position:absolute;left:-47px;top:0;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#0d1117;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;border:3px solid var(--bg);z-index:2;}
+  .stage:nth-child(3n+1) .dot{background:var(--gold);}
+  .stage:nth-child(3n+2) .dot{background:var(--blue);}
+  .stage:nth-child(3n) .dot{background:var(--green);}
+  .stage-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .stage-head{padding:14px 20px;background:var(--panel2);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border);}
+  .stage-head h3{font-size:16px;color:#fff;}
+  .stage-head .role{font-size:11.5px;background:rgba(227,179,65,.15);color:var(--gold);padding:3px 12px;border-radius:12px;border:1px solid var(--gold-dim);}
+  .stage-body{padding:18px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+  .field{font-size:13px;}
+  .field b{display:block;color:var(--gold);font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px;}
+  .field ul{padding-left:16px;color:var(--muted);}
+  .field li{margin-bottom:3px;}
+  .formbox{margin:0 20px 18px;background:rgba(88,166,255,.08);border:1px dashed var(--blue);border-radius:8px;padding:12px 16px;font-size:12.5px;color:var(--blue);}
+  .formbox b{color:#fff;}
+  .out{margin:0 20px 18px;display:inline-block;background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.4);color:var(--green);padding:5px 14px;border-radius:16px;font-size:12px;}
+  /* Drill table */
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px;}
+  th{background:var(--panel2);color:var(--gold);text-align:left;padding:10px 14px;border:1px solid var(--border);font-size:12px;text-transform:uppercase;}
+  td{padding:10px 14px;border:1px solid var(--border);color:var(--muted);}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+  /* Nav guide */
+  .path{background:linear-gradient(135deg,var(--panel2),var(--panel));border:1px solid var(--border);border-radius:10px;padding:22px;margin-bottom:16px;}
+  .path h3{color:var(--gold);font-size:16px;margin-bottom:10px;}
+  .path ol{padding-left:22px;font-size:13.5px;}
+  .path ol li{margin-bottom:7px;}
+  .path .time{float:right;background:var(--panel);border:1px solid var(--border);padding:2px 10px;border-radius:12px;font-size:11px;color:var(--purple);}
+  /* Roadmap */
+  .timeline{display:flex;flex-direction:column;gap:0;}
+  .rm{display:grid;grid-template-columns:150px 1fr;border-left:2px solid var(--border);}
+  .rm .when{padding:16px;text-align:right;color:var(--gold);font-size:13px;font-weight:600;border-right:1px solid var(--border);}
+  .rm .what{padding:16px 24px;border-bottom:1px solid var(--border);font-size:13.5px;}
+  .rm .what b{color:#fff;}
+  footer{text-align:center;padding:30px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);}
+  .backtop{position:fixed;bottom:24px;right:24px;background:var(--gold);color:#0d1117;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-weight:700;box-shadow:0 4px 14px rgba(0,0,0,.4);}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">⛏ TerraPulze</span>
+  <a href="#ideas">Ideas Shared</a>
+  <a href="#flow">User Flow Stages</a>
+  <a href="#drill">Drilling Factors</a>
+  <a href="#navigate">Team Navigation</a>
+  <a href="#roadmap">Roadmap</a>
+</nav>
+
+<header class="hero">
+  <h1>TerraPulze</h1>
+  <p class="sub"><b>Terra</b> = earth · <b>Pulze</b> = pulse — locating minerals in the ground the way you'd search for a heartbeat, a sign of life. Minerals are the lifeline of the earth.</p>
+  <div class="tags">
+    <span class="tag">AI Target Ranking</span>
+    <span class="tag">Report in &lt; 1 Minute</span>
+    <span class="tag">Multi-Source Data Fusion</span>
+    <span class="tag">Deviation-Aware Drilling</span>
+    <span class="tag">Hosted &amp; Live</span>
+  </div>
+</header>
+
+<div class="container">
+
+<!-- ==================== IDEAS SHARED ==================== -->
+<section id="ideas">
+  <h2 class="sec">1 · All Ideas Shared (Concepts, Not Conversation)</h2>
+  <p class="sec-desc">Every distinct idea surfaced in the meeting, grouped by theme — the problem, the solution, expert drilling knowledge, and strategic direction.</p>
+  <div class="ideas-grid">
+
+    <div class="idea red">
+      <h4>🧗 The Problem Being Solved</h4>
+      <ul>
+        <li>Manual data-point picking is slow, stressful and requires rare experts</li>
+        <li>Finding satellite imagery online requires combining multiple ray-bands — heavy workload</li>
+        <li>Justifying "why drill here, not there" means manually sitting down and writing reports</li>
+        <li>Exploration teams wander the ground instead of knowing exactly where to drill</li>
+      </ul>
+    </div>
+
+    <div class="idea">
+      <h4>💡 The Core Solution</h4>
+      <ul>
+        <li>Feed data in → intelligent system ranks drill targets automatically</li>
+        <li>Each target gets a confidence percentage (e.g. "99% confidence this hole yields this resource")</li>
+        <li>System explains <i>why</i> — with the science behind it included</li>
+        <li>Query it further for deeper explanations</li>
+        <li>Remove a data point → rerun on the fly → results in under a minute</li>
+      </ul>
+    </div>
+
+    <div class="idea blue">
+      <h4>📥 Data Inputs (Multi-Source Fusion)</h4>
+      <ul>
+        <li>Sentinel-2 — vegetation &amp; moderation bands</li>
+        <li>Copernicus DEM — terrain data</li>
+        <li>LOAA magnetic data (geophysics)</li>
+        <li>Lithology data</li>
+        <li>Geochemistry — collected on the ground (soil/auger)</li>
+        <li>C-Log and any other user data points</li>
+        <li>Geology from "Wakusta's" + One Geology (run separately or together)</li>
+        <li>Protected areas — from the Forestry Commission</li>
+        <li>Roads / access layers</li>
+      </ul>
+    </div>
+
+    <div class="idea green">
+      <h4>🖥 System Capabilities (Live Demo)</h4>
+      <ul>
+        <li>Hosted &amp; live — access granted on request</li>
+        <li>Overview: # of targets, area measured, analyses run, avg target scope</li>
+        <li>Project details + team activity slots (everything logged)</li>
+        <li>Base maps: light / dark / satellite / terrain / hyperspectral</li>
+        <li>Layer toggles with "eye" button for data provenance explanations</li>
+        <li>Depth estimation — only added when probability is high; omitted when unsure</li>
+        <li>Analyses run in the background while you do other things</li>
+        <li>Click a drill target → score (e.g. 72%), cluster cells, depth, coordinates</li>
+      </ul>
+    </div>
+
+    <div class="idea">
+      <h4>📐 Grid &amp; Layout Logic</h4>
+      <ul>
+        <li>Targets appear in grid form — point, point, point on the map</li>
+        <li>No wandering: cut lines across the points → baseline + cross-lines</li>
+        <li>Access-aware: system factors existing roads/paths for optimal rig placement</li>
+      </ul>
+    </div>
+
+    <div class="idea purple">
+      <h4>⚙️ Drilling Expertise — Deviation</h4>
+      <ul>
+        <li>Precision drilling: the smaller the hole, the shorter it must be, or it deviates</li>
+        <li>165mm hole → beyond ~12 m stays true; 76mm hole → deviates past ~8 m (granite is hard, bends rods)</li>
+        <li>Angular holes are better than vertical — already at an angle</li>
+        <li>Drill string becomes a "strain" — must control the feed</li>
+        <li>Historical case: 1,010 m hole drilled like a parabola, 13°, corrected by controlling feed; remote-controlled from Australia (1999), depth checked every 30 minutes</li>
+        <li>Controlled deviation can be <i>used</i> deliberately to steer into ore</li>
+      </ul>
+    </div>
+
+    <div class="idea blue">
+      <h4>🕳 Down-Hole &amp; Underground Ideas</h4>
+      <ul>
+        <li>Target ≠ starting point — both are targets (collar position + ore position)</li>
+        <li>Soil &amp; auger work locates the zone; soil data stretched to predict vertical zones (~150 m vertical, 165 m down)</li>
+        <li>Deep drilling: eventually locate targets underground rather than from surface (15–18 months lead time)</li>
+        <li>Underground drilling needs extreme specificity — you may drill holes you weren't meant to</li>
+      </ul>
+    </div>
+
+    <div class="idea">
+      <h4>🗺 Scope Definition (Expert Feedback)</h4>
+      <ul>
+        <li>Define scope precisely: does the work end at "put the hole here," or extend to profile/angle?</li>
+        <li>Collar deviation exists even in current practice — plan 60°, end up slightly up/down</li>
+        <li>Structural data was missing from the demo — it's what angle-planning is derived from</li>
+        <li>Future capability: "put hole here, drill at this angle, this depth, expect this deviation/error margin"</li>
+        <li>Must become robust to compete with GIS tools like Hillfrog, KTIs</li>
+      </ul>
+    </div>
+
+    <div class="idea green">
+      <h4>🏛 Governance &amp; Minerals Commission Vision</h4>
+      <ul>
+        <li>Minerals Commission plug-in — all exploration companies on one system</li>
+        <li>Companies report through the system, not paper reports dropped at the office</li>
+        <li>Commission monitors activity in real time, sitting in their office</li>
+        <li>"Next time you're going, they're already meeting about it"</li>
+      </ul>
+    </div>
+
+    <div class="idea purple">
+      <h4>🇬🇭 Strategic &amp; National Vision</h4>
+      <ul>
+        <li>Home-grown Ghanaian solution → Ghanaian patent → a huge tech firm supporting mining services</li>
+        <li>Next product line: dispatch systems (every mine uses dispatch; few local options)</li>
+        <li>Employ mining engineers, geologists, small-mine staff in tech roles</li>
+        <li>Mining engineering students (~300, 90% doing AI projects) — industry must arm itself with AI</li>
+        <li>Train medium-scale Chinese operators: dramatize/demonstrate how soil, local grids, structural &amp; grab-sample data integrate</li>
+      </ul>
+    </div>
+
+    <div class="idea red">
+      <h4>🧪 Data Reality &amp; Validation Path</h4>
+      <ul>
+        <li>Current demo runs on made-up / test data — not real</li>
+        <li>Gold Fields agreed (2 weeks ago) to help supply real data</li>
+        <li>Trial window: 100–300 m depth test</li>
+        <li>Validate: run past/historical data through the model, compare predictions vs. actual outcomes</li>
+        <li>Where surface is heavily disturbed, model predictions need re-assessment on the ground</li>
+        <li>Write a memo with terms when a data partner is found</li>
+      </ul>
+    </div>
+
+    <div class="idea">
+      <h4>👥 Team &amp; Capability Gaps</h4>
+      <ul>
+        <li>The builders are "computer people solving a geology problem" — need domain experts to shape it</li>
+        <li>Dedicated geologist required — experienced in down-hole aspects</li>
+        <li>Contact chain at Gold Fields: Catherine → George Carlton → CEO sign-off for test run</li>
+        <li>Engage exploration managers; avoid conflicts of interest when assigning leads</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== USER FLOW ==================== -->
+<section id="flow">
+  <h2 class="sec">2 · User Flow — Stage by Stage</h2>
+  <p class="sec-desc">The complete journey through the system: what the user does, which screen/form they interact with, and what each stage produces.</p>
+
+  <div class="flow">
+
+    <div class="stage">
+      <div class="dot">1</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Login &amp; Access</h3><span class="role">Any team member</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Open the hosted, live web system</li><li>Request access from the TerraPulze team</li></ul></div>
+          <div class="field"><b>Screen / Form</b><ul><li>Login page (credentials)</li></ul></div>
+        </div>
+        <span class="out">→ Authenticated session</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">2</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Project Setup &amp; Team Assignment</h3><span class="role">Project lead</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Create or select a project</li><li>Assign team members to activity slots</li><li>Review project details</li></ul></div>
+          <div class="field"><b>Screen / Form</b><ul><li>Project details panel</li><li>Activities log — every action gets a slot</li></ul></div>
+        </div>
+        <span class="out">→ Active project with tracked team activity</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">3</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Data Ingestion</h3><span class="role">Geologist / data owner</span></div>
+        <div class="formbox"><b>📋 Input checklist:</b> Sentinel-2 bands · Copernicus DEM · LOAA magnetics · Lithology · Geochemistry (soil/auger) · C-Log · Wakusta's geology · One Geology · User-collected data points</div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Upload geochemistry overlay data from ground sampling</li><li>Toggle in built-in datasets (already hosted in the system — no hunting online)</li><li>Add extra small areas if needed</li></ul></div>
+          <div class="field"><b>Screen / Form</b><ul><li>Upload overlay panel</li><li>Dataset toggle list with "eye" buttons showing how each dataset was collected &amp; used</li></ul></div>
+        </div>
+        <span class="out">→ Fully loaded data workspace</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">4</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Map &amp; Layer Configuration</h3><span class="role">Geologist</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Choose base map: light / dark / satellite / terrain / hyperspectral</li><li>Inspect terrain of the sampled area</li><li>Toggle geophysics, perspective layers, geochemistry points, protected areas, roads, geology</li><li>Click "eye" buttons for data explanations</li></ul></div>
+          <div class="field"><b>Why it matters</b><ul><li>Protected-area layer keeps you compliant (Forestry Commission source)</li><li>Roads layer shows rig access</li><li>Compare Wakusta's vs One Geology vs both together</li></ul></div>
+        </div>
+        <span class="out">→ Contextual map of everything on the ground</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">5</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Run Analysis #1</h3><span class="role">Geologist / analyst</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Select which data points to include</li><li>Launch the analysis — runs in background</li><li>Continue doing other work in the system while it processes</li></ul></div>
+          <div class="field"><b>System behavior</b><ul><li>Algorithms + mathematical approaches fuse all layers</li><li>Identifies ranked targets in under 1–2 minutes</li></ul></div>
+        </div>
+        <span class="out">→ Ranked target list with confidence %</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">6</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Iterate — Rerun &amp; Compare</h3><span class="role">Geologist / analyst</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Remove or add 1–2 data points</li><li>Rerun analysis on the fly</li><li>Compare runs (with vs. without a dataset)</li></ul></div>
+          <div class="field"><b>Output</b><ul><li>Side-by-side analyses of the same ground</li><li>System explains <i>how each data point impacted</i> the result</li><li>Better perspective of what's really on the ground</li></ul></div>
+        </div>
+        <span class="out">→ Multiple comparable analyses</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">7</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Target Review &amp; Interrogation</h3><span class="role">Exploration manager + geologist</span></div>
+        <div class="formbox"><b>📋 Target detail card (per clicked target):</b> Score &amp; confidence % (e.g. 72%) · Number of cells in the cluster · Estimated depth (only when probability is high) · Coordinates · Summary · Full documentation link</div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Toggle drill-target layer, zoom in</li><li>Click individual targets on the map</li><li>Ask the system follow-up queries for deeper reasoning</li></ul></div>
+          <div class="field"><b>Key behavior</b><ul><li>Depth is included only when the system is confident; omitted otherwise</li><li>Science behind each ranking is always available</li></ul></div>
+        </div>
+        <span class="out">→ Selected, justified drill targets</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">8</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Grid Layout &amp; Access Planning</h3><span class="role">Surveyor / drill planner</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>View targets in grid form on the map</li><li>Cut lines across the points → baseline + cross-lines</li><li>Use terrain + roads layer to find the optimal, accessible rig position</li></ul></div>
+          <div class="field"><b>Rule of thumb</b><ul><li>If terrain prevents drilling straight from the accessible spot, position at the reachable point and plan an angled hole</li></ul></div>
+        </div>
+        <span class="out">→ Physical grid + rig placement plan</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">9</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Drill Parameter Planning (Deviation Factors)</h3><span class="role">Drilling engineer</span></div>
+        <div class="formbox"><b>📋 Deviation planning checklist:</b> Hole diameter vs. max true depth · Rod / drill-string strength · Planned angle (angular &gt; vertical) · Expected error margin · Feed-force control strategy · Corrective actions while feeding rods</div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Match hole diameter to depth (see deviation table below)</li><li>Choose the best rig for the diameter &amp; ground (granite = cutting, not chipping)</li><li>Plan angle &amp; expected deviation to still hit the target</li></ul></div>
+          <div class="field"><b>Future system feature</b><ul><li>"Put your hole here, drill at this angle, at this depth — expect this deviation, this error margin"</li></ul></div>
+        </div>
+        <span class="out">→ Complete drilling program</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">10</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Auto-Generated Report &amp; Submission</h3><span class="role">Exploration manager</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Receive the full detailed report automatically</li><li>Return to it at any point in time</li><li>Share with stakeholders / partners (future: submit via Minerals Commission plug-in)</li></ul></div>
+          <div class="field"><b>Replaces</b><ul><li>Manually writing justification reports</li><li>Hand-delivering paper reports to the Commission's office</li></ul></div>
+        </div>
+        <span class="out">→ Full report, always accessible</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="dot">11</div>
+      <div class="stage-card">
+        <div class="stage-head"><h3>Field Execution &amp; Validation</h3><span class="role">Drill crew + controller</span></div>
+        <div class="stage-body">
+          <div class="field"><b>What they do</b><ul><li>Drill with controlled feed force (speed too fast = missing the target)</li><li>Monitor depth at regular intervals (e.g. every 30 min in remote setup)</li><li>Correct deviation while feeding the drill string</li></ul></div>
+          <div class="field"><b>Feedback loop</b><ul><li>Compare model prediction vs. actual results (trial band: 100–300 m)</li><li>Where the surface is disturbed, re-assess on the ground</li></ul></div>
+        </div>
+        <span class="out">→ Real-world validation data fed back to the model</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== DRILLING FACTORS ==================== -->
+<section id="drill">
+  <h2 class="sec">3 · Deviation Reference — Hole Diameter vs. Depth</h2>
+  <p class="sec-desc">The expert drilling knowledge shared in the meeting, to be encoded into the system's drill-planning module.</p>
+  <div class="card">
+    <table>
+      <tr><th>Hole Diameter</th><th>Stays True Up To</th><th>Notes</th></tr>
+      <tr><td>165 mm</td><td>~12 m+</td><td>Larger holes travel further before deviating</td></tr>
+      <tr><td>89 mm</td><td>~10 m</td><td>Mid-size reference point</td></tr>
+      <tr><td>76 mm</td><td>~8 m</td><td>Deviates past 8 m — especially in hard granite (bends rods)</td></tr>
+      <tr><td>RC / blast-hole</td><td>—</td><td>Bigger rigs, bigger rods; coal has its own rules</td></tr>
+    </table>
+    <p style="margin-top:14px;font-size:13.5px;color:var(--muted);">⚑ Principles: <b style="color:var(--gold)">cut</b> the granite, don't chip it · angular holes beat vertical · the drill string acts as a strain — control the feed · controlled deviation can deliberately steer into ore (1,010 m parabola example, 13°, remote-controlled, hit the target).</p>
+  </div>
+</section>
+
+<!-- ==================== NAVIGATION GUIDE ==================== -->
+<section id="navigate">
+  <h2 class="sec">4 · How an Exploration Team Navigates This</h2>
+  <p class="sec-desc">A practical playbook for a team adopting TerraPulze — from first login to a validated drill program.</p>
+
+  <div class="path">
+    <h3>🚀 Quick Start <span class="time">Day 1</span></h3>
+    <ol>
+      <li><b>Request access</b> from the TerraPulze team — the system is already hosted and live.</li>
+      <li><b>Login</b> and create your project; add team members so every activity is tracked.</li>
+      <li><b>Upload your geochemistry data</b> (soil/auger points) as the overlay.</li>
+      <li><b>Toggle in</b> magnetics, terrain, lithology and geology layers — all pre-hosted.</li>
+      <li><b>Run your first analysis</b> — targets and confidence scores in under two minutes.</li>
+    </ol>
+  </div>
+
+  <div class="path">
+    <h3>🔁 The Iteration Loop <span class="time">Days 1–5</span></h3>
+    <ol>
+      <li>Run the analysis with <b>all</b> data points → note the target ranking.</li>
+      <li>Drop one layer (e.g. Wakusta's geology) → <b>rerun on the fly</b>.</li>
+      <li>Read the system's explanation of <b>how that layer changed the analysis</b>.</li>
+      <li>Add it back, drop another (e.g. magnetics) → rerun → compare.</li>
+      <li>Click each surviving target — interrogate the <b>score, depth, coordinates and reasoning</b>.</li>
+      <li>Converge on the target set you trust, with defensible reasons for each.</li>
+    </ol>
+  </div>
+
+  <div class="path">
+    <h3>🎯 From Targets to a Drill Program <span class="time">Week 2</span></h3>
+    <ol>
+      <li>Switch the base map to <b>terrain</b> + toggle <b>roads</b> — find where a rig can actually go.</li>
+      <li>Lay a <b>grid</b> (baseline + cross-lines) across the chosen targets.</li>
+      <li>For each collar position: apply the <b>diameter-vs-depth deviation table</b> (Section 3).</li>
+      <li>Pick the <b>angle</b> (angular holes deviate less) and the <b>right rig/rod size</b> for the ground.</li>
+      <li>Assign the <b>feed-control strategy</b> — who monitors depth, when to correct.</li>
+      <li>Export the auto-generated <b>full report</b> — justification included, no manual writing.</li>
+    </ol>
+  </div>
+
+  <div class="path">
+    <h3>📊 Validate &amp; Scale <span class="time">Month 1+</span></h3>
+    <ol>
+      <li>Run <b>historical data</b> from a known deposit through the model — does it predict what was actually found?</li>
+      <li>Conduct a <b>live trial</b> (100–300 m band) with a partner such as Gold Fields; write a <b>memo with terms</b>.</li>
+      <li>Feed actual drill results back — close the prediction-vs-reality loop.</li>
+      <li>On disturbed ground, <b>field-verify</b> before trusting model predictions.</li>
+      <li>For small/medium operators (e.g. Chinese medium-scale), use the system to <b>demonstrate</b> how soil, local grids, structural and grab-sample data integrate.</li>
+      <li>Connect to the <b>Minerals Commission plug-in</b> — report digitally, stay monitored, stay compliant.</li>
+    </ol>
+  </div>
+
+  <div class="path">
+    <h3>⚠️ Team Watchpoints</h3>
+    <ol>
+      <li><b>Know the fundamentals first</b> — the gaps in the software come from not knowing how exploration is done today.</li>
+      <li>Pair the tech team with a <b>dedicated geologist experienced in down-hole work</b>.</li>
+      <li><b>Define your scope</b>: does your use end at hole positioning, or extend to angle/profile planning?</li>
+      <li>Remember <b>collar deviation</b> exists even at a planned 60° — always carry an error margin.</li>
+      <li>Push for <b>structural data</b> in the demo — it's the basis of angle planning.</li>
+      <li>Benchmark against <b>Hillfrog / KTIs</b>-class GIS robustness before pitching multinationals.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ==================== ROADMAP ==================== -->
+<section id="roadmap">
+  <h2 class="sec">5 · Agreed Next Steps &amp; Roadmap</h2>
+  <p class="sec-desc">The concrete commitments and sequence emerging from the meeting.</p>
+  <div class="timeline">
+    <div class="rm"><div class="when">Now</div><div class="what"><b>Follow up with Gold Fields</b> — contact chain: Catherine → George Carlton → CEO sign-off for a real test run on one target.</div></div>
+    <div class="rm"><div class="when">Now</div><div class="what"><b>Secure real data</b> — replace the made-up demo data; validate the model against past project data.</div></div>
+    <div class="rm"><div class="when">This / next week</div><div class="what"><b>Site visit</b> — team travels to the experts' location for hands-on input and guidance.</div></div>
+    <div class="rm"><div class="when">Short term</div><div class="what"><b>Engage exploration managers</b> — meetings arranged post-visit; assign a lead without conflict of interest. Write a <b>memo with terms</b> for any data partner.</div></div>
+    <div class="rm"><div class="when">Short term</div><div class="what"><b>Recruit a dedicated geologist</b> (down-hole expertise) onto the build team; review fundamentals with senior geologists.</div></div>
+    <div class="rm"><div class="when">Build phase</div><div class="what"><b>Encode deviation factors</b> — hole diameter vs. depth, angle, rig selection, error margins into the target output. Add <b>structural data</b> and depth/angle prediction.</div></div>
+    <div class="rm"><div class="when">~3 months</div><div class="what"><b>Pilot</b> — a full-blown international system; pilot it, then sell it. Trial band: 100–300 m with Gold Fields.</div></div>
+    <div class="rm"><div class="when">Later</div><div class="what"><b>Minerals Commission plug-in</b> for industry-wide monitoring &amp; digital reporting → then <b>dispatch systems</b> as the next Ghanaian product.</div></div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  TerraPulze — "Terra" (earth) + "Pulze" (pulse) · Compiled from the MWMT meeting transcript (~60 min)<br>
+  Terms flagged as uncertain in the source (e.g. "Wakusta's", "Hillfrog", "KTIs") are kept as spoken — verify before external use.
+</footer>
+
+<a href="#" class="backtop">↑</a>
+
+</body>
+</html>

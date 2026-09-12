@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fire Assay Sample Lineage · Batch & Sample Flow · Eleven Stages</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0a08;
+    --bg-2: #14110d;
+    --surface: #181410;
+    --surface-2: #221d17;
+    --surface-3: #2a231c;
+    --border: #2e271f;
+    --border-hot: #4a3a23;
+    --fg: #f5efe6;
+    --muted: #a89884;
+    --dim: #6b5e4d;
+    --ember: #f97316;
+    --ember-deep: #c2410c;
+    --ember-hot: #ef4444;
+    --gold: #fbbf24;
+    --steel: #94a3b8;
+    --clay: #c2847a;
+    --moss: #84a98c;
+    --field: #84a98c;
+    --intake: #94a3b8;
+    --prep: #c2847a;
+    --assay: #f97316;
+    --qa: #fbbf24;
+    --report: #e7e5e4;
+    --batch-tint: rgba(249, 115, 22, 0.06);
+    --sample-tint: rgba(148, 163, 184, 0.05);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Manrope', sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(249, 115, 22, 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 95% 110%, rgba(220, 38, 38, 0.06), transparent 60%),
+      radial-gradient(ellipse 50% 30% at 5% 50%, rgba(132, 169, 140, 0.04), transparent 60%);
+    background-attachment: fixed;
+  }
+  .font-display { font-family: 'Fraunces', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    background: rgba(12, 10, 8, 0.78);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    line-height: 0.88;
+    letter-spacing: -0.035em;
+    font-size: clamp(2.5rem, 8vw, 6.5rem);
+  }
+  .hero-italic {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ember);
+  }
+
+  /* ── BATCH ANATOMY GRID ── */
+  .batch-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+  }
+  .batch-cell {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+  }
+  .batch-cell:hover {
+    transform: scale(1.3);
+    z-index: 10;
+    box-shadow: 0 0 0 1px var(--fg);
+  }
+  .batch-cell.client    { background: var(--assay); }
+  .batch-cell.standard  { background: var(--gold); }
+  .batch-cell.blank     { background: var(--steel); }
+  .batch-cell.duplicate { background: var(--clay); }
+  .batch-cell.check     { background: var(--moss); }
+
+  /* ── CORE LOG ── */
+  .core-log {
+    width: 56px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .core-segment {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    position: relative;
+    transition: all 0.4s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    cursor: pointer;
+  }
+  .core-segment:last-child { border-bottom: none; }
+  .core-segment.active {
+    box-shadow: inset 0 0 0 2px var(--gold), 0 0 20px rgba(251,191,36,0.3);
+    z-index: 2;
+  }
+  .core-segment:hover { transform: translateX(3px); }
+  .core-segment .batch-dot {
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.7;
+  }
+
+  .heat-cool { background: linear-gradient(180deg, #1e3a5f, #0c4a6e); }
+  .heat-warm { background: linear-gradient(180deg, #c2410c, #7c2d12); }
+  .heat-hot  { background: linear-gradient(180deg, #fbbf24, #dc2626 60%, #7f1d1d); }
+
+  .heat-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .heat-cool-bg { background: #0c4a6e; }
+  .heat-warm-bg { background: #c2410c; }
+  .heat-hot-bg  { background: linear-gradient(180deg, #fbbf24, #dc2626); }
+
+  /* ── STAGE CARD ── */
+  .stage-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .stage-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent, var(--border));
+    transition: width 0.3s ease;
+  }
+  .stage-card:hover {
+    border-color: var(--border-hot);
+    transform: translateX(2px);
+    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.6);
+  }
+  .stage-card:hover::before { width: 5px; }
+  .stage-card.is-active, .stage-card.graph-hover {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold), 0 20px 60px -20px rgba(251,191,36,0.3);
+  }
+
+  .stage-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--dim);
+    letter-spacing: -0.05em;
+    transition: color 0.3s;
+  }
+  .stage-card:hover .stage-num { color: var(--card-accent, var(--ember)); }
+
+  /* ── BATCH / SAMPLE SPLIT PANEL ── */
+  .bs-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-2);
+  }
+  .bs-side {
+    padding: 16px 18px;
+    position: relative;
+  }
+  .bs-side.batch {
+    background: var(--batch-tint);
+    border-right: 1px solid var(--border);
+  }
+  .bs-side.sample {
+    background: var(--sample-tint);
+  }
+  .bs-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .bs-icon {
+    width: 22px; height: 22px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .bs-icon.batch {
+    background: var(--ember);
+    background-image:
+      linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.25) 33%, transparent 33%, transparent 66%, rgba(0,0,0,0.25) 66%);
+    border: 1px solid var(--ember-deep);
+  }
+  .bs-icon.sample {
+    background: var(--steel);
+    border: 1px solid #64748b;
+  }
+  .bs-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .bs-label.batch { color: var(--ember); }
+  .bs-label.sample { color: var(--steel); }
+  .bs-size {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--dim);
+    padding: 2px 6px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+  }
+  .bs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .bs-list li {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--fg);
+    padding-left: 14px;
+    position: relative;
+  }
+  .bs-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .bs-side.batch .bs-list li::before { background: var(--ember); }
+  .bs-side.sample .bs-list li::before { background: var(--steel); }
+
+  /* ── FORM TICKET ── */
+  .form-ticket {
+    background: linear-gradient(180deg, rgba(249, 115, 22, 0.05), rgba(249, 115, 22, 0.01));
+    border: 1px dashed rgba(249, 115, 22, 0.4);
+    border-left: 3px solid var(--ember);
+    border-radius: 6px;
+    position: relative;
+    padding: 16px 18px;
+  }
+  .form-ticket::before, .form-ticket::after {
+    content: '';
+    position: absolute;
+    width: 10px; height: 10px;
+    background: var(--bg-2);
+    border: 1px dashed rgba(249, 115, 22, 0.4);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .form-ticket::before { left: -6px; }
+  .form-ticket::after { right: -6px; }
+
+  .capture-chip {
+    padding: 3px 8px;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .level-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  .level-batch  { color: var(--ember); background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.3); }
+  .level-sample { color: var(--steel); background: rgba(148,163,184,0.12); border: 1px solid rgba(148,163,184,0.3); }
+  .level-both    { color: var(--gold); background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3); }
+
+  .zone-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-block;
+  }
+  .zone-field   { color: var(--field); background: rgba(132,169,140,0.10); border: 1px solid rgba(132,169,140,0.30); }
+  .zone-intake  { color: var(--intake); background: rgba(148,163,184,0.10); border: 1px solid rgba(148,163,184,0.30); }
+  .zone-prep    { color: var(--prep); background: rgba(194,132,122,0.10); border: 1px solid rgba(194,132,122,0.30); }
+  .zone-assay   { color: var(--assay); background: rgba(249,115,22,0.12); border: 1px solid rgba(249,115,22,0.35); }
+  .zone-qa      { color: var(--qa); background: rgba(251,191,36,0.10); border: 1px solid rgba(251,191,36,0.35); }
+  .zone-report  { color: var(--report); background: rgba(231,229,228,0.08); border: 1px solid rgba(231,229,228,0.25); }
+
+  .io-block {
+    border-left: 2px solid var(--card-accent, var(--border));
+    padding-left: 12px;
+  }
+
+  .timeline-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: all 0.3s;
+    text-decoration: none;
+    min-width: 150px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .timeline-chip:hover {
+    border-color: var(--card-accent, var(--ember));
+    transform: translateY(-2px);
+    background: var(--surface-2);
+  }
+  .timeline-chip .accent-bar {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--card-accent, var(--ember));
+    border-radius: 8px 0 0 8px;
+  }
+
+  .forms-table { width: 100%; border-collapse: collapse; }
+  .forms-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+    background: var(--surface);
+    white-space: nowrap;
+  }
+  .forms-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    font-size: 0.875rem;
+  }
+  .forms-table tr { transition: background 0.2s; }
+  .forms-table tr:hover td { background: rgba(249, 115, 22, 0.04); }
+  .forms-table tr:last-child td { border-bottom: none; }
+
+  .schema-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    transition: border-color 0.3s;
+  }
+  .schema-card:hover { border-color: var(--border-hot); }
+  .code-block {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--muted);
+    overflow-x: auto;
+  }
+  .code-block .k { color: var(--ember); }
+  .code-block .s { color: var(--moss); }
+  .code-block .c { color: var(--dim); font-style: italic; }
+  .code-block .n { color: var(--gold); }
+
+  .graph-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 32px 24px;
+    overflow-x: auto;
+  }
+  .graph-node {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.25s ease;
+    cursor: pointer;
+  }
+  .graph-node:hover { transform: scale(1.25); }
+  .graph-node text { pointer-events: none; }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--ember);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  .duration-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.2);
+  }
+  .batch-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ember);
+    background: rgba(249,115,22,0.08);
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  .pulse { animation: pulse-soft 2.8s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* batch size bar */
+  .batch-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    overflow: hidden;
+    position: relative;
+  }
+  .batch-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+  @media (max-width: 768px) {
+    .stage-num { font-size: 2.8rem; }
+    .bs-panel { grid-template-columns: 1fr; }
+    .bs-side.batch { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-hot); }
+</style>
+</head>
+<body>
+
+<!-- ─────────── TOP NAV ─────────── -->
+<nav class="topnav">
+  <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-7 h-7 rounded-sm relative overflow-hidden" style="background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);">
+        <div class="absolute inset-0 opacity-40" style="background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.35) 3px, rgba(0,0,0,0.35) 4px);"></div>
+      </div>
+      <div>
+        <div class="font-mono text-[9px] tracking-[0.2em] text-[color:var(--muted)]">LAB · FA-001</div>
+        <div class="font-display font-medium text-sm leading-tight">Sample Lineage Atlas</div>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-1 text-[11px] font-mono">
+      <a href="#batch-model" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">BATCH MODEL</a>
+      <a href="#flow" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">FLOW</a>
+      <a href="#graph" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">GRAPH</a>
+      <a href="#forms" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">FORMS</a>
+      <a href="#schema" class="px-3 py-1.5 rounded hover:bg-white/5 text-[color:var(--muted)] hover:text-[color:var(--fg)] transition">SCHEMA</a>
+    </div>
+    <div class="font-mono text-[10px] text-[color:var(--dim)] hidden lg:block">REV 3.0 · 11 STAGES · BATCH + SAMPLE</div>
+  </div>
+</nav>
+
+<!-- ─────────── HERO ─────────── -->
+<header class="hero relative max-w-[1400px] mx-auto px-6 pt-20 pb-16">
+  <div class="grid lg:grid-cols-12 gap-12 items-end">
+    <div class="lg:col-span-8">
+      <div class="font-mono text-[11px] tracking-[0.3em] text-[color:var(--ember)] mb-10">
+        GEOCHEMISTRY LAB · FIRE ASSAY · Pb-COLLECTION / GRAVIMETRIC FINISH
+      </div>
+      <h1>
+        Fifty samples<br>
+        <span class="hero-italic">travel as one batch,</span><br>
+        leave as fifty results.
+      </h1>
+      <p class="mt-10 text-lg max-w-2xl text-[color:var(--muted)] leading-relaxed">
+        Fire assay is a batch process. Samples converge into furnace loads at fusion, travel together through cupellation, and diverge again at the finish line. This atlas maps every stage — showing what happens to the batch as a whole, and what happens to each sample within it.
+      </p>
+    </div>
+    <div class="lg:col-span-4 space-y-5">
+      <div class="grid grid-cols-3 gap-3">
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light text-[color:var(--ember)]">11</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">STAGES</div>
+        </div>
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light">50</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">PER BATCH</div>
+        </div>
+        <div class="border border-[color:var(--border)] rounded-lg p-4 bg-[color:var(--surface)]">
+          <div class="font-display text-4xl font-light">11</div>
+          <div class="font-mono text-[9px] tracking-widest text-[color:var(--muted)] mt-2">RECORDS</div>
+        </div>
+      </div>
+      <div class="text-xs font-mono text-[color:var(--dim)] leading-relaxed border-l-2 border-[color:var(--ember)] pl-4">
+        Each record becomes an edge in the lineage graph. Batch-level edges carry batch_id; sample-level edges carry sample_id. Both are pulled from the original form — never re-keyed.
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── BATCH MODEL SECTION ─────────── -->
+<section id="batch-model" class="max-w-[1400px] mx-auto px-6 py-16">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 00 · THE BATCH MODEL</div>
+    <h2 class="section-title">A batch is not a bag.<br><span class="italic font-light" style="color: var(--ember);">It's a furnace load.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Samples arrive individually but are processed in batches whose size is dictated by the physical capacity of each instrument — the oven, the furnace tray, the muffle, the ICP autosampler. Understanding batch boundaries is essential: a batch is the unit of QC, the unit of release, and the unit of re-run.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-8">
+    <!-- Batch anatomy -->
+    <div class="lg:col-span-7">
+      <div class="schema-card h-full">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-1">BATCH ANATOMY</div>
+            <div class="font-display text-2xl">Standard 50-position assay batch</div>
+          </div>
+          <div class="font-mono text-[10px] text-[color:var(--dim)] text-right">
+            40 unknowns<br>
+            + 10 QC
+          </div>
+        </div>
+
+        <div class="batch-grid mb-6" id="batch-anatomy-grid"></div>
+
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs">
+          <div class="flex items-start gap-2">
+            <div class="w-3 h-3 rounded-sm mt-0.5 flex-shrink-0" style="background: var(--assay);"></div>
+            <div>
+              <div class="text-[color:var(--fg)] font-medium">Client sample</div>
+              <div class="text-[color:var(--dim)] text-[10px]">×40 unknowns</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <div class="w-3 h-3 rounded-sm mt-0.5 flex-shrink-0" style="background: var(--gold);"></div>
+            <div>
+              <div class="text-[color:var(--fg)] font-medium">Standard</div>
+              <div class="text-[color:var(--dim)] text-[10px]">×4 CRM</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <div class="w-3 h-3 rounded-sm mt-0.5 flex-shrink-0" style="background: var(--steel);"></div>
+            <div>
+              <div class="text-[color:var(--fg)] font-medium">Blank</div>
+              <div class="text-[color:var(--dim)] text-[10px]">×2</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <div class="w-3 h-3 rounded-sm mt-0.5 flex-shrink-0" style="background: var(--clay);"></div>
+            <div>
+              <div class="text-[color:var(--fg)] font-medium">Duplicate</div>
+              <div class="text-[color:var(--dim)] text-[10px]">×2 repeat</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <div class="w-3 h-3 rounded-sm mt-0.5 flex-shrink-0" style="background: var(--moss);"></div>
+            <div>
+              <div class="text-[color:var(--fg)] font-medium">Check</div>
+              <div class="text-[color:var(--dim)] text-[10px]">×2 umpire</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-[color:var(--border)] text-xs text-[color:var(--muted)] leading-relaxed">
+          QC material is interspersed at fixed positions — typically every 10th and 20th position, plus first and last — so control charts can detect drift across the tray. The batch ID links all 50 positions to a single furnace batch sheet and a single QA review.
+        </div>
+      </div>
+    </div>
+
+    <!-- Batch size progression -->
+    <div class="lg:col-span-5">
+      <div class="schema-card h-full">
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-1">BATCH SIZE BY STAGE</div>
+        <div class="font-display text-2xl mb-6">Where samples converge</div>
+        <div class="space-y-3" id="batch-size-bars"></div>
+        <div class="mt-6 pt-6 border-t border-[color:var(--border)] text-xs text-[color:var(--muted)] leading-relaxed">
+          Batch size is set by instrument capacity, not by choice. The assay batch (50) is the master unit — it survives from charge weighout through to the Certificate of Analysis.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── TIMELINE OVERVIEW ─────────── -->
+<section class="max-w-[1400px] mx-auto px-6 pb-8">
+  <div class="border-y border-[color:var(--border)] py-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)]">SECTION 01</span>
+      <span class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--muted)]">·  STAGE INDEX</span>
+    </div>
+    <div id="timeline" class="flex gap-2 overflow-x-auto pb-2"></div>
+    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-[10px] font-mono">
+      <span class="text-[color:var(--dim)] tracking-widest">ZONES:</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--field)"></span>01 FIELD</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--intake)"></span>02 INTAKE</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--prep)"></span>03–05 PREP</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--assay)"></span>06–09 ASSAY</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--qa)"></span>10 QA</span>
+      <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background: var(--report)"></span>11 REPORT</span>
+      <span class="ml-auto text-[color:var(--dim)]">TEMP: <span class="heat-dot heat-cool-bg ml-1"></span> COOL <span class="heat-dot heat-warm-bg ml-2"></span> WARM <span class="heat-dot heat-hot-bg ml-2"></span> HOT</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── MAIN FLOW ─────────── -->
+<section id="flow" class="max-w-[1400px] mx-auto px-6 py-16">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 02 · THE FLOW</div>
+    <h2 class="section-title">Each stage, one operator,<br><span class="italic font-light" style="color: var(--ember);">one batch, fifty samples.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Every card below shows what the operator does to the batch as a unit (left panel) and to each sample within it (right panel). The form they sign captures both levels — batch-level fields like furnace ID and tray position, and sample-level fields like charge mass and prill weight.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-12 gap-10">
+    <aside class="lg:col-span-2 hidden lg:block">
+      <div class="sticky top-24 space-y-4">
+        <div class="font-mono text-[10px] tracking-[0.2em] text-[color:var(--dim)]">CORE LOG</div>
+        <div id="core-log" class="core-log"></div>
+        <div class="text-[10px] font-mono text-[color:var(--dim)] leading-relaxed pt-2">
+          Depth proxy for sample state. Gold dot = batch converges here.
+        </div>
+      </div>
+    </aside>
+
+    <div class="lg:col-span-10 space-y-6" id="flow-cards"></div>
+  </div>
+</section>
+
+<!-- ─────────── MATERIAL FLOW GRAPH ─────────── -->
+<section id="graph" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 03 · MATERIAL & DATA FLOW</div>
+    <h2 class="section-title">Fifty lines converge,<br><span class="italic font-light" style="color: var(--ember);">then diverge again.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Samples flow individually through prep, converge into a 50-position batch at charge weighout, travel as a single furnace load through fusion and cupellation, then diverge again at the finish where each prill is weighed separately. Batch boundaries are shown as shaded bands.
+    </p>
+  </div>
+
+  <div class="graph-container">
+    <div id="graph-svg"></div>
+    <div class="grid md:grid-cols-4 gap-6 mt-8 pt-8 border-t border-[color:var(--border)] text-sm">
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">MAIN PATH</div>
+        <div class="text-[color:var(--muted)]">Sample-to-certificate flow. Thickness tracks remaining mass.</div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">BATCH BANDS</div>
+        <div class="text-[color:var(--muted)]">Shaded regions mark where samples are processed as a single batch unit.</div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">BRANCHES</div>
+        <div class="text-[color:var(--muted)]">Material exiting the main path: rejects, archive pulps, slag, absorbed lead.</div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-2">EDGES</div>
+        <div class="text-[color:var(--muted)]">Each form becomes an edge carrying operator, timestamp, instrument, and batch_id.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FORMS INDEX ─────────── -->
+<section id="forms" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 04 · RECORDS INDEX</div>
+    <h2 class="section-title">Eleven forms,<br><span class="italic font-light" style="color: var(--ember);">two granularity levels.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Some records are filled once per batch (furnace batch sheet, cupellation log). Others are filled once per sample (charge weigh ticket, prill weight record). Most capture both — a batch-level header with sample-level line items.
+    </p>
+  </div>
+
+  <div class="border border-[color:var(--border)] rounded-xl overflow-hidden bg-[color:var(--surface)] overflow-x-auto">
+    <table class="forms-table">
+      <thead>
+        <tr>
+          <th style="width: 50px;">#</th>
+          <th style="width: 150px;">STAGE</th>
+          <th style="width: 170px;">OPERATOR</th>
+          <th>RECORD / FORM</th>
+          <th style="width: 100px;">RECORD LEVEL</th>
+          <th style="width: 240px;">CAPTURES → EDGE PROPERTIES</th>
+          <th style="width: 90px;">EDGE ID</th>
+        </tr>
+      </thead>
+      <tbody id="forms-tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ─────────── SCHEMA ─────────── -->
+<section id="schema" class="max-w-[1400px] mx-auto px-6 py-20">
+  <div class="mb-12 max-w-3xl">
+    <div class="section-eyebrow mb-4">SECTION 05 · LINEAGE EDGE SCHEMA</div>
+    <h2 class="section-title">From paper form<br><span class="italic font-light" style="color: var(--ember);">to graph edge.</span></h2>
+    <p class="mt-6 text-[color:var(--muted)] leading-relaxed">
+      Every completed form becomes one edge. Batch-level forms produce a single edge per batch, annotated with <code class="font-mono text-xs text-[color:var(--gold)]">batch_id</code>. Sample-level forms produce one edge per sample, annotated with both <code class="font-mono text-xs text-[color:var(--gold)]">batch_id</code> and <code class="font-mono text-xs text-[color:var(--gold)]">sample_id</code>.
+    </p>
+  </div>
+
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">EDGE STRUCTURE — BATCH LEVEL</div>
+      <div class="font-display text-xl mb-4">stage_N <span style="color:var(--ember)">→</span> stage_N+1 <span class="font-mono text-sm text-[color:var(--dim)]">(per batch)</span></div>
+      <div class="code-block">
+<span class="c">// one edge per batch (e.g. furnace batch sheet)</span>
+{
+  <span class="k">"edge_id"</span>: <span class="s">"FA-2024-0847-e07-batch"</span>,
+  <span class="k">"batch_id"</span>: <span class="s">"B-2024-0847"</span>,
+  <span class="k">"from"</span>: <span class="s">"node/06-charges"</span>,
+  <span class="k">"to"</span>: <span class="s">"node/07-fusion"</span>,
+  <span class="k">"form"</span>: <span class="s">"Furnace batch sheet"</span>,
+  <span class="k">"operator"</span>: { <span class="k">"id"</span>: <span class="s">"u/j.mensah"</span>, <span class="k">"role"</span>: <span class="s">"assay_tech"</span> },
+  <span class="k">"instrument"</span>: { <span class="k">"id"</span>: <span class="s">"furnace/FX-02"</span> },
+  <span class="k">"timestamp"</span>: <span class="s">"2024-08-14T09:15:00Z"</span>,
+  <span class="k">"captures"</span>: [
+    <span class="s">"furnace_id"</span>, <span class="s">"tray_positions"</span>,
+    <span class="s">"flux_recipe"</span>, <span class="s">"temp_setpoint"</span>,
+    <span class="s">"duration"</span>, <span class="s">"qc_positions"</span>
+  ],
+  <span class="k">"sample_count"</span>: <span class="n">50</span>,
+  <span class="k">"signature"</span>: <span class="s">"sha256:9f3a…b21c"</span>
+}
+      </div>
+    </div>
+
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">EDGE STRUCTURE — SAMPLE LEVEL</div>
+      <div class="font-display text-xl mb-4">stage_N <span style="color:var(--ember)">→</span> stage_N+1 <span class="font-mono text-sm text-[color:var(--dim)]">(per sample)</span></div>
+      <div class="code-block">
+<span class="c">// one edge per sample (e.g. charge weigh ticket)</span>
+{
+  <span class="k">"edge_id"</span>: <span class="s">"FA-2024-0847-e06-s023"</span>,
+  <span class="k">"batch_id"</span>: <span class="s">"B-2024-0847"</span>,
+  <span class="k">"sample_id"</span>: <span class="s">"S-48217"</span>,
+  <span class="k">"from"</span>: <span class="s">"node/05-pulp"</span>,
+  <span class="k">"to"</span>: <span class="s">"node/06-charge"</span>,
+  <span class="k">"form"</span>: <span class="s">"Charge weigh ticket"</span>,
+  <span class="k">"operator"</span>: { <span class="k">"id"</span>: <span class="s">"u/j.mensah"</span> },
+  <span class="k">"instrument"</span>: { <span class="k">"id"</span>: <span class="s">"bal/AB-12"</span> },
+  <span class="k">"timestamp"</span>: <span class="s">"2024-08-14T07:42:33Z"</span>,
+  <span class="k">"captures"</span>: [
+    <span class="s">"charge_mass"</span>, <span class="s">"pulp_archive_id"</span>,
+    <span class="s">"archive_shelf"</span>, <span class="s">"balance_id"</span>
+  ],
+  <span class="k">"tray_position"</span>: <span class="n">23</span>,
+  <span class="k">"signature"</span>: <span class="s">"sha256:a1b7…e4f2"</span>
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-5 mt-6">
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 01</div>
+      <div class="font-display text-xl mb-2">No re-keying.</div>
+      <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+        Operator, timestamp, instrument, batch_id and sample_id are captured at the moment of action. The graph ingests the structured record — nobody copies values between systems.
+      </div>
+    </div>
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 02</div>
+      <div class="font-display text-xl mb-2">One form, many edges.</div>
+      <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+        A batch-level form yields one edge per batch. A sample-level form yields one edge per sample — up to 50 edges from a single form. Both carry the same batch_id for traceability.
+      </div>
+    </div>
+    <div class="schema-card">
+      <div class="font-mono text-[10px] tracking-widest text-[color:var(--ember)] mb-3">PRINCIPLE 03</div>
+      <div class="font-display text-xl mb-2">Branches are first-class.</div>
+      <div class="text-sm text-[color:var(--muted)] leading-relaxed">
+        Rejects, archive pulps and slag are separate downstream nodes with their own edges. Any stored material can be re-entered into the workflow and re-traced to its origin batch.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FOOTER ─────────── -->
+<footer class="border-t border-[color:var(--border)] mt-12">
+  <div class="max-w-[1400px] mx-auto px-6 py-12">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-7 h-7 rounded-sm relative overflow-hidden" style="background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);"></div>
+          <div class="font-display font-medium">Sample Lineage Atlas</div>
+        </div>
+        <div class="text-xs text-[color:var(--muted)] leading-relaxed max-w-sm">
+          A reference model for fire-assay sample tracking — from field collection to certified result, with full batch and sample granularity.
+        </div>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-3">REFERENCE</div>
+        <ul class="space-y-1 text-xs text-[color:var(--muted)]">
+          <li>Method: Pb fire assay / gravimetric finish</li>
+          <li>Standard batch: 50 positions (40 + 10 QC)</li>
+          <li>Fusion temperature: ~1100 °C</li>
+          <li>Cupellation: ~1000 °C</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-3">META</div>
+        <ul class="space-y-1 text-xs text-[color:var(--muted)]">
+          <li>Revision: 3.0</li>
+          <li>Issued: 2024-08-14</li>
+          <li>Owner: Geochemistry Operations</li>
+          <li>Format: page/HTML · printable</li>
+        </ul>
+      </div>
+    </div>
+    <div class="mt-10 pt-6 border-t border-[color:var(--border)] flex flex-wrap justify-between items-center gap-3 text-[10px] font-mono text-[color:var(--dim)]">
+      <span>LAB · FA-001 · SAMPLE LINEAGE ATLAS · BATCH + SAMPLE</span>
+      <span>11 STAGES · 7 ROLES · 11 RECORDS · BATCH-LEVEL + SAMPLE-LEVEL EDGES</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ─────────── STAGE DATA ───────────
+const stages = [
+  {
+    n: "01", name: "Field sampling", operator: "Field geologist",
+    zone: "field", zoneLabel: "FIELD", heat: "cool",
+    duration: "~5 min / sample",
+    batchSize: "1 (individual)",
+    batchType: "Consignment",
+    activity: "Cuts or collects the ~3 kg interval from drill core, bags and tags it with the hole ID and from–to depth, and initiates chain of custody.",
+    batchHandling: [
+      "Multiple samples from one drill program grouped into a submission consignment",
+      "One chain-of-custody form covers the entire consignment",
+      "Custody seal applied to the transport crate, not individual bags"
+    ],
+    sampleHandling: [
+      "Each ~3 kg interval cut individually from core",
+      "Bagged and tagged with hole ID + from-to depth",
+      "GPS coordinates and field conditions recorded per sample"
+    ],
+    form: "Sample submission / chain-of-custody form",
+    formLevel: "both",
+    captures: ["Sampling geologist", "Timestamp", "Hole ID", "From–to depth", "Sample mass", "GPS", "Consignment ID", "Field conditions"],
+    instrument: "Core saw · sample bags · tamper-evident tags · GPS",
+    input: "Drill core on site",
+    output: "Bagged, tagged sample with custody opened",
+    byproducts: "—"
+  },
+  {
+    n: "02", name: "Receiving & login", operator: "Receiving clerk",
+    zone: "intake", zoneLabel: "INTAKE", heat: "cool",
+    duration: "~3 min / sample",
+    batchSize: "Consignment (variable)",
+    batchType: "Submission",
+    activity: "Checks the bag against the submission sheet, records gross wet mass, and assigns a lab sample ID and barcode in the LIMS.",
+    batchHandling: [
+      "Entire consignment received and checked against submission sheet",
+      "Custody seal verified intact before opening crate",
+      "Consignment registered as a group in LIMS"
+    ],
+    sampleHandling: [
+      "Each sample individually inspected for damage",
+      "Gross wet mass recorded per sample",
+      "Unique lab sample ID + barcode assigned per sample"
+    ],
+    form: "Sample intake log (LIMS)",
+    formLevel: "both",
+    captures: ["Receiving clerk", "Receipt timestamp", "Gross wet mass", "Lab sample ID", "Barcode", "Consignment ID", "Condition on arrival", "Submitter"],
+    instrument: "Balance · barcode scanner · LIMS client",
+    input: "Bagged sample from field",
+    output: "Registered sample with LIMS ID",
+    byproducts: "—"
+  },
+  {
+    n: "03", name: "Drying", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "8–12 h (batch)",
+    batchSize: "20–40 / oven load",
+    batchType: "Oven load",
+    activity: "Loads the sample into the oven, sets temperature and duration, then unloads it and records the dry mass.",
+    batchHandling: [
+      "Multiple samples loaded into oven as one oven load",
+      "Single temperature setpoint and duration for entire load",
+      "One drying log sheet per oven load with load/unload timestamps"
+    ],
+    sampleHandling: [
+      "Each sample in its own bag at a recorded tray position",
+      "Individual dry mass recorded on unload",
+      "Moisture loss calculated per sample"
+    ],
+    form: "Drying log sheet",
+    formLevel: "both",
+    captures: ["Prep tech", "Oven ID", "Load timestamp", "Unload timestamp", "Temperature setpoint", "Duration", "Dry mass (per sample)", "Moisture loss (calc)"],
+    instrument: "Drying oven · balance",
+    input: "Wet sample",
+    output: "Dried sample",
+    byproducts: "Moisture (vented)"
+  },
+  {
+    n: "04", name: "Crushing & splitting", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "~8 min / sample",
+    batchSize: "20–50 / session",
+    batchType: "Prep session",
+    activity: "Runs the jaw crusher, riffle-splits the dried sample, and bags and shelves the reject with a retrieval location.",
+    batchHandling: [
+      "Group of samples processed in one shift session on one worksheet",
+      "Crusher cleaned between samples to prevent cross-contamination",
+      "Session ID links all samples processed together"
+    ],
+    sampleHandling: [
+      "Each sample individually jaw-crushed to coarse fragment size",
+      "Riffle-split to produce a representative sub-sample",
+      "Reject bagged with unique ID and shelved at recorded location"
+    ],
+    form: "Crush / split worksheet",
+    formLevel: "both",
+    captures: ["Prep tech", "Jaw crusher ID", "Riffle splitter ID", "Start / end timestamps", "Split ratio", "Reject bag ID", "Shelf location", "Session ID"],
+    instrument: "Jaw crusher · riffle splitter",
+    input: "Dried sample",
+    output: "Split portion (to pulverising)",
+    byproducts: "Coarse reject (archived on shelf)"
+  },
+  {
+    n: "05", name: "Pulverising", operator: "Prep technician",
+    zone: "prep", zoneLabel: "PREP", heat: "warm",
+    duration: "~4 min / sample",
+    batchSize: "20–50 / session",
+    batchType: "Prep session",
+    activity: "Runs the ring mill, pulls a sieve cut to check P80 fineness, and signs off once the grind meets spec.",
+    batchHandling: [
+      "Group of samples processed in one pulverising session",
+      "Bowl cleaned or swapped between samples per cleaning protocol",
+      "Session ID links all pulps produced together"
+    ],
+    sampleHandling: [
+      "Each sample individually ring-milled to fine pulp",
+      "P80 sieve cut pulled per sample to verify fineness",
+      "Regrind if P80 fails spec; regrind count recorded"
+    ],
+    form: "Pulverising & sieve QC form",
+    formLevel: "both",
+    captures: ["Prep tech", "Ring mill ID", "Bowl ID", "Start / stop timestamps", "P80 sieve result", "Pass / fail", "Regrind count", "Session ID"],
+    instrument: "Ring mill · test sieves · sieve shaker",
+    input: "Crushed split",
+    output: "Pulp (fine ground)",
+    byproducts: "—"
+  },
+  {
+    n: "06", name: "Charge weigh-out", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "cool",
+    duration: "~1 min / charge",
+    batchSize: "50 / assay batch",
+    batchType: "Assay batch",
+    activity: "Weighs the assay charge from the pulp on an analytical balance and shelves the remaining pulp as archive.",
+    batchHandling: [
+      "Charges assembled into a 50-position assay batch (40 unknowns + 10 QC)",
+      "QC material (standards, blanks, duplicates, checks) added at fixed positions",
+      "Batch ID assigned — this is the master unit through to reporting"
+    ],
+    sampleHandling: [
+      "Each charge weighed individually on analytical balance (±0.01 mg)",
+      "Remaining pulp archived with unique pulp archive ID",
+      "Tray position assigned per charge within the batch"
+    ],
+    form: "Charge weigh ticket",
+    formLevel: "both",
+    captures: ["Assay tech", "Balance ID", "Weigh timestamp", "Charge mass", "Pulp archive ID", "Archive shelf", "Batch ID", "Tray position"],
+    instrument: "Analytical balance (5-decimal) · pulp archive cabinet",
+    input: "Pulp",
+    output: "Assay charge (typically 10–30 g) in batch of 50",
+    byproducts: "Archive pulp (shelved)"
+  },
+  {
+    n: "07", name: "Fusion", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "hot",
+    duration: "45–60 min (batch)",
+    batchSize: "24–50 / furnace tray",
+    batchType: "Furnace batch",
+    activity: "Adds flux to the charge and loads the crucible into the furnace at a logged tray position, alongside standards, blanks and duplicates.",
+    batchHandling: [
+      "Entire tray of crucibles loaded into furnace together at ~1100 °C",
+      "Single fusion temperature and duration for the whole batch",
+      "QC positions (standards, blanks, duplicates) interspersed at fixed slots",
+      "One furnace batch sheet per tray — this is the batch-level record"
+    ],
+    sampleHandling: [
+      "Each charge in its own crucible at a logged tray position",
+      "Flux recipe weighed per crucible (matrix-dependent)",
+      "Tray position recorded per sample for traceability"
+    ],
+    form: "Furnace batch sheet",
+    formLevel: "batch",
+    captures: ["Assay tech", "Furnace ID", "Tray positions (all 50)", "Flux recipe + mass", "Fusion temperature", "Duration", "QC standards + positions", "Batch ID"],
+    instrument: "Fusion furnace · crucibles · fluxing balance",
+    input: "50 charges + flux",
+    output: "50 lead buttons + slag",
+    byproducts: "Slag (discarded per batch)"
+  },
+  {
+    n: "08", name: "Cupellation", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "hot",
+    duration: "60–90 min (batch)",
+    batchSize: "24–50 / muffle load",
+    batchType: "Muffle batch",
+    activity: "Transfers the lead button onto a cupel, runs the cupellation furnace, and recovers the prill once lead absorption is complete.",
+    batchHandling: [
+      "Entire muffle load of cupels run together at ~1000 °C",
+      "Single temperature and duration for the whole batch",
+      "One cupellation log per muffle load — batch-level record",
+      "Visual endpoint check across all cupels"
+    ],
+    sampleHandling: [
+      "Each lead button placed on its own cupel",
+      "Prill recovered individually from each cupel",
+      "Cupel ID recorded per sample position"
+    ],
+    form: "Cupellation log",
+    formLevel: "batch",
+    captures: ["Assay tech", "Muffle ID", "Cupel IDs (all)", "Load timestamp", "Unload timestamp", "Temperature", "Visual endpoint sign-off", "Batch ID"],
+    instrument: "Cupellation muffle · cupels · tongs",
+    input: "50 lead buttons",
+    output: "50 precious-metal prills",
+    byproducts: "Absorbed lead (cupel waste, batch-level)"
+  },
+  {
+    n: "09", name: "Finish", operator: "Assay technician",
+    zone: "assay", zoneLabel: "ASSAY", heat: "warm",
+    duration: "5–30 min / sample",
+    batchSize: "50 / sequence (ICP) or 1 (grav)",
+    batchType: "Instrument sequence",
+    activity: "Weighs the prill on a microbalance and completes the finish — parting for a gravimetric result, or dissolution and instrumental read for ICP/AAS.",
+    batchHandling: [
+      "For ICP/AAS: samples dissolved and run as one instrumental sequence",
+      "Calibration set run at start and end of sequence",
+      "Sequence ID links all samples in one instrument run"
+    ],
+    sampleHandling: [
+      "Each prill individually weighed on microbalance (µg precision)",
+      "Grade calculated per sample from prill mass and charge mass",
+      "Parting acids used per sample for gravimetric finish"
+    ],
+    form: "Finish & prill weight record",
+    formLevel: "sample",
+    captures: ["Assay tech", "Microbalance ID", "Prill mass (µg)", "Finish method", "Instrument read", "Calculated grade (g/t)", "Sample ID", "Sequence ID"],
+    instrument: "Microbalance · parting acids · ICP-OES / AAS",
+    input: "50 prills",
+    output: "50 assay results (g/t or ppm)",
+    byproducts: "—"
+  },
+  {
+    n: "10", name: "QA review", operator: "Senior chemist / QA",
+    zone: "qa", zoneLabel: "QA", heat: "cool",
+    duration: "15–60 min / batch",
+    batchSize: "50 / batch review",
+    batchType: "QA batch",
+    activity: "Checks standards, blanks and duplicates against control charts, reviews any mass-balance flags from prep, and approves or rejects the batch.",
+    batchHandling: [
+      "Entire batch reviewed as a unit against control charts",
+      "Standard recovery, blank values, duplicate RPD checked at batch level",
+      "Mass-balance flags from prep reviewed for the whole batch",
+      "Batch-level decision: approve, reject, or re-run specific samples"
+    ],
+    sampleHandling: [
+      "Individual outliers flagged for investigation",
+      "Specific samples may be selected for re-assay",
+      "Per-sample comments recorded where anomalous"
+    ],
+    form: "QA review checklist",
+    formLevel: "batch",
+    captures: ["QA officer", "Review timestamp", "Standard recovery %", "Blank value", "Duplicate RPD %", "Mass-balance flags", "Decision (approve / reject / re-run)", "Batch ID"],
+    instrument: "Control charts · LIMS QA module",
+    input: "50 assay results + QC data",
+    output: "Approved (or rejected) batch",
+    byproducts: "Re-run requests (if any)"
+  },
+  {
+    n: "11", name: "Reporting", operator: "LIMS administrator",
+    zone: "report", zoneLabel: "REPORT", heat: "cool",
+    duration: "~5 min / batch",
+    batchSize: "50 / certificate",
+    batchType: "Report batch",
+    activity: "Compiles the approved results into a client-facing report, referencing the original hole and interval, and releases it.",
+    batchHandling: [
+      "One Certificate of Analysis per batch (50 samples)",
+      "Batch ID and method codes referenced on the certificate",
+      "Digital signature applied at batch level",
+      "Distribution list managed per batch"
+    ],
+    sampleHandling: [
+      "Each sample's result listed with original hole ID + interval",
+      "Individual sample IDs traceable to LIMS records",
+      "Per-sample flags (e.g. re-run, over-limit) noted"
+    ],
+    form: "Certificate of Analysis",
+    formLevel: "both",
+    captures: ["LIMS admin", "Issue timestamp", "Report version", "Digital signature", "Original hole + interval (per sample)", "Method codes", "Batch ID", "Distribution list"],
+    instrument: "LIMS reporting module · digital signature",
+    input: "Approved batch",
+    output: "Released Certificate of Analysis",
+    byproducts: "—"
+  }
+];
+
+// ─────────── BATCH ANATOMY GRID ───────────
+const batchGrid = document.getElementById('batch-anatomy-grid');
+// 40 client + 4 standard + 2 blank + 2 duplicate + 2 check = 50
+const anatomy = [];
+for (let i = 0; i < 40; i++) anatomy.push('client');
+for (let i = 0; i < 4; i++) anatomy.push('standard');
+for (let i = 0; i < 2; i++) anatomy.push('blank');
+for (let i = 0; i < 2; i++) anatomy.push('duplicate');
+for (let i = 0; i < 2; i++) anatomy.push('check');
+// shuffle but keep some structure: QC at positions 1, 10, 20, 30, 40, 50
+const positioned = new Array(50).fill('client');
+positioned[0] = 'standard';
+positioned[9] = 'blank';
+positioned[19] = 'standard';
+positioned[29] = 'duplicate';
+positioned[39] = 'standard';
+positioned[49] = 'check';
+// fill remaining QC
+let stdIdx = 1, blkIdx = 1, dupIdx = 1, chkIdx = 1;
+for (let i = 0; i < 50; i++) {
+  if (positioned[i] === 'client') {
+    // place remaining QC samples at intervals
+  }
+}
+// actually let's just use the positioned array directly
+positioned.forEach((type, i) => {
+  const cell = document.createElement('div');
+  cell.className = `batch-cell ${type}`;
+  cell.title = `Position ${i + 1}: ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+  batchGrid.appendChild(cell);
+});
+
+// ─────────── BATCH SIZE BARS ───────────
+const batchSizes = [
+  { stage: '01 Field', size: 1, label: '1 (individual)', color: 'var(--field)' },
+  { stage: '02 Intake', size: 50, label: 'Consignment', color: 'var(--intake)' },
+  { stage: '03 Drying', size: 30, label: '20–40 / oven', color: 'var(--prep)' },
+  { stage: '04 Crush', size: 35, label: '20–50 / session', color: 'var(--prep)' },
+  { stage: '05 Pulverise', size: 35, label: '20–50 / session', color: 'var(--prep)' },
+  { stage: '06 Charge', size: 50, label: '50 / assay batch', color: 'var(--assay)' },
+  { stage: '07 Fusion', size: 50, label: '24–50 / tray', color: 'var(--assay)' },
+  { stage: '08 Cupellation', size: 50, label: '24–50 / muffle', color: 'var(--assay)' },
+  { stage: '09 Finish', size: 50, label: '50 / sequence', color: 'var(--assay)' },
+  { stage: '10 QA', size: 50, label: '50 / review', color: 'var(--qa)' },
+  { stage: '11 Report', size: 50, label: '50 / CoA', color: 'var(--report)' }
+];
+const bsb = document.getElementById('batch-size-bars');
+const maxSize = 50;
+batchSizes.forEach(b => {
+  const pct = (b.size / maxSize) * 100;
+  bsb.insertAdjacentHTML('beforeend', `
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="font-mono text-[11px] text-[color:var(--fg)]">${b.stage}</span>
+        <span class="font-mono text-[10px] text-[color:var(--muted)]">${b.label}</span>
+      </div>
+      <div class="batch-bar">
+        <div class="batch-bar-fill" style="width: ${pct}%; background: ${b.color};"></div>
+      </div>
+    </div>
+  `);
+});
+
+// ─────────── RENDER TIMELINE CHIPS ───────────
+const tl = document.getElementById('timeline');
+stages.forEach(s => {
+  tl.insertAdjacentHTML('beforeend', `
+    <a href="#stage-${s.n}" class="timeline-chip" style="--card-accent: var(--${s.zone});">
+      <span class="accent-bar"></span>
+      <span class="font-mono text-[9px] tracking-widest text-[color:var(--dim)] mb-1 pl-2">STAGE ${s.n}</span>
+      <span class="text-xs font-medium text-[color:var(--fg)] pl-2">${s.name}</span>
+      <span class="font-mono text-[9px] text-[color:var(--muted)] mt-1 pl-2">${s.operator.split(' / ')[0]}</span>
+      <span class="batch-badge mt-2 ml-2">${s.batchSize}</span>
+    </a>
+  `);
+});
+
+// ─────────── RENDER CORE LOG ───────────
+const cl = document.getElementById('core-log');
+stages.forEach(s => {
+  const isBatchConvergence = ['06', '07', '08'].includes(s.n);
+  cl.insertAdjacentHTML('beforeend', `
+    <div class="core-segment heat-${s.heat}" data-zone="${s.zoneLabel}" data-n="${s.n}" title="${s.n} · ${s.name} · ${s.batchSize}">
+      ${s.n}
+      ${isBatchConvergence ? '<span class="batch-dot"></span>' : ''}
+    </div>
+  `);
+});
+
+// ─────────── RENDER STAGE CARDS ───────────
+const fc = document.getElementById('flow-cards');
+stages.forEach(s => {
+  const capturesHtml = s.captures.map(c => `<span class="capture-chip">${c}</span>`).join('');
+  const batchListHtml = s.batchHandling.map(item => `<li>${item}</li>`).join('');
+  const sampleListHtml = s.sampleHandling.map(item => `<li>${item}</li>`).join('');
+  const levelTagHtml = s.formLevel === 'batch'
+    ? '<span class="level-tag level-batch">BATCH-LEVEL</span>'
+    : s.formLevel === 'sample'
+    ? '<span class="level-tag level-sample">SAMPLE-LEVEL</span>'
+    : '<span class="level-tag level-both">BATCH + SAMPLE</span>';
+
+  fc.insertAdjacentHTML('beforeend', `
+    <article class="stage-card reveal" id="stage-${s.n}" style="--card-accent: var(--${s.zone});">
+      <div class="p-6 md:p-8">
+        <!-- Header row -->
+        <div class="grid grid-cols-12 gap-6 mb-6">
+          <div class="col-span-12 md:col-span-2">
+            <div class="flex md:flex-col items-start gap-3 md:gap-2">
+              <div class="stage-num">${s.n}</div>
+              <div class="flex flex-col gap-2 mt-2">
+                <span class="zone-tag zone-${s.zone}">${s.zoneLabel}</span>
+                <div class="flex items-center gap-1.5 text-[10px] font-mono text-[color:var(--dim)]">
+                  <span class="heat-dot heat-${s.heat}-bg"></span>
+                  <span>${s.heat.toUpperCase()}</span>
+                </div>
+                <div class="duration-badge mt-1">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  ${s.duration}
+                </div>
+                <div class="batch-badge mt-1">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  ${s.batchSize}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-span-12 md:col-span-7">
+            <h3 class="font-display text-3xl md:text-4xl font-medium mb-1 tracking-tight">${s.name}</h3>
+            <div class="font-mono text-xs text-[color:var(--muted)] mb-5">
+              OPERATOR · <span class="text-[color:var(--fg)]">${s.operator}</span>
+              <span class="text-[color:var(--dim)] mx-2">|</span>
+              BATCH TYPE · <span class="text-[color:var(--fg)]">${s.batchType}</span>
+            </div>
+            <p class="text-[color:var(--fg)] leading-relaxed text-[15px]">
+              ${s.activity}
+            </p>
+          </div>
+
+          <div class="col-span-12 md:col-span-3 space-y-3 text-xs">
+            <div class="io-block">
+              <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">INSTRUMENT</div>
+              <div class="text-[color:var(--fg)] leading-relaxed text-[11px]">${s.instrument}</div>
+            </div>
+            <div class="io-block">
+              <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">INPUT → OUTPUT</div>
+              <div class="text-[color:var(--fg)] leading-relaxed text-[11px]">${s.input}<br><span class="text-[color:var(--ember)]">→</span> ${s.output}</div>
+            </div>
+            <div class="io-block" style="border-left-color: var(--dim);">
+              <div class="font-mono text-[9px] tracking-[0.18em] text-[color:var(--dim)] mb-1">BYPRODUCTS</div>
+              <div class="text-[color:var(--muted)] leading-relaxed text-[11px]">${s.byproducts}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Batch / Sample split panel -->
+        <div class="bs-panel mb-5">
+          <div class="bs-side batch">
+            <div class="bs-header">
+              <div class="bs-icon batch"></div>
+              <span class="bs-label batch">Batch handling</span>
+              <span class="bs-size">${s.batchSize}</span>
+            </div>
+            <ul class="bs-list">${batchListHtml}</ul>
+          </div>
+          <div class="bs-side sample">
+            <div class="bs-header">
+              <div class="bs-icon sample"></div>
+              <span class="bs-label sample">Sample handling</span>
+              <span class="bs-size">per sample</span>
+            </div>
+            <ul class="bs-list">${sampleListHtml}</ul>
+          </div>
+        </div>
+
+        <!-- Form ticket -->
+        <div class="form-ticket">
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <div class="font-mono text-[10px] tracking-[0.18em] text-[color:var(--ember)]">RECORD FILLED</div>
+            <div class="flex items-center gap-2">
+              ${levelTagHtml}
+              <div class="font-mono text-[10px] text-[color:var(--dim)]">edge_${s.n}</div>
+            </div>
+          </div>
+          <div class="font-display text-lg md:text-xl font-medium mb-4">${s.form}</div>
+          <div class="font-mono text-[10px] tracking-widest text-[color:var(--dim)] mb-2">CAPTURES → EDGE PROPERTIES</div>
+          <div class="flex flex-wrap gap-1.5">
+            ${capturesHtml}
+          </div>
+        </div>
+      </div>
+    </article>
+  `);
+});
+
+// ─────────── RENDER FORMS TABLE ───────────
+const ft = document.getElementById('forms-tbody');
+stages.forEach(s => {
+  const capturesPreview = s.captures.slice(0, 4).map(c => `<span class="capture-chip">${c}</span>`).join('');
+  const extra = s.captures.length > 4 ? `<span class="capture-chip" style="color: var(--ember); border-color: var(--ember-deep);">+${s.captures.length - 4}</span>` : '';
+  const levelTag = s.formLevel === 'batch'
+    ? '<span class="level-tag level-batch">BATCH</span>'
+    : s.formLevel === 'sample'
+    ? '<span class="level-tag level-sample">SAMPLE</span>'
+    : '<span class="level-tag level-both">BATCH + SAMPLE</span>';
+
+  ft.insertAdjacentHTML('beforeend', `
+    <tr>
+      <td><span class="font-display text-2xl font-light text-[color:var(--dim)]">${s.n}</span></td>
+      <td>
+        <span class="zone-tag zone-${s.zone} mb-1">${s.zoneLabel}</span>
+        <div class="text-sm mt-2">${s.name}</div>
+        <div class="font-mono text-[10px] text-[color:var(--dim)] mt-1">${s.batchSize}</div>
+      </td>
+      <td><span class="text-sm">${s.operator}</span></td>
+      <td><div class="font-display text-base font-medium">${s.form}</div></td>
+      <td>${levelTag}</td>
+      <td>
+        <div class="flex flex-wrap gap-1">${capturesPreview}${extra}</div>
+      </td>
+      <td><span class="font-mono text-xs text-[color:var(--ember)]">edge_${s.n}</span></td>
+    </tr>
+  `);
+});
+
+// ─────────── RENDER MATERIAL FLOW GRAPH ───────────
+function buildGraph() {
+  const W = 1180, H = 580;
+  const stageY = 270;
+  const margin = 80;
+  const innerW = W - 2 * margin;
+  const stageXs = stages.map((_, i) => margin + (i * innerW / (stages.length - 1)));
+  const zoneColors = { field: '#84a98c', intake: '#94a3b8', prep: '#c2847a', assay: '#f97316', qa: '#fbbf24', report: '#e7e5e4' };
+
+  const masses = [3000, 2900, 1500, 1500, 30, 30, 1, 0.005, null, null];
+  const widths = masses.map(m => m === null ? 2.5 : Math.max(3, Math.min(16, Math.log10(m + 1) * 3.2)));
+
+  const branches = [
+    { stageIdx: 3, label: 'Coarse reject', sub: 'bagged · shelved', color: '#c2847a' },
+    { stageIdx: 5, label: 'Archive pulp',  sub: 'shelved for re-test', color: '#c2847a' },
+    { stageIdx: 6, label: 'Slag',          sub: 'discarded per batch', color: '#6b5e4d' },
+    { stageIdx: 7, label: 'Absorbed Pb',   sub: 'cupel waste', color: '#6b5e4d' }
+  ];
+
+  // batch convergence bands (stages 6-8 are batch-processed together)
+  const batchStart = stageXs[5]; // stage 06
+  const batchEnd = stageXs[8];   // stage 09
+
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:1000px;display:block;">`;
+
+  svg += `
+    <defs>
+      <linearGradient id="mainPath" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#84a98c"/>
+        <stop offset="12%" stop-color="#94a3b8"/>
+        <stop offset="30%" stop-color="#c2847a"/>
+        <stop offset="48%" stop-color="#f97316"/>
+        <stop offset="68%" stop-color="#dc2626"/>
+        <stop offset="82%" stop-color="#fbbf24"/>
+        <stop offset="100%" stop-color="#e7e5e4"/>
+      </linearGradient>
+      <linearGradient id="batchBand" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#f97316" stop-opacity="0.06"/>
+        <stop offset="50%" stop-color="#f97316" stop-opacity="0.10"/>
+        <stop offset="100%" stop-color="#f97316" stop-opacity="0.06"/>
+      </linearGradient>
+    </defs>
+  `;
+
+  // batch convergence band
+  svg += `<rect x="${batchStart - 30}" y="120" width="${batchEnd - batchStart + 60}" height="300" fill="url(#batchBand)" rx="8"/>`;
+  svg += `<text x="${(batchStart + batchEnd) / 2}" y="115" text-anchor="middle" font-family="JetBrains Mono" font-size="10" fill="#f97316" letter-spacing="2">BATCH CONVERGENCE · 50 SAMPLES AS ONE UNIT</text>`;
+  svg += `<line x1="${batchStart - 30}" y1="125" x2="${batchEnd + 30}" y2="125" stroke="#f97316" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>`;
+  svg += `<line x1="${batchStart - 30}" y1="415" x2="${batchEnd + 30}" y2="415" stroke="#f97316" stroke-width="1" stroke-dasharray="3 3" opacity="0.4"/>`;
+
+  // vertical gridlines
+  stageXs.forEach(x => {
+    svg += `<line x1="${x}" y1="130" x2="${x}" y2="460" stroke="#2e271f" stroke-width="1" stroke-dasharray="2 5" opacity="0.4"/>`;
+  });
+
+  // sample-level flow lines (thin, showing individual samples converging)
+  // before batch (stages 1-6): show 5 thin lines converging
+  const sampleLineCount = 5;
+  for (let i = 0; i < sampleLineCount; i++) {
+    const offset = (i - 2) * 4;
+    const x1 = stageXs[0];
+    const x2 = stageXs[5];
+    svg += `<path d="M ${x1} ${stageY + offset} L ${x2} ${stageY}" stroke="#c2847a" stroke-width="0.8" fill="none" opacity="0.25"/>`;
+  }
+  // after batch (stages 9-11): show 5 thin lines diverging
+  for (let i = 0; i < sampleLineCount; i++) {
+    const offset = (i - 2) * 4;
+    const x1 = stageXs[8];
+    const x2 = stageXs[10];
+    svg += `<path d="M ${x1} ${stageY} L ${x2} ${stageY + offset}" stroke="#fbbf24" stroke-width="0.8" fill="none" opacity="0.25"/>`;
+  }
+
+  // main path segments
+  for (let i = 0; i < stages.length - 1; i++) {
+    const x1 = stageXs[i], x2 = stageXs[i + 1];
+    const w = widths[i];
+    const isData = masses[i] === null;
+    const inBatch = i >= 5 && i <= 7;
+    if (isData) {
+      svg += `<line x1="${x1}" y1="${stageY}" x2="${x2}" y2="${stageY}" stroke="url(#mainPath)" stroke-width="${w}" stroke-dasharray="4 4" opacity="0.55" stroke-linecap="round"/>`;
+    } else {
+      svg += `<line x1="${x1}" y1="${stageY}" x2="${x2}" y2="${stageY}" stroke="url(#mainPath)" stroke-width="${w}" stroke-linecap="round" opacity="${inBatch ? 1 : 0.92}"/>`;
+    }
+  }
+
+  // form labels
+  for (let i = 0; i < stages.length - 1; i++) {
+    const x = (stageXs[i] + stageXs[i + 1]) / 2;
+    const shortForm = stages[i].form.split(' / ')[0].split(' (')[0];
+    const levelColor = stages[i].formLevel === 'batch' ? '#f97316' : stages[i].formLevel === 'sample' ? '#94a3b8' : '#fbbf24';
+    svg += `
+      <text x="${x}" y="${stageY - 58}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="1">FORM ${stages[i].n}→${stages[i + 1].n}</text>
+      <text x="${x}" y="${stageY - 44}" text-anchor="middle" font-family="Manrope" font-size="9.5" fill="#a89884">${shortForm}</text>
+      <text x="${x}" y="${stageY - 32}" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="${levelColor}" letter-spacing="1">${stages[i].formLevel.toUpperCase()}</text>
+    `;
+  }
+
+  // batch size labels below
+  for (let i = 0; i < stages.length; i++) {
+    const x = stageXs[i];
+    const s = stages[i];
+    const shortBatch = s.batchSize.split(' / ')[0];
+    svg += `<text x="${x}" y="${stageY + 60}" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#6b5e4d" letter-spacing="1">${shortBatch}</text>`;
+  }
+
+  // branches
+  branches.forEach(b => {
+    const x = stageXs[b.stageIdx];
+    const yEnd = 430;
+    svg += `
+      <path d="M ${x} ${stageY + 12} C ${x} ${stageY + 55}, ${x + 15} ${yEnd - 35}, ${x + 15} ${yEnd}"
+            stroke="${b.color}" stroke-width="1.5" fill="none" stroke-dasharray="4 3" opacity="0.6"/>
+      <rect x="${x - 65}" y="${yEnd}" width="160" height="38" fill="#181410" stroke="#2e271f" rx="4"/>
+      <text x="${x + 15}" y="${yEnd + 16}" text-anchor="middle" font-family="Manrope" font-size="10.5" font-weight="500" fill="${b.color}">${b.label}</text>
+      <text x="${x + 15}" y="${yEnd + 29}" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#6b5e4d">${b.sub}</text>
+    `;
+  });
+
+  // stage nodes
+  stages.forEach((s, i) => {
+    const x = stageXs[i];
+    const c = zoneColors[s.zone];
+    const label = s.name.split(' & ')[0].split(' / ')[0];
+    const isBatchNode = ['06', '07', '08'].includes(s.n);
+    svg += `
+      <g transform="translate(${x}, ${stageY})">
+        ${isBatchNode ? `<rect x="-22" y="-22" width="44" height="44" fill="none" stroke="${c}" stroke-width="1" stroke-dasharray="3 2" opacity="0.4" rx="6"/>` : ''}
+        <g class="graph-node" data-n="${s.n}">
+          <circle r="16" fill="#0c0a08" stroke="${c}" stroke-width="2"/>
+          <circle r="9" fill="${c}"/>
+          <circle r="16" fill="none" stroke="${c}" stroke-width="1" opacity="0.3" class="pulse"/>
+        </g>
+        <text y="-30" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="500" fill="${c}">${s.n}</text>
+        <text y="40" text-anchor="middle" font-family="Manrope" font-size="10.5" fill="#f5efe6">${label}</text>
+        ${isBatchNode ? `<text y="52" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="${c}" letter-spacing="1">BATCH</text>` : ''}
+      </g>
+    `;
+  });
+
+  // axis labels
+  svg += `
+    <text x="20" y="${stageY + 4}" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">SAMPLE PATH</text>
+    <text x="20" y="430" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">BYPRODUCTS</text>
+    <text x="20" y="170" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">FORMS / EDGES</text>
+    <text x="20" y="${stageY + 64}" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="2">BATCH SIZE</text>
+    <text x="${W - 20}" y="${stageY + 4}" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6b5e4d" letter-spacing="1">3 kg → μg · 1 → 50 → 1</text>
+  `;
+
+  svg += '</svg>';
+  return svg;
+}
+document.getElementById('graph-svg').innerHTML = buildGraph();
+
+// ─────────── INTERACTIVITY ───────────
+document.querySelectorAll('.graph-node').forEach(node => {
+  node.addEventListener('mouseenter', () => {
+    const n = node.dataset.n;
+    const card = document.getElementById(`stage-${n}`);
+    if (card) card.classList.add('graph-hover');
+  });
+  node.addEventListener('mouseleave', () => {
+    document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('graph-hover'));
+  });
+  node.addEventListener('click', () => {
+    const n = node.dataset.n;
+    document.getElementById(`stage-${n}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+document.querySelectorAll('.core-segment').forEach(seg => {
+  seg.addEventListener('click', () => {
+    const n = seg.dataset.n;
+    document.getElementById(`stage-${n}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+});
+
+const coreSegments = document.querySelectorAll('.core-segment');
+const stageObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const n = entry.target.id.replace('stage-', '');
+      coreSegments.forEach(seg => seg.classList.toggle('active', seg.dataset.n === n));
+      entry.target.classList.add('is-active');
+    } else {
+      entry.target.classList.remove('is-active');
+    }
+  });
+}, { rootMargin: '-30% 0px -50% 0px' });
+document.querySelectorAll('.stage-card').forEach(card => stageObserver.observe(card));
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// batch anatomy cell tooltips
+document.querySelectorAll('.batch-cell').forEach((cell, i) => {
+  const type = cell.className.split(' ').find(c => c !== 'batch-cell');
+  const labels = {
+    client: 'Client sample (unknown)',
+    standard: 'Certified reference material',
+    blank: 'Method blank',
+    duplicate: 'Duplicate (repeat assay)',
+    check: 'Check sample (umpire lab)'
+  };
+  cell.title = `Position ${i + 1} · ${labels[type] || type}`;
+});
+</script>
+
+</body>
+</html>

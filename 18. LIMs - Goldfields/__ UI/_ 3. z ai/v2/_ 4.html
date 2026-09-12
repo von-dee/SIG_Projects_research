@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample workflow — roles, activities and forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#13150F;
+    --panel:#1A1D16;
+    --panel-2:#20241C;
+    --border:#33362A;
+    --border-soft:#262920;
+    --text:#E9E6D8;
+    --text-muted:#9B9987;
+    --text-faint:#6C6B5D;
+    --gold:#C9A227;
+
+    --r-field:#4A9483;
+    --r-receiving:#4C7FBF;
+    --r-prep:#C9A227;
+    --r-assay:#BD5A34;
+    --r-qa:#9C6FC9;
+    --r-admin:#8C8F7C;
+    --radius:6px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:14px;
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{
+    max-width:920px;
+    margin:0 auto;
+    padding:40px 24px 24px;
+  }
+  header h1{font-size:22px;font-weight:600;margin-bottom:6px;}
+  header p{color:var(--text-muted);font-size:14px;max-width:640px;}
+
+  .legend{
+    max-width:920px;
+    margin:0 auto;
+    padding:8px 24px 32px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-size:12.5px;
+    padding:7px 12px;
+    border-radius:99px;
+    border:1px solid var(--border);
+    background:var(--panel-2);
+    cursor:pointer;
+    color:var(--text-muted);
+    transition:border-color 0.15s, color 0.15s, background 0.15s;
+    user-select:none;
+  }
+  .chip:hover{border-color:var(--text-faint);color:var(--text);}
+  .chip.active{color:var(--text);border-color:var(--chip-color);background:color-mix(in srgb, var(--chip-color) 14%, var(--panel-2));}
+  .chip .swatch{width:9px;height:9px;border-radius:50%;background:var(--chip-color);flex-shrink:0;}
+  .chip.reset{border-style:dashed;}
+
+  .timeline{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px 80px;
+    position:relative;
+  }
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:43px;
+    top:8px;
+    bottom:40px;
+    width:1px;
+    background:var(--border);
+  }
+
+  .stage-row{
+    display:flex;
+    gap:22px;
+    position:relative;
+    margin-bottom:22px;
+    transition:opacity 0.2s;
+  }
+  .stage-row.dimmed{opacity:0.28;}
+
+  .spine{
+    width:40px;
+    flex-shrink:0;
+    display:flex;
+    justify-content:center;
+    padding-top:22px;
+  }
+  .dot{
+    width:15px;
+    height:15px;
+    border-radius:50%;
+    background:var(--dot-color);
+    border:3px solid var(--bg);
+    box-shadow:0 0 0 1px var(--dot-color);
+    z-index:2;
+  }
+
+  .card{
+    flex:1;
+    background:var(--panel);
+    border:1px solid var(--border-soft);
+    border-radius:12px;
+    padding:18px 20px;
+    transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .stage-row.highlighted .card{
+    border-color:var(--dot-color);
+    box-shadow:0 0 0 1px var(--dot-color) inset;
+  }
+
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:10px;
+    flex-wrap:wrap;
+  }
+  .stage-name{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .stage-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--text-faint);
+  }
+  .stage-title{font-size:16px;font-weight:600;}
+
+  .role-tag{
+    font-size:11.5px;
+    font-family:'IBM Plex Mono',monospace;
+    padding:3px 9px;
+    border-radius:99px;
+    color:var(--dot-color);
+    border:1px solid var(--dot-color);
+    background:color-mix(in srgb, var(--dot-color) 12%, transparent);
+    white-space:nowrap;
+  }
+
+  .activity{
+    color:var(--text-muted);
+    font-size:13.5px;
+    margin-bottom:14px;
+    max-width:70ch;
+  }
+
+  .form-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:12.5px;
+    color:var(--text-faint);
+    border-top:1px solid var(--border-soft);
+    padding-top:12px;
+  }
+  .form-row .label{color:var(--text-faint);}
+  .form-row .form-name{
+    font-family:'IBM Plex Mono',monospace;
+    color:var(--text);
+    background:var(--panel-2);
+    padding:3px 9px;
+    border-radius:4px;
+    border:1px solid var(--border-soft);
+  }
+
+  footer{
+    max-width:920px;
+    margin:0 auto;
+    padding:0 24px 60px;
+    color:var(--text-faint);
+    font-size:12.5px;
+    border-top:1px solid var(--border-soft);
+    padding-top:18px;
+  }
+
+  @media (max-width:600px){
+    .timeline::before{left:32px;}
+    .spine{width:32px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Who touches the sample, and with what record</h1>
+  <p>The same lineage graph from prep to grade, seen from the human side — one row per stage, showing which role performs it and the physical or digital record that gets filled in. Click a role below to trace their steps through the whole flow.</p>
+</header>
+
+<div class="legend" id="legend"></div>
+
+<div class="timeline" id="timeline"></div>
+
+<footer>Every form and log listed here becomes an edge property in the lineage graph — operator, timestamp and instrument are pulled straight from these records, not re-keyed.</footer>
+
+<script>
+const ROLES = [
+  { id:"field", label:"Field geologist", color:"var(--r-field)" },
+  { id:"receiving", label:"Receiving clerk", color:"var(--r-receiving)" },
+  { id:"prep", label:"Prep technician", color:"var(--r-prep)" },
+  { id:"assay", label:"Assay technician", color:"var(--r-assay)" },
+  { id:"qa", label:"Senior chemist / QA", color:"var(--r-qa)" },
+  { id:"admin", label:"LIMS administrator", color:"var(--r-admin)" }
+];
+
+const STAGES = [
+  { role:"field", title:"Field sampling",
+    activity:"Cuts or collects the ~3 kg interval from drill core, bags and tags it with the hole ID and from–to depth, and initiates chain of custody.",
+    form:"Sample submission / chain-of-custody form" },
+
+  { role:"receiving", title:"Receiving & login",
+    activity:"Checks the bag against the submission sheet, records gross wet mass, and assigns a lab sample ID and barcode in the LIMS.",
+    form:"Sample intake log (LIMS)" },
+
+  { role:"prep", title:"Drying",
+    activity:"Loads the sample into the oven, sets temperature and duration, then unloads it and records the dry mass.",
+    form:"Drying log sheet" },
+
+  { role:"prep", title:"Crushing & splitting",
+    activity:"Runs the jaw crusher, riffle-splits the dried sample, and bags and shelves the reject with a retrieval location.",
+    form:"Crush / split worksheet" },
+
+  { role:"prep", title:"Pulverising",
+    activity:"Runs the ring mill, pulls a sieve cut to check P80 fineness, and signs off once the grind meets spec.",
+    form:"Pulverising & sieve QC form" },
+
+  { role:"assay", title:"Charge weigh-out",
+    activity:"Weighs the assay charge from the pulp on an analytical balance and shelves the remaining pulp as archive.",
+    form:"Charge weigh ticket" },
+
+  { role:"assay", title:"Fusion",
+    activity:"Adds flux to the charge and loads the crucible into the furnace at a logged tray position, alongside standards, blanks and duplicates.",
+    form:"Furnace batch sheet" },
+
+  { role:"assay", title:"Cupellation",
+    activity:"Transfers the lead button onto a cupel, runs the cupellation furnace, and recovers the prill once lead absorption is complete.",
+    form:"Cupellation log" },
+
+  { role:"assay", title:"Finish",
+    activity:"Weighs the prill on a microbalance and completes the finish — parting for a gravimetric result, or dissolution and instrumental read for ICP/AAS.",
+    form:"Finish & prill weight record" },
+
+  { role:"qa", title:"QA review",
+    activity:"Checks standards, blanks and duplicates against control charts, reviews any mass-balance flags from prep, and approves or rejects the batch.",
+    form:"QA review checklist" },
+
+  { role:"admin", title:"Reporting",
+    activity:"Compiles the approved results into a client-facing report, referencing the original hole and interval, and releases it.",
+    form:"Certificate of Analysis" }
+];
+
+const legendEl = document.getElementById("legend");
+const timelineEl = document.getElementById("timeline");
+let activeRole = null;
+
+function roleOf(id){ return ROLES.find(r=>r.id===id); }
+
+function renderLegend(){
+  legendEl.innerHTML = "";
+  const resetChip = document.createElement("div");
+  resetChip.className = "chip reset" + (activeRole===null ? " active" : "");
+  resetChip.style.setProperty("--chip-color","var(--text-faint)");
+  resetChip.textContent = "All roles";
+  resetChip.addEventListener("click", ()=>{ activeRole=null; render(); });
+  legendEl.appendChild(resetChip);
+
+  ROLES.forEach(r=>{
+    const chip = document.createElement("div");
+    chip.className = "chip" + (activeRole===r.id ? " active" : "");
+    chip.style.setProperty("--chip-color", r.color);
+    chip.innerHTML = '<span class="swatch"></span>' + r.label;
+    chip.addEventListener("click", ()=>{ activeRole = (activeRole===r.id ? null : r.id); render(); });
+    legendEl.appendChild(chip);
+  });
+}
+
+function renderTimeline(){
+  timelineEl.innerHTML = "";
+  STAGES.forEach((s,i)=>{
+    const role = roleOf(s.role);
+    const row = document.createElement("div");
+    row.className = "stage-row";
+    row.style.setProperty("--dot-color", role.color);
+    if (activeRole){
+      row.classList.add(activeRole===s.role ? "highlighted" : "dimmed");
+    }
+
+    row.innerHTML = `
+      <div class="spine"><div class="dot"></div></div>
+      <div class="card">
+        <div class="card-top">
+          <div class="stage-name">
+            <span class="stage-num">${String(i+1).padStart(2,"0")}</span>
+            <span class="stage-title">${s.title}</span>
+          </div>
+          <span class="role-tag">${role.label}</span>
+        </div>
+        <div class="activity">${s.activity}</div>
+        <div class="form-row">
+          <span class="label">Record filled</span>
+          <span class="form-name">${s.form}</span>
+        </div>
+      </div>
+    `;
+    timelineEl.appendChild(row);
+  });
+}
+
+function render(){ renderLegend(); renderTimeline(); }
+render();
+</script>
+</body>
+</html>
