@@ -1,0 +1,650 @@
+# Ubuntu VPS Production Setup Guide
+
+## Nginx + Docker + Node.js + PM2
+
+**Server Type:** Ubuntu 24.04 VPS
+**Purpose:** Production deployment of Node.js applications using Nginx reverse proxy, PM2 process manager, and Docker.
+
+---
+
+# Legend
+
+Whenever you see:
+
+### 💻 Local Machine
+
+Run the command on your Windows PC.
+
+### 🖥️ VPS Server
+
+Run the command on the Ubuntu VPS after connecting via SSH.
+
+---
+
+# Step 1 — Connect to the VPS
+
+## 💻 Local Machine
+
+Connect using SSH:
+
+```powershell
+ssh root@YOUR_SERVER_IP
+```
+
+Example:
+
+```powershell
+ssh root@161.97.85.154
+```
+
+---
+
+# Step 2 — Update Ubuntu
+
+## 🖥️ VPS Server
+
+Update package lists and upgrade installed packages:
+
+```bash
+apt update
+apt upgrade -y
+apt autoremove -y
+```
+
+Reboot if required:
+
+```bash
+reboot
+```
+
+Reconnect afterward:
+
+```powershell
+ssh root@YOUR_SERVER_IP
+```
+
+---
+
+# Step 3 — Create SSH Key Authentication
+
+## 💻 Local Machine
+
+Generate an SSH key:
+
+```powershell
+ssh-keygen -t ed25519 -C "your-email@example.com"
+```
+
+Press Enter through prompts.
+
+Display your public key:
+
+```powershell
+type $env:USERPROFILE\.ssh\id_ed25519.pub
+```
+
+Copy the entire output.
+
+---
+
+# Step 4 — Add SSH Key to VPS
+
+## 🖥️ VPS Server
+
+Create SSH directory:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+
+Edit authorized keys:
+
+```bash
+nano ~/.ssh/authorized_keys
+```
+
+Paste your public key.
+
+Save and exit.
+
+Set permissions:
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+```
+
+---
+
+# Step 5 — Test SSH Key Login
+
+## 💻 Local Machine
+
+Open a new terminal:
+
+```powershell
+ssh root@YOUR_SERVER_IP
+```
+
+You should log in without entering the VPS password.
+
+Do NOT continue until this works.
+
+---
+
+# Step 6 — Disable Password Authentication
+
+## 🖥️ VPS Server
+
+Backup configuration:
+
+```bash
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+```
+
+Edit:
+
+```bash
+nano /etc/ssh/sshd_config
+```
+
+Ensure:
+
+```text
+PasswordAuthentication no
+PubkeyAuthentication yes
+PermitRootLogin prohibit-password
+```
+
+Restart SSH:
+
+```bash
+systemctl restart ssh
+```
+
+Keep your current SSH session open while testing a new one.
+
+---
+
+# Step 7 — Install Firewall (UFW)
+
+## 🖥️ VPS Server
+
+Install:
+
+```bash
+apt install ufw -y
+```
+
+Allow SSH:
+
+```bash
+ufw allow OpenSSH
+```
+
+Allow web traffic:
+
+```bash
+ufw allow 80/tcp
+ufw allow 443/tcp
+```
+
+Enable firewall:
+
+```bash
+ufw enable
+```
+
+Verify:
+
+```bash
+ufw status
+```
+
+Expected:
+
+```text
+22/tcp ALLOW
+80/tcp ALLOW
+443/tcp ALLOW
+```
+
+---
+
+# Step 8 — Install Fail2Ban
+
+## 🖥️ VPS Server
+
+Install:
+
+```bash
+apt install fail2ban -y
+```
+
+Create local configuration:
+
+```bash
+cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+```
+
+Edit:
+
+```bash
+nano /etc/fail2ban/jail.local
+```
+
+Find the existing `[sshd]` section and ensure:
+
+```ini
+[sshd]
+enabled = true
+maxretry = 5
+findtime = 10m
+bantime = 1h
+```
+
+Restart:
+
+```bash
+systemctl restart fail2ban
+```
+
+Verify:
+
+```bash
+fail2ban-client status
+```
+
+Expected:
+
+```text
+Jail list: sshd
+```
+
+---
+
+# Step 9 — Install Docker
+
+## 🖥️ VPS Server
+
+Install Docker:
+
+```bash
+curl -fsSL https://get.docker.com | sh
+```
+
+Verify:
+
+```bash
+docker --version
+```
+
+Enable service:
+
+```bash
+systemctl enable docker
+systemctl start docker
+```
+
+Test:
+
+```bash
+docker run hello-world
+```
+
+---
+
+# Step 10 — Verify Docker Compose
+
+## 🖥️ VPS Server
+
+Check:
+
+```bash
+docker compose version
+```
+
+Expected:
+
+```text
+Docker Compose version v2.x.x
+```
+
+---
+
+# Step 11 — Install Nginx
+
+## 🖥️ VPS Server
+
+Install:
+
+```bash
+apt install nginx -y
+```
+
+Enable:
+
+```bash
+systemctl enable nginx
+systemctl start nginx
+```
+
+Check:
+
+```bash
+systemctl status nginx --no-pager
+```
+
+---
+
+# Step 12 — Verify Nginx
+
+## 💻 Local Machine
+
+Open browser:
+
+```text
+http://YOUR_SERVER_IP
+```
+
+You should see:
+
+```text
+Welcome to nginx!
+```
+
+---
+
+# Step 13 — Install Node.js 24 LTS
+
+## 🖥️ VPS Server
+
+Add official NodeSource repository:
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
+```
+
+Install Node.js:
+
+```bash
+apt install nodejs -y
+```
+
+Verify:
+
+```bash
+node -v
+npm -v
+```
+
+Example:
+
+```text
+v24.3.0
+11.x.x
+```
+
+---
+
+# Step 14 — Install PM2
+
+## 🖥️ VPS Server
+
+Install globally:
+
+```bash
+npm install -g pm2
+```
+
+Verify:
+
+```bash
+pm2 -v
+```
+
+---
+
+# Step 15 — Configure PM2 Startup
+
+This ensures your applications automatically restart after a VPS reboot.
+
+## 🖥️ VPS Server
+
+Generate startup service:
+
+```bash
+pm2 startup
+```
+
+PM2 will output another command similar to:
+
+```bash
+sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u root --hp /root
+```
+
+Run the exact command PM2 provides.
+
+Then save current process list:
+
+```bash
+pm2 save
+```
+
+Verify:
+
+```bash
+systemctl status pm2-root
+```
+
+---
+
+# Step 16 — Deploy a Node.js Application
+
+Example project structure:
+
+```text
+/opt/my-app
+├── package.json
+├── server.js
+└── .env
+```
+
+Move into project:
+
+```bash
+cd /opt/my-app
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start application:
+
+```bash
+pm2 start server.js --name my-app
+```
+
+Verify:
+
+```bash
+pm2 list
+```
+
+View logs:
+
+```bash
+pm2 logs my-app
+```
+
+Restart app:
+
+```bash
+pm2 restart my-app
+```
+
+Stop app:
+
+```bash
+pm2 stop my-app
+```
+
+Delete app:
+
+```bash
+pm2 delete my-app
+```
+
+Save PM2 state:
+
+```bash
+pm2 save
+```
+
+---
+
+# Step 17 — Configure Nginx Reverse Proxy
+
+## 🖥️ VPS Server
+
+Create config:
+
+```bash
+nano /etc/nginx/sites-available/my-app
+```
+
+Example:
+
+```nginx
+server {
+    listen 80;
+
+    server_name example.com www.example.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+
+        proxy_http_version 1.1;
+
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+Enable site:
+
+```bash
+ln -s /etc/nginx/sites-available/my-app /etc/nginx/sites-enabled/
+```
+
+Test:
+
+```bash
+nginx -t
+```
+
+Reload:
+
+```bash
+systemctl reload nginx
+```
+
+---
+
+# Step 18 — Install SSL Certificate
+
+## 🖥️ VPS Server
+
+Install Certbot:
+
+```bash
+apt install certbot python3-certbot-nginx -y
+```
+
+Generate certificate:
+
+```bash
+certbot --nginx -d example.com -d www.example.com
+```
+
+Verify renewal:
+
+```bash
+certbot renew --dry-run
+```
+
+---
+
+# Useful Commands
+
+## PM2
+
+```bash
+pm2 list
+pm2 logs
+pm2 monit
+pm2 restart all
+pm2 stop all
+pm2 save
+```
+
+## Docker
+
+```bash
+docker ps
+docker images
+docker logs CONTAINER_ID
+docker compose up -d
+docker compose down
+```
+
+## Nginx
+
+```bash
+nginx -t
+systemctl restart nginx
+systemctl reload nginx
+```
+
+## Firewall
+
+```bash
+ufw status
+```
+
+## Fail2Ban
+
+```bash
+fail2ban-client status
+fail2ban-client status sshd
+```
+
+---
+
+# Final Checklist
+
+* [ ] Ubuntu Updated
+* [ ] SSH Key Authentication Enabled
+* [ ] Password Login Disabled
+* [ ] UFW Firewall Enabled
+* [ ] Fail2Ban Running
+* [ ] Docker Installed
+* [ ] Docker Compose Installed
+* [ ] Nginx Installed
+* [ ] Node.js 24 LTS Installed
+* [ ] PM2 Installed
+* [ ] PM2 Startup Configured
+* [ ] Domain Connected
+* [ ] SSL Enabled
+* [ ] Application Running
+* [ ] Application Managed by PM2
+* [ ] Nginx Reverse Proxy Working

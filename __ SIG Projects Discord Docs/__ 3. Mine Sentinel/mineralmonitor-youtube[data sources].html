@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineralMonitor · YouTube Channel Registry</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0e12;
+    --surface: #12161c;
+    --surface2: #181d25;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8ecf0;
+    --muted: #8896a4;
+    --faint: #4a5560;
+
+    --gold: #e8a827;
+    --gold-bg: rgba(232,168,39,0.08);
+
+    --red: #e05252;
+    --red-bg: rgba(224,82,82,0.08);
+
+    --blue: #6f9de8;
+    --blue-bg: rgba(111,157,232,0.08);
+
+    --teal: #3aadab;
+    --teal-bg: rgba(58,173,171,0.08);
+
+    --purple: #b07de8;
+    --purple-bg: rgba(176,125,232,0.08);
+
+    --green: #52c47a;
+    --green-bg: rgba(82,196,122,0.08);
+
+    --coral: #e8784a;
+    --coral-bg: rgba(232,120,74,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .page { max-width: 1140px; margin: 0 auto; padding: 56px 32px 80px; }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 24px;
+    margin-bottom: 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+
+  .brand-icon {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 16px; height: 16px; fill: #0b0e12; }
+
+  .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 800;
+    color: var(--text); line-height: 1.2; margin-bottom: 8px;
+  }
+
+  .subtitle { font-size: 14px; color: var(--muted); max-width: 540px; }
+
+  .stats-row { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+  .stat-pill {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border2); color: var(--muted); white-space: nowrap;
+  }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    margin-bottom: 40px; padding: 14px 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    align-items: center;
+  }
+
+  .legend-group { display: flex; align-items: center; gap: 7px; }
+  .legend-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .cat-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  section { margin-bottom: 40px; }
+
+  .section-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+  }
+
+  .cat-tag {
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 4px;
+  }
+
+  .section-count { font-size: 12px; color: var(--faint); font-family: 'DM Mono', monospace; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .card:hover { border-color: var(--border2); background: var(--surface2); }
+
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    border-radius: 10px 0 0 10px;
+  }
+
+  .card.africa::before   { background: var(--gold); }
+  .card.gold::before     { background: var(--coral); }
+  .card.news::before     { background: var(--blue); }
+  .card.macro::before    { background: var(--purple); }
+  .card.company::before  { background: var(--teal); }
+  .card.events::before   { background: var(--green); }
+
+  .card-top { display: flex; align-items: flex-start; gap: 12px; }
+
+  .yt-thumb {
+    width: 44px; height: 44px; border-radius: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; overflow: hidden;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: var(--muted);
+  }
+
+  .yt-thumb.gold-bg    { background: var(--gold-bg); color: var(--gold); border-color: rgba(232,168,39,0.2); }
+  .yt-thumb.red-bg     { background: var(--red-bg); color: var(--red); border-color: rgba(224,82,82,0.2); }
+  .yt-thumb.blue-bg    { background: var(--blue-bg); color: var(--blue); border-color: rgba(111,157,232,0.2); }
+  .yt-thumb.teal-bg    { background: var(--teal-bg); color: var(--teal); border-color: rgba(58,173,171,0.2); }
+  .yt-thumb.purple-bg  { background: var(--purple-bg); color: var(--purple); border-color: rgba(176,125,232,0.2); }
+  .yt-thumb.green-bg   { background: var(--green-bg); color: var(--green); border-color: rgba(82,196,122,0.2); }
+  .yt-thumb.coral-bg   { background: var(--coral-bg); color: var(--coral); border-color: rgba(232,120,74,0.2); }
+
+  .card-meta { flex: 1; min-width: 0; }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--text); line-height: 1.3; margin-bottom: 2px;
+  }
+
+  .card-handle {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--faint);
+  }
+
+  .subs-row {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+
+  .subs {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 2px 8px; border-radius: 4px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .subs.large { color: var(--gold); border-color: rgba(232,168,39,0.2); background: var(--gold-bg); }
+  .subs.medium { color: var(--blue); border-color: rgba(111,157,232,0.2); background: var(--blue-bg); }
+
+  .africa-badge {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--gold-bg);
+    color: var(--gold);
+    border: 1px solid rgba(232,168,39,0.25);
+  }
+
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+  .card-footer { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--faint); background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border); padding: 2px 7px; border-radius: 4px;
+  }
+
+  .tag.signal { color: var(--green); background: var(--green-bg); border-color: rgba(82,196,122,0.2); }
+  .tag.warn { color: var(--red); background: var(--red-bg); border-color: rgba(224,82,82,0.2); }
+
+  .update-row {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace; font-size: 10px; color: var(--faint);
+  }
+
+  .dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+  .dot-weekly { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .dot-event { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); flex-shrink: 0; }
+
+  .card-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--faint); text-decoration: none;
+    transition: color 0.12s;
+  }
+  .card-link:hover { color: var(--text); }
+  .card-link svg { width: 10px; height: 10px; opacity: 0.5; flex-shrink: 0; }
+
+  .use-row {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
+
+  .use-row strong {
+    font-size: 10px; font-family: 'DM Mono', monospace;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--faint); display: block; margin-bottom: 2px;
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 48px 0; }
+
+  .integration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .int-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+  }
+
+  .int-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--faint); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .int-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  footer {
+    padding-top: 32px; margin-top: 48px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 12px;
+  }
+
+  footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--faint); }
+  .footer-tags { display: flex; gap: 8px; }
+
+  @media (max-width: 640px) {
+    .page { padding: 32px 16px 60px; }
+    h1 { font-size: 24px; }
+    header { grid-template-columns: 1fr; }
+    .stats-row { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 16 16"><polygon points="8,1 15,5 15,11 8,15 1,11 1,5"/></svg>
+        </div>
+        <span class="brand-name">MineralMonitor</span>
+      </div>
+      <h1>YouTube Channel Registry</h1>
+      <p class="subtitle">Intelligence channels for African mineral markets, gold value chains, conflict signals, and macro commodity flows. Classified by use case for the AI intel brief module.</p>
+    </div>
+    <div class="stats-row">
+      <span class="stat-pill">v1.0 · May 2026</span>
+      <span class="stat-pill">14 channels catalogued</span>
+      <span class="stat-pill">Phase 1 · West Africa focus</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--gold)"></div><span class="legend-label">Africa-specific</span></div>
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--coral)"></div><span class="legend-label">Gold / precious metals</span></div>
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--blue)"></div><span class="legend-label">Mining news &amp; analysis</span></div>
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--purple)"></div><span class="legend-label">Macro / commodity markets</span></div>
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--teal)"></div><span class="legend-label">Company / operator</span></div>
+    <div class="legend-group"><div class="cat-swatch" style="background:var(--green)"></div><span class="legend-label">Conferences &amp; events</span></div>
+    <div style="width:1px;background:var(--border);margin:0 4px;"></div>
+    <div class="legend-group"><div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div><span class="legend-label">Daily / live</span></div>
+    <div class="legend-group"><div style="width:6px;height:6px;border-radius:50%;background:var(--blue);"></div><span class="legend-label">Weekly</span></div>
+    <div class="legend-group"><div style="width:6px;height:6px;border-radius:50%;background:var(--purple);"></div><span class="legend-label">Event-driven</span></div>
+  </div>
+
+
+  <!-- AFRICA-SPECIFIC -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--gold-bg);color:var(--gold);border:1px solid rgba(232,168,39,0.25)">Africa-specific</span>
+      <span class="section-count">3 channels · highest priority</span>
+    </div>
+    <div class="cards">
+
+      <div class="card africa">
+        <div class="card-top">
+          <div class="yt-thumb gold-bg">MI</div>
+          <div class="card-meta">
+            <div class="card-title">Mining Indaba</div>
+            <div class="card-handle">youtube.com/miningindaba</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~12K subscribers</span>
+          <span class="africa-badge">Africa #1</span>
+        </div>
+        <p class="card-desc">The official channel of the world's largest African mining investment conference (Cape Town, annual). Publishes panel discussions, ministerial interviews, and investor keynotes featuring government officials from Ghana, DRC, Zimbabwe, Zambia, and beyond. 2026 edition focused on critical minerals and the Lobito Corridor.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Policy signals · ECOWAS minister statements · investment climate intel briefs
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">policy-signals</span>
+          <span class="tag">government-ministers</span>
+          <span class="tag">investor-sentiment</span>
+          <span class="tag">annual-conference</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Burst uploads around February annually + occasional year-round</div>
+        <a class="card-link" href="https://www.youtube.com/miningindaba" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          youtube.com/miningindaba
+        </a>
+      </div>
+
+      <div class="card africa">
+        <div class="card-top">
+          <div class="yt-thumb gold-bg">MW</div>
+          <div class="card-meta">
+            <div class="card-title">Mining Weekly</div>
+            <div class="card-handle">youtube.com/@MiningWeeklyTV</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~37K subscribers</span>
+          <span class="africa-badge">Africa-led</span>
+        </div>
+        <p class="card-desc">Johannesburg-based Creamer Media's video arm — South Africa's premier mining publication since 1995. Weekly video roundup covering gold, platinum, coal, diamonds, and ferrous metals across Africa. Strong Ghana and West Africa coverage since 2022. 10,000+ weekly readers, 66,000 total readership.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Regulatory changes · lease disputes · weekly Ghana / West Africa mine operations news
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">weekly-roundup</span>
+          <span class="tag">ghana-coverage</span>
+          <span class="tag">regulatory</span>
+          <span class="tag">creamer-media</span>
+        </div>
+        <div class="update-row"><div class="dot-weekly"></div>Weekly video digest every Friday</div>
+        <a class="card-link" href="https://www.youtube.com/@MiningWeeklyTV" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          miningweekly.com · youtube.com/@MiningWeeklyTV
+        </a>
+      </div>
+
+      <div class="card africa">
+        <div class="card-top">
+          <div class="yt-thumb gold-bg">CT</div>
+          <div class="card-meta">
+            <div class="card-title">Commodity TV</div>
+            <div class="card-handle">youtube.com/@CommodityTV</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs">~5K subscribers</span>
+          <span class="africa-badge">Africa coverage</span>
+        </div>
+        <p class="card-desc">Mining-specialist video platform already in MineralMonitor's data registry. Features CEO and project interviews with junior miners operating in West Africa, covering exploration-stage gold, bauxite, and manganese assets. Complements Commodity TV's RSS for the AI intel brief pipeline.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Junior miner signals · exploration project updates · ASM sentiment
+        </div>
+        <div class="card-footer">
+          <span class="tag">junior-miners</span>
+          <span class="tag">exploration-stage</span>
+          <span class="tag">west-africa</span>
+          <span class="tag">pairs-with-rss</span>
+        </div>
+        <div class="update-row"><div class="dot-weekly"></div>2–4 videos per week</div>
+        <a class="card-link" href="https://www.youtube.com/@CommodityTV" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          commodity-tv.com
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- GOLD / PRECIOUS METALS -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--coral-bg);color:var(--coral);border:1px solid rgba(232,120,74,0.25)">Gold · Precious metals</span>
+      <span class="section-count">3 channels</span>
+    </div>
+    <div class="cards">
+
+      <div class="card gold">
+        <div class="card-top">
+          <div class="yt-thumb coral-bg">KN</div>
+          <div class="card-meta">
+            <div class="card-title">Kitco NEWS</div>
+            <div class="card-handle">youtube.com/c/KitcoNews</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs large">~650K subscribers</span>
+        </div>
+        <p class="card-desc">The dominant gold and precious metals news channel. Daily interviews with traders, analysts, and macro economists on gold prices, Fed policy, geopolitical risk, and commodity positioning. Strong signal-to-noise ratio for the gold price ticker and CMRI macro inputs.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Gold spot price sentiment · macro risk context · live commodity ticker narrative
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">daily-uploads</span>
+          <span class="tag">gold-spot</span>
+          <span class="tag">macro-sentiment</span>
+          <span class="tag">trader-interviews</span>
+        </div>
+        <div class="update-row"><div class="dot-live"></div>Multiple videos daily, including live market open coverage</div>
+        <a class="card-link" href="https://www.youtube.com/c/KitcoNews" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          kitco.com · youtube.com/c/KitcoNews
+        </a>
+      </div>
+
+      <div class="card gold">
+        <div class="card-top">
+          <div class="yt-thumb coral-bg">KM</div>
+          <div class="card-meta">
+            <div class="card-title">Kitco Mining</div>
+            <div class="card-handle">youtube.com/c/KitcoMining</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~80K subscribers</span>
+        </div>
+        <p class="card-desc">Kitco's dedicated mining sub-channel. CEO interviews, drill results breakdowns, and project spotlights across the full minerals stack — gold, silver, copper, cobalt, graphite, lithium, manganese, and niobium. Exclusive conference floor access at PDAC, Mining Indaba, and BMO Capital Markets. Directly relevant to MineralMonitor's critical minerals scope.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Mine-level project updates · critical minerals supply signals · Phase 2 ECOWAS expansion
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">ceo-interviews</span>
+          <span class="tag">drill-results</span>
+          <span class="tag">manganese</span>
+          <span class="tag">cobalt</span>
+          <span class="tag">lithium</span>
+        </div>
+        <div class="update-row"><div class="dot-weekly"></div>3–5 videos per week</div>
+        <a class="card-link" href="https://www.youtube.com/c/KitcoMining" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          youtube.com/c/KitcoMining
+        </a>
+      </div>
+
+      <div class="card gold">
+        <div class="card-top">
+          <div class="yt-thumb coral-bg">WGC</div>
+          <div class="card-meta">
+            <div class="card-title">World Gold Council</div>
+            <div class="card-handle">youtube.com/@WorldGoldCouncil</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs">~15K subscribers</span>
+        </div>
+        <p class="card-desc">Industry body for gold demand intelligence. Publishes Gold Demand Trends quarterly reports as video briefings, plus research on central bank buying, investment flows, and gold's role in emerging market portfolios. Strong Ghana and West Africa lens in African gold production analysis.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Gold demand intelligence · Ghana production statistics · CMRI gold-sector sub-index
+        </div>
+        <div class="card-footer">
+          <span class="tag">demand-trends</span>
+          <span class="tag">central-bank-buying</span>
+          <span class="tag">ghana-stats</span>
+          <span class="tag">quarterly</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Quarterly reports + sporadic research releases</div>
+        <a class="card-link" href="https://www.youtube.com/@WorldGoldCouncil" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          world-gold.org · youtube.com/@WorldGoldCouncil
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- MINING NEWS & ANALYSIS -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--blue-bg);color:var(--blue);border:1px solid rgba(111,157,232,0.25)">Mining news · Analysis</span>
+      <span class="section-count">3 channels</span>
+    </div>
+    <div class="cards">
+
+      <div class="card news">
+        <div class="card-top">
+          <div class="yt-thumb blue-bg">MN</div>
+          <div class="card-meta">
+            <div class="card-title">Mining.com (MINING.COM TV)</div>
+            <div class="card-handle">youtube.com/@miningdotcom</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~25K subscribers</span>
+        </div>
+        <p class="card-desc">Independent global mining news outlet with video content on M&amp;A activity, exploration results, and critical minerals supply chains. Regular Africa and West Africa features. Event-driven bursts around PDAC and Mining Indaba.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          M&amp;A signals · concession deal tracking · supply chain disruption alerts
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">m-and-a</span>
+          <span class="tag">exploration</span>
+          <span class="tag">independent</span>
+          <span class="tag">west-africa</span>
+        </div>
+        <div class="update-row"><div class="dot-weekly"></div>2–3 videos per week</div>
+        <a class="card-link" href="https://www.youtube.com/@miningdotcom" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          mining.com
+        </a>
+      </div>
+
+      <div class="card news">
+        <div class="card-top">
+          <div class="yt-thumb blue-bg">SPG</div>
+          <div class="card-meta">
+            <div class="card-title">S&amp;P Global Commodity Insights</div>
+            <div class="card-handle">youtube.com/@SPGlobalCommodityInsights</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~18K subscribers</span>
+        </div>
+        <p class="card-desc">Platts/S&amp;P analyst briefings on metals price outlooks, supply forecasts, and geopolitical commodity risk. Covers copper, cobalt, manganese, and gold from a market-intelligence standpoint. Useful as a calibration source for CMRI commodity weighting.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Commodity price forecast calibration · CMRI market-risk sub-index
+        </div>
+        <div class="card-footer">
+          <span class="tag">price-forecasts</span>
+          <span class="tag">analyst-briefings</span>
+          <span class="tag">platts</span>
+          <span class="tag">cmri-input</span>
+        </div>
+        <div class="update-row"><div class="dot-weekly"></div>Weekly analyst updates</div>
+        <a class="card-link" href="https://www.youtube.com/@SPGlobalCommodityInsights" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          spglobal.com/commodity-insights
+        </a>
+      </div>
+
+      <div class="card news">
+        <div class="card-top">
+          <div class="yt-thumb blue-bg">RMT</div>
+          <div class="card-meta">
+            <div class="card-title">Reuters Commodities / Reuters TV</div>
+            <div class="card-handle">youtube.com/@Reuters</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs large">~1.7M subscribers</span>
+        </div>
+        <p class="card-desc">Reuters' main YouTube channel covers breaking commodity and mining news — including Ghana Chamber of Mines statements, gold lease disputes, and ECOWAS mineral policy. Broad audience but with dedicated mining beats. Best used as a breaking-news tripwire rather than a deep-dive source.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Breaking policy events · Ghana regulatory alerts · lease revocations
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">breaking-news</span>
+          <span class="tag">ghana-chamber-of-mines</span>
+          <span class="tag">policy-events</span>
+          <span class="tag warn">broad — filter by keyword</span>
+        </div>
+        <div class="update-row"><div class="dot-live"></div>Continuous; filter with "Ghana mining" or "Africa minerals" search</div>
+        <a class="card-link" href="https://www.youtube.com/@Reuters" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          reuters.com
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- MACRO / COMMODITY MARKETS -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--purple-bg);color:var(--purple);border:1px solid rgba(176,125,232,0.25)">Macro · Commodity markets</span>
+      <span class="section-count">2 channels</span>
+    </div>
+    <div class="cards">
+
+      <div class="card macro">
+        <div class="card-top">
+          <div class="yt-thumb purple-bg">BNN</div>
+          <div class="card-meta">
+            <div class="card-title">BNN Bloomberg</div>
+            <div class="card-handle">youtube.com/@BNNBloomberg</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~80K subscribers</span>
+        </div>
+        <p class="card-desc">Canadian business news network with strong mining and commodities desk. Covers African gold majors (Barrick, Gold Fields, AngloGold) and provides live market commentary on gold, copper, and battery metals. Relevant for tracking major miner activity in West Africa.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Gold major corporate actions · institutional investor flows · macro risk overlay
+        </div>
+        <div class="card-footer">
+          <span class="tag">gold-majors</span>
+          <span class="tag">barrick</span>
+          <span class="tag">anglogold</span>
+          <span class="tag">investor-flows</span>
+        </div>
+        <div class="update-row"><div class="dot-live"></div>Live daily market shows</div>
+        <a class="card-link" href="https://www.youtube.com/@BNNBloomberg" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          bnnbloomberg.ca
+        </a>
+      </div>
+
+      <div class="card macro">
+        <div class="card-top">
+          <div class="yt-thumb purple-bg">IMF</div>
+          <div class="card-meta">
+            <div class="card-title">IMF — International Monetary Fund</div>
+            <div class="card-handle">youtube.com/@imf</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs medium">~140K subscribers</span>
+        </div>
+        <p class="card-desc">IMF publishes video briefings on Sub-Saharan Africa economic outlooks, debt sustainability, and commodity revenue management — all direct inputs to the CMRI governance and fiscal-stability sub-indices. Article IV consultation summaries for Ghana, Guinea, and Sierra Leone appear here.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          CMRI governance sub-index · Sub-Saharan Africa fiscal outlook · Ghana Article IV
+        </div>
+        <div class="card-footer">
+          <span class="tag">sub-saharan-outlook</span>
+          <span class="tag">ghana-article-iv</span>
+          <span class="tag">cmri-input</span>
+          <span class="tag">fiscal-stability</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Monthly/quarterly around WEO and Article IV releases</div>
+        <a class="card-link" href="https://www.youtube.com/@imf" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          imf.org
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- COMPANY / OPERATOR -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--teal-bg);color:var(--teal);border:1px solid rgba(58,173,171,0.25)">Company · Operator</span>
+      <span class="section-count">2 channels</span>
+    </div>
+    <div class="cards">
+
+      <div class="card company">
+        <div class="card-top">
+          <div class="yt-thumb teal-bg">GF</div>
+          <div class="card-meta">
+            <div class="card-title">Gold Fields</div>
+            <div class="card-handle">youtube.com/@GoldFields</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs">~4K subscribers</span>
+          <span class="africa-badge">Ghana ops</span>
+        </div>
+        <p class="card-desc">Gold Fields operates Tarkwa and Damang mines in Ghana — two of the country's largest gold producers. Corporate channel publishes sustainability reports, operational updates, and community engagement content. Direct ground-truth signal for Ghana mine operations layer.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Ghana operational ground-truth · Tarkwa / Damang mine status · ESG layer data
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">tarkwa-mine</span>
+          <span class="tag">damang-mine</span>
+          <span class="tag">ghana-ops</span>
+          <span class="tag">sustainability</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Quarterly results + ad-hoc operational updates</div>
+        <a class="card-link" href="https://www.youtube.com/@GoldFields" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          goldfields.com
+        </a>
+      </div>
+
+      <div class="card company">
+        <div class="card-top">
+          <div class="yt-thumb teal-bg">AGA</div>
+          <div class="card-meta">
+            <div class="card-title">AngloGold Ashanti</div>
+            <div class="card-handle">youtube.com/@AngloGoldAshanti</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs">~6K subscribers</span>
+          <span class="africa-badge">West Africa base</span>
+        </div>
+        <p class="card-desc">One of the world's largest gold miners with major operations in Ghana (Obuasi mine), Guinea, DRC, and Tanzania. Publishes quarterly results, investor day presentations, and community development content. High-signal source for West Africa mine operations and lease status.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          Obuasi mine operational data · West Africa production outlook · investor day forecasts
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">obuasi-mine</span>
+          <span class="tag">guinea-ops</span>
+          <span class="tag">quarterly-results</span>
+          <span class="tag">production-forecast</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Quarterly earnings + major events</div>
+        <a class="card-link" href="https://www.youtube.com/@AngloGoldAshanti" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          anglogoldashanti.com
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CONFERENCES & EVENTS -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--green-bg);color:var(--green);border:1px solid rgba(82,196,122,0.25)">Conferences · Events</span>
+      <span class="section-count">1 channel</span>
+    </div>
+    <div class="cards">
+
+      <div class="card events">
+        <div class="card-top">
+          <div class="yt-thumb green-bg">PDAC</div>
+          <div class="card-meta">
+            <div class="card-title">PDAC — Prospectors &amp; Developers Association of Canada</div>
+            <div class="card-handle">youtube.com/@PDACconvention</div>
+          </div>
+        </div>
+        <div class="subs-row">
+          <span class="subs">~8K subscribers</span>
+        </div>
+        <p class="card-desc">World's largest mineral exploration and mining convention (Toronto, annual). Publishes sessions on African exploration, responsible mining, Indigenous engagement, and junior miner financing. Strong West Africa country sessions from Ghana and Guinea delegations. Key annual signal for new project pipeline entering ECOWAS countries.</p>
+        <div class="use-row">
+          <strong>MineralMonitor use</strong>
+          New project pipeline for Phase 2/3 ECOWAS expansion · exploration capital flows
+        </div>
+        <div class="card-footer">
+          <span class="tag signal">exploration-pipeline</span>
+          <span class="tag">junior-miners</span>
+          <span class="tag">ghana-delegation</span>
+          <span class="tag">ecowas-expansion</span>
+          <span class="tag">annual-march</span>
+        </div>
+        <div class="update-row"><div class="dot-event"></div>Burst uploads around March annually</div>
+        <a class="card-link" href="https://www.youtube.com/@PDACconvention" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          pdac.ca
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <hr>
+
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border)">Integration into MineralMonitor intel pipeline</span>
+    </div>
+    <div class="integration-grid">
+
+      <div class="int-card">
+        <p class="int-label">AI intel brief · daily feed</p>
+        <p class="int-body">Kitco NEWS (gold sentiment) + Reuters keyword filter (Ghana mining) + Mining Weekly (weekly digest) → feed into AI synthesis layer for daily intel briefs</p>
+      </div>
+
+      <div class="int-card">
+        <p class="int-label">CMRI inputs</p>
+        <p class="int-body">IMF Sub-Saharan outlook + World Gold Council Ghana stats + S&P Global price forecasts → macro, governance, and market-risk sub-index calibration</p>
+      </div>
+
+      <div class="int-card">
+        <p class="int-label">Mine operations layer</p>
+        <p class="int-body">Gold Fields (Tarkwa/Damang) + AngloGold Ashanti (Obuasi) channel uploads trigger manual review for operational-status pin updates on the Ghana map layer</p>
+      </div>
+
+      <div class="int-card">
+        <p class="int-label">Exploration pipeline (Phase 2/3)</p>
+        <p class="int-body">PDAC + Kitco Mining + Mining Indaba → new project signals for Sierra Leone, Guinea, Liberia, Côte d'Ivoire expansion layer ahead of Phase 2 rollout</p>
+      </div>
+
+      <div class="int-card">
+        <p class="int-label">Policy &amp; regulatory events</p>
+        <p class="int-body">Mining Indaba minister sessions + Mining Weekly regulatory coverage + Reuters breaking news → lease revocation, royalty policy, and mining code change alerts</p>
+      </div>
+
+      <div class="int-card">
+        <p class="int-label">Recommended monitoring approach</p>
+        <p class="int-body">RSS / YouTube Data API v3 playlist polling for Kitco NEWS, Mining Weekly, and Mining.com. Manual curation for Mining Indaba and PDAC burst cycles. No machine ingestion needed for company channels — quarterly manual review suffices</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <p>MineralMonitor · YouTube Channel Registry · May 2026</p>
+    <div class="footer-tags">
+      <span class="tag">14 channels</span>
+      <span class="tag">3 Africa-specific</span>
+      <span class="tag">2 company-level</span>
+      <span class="tag">YouTube Data API v3 compatible</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mining Intelligence User Landscape — MineSentinel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf8f3;
+    --paper-raised:#ffffff;
+    --ink:#1c231f;
+    --ink-soft:#57604f;
+    --ink-faint:#8b9086;
+    --line:#e2ded0;
+    --line-strong:#cdc7b3;
+
+    --malachite:#2e7a5b;
+    --malachite-dark:#1e5940;
+    --malachite-tint:#e7f1ea;
+
+    --ochre:#b8842e;
+    --ochre-dark:#8f6520;
+    --ochre-tint:#f7eeda;
+
+    --copper:#b15e34;
+    --copper-dark:#8a4526;
+    --copper-tint:#f5e6db;
+
+    --terracotta:#9c4a3c;
+    --terracotta-dark:#7a382d;
+    --terracotta-tint:#f5e5e0;
+
+    --font-display:'Space Grotesk', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+
+    --sidebar-w:272px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--malachite-tint); color:var(--malachite-dark); }
+
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; margin:0; color:var(--ink); letter-spacing:-0.01em;}
+  p{ margin:0; }
+  a{ color:inherit; }
+
+  .layout{
+    display:grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    max-width:1320px;
+    margin:0 auto;
+  }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar{
+    position:sticky; top:0; align-self:start;
+    height:100vh; overflow-y:auto;
+    padding:2.25rem 1.5rem 2.5rem 2rem;
+    border-right:1px solid var(--line);
+  }
+  .sidebar-brand{
+    display:flex; align-items:center; gap:0.55rem;
+    margin-bottom:2rem;
+  }
+  .sidebar-mark{
+    width:26px;height:26px;border-radius:7px;
+    background:linear-gradient(135deg, var(--malachite), var(--malachite-dark));
+    flex-shrink:0;
+  }
+  .sidebar-brand-text{ font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.06em; color:var(--ink-soft); line-height:1.3;}
+  .sidebar-brand-text b{ display:block; color:var(--ink); font-size:0.8rem; letter-spacing:0.02em;}
+
+  .nav-group{ margin-bottom:1.5rem; }
+  .nav-group-label{
+    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.08em;
+    color:var(--ink-faint); text-transform:uppercase; margin-bottom:0.5rem; display:block;
+  }
+  .nav-link{
+    display:block; text-decoration:none; color:var(--ink-soft);
+    font-size:0.86rem; padding:0.32rem 0 0.32rem 0.7rem;
+    border-left:2px solid transparent;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .nav-link:hover{ color:var(--ink); border-left-color:var(--line-strong); }
+  .nav-sub{ font-size:0.78rem; padding-left:1.3rem; color:var(--ink-faint); }
+  .nav-sub:hover{ color:var(--ink-soft); }
+
+  /* ---------- MAIN ---------- */
+  .main{ padding:0 3.5rem 6rem 3.5rem; min-width:0; }
+
+  .hero{ padding:3.5rem 0 2.75rem 0; border-bottom:1px solid var(--line); }
+  .hero-eyebrow{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.1em;
+    color:var(--malachite-dark); text-transform:uppercase; margin-bottom:0.9rem; display:block;
+  }
+  .hero h1{ font-size:2.6rem; line-height:1.08; max-width:16ch; margin-bottom:1.1rem;}
+  .hero-sub{ font-size:1.08rem; color:var(--ink-soft); max-width:62ch; margin-bottom:1.6rem;}
+  .hero-note{
+    font-size:0.9rem; color:var(--ink-soft); max-width:70ch;
+    background:var(--paper-raised); border:1px solid var(--line); border-left:3px solid var(--malachite);
+    padding:0.95rem 1.15rem; border-radius:2px;
+  }
+  .hero-note b{ color:var(--ink); }
+
+  section{ scroll-margin-top:1.5rem; }
+
+  /* ---------- ECOSYSTEM DIAGRAM ---------- */
+  .ecosystem{ padding:3.25rem 0; border-bottom:1px solid var(--line); }
+  .ecosystem-title{ font-size:1.5rem; margin-bottom:0.4rem; }
+  .ecosystem-lede{ color:var(--ink-soft); max-width:58ch; margin-bottom:2.25rem; font-size:0.98rem;}
+
+  .eco-svg{ width:100%; height:auto; display:block; }
+  .eco-columns{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:0.25rem;
+  }
+  .eco-col{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:4px;
+    padding:1.1rem 1.2rem 1.3rem 1.2rem;
+  }
+  .eco-col h4{
+    font-family:var(--font-mono); font-size:0.75rem; letter-spacing:0.07em; text-transform:uppercase;
+    margin-bottom:0.75rem; padding-bottom:0.6rem; border-bottom:1px dashed var(--line-strong);
+  }
+  .eco-col.c-discover h4{ color:var(--malachite-dark); }
+  .eco-col.c-verify h4{ color:var(--ochre-dark); }
+  .eco-col.c-analyse h4{ color:var(--copper-dark); }
+  .eco-col ul{ margin:0; padding:0; list-style:none; }
+  .eco-col li{ font-size:0.87rem; color:var(--ink-soft); padding:0.28rem 0; }
+  .eco-col li::before{ content:"–"; margin-right:0.5rem; color:var(--ink-faint);}
+
+  .eco-converge{ display:flex; flex-direction:column; align-items:center; margin-top:0.25rem; }
+  .eco-line{ width:2px; height:26px; background:var(--line-strong); }
+  .eco-pill{
+    font-family:var(--font-mono); font-size:0.78rem; letter-spacing:0.04em;
+    padding:0.6rem 1.4rem; border-radius:999px; text-align:center;
+  }
+  .eco-pill.synthesis{ background:var(--ink); color:var(--paper); }
+  .eco-pill.output{
+    background:var(--paper-raised); border:1.5px solid var(--ink); color:var(--ink);
+    font-weight:600; max-width:32ch; line-height:1.4; padding:0.75rem 1.6rem;
+  }
+  .eco-quote{
+    margin-top:2.25rem; padding-top:1.6rem; border-top:1px solid var(--line);
+    font-family:var(--font-display); font-size:1.2rem; line-height:1.4; max-width:52ch; color:var(--ink);
+  }
+  .eco-quote span{ color:var(--malachite-dark); }
+
+  /* ---------- CHAPTER DIVIDER ---------- */
+  .chapter-divider{
+    display:flex; align-items:baseline; gap:1.1rem;
+    padding:3.25rem 0 1.5rem 0;
+  }
+  .chapter-num{
+    font-family:var(--font-display); font-size:2.75rem; font-weight:700;
+    color:var(--accent, var(--malachite)); line-height:1; opacity:0.9;
+  }
+  .chapter-title h2{ font-size:1.55rem; margin-bottom:0.2rem;}
+  .chapter-title p{ font-size:0.9rem; color:var(--ink-soft); }
+
+  /* ---------- PERSONA ---------- */
+  .persona{
+    padding-bottom:2.75rem; margin-bottom:2.75rem; border-bottom:1px solid var(--line);
+  }
+  .persona:last-of-type{ border-bottom:none; }
+
+  .persona-eyebrow{
+    font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--accent-dark, var(--malachite-dark)); display:block; margin-bottom:0.6rem;
+  }
+  .persona h3.persona-title{ font-size:1.55rem; margin-bottom:0.85rem; }
+
+  .role-chips{ display:flex; flex-wrap:wrap; gap:0.45rem; margin-bottom:1.75rem; }
+  .role-chip{
+    font-size:0.8rem; padding:0.32rem 0.75rem; border-radius:999px;
+    background:var(--accent-tint, var(--malachite-tint)); color:var(--accent-dark, var(--malachite-dark));
+    font-weight:500;
+  }
+
+  .block{ margin-top:1.9rem; }
+  .block-label{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:0.85rem; display:flex; align-items:center; gap:0.6rem;
+  }
+  .block-label::after{ content:""; flex:1; height:1px; background:var(--line); }
+
+  /* need cards */
+  .need-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:0.85rem; }
+  .need-card{
+    background:var(--paper-raised); border:1px solid var(--line); border-radius:4px;
+    padding:0.85rem 1rem;
+  }
+  .need-card .need-cat{
+    display:block; font-weight:600; font-size:0.88rem; color:var(--accent-dark, var(--malachite-dark));
+    margin-bottom:0.3rem;
+  }
+  .need-card p{ font-size:0.85rem; color:var(--ink-soft); }
+
+  /* need tree (category > children chips) */
+  .need-tree{ display:flex; flex-direction:column; gap:0.9rem; }
+  .need-branch{
+    border:1px solid var(--line); border-radius:4px; background:var(--paper-raised);
+    padding:0.9rem 1.05rem;
+  }
+  .need-branch-label{
+    font-weight:600; font-size:0.92rem; color:var(--ink); margin-bottom:0.55rem; display:block;
+  }
+  .need-branch-label .arrow{ color:var(--accent, var(--malachite)); margin-right:0.4rem; }
+  .chip-row{ display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .chip{
+    font-family:var(--font-mono); font-size:0.76rem; padding:0.28rem 0.6rem;
+    border:1px solid var(--line-strong); border-radius:3px; color:var(--ink-soft); background:var(--paper);
+  }
+
+  /* source / tool groups */
+  .group-row{ display:flex; flex-direction:column; gap:1rem; }
+  .group{ }
+  .group-label{ font-size:0.85rem; font-weight:600; color:var(--ink); margin-bottom:0.5rem; display:block;}
+  .tag-row{ display:flex; flex-wrap:wrap; gap:0.4rem; }
+  .tag{
+    font-size:0.8rem; padding:0.3rem 0.7rem; border-radius:3px;
+    background:var(--paper-raised); border:1px solid var(--line); color:var(--ink-soft);
+  }
+  .tag.mono{ font-family:var(--font-mono); font-size:0.75rem; }
+  .source-note{
+    margin-top:1rem; font-size:0.86rem; color:var(--ink-soft); font-style:italic;
+    padding-left:0.9rem; border-left:2px solid var(--line-strong);
+  }
+  .source-note .cite{ font-style:normal; font-family:var(--font-mono); font-size:0.78rem; color:var(--ink-faint); }
+
+  /* route / workflow */
+  .route{
+    list-style:none; margin:0; padding:0 0 0 0.15rem;
+    border-left:2px solid var(--line-strong); margin-left:0.65rem;
+  }
+  .route li{
+    position:relative; padding:0.5rem 0 0.5rem 1.5rem;
+    font-size:0.92rem; color:var(--ink);
+  }
+  .route li::before{
+    content:""; position:absolute; left:-0.475rem; top:0.92rem;
+    width:9px; height:9px; border-radius:50%;
+    background:var(--accent, var(--malachite));
+    box-shadow:0 0 0 3px var(--paper);
+  }
+  .route li .route-idx{
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-faint); margin-right:0.55rem;
+  }
+
+  /* pain points */
+  .pain-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:0.9rem; }
+  .pain-card{
+    border:1px solid var(--line); border-radius:4px; padding:0.95rem 1.05rem 1.05rem 1.05rem;
+    background:var(--paper-raised);
+  }
+  .pain-num{
+    font-family:var(--font-mono); font-size:0.72rem; color:var(--accent, var(--malachite));
+    display:block; margin-bottom:0.35rem;
+  }
+  .pain-card h4{ font-size:0.95rem; margin-bottom:0.3rem; }
+  .pain-card p{ font-size:0.84rem; color:var(--ink-soft); }
+
+  /* callout box for special examples */
+  .callout{
+    margin-top:1rem; background:var(--accent-tint, var(--malachite-tint));
+    border-radius:4px; padding:1.1rem 1.25rem;
+  }
+  .callout-label{
+    font-family:var(--font-mono); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--accent-dark, var(--malachite-dark)); display:block; margin-bottom:0.6rem;
+  }
+  .callout ul{ margin:0; padding-left:1.1rem; columns:2; column-gap:1.5rem;}
+  .callout li{ font-size:0.85rem; color:var(--ink); padding:0.15rem 0; break-inside:avoid;}
+
+  .pattern-flow{
+    display:flex; flex-direction:column; align-items:center; gap:0.15rem; margin:1.5rem 0 2rem 0;
+  }
+  .pattern-flow .line{ width:2px; height:22px; background:var(--line-strong); }
+  .pattern-flow .box{
+    font-family:var(--font-mono); font-size:0.85rem; text-align:center;
+    padding:0.55rem 1.3rem; border:1.5px solid var(--ink); border-radius:4px; background:var(--paper-raised);
+  }
+  .pattern-flow .box.strong{ background:var(--ink); color:var(--paper); border-color:var(--ink); font-weight:600;}
+
+  /* ---------- FIT TABLE (MineSentinel provides + verdict) ---------- */
+  .fit-block{ margin-top:1.9rem; }
+  .fit-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:4px; }
+  table.fit{ border-collapse:collapse; width:100%; min-width:760px; font-size:0.85rem; }
+  table.fit th, table.fit td{ text-align:left; padding:0.7rem 0.85rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.fit th{
+    font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--ink-faint); background:var(--paper);
+  }
+  table.fit td.need{ font-weight:600; color:var(--ink); white-space:nowrap; }
+  table.fit tr:last-child td{ border-bottom:none; }
+  table.fit tbody tr:nth-child(even){ background:#f6f4ee; }
+  table.fit td.verdict{ text-align:center; white-space:nowrap; }
+  .v-badge{
+    display:inline-block; font-family:var(--font-mono); font-size:0.71rem; font-weight:600;
+    padding:0.28rem 0.65rem; border-radius:3px; letter-spacing:0.02em; white-space:nowrap;
+  }
+  .v-covered{ color:var(--malachite-dark); background:var(--malachite-tint); }
+  .v-partial{ color:var(--ochre-dark); background:var(--ochre-tint); }
+  .v-not{ color:var(--terracotta-dark); background:var(--terracotta-tint); }
+  .fit-caption{ font-size:0.82rem; color:var(--ink-faint); margin-top:0.65rem; font-style:italic; }
+
+  /* ---------- CLOSE-THE-GAP / ACTION CARDS ---------- */
+  .action-block{ margin-top:1.5rem; }
+  .action-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:0.85rem; }
+  .action-card{
+    border:1px solid var(--line); border-radius:4px; padding:0.9rem 1.05rem 1.05rem 1.05rem;
+    background:var(--paper-raised);
+  }
+  .action-card-head{ display:flex; align-items:center; justify-content:space-between; gap:0.6rem; margin-bottom:0.45rem; }
+  .action-card-head h5{ font-family:var(--font-display); font-weight:600; font-size:0.89rem; color:var(--ink); margin:0; }
+  .action-effort{
+    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.04em; text-transform:uppercase;
+    color:var(--ink-faint); display:block; margin-bottom:0.3rem;
+  }
+  .action-card p.rec{ font-size:0.84rem; color:var(--ink-soft); }
+  .action-card p.rec b{ color:var(--ink); font-weight:600; }
+
+  /* ---------- FIT SUMMARY ---------- */
+  .fit-summary-section{ padding:3.25rem 0; border-bottom:1px solid var(--line); }
+  table.fit-summary{ border-collapse:collapse; width:100%; font-size:0.86rem; }
+  table.fit-summary th, table.fit-summary td{
+    text-align:left; padding:0.75rem 0.9rem; border-bottom:1px solid var(--line); vertical-align:middle;
+  }
+  table.fit-summary th{
+    font-family:var(--font-mono); font-size:0.66rem; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--ink-faint); background:var(--paper);
+  }
+  table.fit-summary td:not(:first-child), table.fit-summary th:not(:first-child){ text-align:center; }
+  table.fit-summary td:first-child{ font-weight:600; color:var(--ink); }
+  table.fit-summary tr:last-child td{ border-bottom:none; }
+  table.fit-summary tbody tr:nth-child(even){ background:#f6f4ee; }
+  .count-covered{ color:var(--malachite-dark); font-weight:600; }
+  .count-partial{ color:var(--ochre-dark); font-weight:600; }
+  .count-not{ color:var(--terracotta-dark); font-weight:600; }
+
+  /* ---------- COMPARISON TABLE ---------- */
+  .compare-section{ padding:3.25rem 0; }
+  .table-scroll{ overflow-x:auto; border:1px solid var(--line); border-radius:4px; }
+  table.compare{ border-collapse:collapse; width:100%; min-width:1100px; font-size:0.83rem; }
+  table.compare th, table.compare td{
+    text-align:left; padding:0.75rem 0.9rem; border-bottom:1px solid var(--line); vertical-align:top;
+  }
+  table.compare th{
+    font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.05em; text-transform:uppercase;
+    color:var(--ink-faint); background:var(--paper); position:sticky; top:0;
+  }
+  table.compare td:first-child, table.compare th:first-child{
+    position:sticky; left:0; background:var(--paper-raised); font-weight:600; color:var(--ink);
+    box-shadow:1px 0 0 var(--line);
+  }
+  table.compare tr:last-child td{ border-bottom:none; }
+  table.compare tr:nth-child(even) td:first-child{ background:#f6f4ee; }
+
+  /* ---------- FOOTER ---------- */
+  .doc-footer{
+    padding:2.5rem 0 1rem 0; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  }
+  .doc-footer p{ font-size:0.8rem; color:var(--ink-faint); font-family:var(--font-mono); }
+
+  @media (max-width:980px){
+    .layout{ grid-template-columns:1fr; }
+    .sidebar{
+      position:static; height:auto; border-right:none; border-bottom:1px solid var(--line);
+      padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.5rem; overflow-x:auto;
+    }
+    .sidebar-brand{ margin-bottom:0; flex-shrink:0; }
+    .nav-group{ margin-bottom:0; display:flex; align-items:center; gap:0.8rem; flex-shrink:0;}
+    .nav-group-label{ margin-bottom:0; }
+    .nav-link{ white-space:nowrap; border-left:none; border-bottom:2px solid transparent; padding:0.2rem 0;}
+    .nav-link:hover{ border-left-color:transparent; border-bottom-color:var(--line-strong);}
+    .nav-sub{ padding-left:0; }
+    .main{ padding:0 1.5rem 4rem 1.5rem; }
+    .hero h1{ font-size:1.9rem; }
+    .eco-columns{ grid-template-columns:1fr; }
+    .need-grid{ grid-template-columns:1fr 1fr; }
+    .pain-grid{ grid-template-columns:1fr; }
+    .callout ul{ columns:1; }
+  }
+  @media (max-width:600px){
+    .need-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- ================= SIDEBAR ================= -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-mark"></div>
+      <div class="sidebar-brand-text"><b>MineSentinel</b>User research · Aug 2026</div>
+    </div>
+
+    <div class="nav-group">
+      <span class="nav-group-label">Overview</span>
+      <a class="nav-link" href="#ecosystem">Information ecosystem</a>
+    </div>
+
+    <div class="nav-group">
+      <span class="nav-group-label">01 · Analysts</span>
+      <a class="nav-link" href="#analysts">Mining Analysts &amp; Researchers</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">02 · Technical</span>
+      <a class="nav-link" href="#technical">Mining Companies &amp; Technical</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">03 · ESG</span>
+      <a class="nav-link" href="#esg">ESG, Sustainability &amp; Compliance</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">04 · Finance &amp; Commodity</span>
+      <a class="nav-link" href="#finance">Financial &amp; Investment Professionals</a>
+      <a class="nav-link nav-sub" href="#traders">Commodity Traders &amp; Brokers</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">05 · Legal &amp; Government</span>
+      <a class="nav-link" href="#legal">Legal &amp; Regulatory</a>
+      <a class="nav-link nav-sub" href="#government">Government &amp; Policy</a>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">06 · Development, Academia, Media</span>
+      <a class="nav-link" href="#development">Development Finance / Aid</a>
+      <a class="nav-link nav-sub" href="#academia">Academia &amp; Research</a>
+      <a class="nav-link nav-sub" href="#media">Journalists &amp; Editors</a>
+    </div>
+
+    <div class="nav-group">
+      <span class="nav-group-label">Synthesis</span>
+      <a class="nav-link" href="#fit-summary">MineSentinel fit summary</a>
+      <a class="nav-link" href="#compare">Cross-audience comparison</a>
+      <a class="nav-link" href="#pattern">The common pattern</a>
+    </div>
+  </nav>
+
+  <!-- ================= MAIN ================= -->
+  <main class="main">
+
+    <header class="hero">
+      <span class="hero-eyebrow">Audience research · Platform fit assessment</span>
+      <h1>Mining Intelligence User Landscape</h1>
+      <p class="hero-sub">How mining analysts, technical teams, ESG professionals, financial and commodity specialists, legal and government advisors, and development, academic and media audiences find, verify and analyse mineral-sector information today — and where MineSentinel currently stands against each audience's core needs.</p>
+      <p class="hero-note"><b>Scope note.</b> Each audience is documented as it operates today: what it needs, what hurts, where it looks for information, which websites and platforms it uses, which tools it works in, and how the workflow moves from information-gathering to an output. A <b>MineSentinel fit table</b> is layered onto every audience, mapping their core needs against what the platform currently provides, with a verdict of <b>Covered</b>, <b>Partial</b> or <b>Not covered</b>. Verdicts are grounded in the platform's own documentation as of August 2026; a Partial or Not-covered mark identifies a roadmap item or work that sits outside an intelligence-aggregation platform by design, not a feature assumed away.</p>
+    </header>
+
+    <!-- ================= ECOSYSTEM ================= -->
+    <section class="ecosystem" id="ecosystem">
+      <h2 class="ecosystem-title">The mining information ecosystem</h2>
+      <p class="ecosystem-lede">Every audience in this document sits somewhere on the same underlying path — data is discovered, then verified, then analysed, before a person synthesises it into a report, decision, monitoring signal or action.</p>
+
+      <svg class="eco-svg" viewBox="0 0 900 90" preserveAspectRatio="xMidYMid meet">
+        <line x1="450" y1="0" x2="450" y2="30" style="stroke:var(--line-strong);stroke-width:2"/>
+        <path d="M450,30 L150,68" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M450,30 L450,68" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M450,30 L750,68" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <circle cx="150" cy="72" r="5" style="fill:var(--malachite)"/>
+        <circle cx="450" cy="72" r="5" style="fill:var(--ochre)"/>
+        <circle cx="750" cy="72" r="5" style="fill:var(--copper)"/>
+      </svg>
+
+      <div class="eco-columns">
+        <div class="eco-col c-discover">
+          <h4>Discover data</h4>
+          <ul>
+            <li>Web / search</li><li>Registries</li><li>Government</li><li>Company sites</li><li>Research</li>
+          </ul>
+        </div>
+        <div class="eco-col c-verify">
+          <h4>Verify data</h4>
+          <ul>
+            <li>Reports</li><li>Filings</li><li>Databases</li><li>News</li><li>Maps</li>
+          </ul>
+        </div>
+        <div class="eco-col c-analyse">
+          <h4>Analyse data</h4>
+          <ul>
+            <li>Excel</li><li>GIS</li><li>SQL</li><li>Financial models</li><li>Statistical tools</li>
+          </ul>
+        </div>
+      </div>
+
+      <svg class="eco-svg" viewBox="0 0 900 40" preserveAspectRatio="xMidYMid meet" style="margin-top:0.25rem;">
+        <path d="M150,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M450,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M750,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+      </svg>
+
+      <div class="eco-converge">
+        <div class="eco-pill synthesis">HUMAN SYNTHESIS</div>
+        <div class="eco-line"></div>
+        <div class="eco-pill output">Report / Decision / Monitoring / Action</div>
+      </div>
+
+      <p class="eco-quote">The key characteristic across these audiences: mining information is <span>fragmented by source, format, geography and function.</span></p>
+    </section>
+
+    <!-- ================= CHAPTER 01 ================= -->
+    <div class="chapter-divider" style="--accent:var(--malachite);">
+      <span class="chapter-num" style="--accent:var(--malachite);">01</span>
+      <div class="chapter-title">
+        <h2>Mining Analysts &amp; Researchers</h2>
+        <p>Research-led roles that synthesise mine, company and commodity data into analysis.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="analysts" style="--accent:var(--malachite);--accent-dark:var(--malachite-dark);--accent-tint:var(--malachite-tint);">
+      <span class="persona-eyebrow">Who they are</span>
+      <div class="role-chips">
+        <span class="role-chip">Mining Analysts</span>
+        <span class="role-chip">Mineral Intelligence Researchers</span>
+        <span class="role-chip">Research Fellows</span>
+        <span class="role-chip">Exploration Data Analysts</span>
+        <span class="role-chip">Mining Consultants</span>
+        <span class="role-chip">Market / Research Analysts</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">What they need</span>
+        <div class="need-grid">
+          <div class="need-card"><span class="need-cat">Mine data</span><p>Mine name, location, operator, owner, status</p></div>
+          <div class="need-card"><span class="need-cat">Production</span><p>Production volumes, historical production, forecasts</p></div>
+          <div class="need-card"><span class="need-cat">Exploration</span><p>Exploration projects, drilling, discoveries, resources</p></div>
+          <div class="need-card"><span class="need-cat">Companies</span><p>Ownership, subsidiaries, financial information</p></div>
+          <div class="need-card"><span class="need-cat">Commodities</span><p>Prices, inventories, demand, supply</p></div>
+          <div class="need-card"><span class="need-cat">Geology</span><p>Geological maps, mineral occurrences, deposits</p></div>
+          <div class="need-card"><span class="need-cat">Regulation</span><p>Licences, permits, regulatory changes</p></div>
+          <div class="need-card"><span class="need-cat">Infrastructure</span><p>Roads, rail, ports, power, pipelines</p></div>
+          <div class="need-card"><span class="need-cat">Risk</span><p>Political, operational, environmental and supply-chain risks</p></div>
+          <div class="need-card"><span class="need-cat">News / events</span><p>Disruptions, strikes, accidents, announcements</p></div>
+          <div class="need-card"><span class="need-cat">Historical information</span><p>Previous production, prices, disruptions and policy changes</p></div>
+        </div>
+        <p class="source-note">The MineSentinel documentation describes this information universe as geological survey data, production statistics, commodity prices, mine activity, supply-chain metrics and intelligence from multiple sources.</p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Where they get it</span>
+        <div class="group-row">
+          <div class="group">
+            <span class="group-label">Websites / databases</span>
+            <div class="tag-row">
+              <span class="tag">Government mining ministries</span><span class="tag">Minerals commissions</span>
+              <span class="tag">Geological survey websites</span><span class="tag">Mining cadastre / registry portals</span>
+              <span class="tag">Company websites</span><span class="tag">Annual reports</span><span class="tag">Quarterly reports</span>
+              <span class="tag">Stock-exchange filings</span><span class="tag">SEC filings where applicable</span>
+              <span class="tag">Mining news websites</span><span class="tag">Industry publications</span>
+              <span class="tag">Academic journals</span><span class="tag">Commodity exchanges</span><span class="tag">Statistical agencies</span>
+            </div>
+          </div>
+          <div class="group">
+            <span class="group-label">Commercial intelligence platforms</span>
+            <div class="tag-row">
+              <span class="tag">S&amp;P Global Market Intelligence</span><span class="tag">GlobalData Mining</span>
+              <span class="tag">Bloomberg</span><span class="tag">LSEG Workspace</span><span class="tag">S&amp;P Capital IQ Pro</span>
+            </div>
+          </div>
+        </div>
+        <p class="source-note">S&amp;P's mining offering, for example, covers companies, mining properties, operating mines, mining claims, exploration data, production and commodity price projections. <span class="cite">(S&amp;P Global)</span></p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="group-row">
+          <div class="group">
+            <span class="group-label">Web browser</span>
+            <div class="tag-row mono"><span class="tag mono">Google / Bing</span><span class="tag mono">Government portals</span><span class="tag mono">Company websites</span><span class="tag mono">News databases</span><span class="tag mono">Academic databases</span></div>
+          </div>
+          <div class="group">
+            <span class="group-label">Data handling</span>
+            <div class="tag-row mono"><span class="tag mono">Excel</span><span class="tag mono">Google Sheets</span><span class="tag mono">CSV</span><span class="tag mono">SQL</span><span class="tag mono">Python / R</span></div>
+          </div>
+          <div class="group">
+            <span class="group-label">Analysis</span>
+            <div class="tag-row mono"><span class="tag mono">Excel models</span><span class="tag mono">Power BI</span><span class="tag mono">Tableau</span><span class="tag mono">GIS</span><span class="tag mono">Statistical software</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">How they currently get the work done</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Research question</li>
+          <li><span class="route-idx">02</span>Search multiple websites</li>
+          <li><span class="route-idx">03</span>Collect documents / data</li>
+          <li><span class="route-idx">04</span>Download PDFs / Excel / CSV</li>
+          <li><span class="route-idx">05</span>Extract relevant information</li>
+          <li><span class="route-idx">06</span>Put information into working spreadsheet</li>
+          <li><span class="route-idx">07</span>Standardise names / units / dates</li>
+          <li><span class="route-idx">08</span>Cross-check sources</li>
+          <li><span class="route-idx">09</span>Analyse</li>
+          <li><span class="route-idx">10</span>Charts / tables / report</li>
+          <li><span class="route-idx">11</span>Final research output</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Core pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><span class="pain-num">01 · Fragmentation</span><h4>Distributed across many sources</h4><p>The relevant information is distributed across many sources.</p></div>
+          <div class="pain-card"><span class="pain-num">02 · Manual compilation</span><h4>Finding outweighs analysing</h4><p>A significant part of the analyst's time can be spent finding and organising information rather than analysing it.</p></div>
+          <div class="pain-card"><span class="pain-num">03 · Inconsistent data</span><h4>No shared reporting standard</h4><p>Different companies and jurisdictions report information differently.</p></div>
+          <div class="pain-card"><span class="pain-num">04 · Historical comparability</span><h4>The past is harder to reconstruct</h4><p>Current information may be easy to find while historical information is harder to reconstruct.</p></div>
+          <div class="pain-card"><span class="pain-num">05 · Geographic linking</span><h4>Entities don't connect themselves</h4><p>Connecting a company, mine, concession, geological feature, infrastructure and country requires additional work.</p></div>
+          <div class="pain-card"><span class="pain-num">06 · Verification</span><h4>Figures need cross-checking</h4><p>Important figures often need to be checked against multiple sources.</p></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Mine data &amp; ownership</td><td>Mine name, location, operator, owner, status</td><td>Mine registry entries with location, operator/owner of record and status, pulled from cadastral and government sources</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Production &amp; activity</td><td>Production volumes, historical production, mine activity</td><td>Production statistics and mine-activity tracking across the covered ECOWAS / African countries</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Exploration &amp; resource data</td><td>Exploration projects, drilling, discoveries, resources</td><td>Not built — drilling results, assays and resource estimates live in company/technical exploration software, outside current scope</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Companies</td><td>Ownership, subsidiaries, financial information</td><td>Ownership of record is captured; subsidiary structures and company financials are not</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Commodities</td><td>Prices, inventories, demand, supply</td><td>Commodity price tracking is a core data pillar; inventory and demand-side figures are thinner</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Geology</td><td>Geological maps, mineral occurrences, deposits</td><td>Geological survey layers and mineral-occurrence data sit in the base map</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Regulation</td><td>Licences, permits, regulatory changes</td><td>Licence number, status, issuing authority and expiry are recorded registry fields</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Infrastructure</td><td>Roads, rail, ports, power, pipelines</td><td>Some infrastructure appears as a GIS layer; it isn't a dedicated logistics dataset</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Risk &amp; news</td><td>Political, operational, environmental risk; disruptions, strikes, accidents</td><td>Conflict monitoring, satellite change-detection and news aggregation are core pillars</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F1 — Mining Analysts &amp; Researchers: 6 of 9 needs covered, 2 partial, 1 not covered. The strongest-fit audience: this is close to the information universe MineSentinel's own documentation describes.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Companies — subsidiaries &amp; financials</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Add a corporate-structure layer (parent/subsidiary links, basic financials) via a company-registry integration such as OpenCorporates. <b>Shared fix</b> with the same gap in F6 (legal) and F9 (academia).</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Infrastructure</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Promote the existing GIS infrastructure layer into a dedicated dataset — roads, rail, ports, power, pipelines with status/capacity fields, not just map overlays. <b>Shared fix</b> with F5, F7 and F8.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Exploration &amp; resource data</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Drilling, assays and resource estimates are proprietary, project-specific technical data. Best solved by a partnership/export path into exploration tools rather than in-house collection — see the F2 export-pipeline recommendation below.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHAPTER 02 ================= -->
+    <div class="chapter-divider" style="--accent:var(--ochre);">
+      <span class="chapter-num" style="--accent:var(--ochre);">02</span>
+      <div class="chapter-title">
+        <h2>Mining Companies &amp; Technical Professionals</h2>
+        <p>Field and technical roles working directly with geological and spatial data.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="technical" style="--accent:var(--ochre);--accent-dark:var(--ochre-dark);--accent-tint:var(--ochre-tint);">
+      <span class="persona-eyebrow">Who they are</span>
+      <div class="role-chips">
+        <span class="role-chip">Exploration Managers</span><span class="role-chip">Exploration Geologists</span>
+        <span class="role-chip">Geologists</span><span class="role-chip">Concession Managers</span>
+        <span class="role-chip">Land Managers</span><span class="role-chip">Geological Data Managers</span>
+        <span class="role-chip">Field Geologists</span><span class="role-chip">Resource Geologists</span>
+        <span class="role-chip">Mining Consultants</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">What they need — technical information</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Geology</span>
+            <div class="chip-row"><span class="chip">Deposits</span><span class="chip">Structures</span><span class="chip">Geochemistry</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Exploration</span>
+            <div class="chip-row"><span class="chip">Drilling</span><span class="chip">Assays</span><span class="chip">Resources</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>GIS / Spatial data</span>
+            <div class="chip-row"><span class="chip">Licences</span><span class="chip">Mine boundaries</span><span class="chip">Infrastructure</span><span class="chip">Land</span><span class="chip">Environment</span><span class="chip">Satellite imagery</span></div>
+          </div>
+        </div>
+        <p class="source-note">The MineSentinel documentation identifies geological maps, structural geology, geochemistry, aeromagnetic / gravity coverage and hundreds of thousands of mineral occurrences as relevant data types.</p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Where they get it</span>
+        <div class="group-row">
+          <div class="group">
+            <span class="group-label">Websites / data sources</span>
+            <div class="tag-row">
+              <span class="tag">National geological surveys</span><span class="tag">Mining cadastre portals</span>
+              <span class="tag">Government geological databases</span><span class="tag">Company exploration reports</span>
+              <span class="tag">NI 43-101 technical reports</span><span class="tag">JORC reports</span>
+              <span class="tag">Academic geological publications</span><span class="tag">Satellite imagery providers</span>
+              <span class="tag">Remote-sensing datasets</span><span class="tag">OpenStreetMap</span>
+              <span class="tag">Government land / environmental datasets</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="group-row">
+          <div class="group">
+            <span class="group-label">GIS</span>
+            <div class="tag-row mono"><span class="tag mono">Esri ArcGIS</span><span class="tag mono">QGIS</span><span class="tag mono">Google Earth / Google Earth Pro</span></div>
+          </div>
+          <div class="group">
+            <span class="group-label">Geological / exploration software</span>
+            <div class="tag-row mono"><span class="tag mono">Seequent Leapfrog</span><span class="tag mono">acQuire</span><span class="tag mono">Micromine</span><span class="tag mono">Datamine</span><span class="tag mono">Surpac</span><span class="tag mono">ioGAS</span></div>
+          </div>
+          <div class="group">
+            <span class="group-label">Data / analysis</span>
+            <div class="tag-row mono"><span class="tag mono">Excel</span><span class="tag mono">SQL databases</span><span class="tag mono">Python</span><span class="tag mono">R</span><span class="tag mono">CAD tools</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Typical workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Identify area / property</li>
+          <li><span class="route-idx">02</span>Acquire geological information</li>
+          <li><span class="route-idx">03</span>Acquire licence / concession data</li>
+          <li><span class="route-idx">04</span>Collect historical exploration data</li>
+          <li><span class="route-idx">05</span>Import spatial datasets</li>
+          <li><span class="route-idx">06</span>Coordinate / projection checking</li>
+          <li><span class="route-idx">07</span>Overlay geological layers</li>
+          <li><span class="route-idx">08</span>Review drilling / assays</li>
+          <li><span class="route-idx">09</span>Review satellite / remote sensing</li>
+          <li><span class="route-idx">10</span>Analyse prospect / property</li>
+          <li><span class="route-idx">11</span>Create maps / technical outputs</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Core pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><span class="pain-num">Data fragmentation</span><h4>Multiple originating sources</h4><p>Geological, licence, exploration and infrastructure data come from different places.</p></div>
+          <div class="pain-card"><span class="pain-num">Different formats</span><h4>No single file type</h4><p>Shapefiles, rasters, PDFs, spreadsheets, databases.</p></div>
+          <div class="pain-card"><span class="pain-num">Coordinate problems</span><h4>Reference systems don't match</h4><p>Different coordinate reference systems and location formats.</p></div>
+          <div class="pain-card"><span class="pain-num">Data quality</span><h4>Gaps in the historical record</h4><p>Historical datasets can be incomplete or inconsistent.</p></div>
+          <div class="pain-card"><span class="pain-num">Data integration</span><h4>Layers assembled by hand</h4><p>GIS layers often have to be manually brought together.</p></div>
+          <div class="pain-card"><span class="pain-num">Historical data</span><h4>Buried in old reports</h4><p>Older exploration information may be buried in reports.</p></div>
+          <div class="pain-card"><span class="pain-num">Coverage gaps</span><h4>Uneven by jurisdiction</h4><p>Some jurisdictions have much better public data than others.</p></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Geology — deposits &amp; structures</td><td>Deposits, structural geology</td><td>Geological maps and structural layers sit in the documented data universe</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Geochemistry &amp; geophysics</td><td>Geochemistry, aeromagnetic / gravity coverage</td><td>Aeromagnetic, gravity and geochemical layers are catalogued data sources</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Mineral occurrences</td><td>Hundreds of thousands of recorded occurrences</td><td>Occurrence-level data forms part of the base geological layer</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Exploration — drilling &amp; assays</td><td>Drilling, assays, resource estimates</td><td>Not built — this is proprietary, project-specific exploration data</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Licences &amp; concession boundaries</td><td>Licences, mine boundaries</td><td>Cadastral / concession boundary mapping is core to the registry</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Satellite imagery &amp; land/environment</td><td>Infrastructure, land, environment, satellite imagery</td><td>Satellite monitoring is a core pillar; infrastructure/land/environment layers are partial</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Export into technical GIS / exploration software</td><td>Feeding ArcGIS, QGIS, Leapfrog, Micromine workflows</td><td>Not built — no native export pipeline into third-party exploration or GIS software today</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F2 — Mining Companies &amp; Technical Professionals: 4 of 7 needs covered, 1 partial, 2 not covered. Strong on the core geological / GIS data layer; MineSentinel does not replace exploration-grade drilling data or technical GIS software.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Satellite imagery &amp; land/environment</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Build out the infrastructure/land/environment layers to match the strength of the existing satellite-monitoring pillar, rather than leaving them as a thin add-on to imagery.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Export into technical GIS / exploration software</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">High leverage, low-moderate effort</span>
+            <p class="rec">Build a native export pipeline (shapefile / GeoJSON / DXF) so registry, geology and satellite layers feed directly into ArcGIS, QGIS, Leapfrog and Micromine. The data already exists — this is a packaging problem, not a data-acquisition one.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Exploration — drilling &amp; assays</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Proprietary, project-specific data best left to dedicated exploration-data providers. Position MineSentinel as complementary — feeding context in, not replacing assay/drilling databases.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHAPTER 03 ================= -->
+    <div class="chapter-divider" style="--accent:var(--copper);">
+      <span class="chapter-num" style="--accent:var(--copper);">03</span>
+      <div class="chapter-title">
+        <h2>ESG, Sustainability &amp; Compliance Professionals</h2>
+        <p>Roles that link environmental, social and regulatory evidence to a specific asset.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="esg" style="--accent:var(--copper);--accent-dark:var(--copper-dark);--accent-tint:var(--copper-tint);">
+      <span class="persona-eyebrow">Who they are</span>
+      <div class="role-chips">
+        <span class="role-chip">ESG Officers</span><span class="role-chip">ESG Analysts</span>
+        <span class="role-chip">Sustainability Managers</span><span class="role-chip">Environmental Analysts</span>
+        <span class="role-chip">Compliance Officers</span><span class="role-chip">Environmental Consultants</span>
+        <span class="role-chip">Social-Performance Professionals</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Information they need — per mine</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Environmental</span>
+            <div class="chip-row"><span class="chip">Water</span><span class="chip">Air</span><span class="chip">Biodiversity</span><span class="chip">Tailings</span><span class="chip">Waste</span><span class="chip">Climate</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Social</span>
+            <div class="chip-row"><span class="chip">Community</span><span class="chip">Population</span><span class="chip">Indigenous</span><span class="chip">Land</span><span class="chip">Labour</span><span class="chip">Conflict</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Governance</span>
+            <div class="chip-row"><span class="chip">Permits</span><span class="chip">Compliance</span><span class="chip">Incidents</span><span class="chip">Regulations</span><span class="chip">Disclosures</span></div>
+          </div>
+        </div>
+        <p class="source-note">MineSentinel's documentation specifically identifies water stress, biodiversity sensitivity, indigenous land overlays and IFC Performance Standards compliance as mine-level ESG information.</p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Where they get it</span>
+        <div class="group-row">
+          <div class="group">
+            <span class="group-label">Websites / sources</span>
+            <div class="tag-row">
+              <span class="tag">Mining company sustainability reports</span><span class="tag">Annual reports</span>
+              <span class="tag">Government environmental agencies</span><span class="tag">Environmental permit portals</span>
+              <span class="tag">Mining regulators</span><span class="tag">ESG disclosures</span><span class="tag">IFC</span>
+              <span class="tag">World Bank</span><span class="tag">Environmental databases</span><span class="tag">NGO reports</span>
+              <span class="tag">Satellite / environmental datasets</span><span class="tag">News sources</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Excel / Google Sheets</span><span class="tag mono">Power BI</span><span class="tag mono">Tableau</span>
+          <span class="tag mono">GIS</span><span class="tag mono">ESG databases</span><span class="tag mono">Document management systems</span>
+          <span class="tag mono">Internal compliance systems</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Current workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Identify company / mine</li>
+          <li><span class="route-idx">02</span>Collect sustainability report</li>
+          <li><span class="route-idx">03</span>Find environmental permits</li>
+          <li><span class="route-idx">04</span>Search regulator records</li>
+          <li><span class="route-idx">05</span>Check environmental incidents</li>
+          <li><span class="route-idx">06</span>Collect water / biodiversity information</li>
+          <li><span class="route-idx">07</span>Review community / social information</li>
+          <li><span class="route-idx">08</span>Review tailings information</li>
+          <li><span class="route-idx">09</span>Compare against ESG framework</li>
+          <li><span class="route-idx">10</span>Build assessment / report</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Example — tailings assessment</span>
+        <div class="callout">
+          <span class="callout-label">Individual data points a single assessment may involve</span>
+          <ul>
+            <li>Construction type</li><li>Height</li><li>Capacity</li><li>Storage level</li>
+            <li>Material classification</li><li>Consequence classification</li><li>Safety reviews</li>
+            <li>EoR certification</li><li>Seismic hazard</li><li>Proximity to water</li>
+            <li>Population exposure</li><li>Incident history</li><li>Monitoring telemetry</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Core pain point — mine-level ESG information is scattered</span>
+        <div class="tag-row" style="margin-bottom:0.9rem;">
+          <span class="tag">Company disclosure</span><span class="tag">+ Government records</span><span class="tag">+ Environmental datasets</span>
+          <span class="tag">+ GIS</span><span class="tag">+ News</span><span class="tag">+ NGO / community information</span>
+        </div>
+        <div class="eco-converge" style="align-items:flex-start;">
+          <div class="eco-line"></div>
+          <div class="eco-pill output" style="max-width:none;">ESG assessment</div>
+        </div>
+        <p class="source-note" style="margin-top:1rem;">The challenge is therefore not simply "finding ESG data" — it is linking environmental, social and regulatory evidence to a specific asset.</p>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Water stress &amp; biodiversity</td><td>Water, biodiversity sensitivity</td><td>Named explicitly in the platform's own data documentation as mine-level ESG fields</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Indigenous land &amp; IFC compliance</td><td>Indigenous overlays, IFC Performance Standards</td><td>Indigenous land overlays and IFC PS compliance are documented mine-level fields</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Governance — permits, compliance, incidents</td><td>Permits, compliance, incidents, regulations, disclosures</td><td>Regulatory status and incident tracking sit inside the registry and conflict-monitoring layers</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Broader environmental — air, waste, climate</td><td>Air, tailings, waste, climate</td><td>Water and biodiversity are the strongest layers; air, waste and climate coverage is thinner</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Social — community, labour, conflict</td><td>Community, population, indigenous, land, labour, conflict</td><td>Community and conflict signals draw on incident/news monitoring; labour data is not tracked</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Tailings-specific technical data</td><td>Construction type, height, capacity, EoR certification, seismic hazard</td><td>Not built — this is specialist dam-engineering data, outside an intelligence-aggregation platform</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Framework-structured output</td><td>Reporting aligned to GRI, SASB, Equator Principles</td><td>Not built — outputs aren't yet structured against a named ESG reporting framework</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F3 — ESG, Sustainability &amp; Compliance: 3 of 7 needs covered, 2 partial, 2 not covered. Strongest on the environmental screening layer; framework-aligned reporting and specialist tailings-engineering data remain gaps.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Broader environmental — air, waste, climate</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Add air-quality/emissions feeds (satellite-derived or national registries) and basic climate physical-risk overlays (flood, drought, heat). Several open datasets (WRI Aqueduct, Climate TRACE) shorten the build.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Social — community, labour, conflict</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Low effort — extends existing pipeline</span>
+            <p class="rec">Extend the existing incident/news-monitoring pipeline to tag labour signals (strikes, safety incidents) alongside the community/conflict data it already tracks. <b>Shared fix</b> with F8 and F10.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Framework-structured output</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Highest leverage — reuses existing data</span>
+            <p class="rec">Map existing fields (water, biodiversity, indigenous, governance) to GRI / SASB / Equator Principles indicator codes and generate a structured report view. No new data collection needed — this is an output-layer build.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Tailings-specific technical data</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Specialist dam-engineering data (construction type, EoR certification, seismic hazard) sits outside an intelligence-aggregation platform. Integrate with a specialist source like the Global Tailings Portal rather than building natively.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHAPTER 04 ================= -->
+    <div class="chapter-divider" style="--accent:var(--malachite);">
+      <span class="chapter-num" style="--accent:var(--malachite);">04</span>
+      <div class="chapter-title">
+        <h2>Finance, Investment &amp; Commodity Professionals</h2>
+        <p>Two distinct workflows — one values the company, the other trades the physical market.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="finance" style="--accent:var(--malachite);--accent-dark:var(--malachite-dark);--accent-tint:var(--malachite-tint);">
+      <span class="persona-eyebrow">04A · Who they are</span>
+      <h3 class="persona-title">Financial &amp; Investment Professionals</h3>
+      <div class="role-chips">
+        <span class="role-chip">Investment Analysts</span><span class="role-chip">Mining Sector Analysts</span>
+        <span class="role-chip">Portfolio Managers</span><span class="role-chip">Equity Research Analysts</span>
+        <span class="role-chip">Investment Officers</span><span class="role-chip">Corporate Finance Professionals</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">What they need</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Company</span>
+            <div class="chip-row"><span class="chip">Financials</span><span class="chip">Production</span><span class="chip">Costs</span><span class="chip">Assets</span><span class="chip">Reserves / resources</span><span class="chip">Management</span><span class="chip">M&amp;A</span><span class="chip">Valuation</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Commodity</span>
+            <div class="chip-row"><span class="chip">Price</span><span class="chip">Supply</span><span class="chip">Demand</span><span class="chip">Forecast</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Risk</span>
+            <div class="chip-row"><span class="chip">Country</span><span class="chip">Regulatory</span><span class="chip">Operational</span><span class="chip">ESG</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Websites / platforms</span>
+        <div class="tag-row">
+          <span class="tag">Bloomberg</span><span class="tag">S&amp;P Capital IQ Pro</span><span class="tag">LSEG Workspace</span>
+          <span class="tag">Company investor-relations websites</span><span class="tag">Stock exchanges</span>
+          <span class="tag">SEC / regulatory filing systems</span><span class="tag">Government statistics</span>
+          <span class="tag">Commodity exchange websites</span>
+        </div>
+        <p class="source-note">S&amp;P describes its mining intelligence as covering company financials, asset data, estimates, credit risk, transactions, production, exploration and commodity prices. <span class="cite">(S&amp;P Global)</span></p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Excel</span><span class="tag mono">Financial modelling spreadsheets</span><span class="tag mono">Bloomberg Terminal</span>
+          <span class="tag mono">Capital IQ</span><span class="tag mono">LSEG Workspace</span><span class="tag mono">PowerPoint</span>
+          <span class="tag mono">Python / R</span><span class="tag mono">Power BI / Tableau</span><span class="tag mono">SQL</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Identify company / asset</li>
+          <li><span class="route-idx">02</span>Collect financial statements</li>
+          <li><span class="route-idx">03</span>Collect production data</li>
+          <li><span class="route-idx">04</span>Collect commodity assumptions</li>
+          <li><span class="route-idx">05</span>Research mine / project</li>
+          <li><span class="route-idx">06</span>Assess country / operational risk</li>
+          <li><span class="route-idx">07</span>Build financial model</li>
+          <li><span class="route-idx">08</span>Valuation</li>
+          <li><span class="route-idx">09</span>Investment thesis</li>
+          <li><span class="route-idx">10</span>Investment memo / presentation</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><span class="pain-num">Separated data</span><h4>Company and asset data can be separated</h4></div>
+          <div class="pain-card"><span class="pain-num">Extra research</span><h4>Mine-level operational information requires additional research</h4></div>
+          <div class="pain-card"><span class="pain-num">Disclosure-dependent</span><h4>Production data comes from company disclosures</h4></div>
+          <div class="pain-card"><span class="pain-num">Rapid change</span><h4>Commodity assumptions change rapidly</h4></div>
+          <div class="pain-card"><span class="pain-num">Separate research</span><h4>Country / regulatory risk requires separate research</h4></div>
+          <div class="pain-card"><span class="pain-num">Manual incorporation</span><h4>Non-financial information often has to be added to the model by hand</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Commodity price, supply, demand, forecast</td><td>Price, supply, demand, forecast</td><td>Commodity price tracking is core; supply/demand context and forward curves are thinner</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Country, regulatory, operational &amp; ESG risk</td><td>Risk across country / regulatory / operational / ESG</td><td>Political-risk, regulatory-status and ESG-screening layers are core to the platform</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Mine &amp; asset data</td><td>Production, assets, reserves / resources</td><td>Asset location and production activity are tracked; reserve/resource estimates are not</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Company financials &amp; valuation</td><td>Financials, costs, management, M&amp;A, valuation</td><td>Not built — this is a financial-data and modelling function, outside current scope</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Financial modelling &amp; investment memo output</td><td>Building a model, thesis, memo, presentation</td><td>Not built — the platform supplies underlying data, not modelling or memo tooling</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F4 — Financial &amp; Investment Professionals: 2 of 5 needs covered, 1 partial, 2 not covered. MineSentinel feeds the risk and commodity-context inputs into a valuation; it does not build the valuation itself.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Mine &amp; asset data — reserves / resources</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Ingest published reserve/resource estimates from public company filings and technical reports (NI 43-101 / JORC) to sit alongside existing production and asset-location data.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Company financials &amp; valuation</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Financial-data and modelling is a different product category. Better solved via a data-provider integration (e.g. an API partnership) than an in-house build.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Financial modelling &amp; investment memo output</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Rather than building a modelling engine, offer a structured export (risk, price, ESG and asset data pre-formatted) that plugs into an analyst's own memo or model as a starting point.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="persona" id="traders" style="--accent:var(--malachite);--accent-dark:var(--malachite-dark);--accent-tint:var(--malachite-tint);">
+      <span class="persona-eyebrow">04B · Who they are</span>
+      <h3 class="persona-title">Commodity Traders &amp; Brokers</h3>
+      <div class="role-chips">
+        <span class="role-chip">Commodity Traders</span><span class="role-chip">Mineral Brokers</span>
+        <span class="role-chip">Gold Traders</span><span class="role-chip">Base Metals Analysts</span>
+        <span class="role-chip">Commodity Research Analysts</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">What they need</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Price</span>
+            <div class="chip-row"><span class="chip">Spot</span><span class="chip">Futures</span><span class="chip">Curves</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Supply</span>
+            <div class="chip-row"><span class="chip">Mines</span><span class="chip">Production</span><span class="chip">Disruptions</span><span class="chip">New projects</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Inventory</span>
+            <div class="chip-row"><span class="chip">Exchange</span><span class="chip">Producer</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Logistics</span>
+            <div class="chip-row"><span class="chip">Ports</span><span class="chip">Rail</span><span class="chip">Roads</span><span class="chip">Chokepoints</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Demand</span>
+            <div class="chip-row"><span class="chip">Industrial</span><span class="chip">Construction</span><span class="chip">Automotive</span><span class="chip">Technology</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Platforms / sources</span>
+        <div class="tag-row">
+          <span class="tag">Bloomberg</span><span class="tag">LSEG</span><span class="tag">CME / COMEX</span><span class="tag">LME</span>
+          <span class="tag">SHFE</span><span class="tag">SGX</span><span class="tag">Commodity price services</span>
+          <span class="tag">Shipping / freight data</span><span class="tag">Port information</span>
+          <span class="tag">Mining company announcements</span><span class="tag">Government trade data</span><span class="tag">Industry news</span>
+        </div>
+        <p class="source-note">The MineSentinel documentation itself identifies LME, COMEX, SHFE and SGX as market-data sources, combined with commodity prices, inventories, production and disruption information.</p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Trading terminals</span><span class="tag mono">Excel</span><span class="tag mono">Python</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Monitor commodity price</li>
+          <li><span class="route-idx">02</span>Monitor inventory</li>
+          <li><span class="route-idx">03</span>Monitor supply</li>
+          <li><span class="route-idx">04</span>Monitor producing mines</li>
+          <li><span class="route-idx">05</span>Watch disruptions</li>
+          <li><span class="route-idx">06</span>Check logistics</li>
+          <li><span class="route-idx">07</span>Assess potential supply impact</li>
+          <li><span class="route-idx">08</span>Compare historical events</li>
+          <li><span class="route-idx">09</span>Trade / advise / hedge</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><span class="pain-num">Speed</span><h4>A market participant needs information quickly.</h4></div>
+          <div class="pain-card"><span class="pain-num">Fragmentation</span><h4>Price data and physical mining information often sit in different systems.</h4></div>
+          <div class="pain-card"><span class="pain-num">Signal detection</span><h4>The trader has to distinguish important supply events from ordinary mining news.</h4></div>
+          <div class="pain-card"><span class="pain-num">Context</span><h4>A mine disruption is only meaningful when connected to production, inventories, alternative supply and logistics.</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Spot / futures / curve pricing</td><td>Price — spot, futures, curves</td><td>LME, COMEX, SHFE and SGX are named market-data sources in the platform's documentation</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Mine-level supply &amp; disruption</td><td>Mines, production, disruptions, new projects</td><td>Production and disruption information is part of the documented data set</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Exchange &amp; producer inventory</td><td>Inventory — exchange, producer</td><td>Inventory data is referenced in documentation; depth of producer-level coverage is unconfirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Logistics &amp; chokepoints</td><td>Ports, rail, roads, chokepoints</td><td>Some infrastructure appears as a GIS layer; a dedicated chokepoint/logistics risk score is not confirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">End-use demand</td><td>Industrial, construction, automotive, technology demand</td><td>Not built — demand-side data sits outside the current data set</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F5 — Commodity Traders &amp; Brokers: 2 of 5 needs covered, 2 partial, 1 not covered. Price and mine-supply signals are there; the trading-floor need for split-second inventory and chokepoint data is only partly met.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Exchange &amp; producer inventory</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Confirm and deepen producer-level inventory coverage, ideally via direct exchange-data partnerships (LME, COMEX, SHFE, SGX) rather than secondary sourcing.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Logistics &amp; chokepoints</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Turn the existing infrastructure GIS layer into a scored chokepoint/logistics risk metric (port congestion, rail/road disruption). <b>Shared fix</b> with the F1 and F7/F8 infrastructure gaps.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>End-use demand</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Industrial/construction/automotive/technology demand data sits outside the platform's mine-and-country-centric model. Best sourced via a demand-data partner integration.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHAPTER 05 ================= -->
+    <div class="chapter-divider" style="--accent:var(--ochre);">
+      <span class="chapter-num" style="--accent:var(--ochre);">05</span>
+      <div class="chapter-title">
+        <h2>Legal, Regulatory &amp; Government Professionals</h2>
+        <p>Asset-level legal status and country-level policy — related, but distinct, workflows.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="legal" style="--accent:var(--ochre);--accent-dark:var(--ochre-dark);--accent-tint:var(--ochre-tint);">
+      <span class="persona-eyebrow">05A · Who they are</span>
+      <h3 class="persona-title">Legal / Regulatory</h3>
+      <div class="role-chips">
+        <span class="role-chip">Mining Lawyers</span><span class="role-chip">Regulatory Affairs Consultants</span>
+        <span class="role-chip">Concession Advisors</span><span class="role-chip">Licensing Specialists</span>
+        <span class="role-chip">Regulatory Affairs Advisors</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Information required</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Licence</span>
+            <div class="chip-row"><span class="chip">Number</span><span class="chip">Status</span><span class="chip">Expiry</span><span class="chip">Authority</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Ownership</span>
+            <div class="chip-row"><span class="chip">Company</span><span class="chip">Beneficial owner</span></div>
+          </div>
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Regulation</span>
+            <div class="chip-row"><span class="chip">Laws</span><span class="chip">Policies</span><span class="chip">Notices</span><span class="chip">Orders</span></div>
+          </div>
+        </div>
+        <p class="source-note">MineSentinel's mine registry documentation reflects this type of information structure: licence number, regulatory status, issuing authority and expiry date are among the recorded fields.</p>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Sources</span>
+        <div class="tag-row">
+          <span class="tag">Mining cadastre</span><span class="tag">Minerals Commission / mining regulator</span>
+          <span class="tag">Ministry of Mines</span><span class="tag">Environmental regulator</span><span class="tag">Government gazettes</span>
+          <span class="tag">Company filings</span><span class="tag">Court / legal records</span><span class="tag">Policy documents</span>
+          <span class="tag">Licensing portals</span><span class="tag">Regulatory announcements</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Web search</span><span class="tag mono">Government databases</span><span class="tag mono">Legal research databases</span>
+          <span class="tag mono">Excel</span><span class="tag mono">PDF / document repositories</span><span class="tag mono">GIS</span>
+          <span class="tag mono">Internal case-management / document systems</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Identify asset / company</li>
+          <li><span class="route-idx">02</span>Find licence record</li>
+          <li><span class="route-idx">03</span>Verify licence holder</li>
+          <li><span class="route-idx">04</span>Check status</li>
+          <li><span class="route-idx">05</span>Check expiry</li>
+          <li><span class="route-idx">06</span>Review regulatory history</li>
+          <li><span class="route-idx">07</span>Review environmental requirements</li>
+          <li><span class="route-idx">08</span>Review ownership / corporate records</li>
+          <li><span class="route-idx">09</span>Legal / regulatory assessment</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><h4>Regulatory records can be distributed across government sources</h4></div>
+          <div class="pain-card"><h4>Licensing information changes over time</h4></div>
+          <div class="pain-card"><h4>Legal status needs verification</h4></div>
+          <div class="pain-card"><h4>Corporate ownership can be complex</h4></div>
+          <div class="pain-card"><h4>Asset-level information may have to be reconciled with corporate-level information</h4></div>
+          <div class="pain-card"><h4>Historical regulatory actions may require searching older notices / documents</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Licence number, status, expiry, authority</td><td>Core registry fields</td><td>Recorded directly in the mine registry, per the platform's own documentation</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Company ownership</td><td>Company holder of record</td><td>Ownership of record is captured in the registry</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Beneficial ownership</td><td>Ultimate beneficial owner</td><td>Not built — beneficial-ownership chains typically need dedicated corporate-registry tooling</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Regulation — laws, policies, notices, orders</td><td>Regulatory instruments and history</td><td>Regulatory status is tracked; a structured history of laws / notices / orders is not confirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Court / legal records</td><td>Litigation, disputes, legal history</td><td>Not built — outside the scope of a data-aggregation platform</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F6 — Legal / Regulatory: 1 of 5 needs covered, 2 partial, 2 not covered. Licence status is a strong, direct fit; the deeper legal work — beneficial ownership, litigation history — sits outside the product.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Company ownership</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Extend ownership-of-record data to track ownership <i>changes</i> over time, not just current holder. <b>Shared fix</b> with the F1 and F9 company-data gaps.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Regulation — laws, policies, notices, orders</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Build a structured, timestamped history of regulatory instruments per licence, rather than a current-status snapshot only. This also strengthens the F7 and F9 policy-data gaps.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Beneficial ownership</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Partner, don't build</span>
+            <p class="rec">Ultimate beneficial-owner chains need dedicated corporate-registry tooling (e.g. OpenOwnership-style integration) — a partnership fits better than an in-house build.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Court / legal records</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Out of scope</span>
+            <p class="rec">Litigation and dispute history is a distinct legal-research function. Best positioned as complementary to dedicated legal-casework tools rather than built natively.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="persona" id="government" style="--accent:var(--ochre);--accent-dark:var(--ochre-dark);--accent-tint:var(--ochre-tint);">
+      <span class="persona-eyebrow">05B · Who they are</span>
+      <h3 class="persona-title">Government &amp; Policy Professionals</h3>
+      <div class="role-chips">
+        <span class="role-chip">Ministry of Mines Consultants</span><span class="role-chip">Regulatory Affairs Advisors</span>
+        <span class="role-chip">Policy Consultants</span><span class="role-chip">Government Geologists</span>
+        <span class="role-chip">Extractives Governance Professionals</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Information required</span>
+        <div class="need-tree">
+          <div class="need-branch">
+            <span class="need-branch-label"><span class="arrow">→</span>Country</span>
+            <div class="chip-row">
+              <span class="chip">Mineral endowment</span><span class="chip">Mines</span><span class="chip">Exploration</span>
+              <span class="chip">Production</span><span class="chip">Investment</span><span class="chip">Regulation</span>
+              <span class="chip">Infrastructure</span><span class="chip">Trade</span><span class="chip">Political risk</span><span class="chip">ESG / governance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Sources</span>
+        <div class="tag-row">
+          <span class="tag">Government ministries</span><span class="tag">Geological surveys</span><span class="tag">Mining regulators</span>
+          <span class="tag">Customs / trade statistics</span><span class="tag">National statistics offices</span>
+          <span class="tag">International organisations</span><span class="tag">Mining companies</span><span class="tag">Commodity markets</span>
+          <span class="tag">Academic research</span><span class="tag">News</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Excel</span><span class="tag mono">GIS</span><span class="tag mono">Government databases</span>
+          <span class="tag mono">Statistical databases</span><span class="tag mono">Power BI</span><span class="tag mono">Tableau</span>
+          <span class="tag mono">Research / reporting tools</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Policy question</li>
+          <li><span class="route-idx">02</span>Collect government data</li>
+          <li><span class="route-idx">03</span>Collect industry data</li>
+          <li><span class="route-idx">04</span>Review legislation / policy</li>
+          <li><span class="route-idx">05</span>Analyse mining production</li>
+          <li><span class="route-idx">06</span>Assess investment / infrastructure</li>
+          <li><span class="route-idx">07</span>Compare countries</li>
+          <li><span class="route-idx">08</span>Prepare policy analysis</li>
+          <li><span class="route-idx">09</span>Briefing / recommendation</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><h4>Data is distributed between government agencies</h4></div>
+          <div class="pain-card"><h4>Different agencies may use different datasets</h4></div>
+          <div class="pain-card"><h4>Regional comparisons require substantial compilation</h4></div>
+          <div class="pain-card"><h4>Policy information changes frequently</h4></div>
+          <div class="pain-card"><h4>Connecting policy changes to actual mining assets requires additional research</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">National mineral endowment &amp; mine inventory</td><td>Mines, mineral endowment</td><td>A country-level inventory of mines and licences is core to the registry</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Cross-country / cross-agency comparison</td><td>Comparing across ECOWAS countries</td><td>Multi-country coverage across 15+ ECOWAS / African nations is structural to the platform</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Political risk</td><td>Political risk scoring</td><td>Political-risk and conflict-monitoring layers are core pillars</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Regulation &amp; licensing</td><td>Laws, policies, regulatory tracking</td><td>Registry-level regulatory status is tracked per licence</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Production &amp; investment</td><td>Production, investment figures</td><td>Production activity is tracked; investment-flow data is thinner</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Infrastructure &amp; trade</td><td>Infrastructure, trade statistics</td><td>Infrastructure appears as a GIS layer; trade-flow statistics aren't confirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">National ESG / governance indicators</td><td>Country-level ESG / governance scoring</td><td>Asset-level ESG layers exist; a rolled-up national governance indicator is not built</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F7 — Government &amp; Policy: 4 of 7 needs covered, 3 partial, none unaddressed. The multi-country structure of the platform maps directly onto this audience's cross-country comparison need.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Production &amp; investment</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort</span>
+            <p class="rec">Add an investment-flow dataset (capex announcements, FDI figures) alongside the existing production-tracking layer.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Infrastructure &amp; trade</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Build the same dedicated infrastructure dataset called for in F1/F5/F8, and add trade-flow statistics (export volumes, destination markets) at the country level.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>National ESG / governance indicators</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Low effort — aggregation of existing data</span>
+            <p class="rec">Roll up the existing asset-level ESG layers into a country-level governance indicator. This is largely an aggregation task since the underlying asset data already exists.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CHAPTER 06 ================= -->
+    <div class="chapter-divider" style="--accent:var(--copper);">
+      <span class="chapter-num" style="--accent:var(--copper);">06</span>
+      <div class="chapter-title">
+        <h2>Development, Academia &amp; Media</h2>
+        <p>Three distinct information behaviours, grouped together only because none of them trades or operates the asset directly.</p>
+      </div>
+    </div>
+
+    <section class="persona" id="development" style="--accent:var(--copper);--accent-dark:var(--copper-dark);--accent-tint:var(--copper-tint);">
+      <span class="persona-eyebrow">06A</span>
+      <h3 class="persona-title">Development Finance / Aid</h3>
+
+      <div class="block">
+        <span class="block-label">Information needed</span>
+        <div class="chip-row">
+          <span class="chip">Mine / project information</span><span class="chip">Ownership</span><span class="chip">Governance</span>
+          <span class="chip">ESG</span><span class="chip">Country risk</span><span class="chip">Infrastructure</span>
+          <span class="chip">Regulatory environment</span><span class="chip">Project status</span>
+          <span class="chip">Community / social information</span><span class="chip">Commodity significance</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Sources / platforms</span>
+        <div class="tag-row">
+          <span class="tag">World Bank</span><span class="tag">IFC</span><span class="tag">African Development Bank</span>
+          <span class="tag">Government agencies</span><span class="tag">Mining companies</span><span class="tag">Geological surveys</span>
+          <span class="tag">ESG reports</span><span class="tag">Research institutions</span><span class="tag">UN datasets</span>
+          <span class="tag">Development-programme databases</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono"><span class="tag mono">Excel</span><span class="tag mono">GIS</span><span class="tag mono">Power BI / Tableau</span><span class="tag mono">Reports</span></div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Project / country</li>
+          <li><span class="route-idx">02</span>Sector assessment</li>
+          <li><span class="route-idx">03</span>Governance assessment</li>
+          <li><span class="route-idx">04</span>ESG assessment</li>
+          <li><span class="route-idx">05</span>Economic / infrastructure assessment</li>
+          <li><span class="route-idx">06</span>Risk assessment</li>
+          <li><span class="route-idx">07</span>Project / programme evaluation</li>
+          <li><span class="route-idx">08</span>Funding / programme decision</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><h4>Information spans multiple institutions</h4></div>
+          <div class="pain-card"><h4>Project-level information may be incomplete</h4></div>
+          <div class="pain-card"><h4>Governance and ESG information requires qualitative research</h4></div>
+          <div class="pain-card"><h4>Country-level data does not always translate directly to project-level risk</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Project &amp; asset identification</td><td>Mine / project info, ownership</td><td>Registry-level project and ownership identification is core</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Country &amp; political risk</td><td>Country risk</td><td>Political-risk and conflict layers are core pillars</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Commodity significance &amp; pricing</td><td>Commodity significance</td><td>Commodity price tracking is core</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Governance, permits &amp; incidents</td><td>Governance, project status</td><td>Regulatory status and incident tracking are part of the registry</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">ESG — environmental &amp; social</td><td>ESG, community / social information</td><td>Water, biodiversity and community/conflict signals are covered; deeper social data is thinner</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Infrastructure</td><td>Infrastructure</td><td>Appears as a GIS layer, not a dedicated infrastructure dataset</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">DFI-formatted evidence packs</td><td>Appraisal-ready output for a funding decision</td><td>Not built — no dedicated DFI appraisal or evidence-pack template today</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F8 — Development Finance / Aid: 4 of 7 needs covered, 2 partial, 1 not covered. The screening inputs to a project appraisal are present; a DFI-ready output format is not.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>ESG — environmental &amp; social</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Low effort — extends existing pipeline</span>
+            <p class="rec">Same fix as F3 and F10: extend the incident/news pipeline to capture labour and deeper social signals, not just community/conflict.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Infrastructure</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Same dedicated infrastructure dataset called for across F1, F5 and F7 — one build closes all four gaps at once.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>DFI-formatted evidence packs</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">High leverage — reuses existing data</span>
+            <p class="rec">Build a report template that maps existing registry, risk, commodity and ESG data to standard DFI appraisal requirements — the same "map data to a named framework" pattern as the F3 GRI/SASB recommendation.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="persona" id="academia" style="--accent:var(--copper);--accent-dark:var(--copper-dark);--accent-tint:var(--copper-tint);">
+      <span class="persona-eyebrow">06B · Who they are</span>
+      <h3 class="persona-title">Academia &amp; Research</h3>
+      <div class="role-chips">
+        <span class="role-chip">University Lecturers</span><span class="role-chip">Professors</span>
+        <span class="role-chip">Research Fellows</span><span class="role-chip">Graduate Researchers</span>
+        <span class="role-chip">Mining / Economics / Geology Researchers</span>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Information needed</span>
+        <div class="chip-row">
+          <span class="chip">Historical production</span><span class="chip">Mine records</span><span class="chip">Geological data</span>
+          <span class="chip">Exploration</span><span class="chip">Commodity prices</span><span class="chip">Government statistics</span>
+          <span class="chip">Company data</span><span class="chip">Environmental information</span><span class="chip">Policy data</span><span class="chip">Geographic data</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Sources</span>
+        <div class="tag-row">
+          <span class="tag">Google Scholar</span><span class="tag">Academic journals</span><span class="tag">ResearchGate</span>
+          <span class="tag">University repositories</span><span class="tag">Government datasets</span><span class="tag">Geological surveys</span>
+          <span class="tag">Company reports</span><span class="tag">World Bank</span><span class="tag">IMF</span><span class="tag">UN datasets</span>
+          <span class="tag">National statistics</span><span class="tag">Mining databases</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Excel</span><span class="tag mono">R</span><span class="tag mono">Python</span><span class="tag mono">Stata</span><span class="tag mono">SPSS</span>
+          <span class="tag mono">SQL</span><span class="tag mono">QGIS</span><span class="tag mono">ArcGIS</span><span class="tag mono">Zotero</span>
+          <span class="tag mono">Mendeley</span><span class="tag mono">LaTeX</span><span class="tag mono">Power BI / Tableau</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>Research question</li>
+          <li><span class="route-idx">02</span>Literature review</li>
+          <li><span class="route-idx">03</span>Find datasets</li>
+          <li><span class="route-idx">04</span>Download datasets</li>
+          <li><span class="route-idx">05</span>Clean data</li>
+          <li><span class="route-idx">06</span>Merge datasets</li>
+          <li><span class="route-idx">07</span>Geocode / GIS</li>
+          <li><span class="route-idx">08</span>Statistical analysis</li>
+          <li><span class="route-idx">09</span>Visualisation</li>
+          <li><span class="route-idx">10</span>Paper / thesis / report</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain point</span>
+        <div class="tag-row" style="margin-bottom:0.85rem;">
+          <span class="tag">Data discovery</span><span class="tag">→ Data acquisition</span><span class="tag">→ Data cleaning</span><span class="tag">→ Data integration</span>
+        </div>
+        <p class="source-note">This chain often takes a substantial portion of the research process.</p>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Commodity price history</td><td>Commodity prices</td><td>Price tracking is a core, ongoing data pillar</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Mine &amp; geological base data</td><td>Mine records, geological data</td><td>Registry and geological base layers are covered; research-grade depth is unconfirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Historical depth / archival record</td><td>Historical production, historical context</td><td>Current and recent activity is tracked; deep historical archives aren't confirmed</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Government &amp; policy datasets</td><td>Government statistics, policy data</td><td>Regulatory status is tracked; broader statistical/policy datasets are thinner</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Company data</td><td>Company data</td><td>Ownership of record is captured; deeper company data is not</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Bulk export / API for statistical tools</td><td>Feeding R, Python, Stata, SQL workflows</td><td>Not built — no confirmed bulk-export or research API today</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+              <tr><td class="need">Citation-ready sourcing</td><td>Documented provenance for academic use</td><td>Not built — source-level citation trails aren't a current feature</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F9 — Academia &amp; Research: 1 of 7 needs covered, 4 partial, 2 not covered. MineSentinel is a live monitoring platform first; it doesn't yet serve the bulk-export, archival-depth needs of academic research.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>Mine &amp; geological base data</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Low effort</span>
+            <p class="rec">Confirm and document the research-grade depth of existing registry and geological layers — often a documentation/QA gap rather than a data gap.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Historical depth / archival record</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Build long-term data retention and a historical-query mode. <b>Shared fix</b> with the F10 "historical context" gap for journalists.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Government &amp; policy datasets</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Broaden statistical/policy dataset coverage beyond regulatory status — same underlying build as the F7 production/investment and infrastructure-trade gaps.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Company data</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Same corporate-structure integration recommended in F1 and F6 — one build closes this gap in three tables at once.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Bulk export / API for statistical tools</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">High leverage — reusable across audiences</span>
+            <p class="rec">Build a bulk-export or research API (CSV plus R / Python / Stata / SQL connectors). Directly useful to analysts (F1) and traders (F5) as well as researchers.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Citation-ready sourcing</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">Moderate effort, high trust value</span>
+            <p class="rec">Add a source-level provenance/citation trail to each data point. Strengthens credibility for every audience, not academia alone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="persona" id="media" style="--accent:var(--copper);--accent-dark:var(--copper-dark);--accent-tint:var(--copper-tint);">
+      <span class="persona-eyebrow">06C</span>
+      <h3 class="persona-title">Journalists &amp; Editors</h3>
+
+      <div class="block">
+        <span class="block-label">Information needed</span>
+        <div class="chip-row">
+          <span class="chip">Breaking events</span><span class="chip">Mine / company information</span><span class="chip">Ownership</span>
+          <span class="chip">Production</span><span class="chip">Regulatory changes</span><span class="chip">Licences</span>
+          <span class="chip">Accidents / incidents</span><span class="chip">ESG issues</span><span class="chip">Community disputes</span>
+          <span class="chip">Commodity prices</span><span class="chip">Historical context</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Sources / platforms</span>
+        <div class="tag-row">
+          <span class="tag">Company websites</span><span class="tag">Investor-relations pages</span><span class="tag">Government announcements</span>
+          <span class="tag">Regulatory notices</span><span class="tag">Mining news sites</span><span class="tag">Reuters</span><span class="tag">Bloomberg</span>
+          <span class="tag">Financial Times</span><span class="tag">Mining Journal</span><span class="tag">S&amp;P Global</span>
+          <span class="tag">Industry newsletters</span><span class="tag">Social media</span><span class="tag">Press releases</span>
+          <span class="tag">Court / government documents</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Tools</span>
+        <div class="tag-row mono">
+          <span class="tag mono">Google / Bing</span><span class="tag mono">News databases</span><span class="tag mono">Bloomberg / Reuters</span>
+          <span class="tag mono">Excel / Google Sheets</span><span class="tag mono">CMS</span><span class="tag mono">Social media monitoring</span>
+          <span class="tag mono">PDF / document search</span><span class="tag mono">GIS where relevant</span>
+        </div>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Workflow</span>
+        <ol class="route">
+          <li><span class="route-idx">01</span>News / event appears</li>
+          <li><span class="route-idx">02</span>Find original source</li>
+          <li><span class="route-idx">03</span>Verify claim</li>
+          <li><span class="route-idx">04</span>Identify company / mine</li>
+          <li><span class="route-idx">05</span>Check location</li>
+          <li><span class="route-idx">06</span>Check historical context</li>
+          <li><span class="route-idx">07</span>Check production / economic significance</li>
+          <li><span class="route-idx">08</span>Contact sources</li>
+          <li><span class="route-idx">09</span>Write story</li>
+          <li><span class="route-idx">10</span>Editor review</li>
+          <li><span class="route-idx">11</span>Publish</li>
+        </ol>
+      </div>
+
+      <div class="block">
+        <span class="block-label">Pain points</span>
+        <div class="pain-grid">
+          <div class="pain-card"><h4>Verification takes time</h4></div>
+          <div class="pain-card"><h4>Primary sources may be difficult to find</h4></div>
+          <div class="pain-card"><h4>Company statements need contextualisation</h4></div>
+          <div class="pain-card"><h4>A news event often requires historical research</h4></div>
+          <div class="pain-card"><h4>Understanding the significance of an event requires connecting several datasets</h4></div>
+        </div>
+      </div>
+
+      <div class="block fit-block">
+        <span class="block-label">MineSentinel fit</span>
+        <div class="fit-wrap">
+          <table class="fit">
+            <thead><tr><th>Need</th><th>Core point</th><th>What MineSentinel provides</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td class="need">Breaking events &amp; incidents</td><td>Accidents, incidents, disruptions</td><td>News aggregation and conflict/incident monitoring are core pillars</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Mine, company &amp; ownership lookup</td><td>Mine / company info, ownership</td><td>Registry-level mine and ownership lookup is core</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Regulatory &amp; licence changes</td><td>Licences, regulatory changes</td><td>Licence status and regulatory tracking are registry fields</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">Commodity prices</td><td>Commodity prices</td><td>Price tracking is a core data pillar</td><td class="verdict"><span class="v-badge v-covered">Covered</span></td></tr>
+              <tr><td class="need">ESG issues &amp; community disputes</td><td>ESG issues, community disputes</td><td>Water/biodiversity and community/conflict signals are covered; not every ESG angle is</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Historical context</td><td>Historical context for a story</td><td>Recent activity is well covered; deep historical archives are thinner</td><td class="verdict"><span class="v-badge v-partial">Partial</span></td></tr>
+              <tr><td class="need">Real-time alerting</td><td>Push notification the moment something breaks</td><td>Not built — the platform is queried today, not yet a live-alerting feed</td><td class="verdict"><span class="v-badge v-not">Not covered</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="fit-caption">Table F10 — Journalists &amp; Editors: 4 of 7 needs covered, 2 partial, 1 not covered. Strong for verification and lookup; not yet a breaking-news alert source.</p>
+      </div>
+
+      <div class="block action-block">
+        <span class="block-label">What would close these gaps</span>
+        <div class="action-grid">
+          <div class="action-card">
+            <div class="action-card-head"><h5>ESG issues &amp; community disputes</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Low effort — extends existing pipeline</span>
+            <p class="rec">Same fix as F3 and F8: extend the incident/news pipeline to cover the fuller range of ESG angles, not just water/biodiversity/community/conflict.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Historical context</h5><span class="v-badge v-partial">Partial</span></div>
+            <span class="action-effort">Moderate effort — shared fix</span>
+            <p class="rec">Same archival/retention build recommended for F9 — deepens historical depth for both researchers and reporters from one investment.</p>
+          </div>
+          <div class="action-card">
+            <div class="action-card-head"><h5>Real-time alerting</h5><span class="v-badge v-not">Not covered</span></div>
+            <span class="action-effort">High value, moderate-high effort</span>
+            <p class="rec">Layer push-notification/alerting on top of the existing monitoring pillars, turning a query-driven tool into a live feed for breaking incidents, licence changes and price moves.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FIT SUMMARY ================= -->
+    <section class="fit-summary-section" id="fit-summary">
+      <div class="chapter-divider">
+        <div class="chapter-title">
+          <h2>MineSentinel fit — coverage summary</h2>
+          <p>How the ten audiences roll up once every need is scored Covered, Partial or Not covered.</p>
+        </div>
+      </div>
+      <div class="fit-wrap">
+        <table class="fit-summary">
+          <thead>
+            <tr><th>Audience</th><th>Covered</th><th>Partial</th><th>Not covered</th><th>Overall</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Mining Analysts &amp; Researchers</td><td class="count-covered">6</td><td class="count-partial">2</td><td class="count-not">1</td><td><span class="v-badge v-covered">Strong fit</span></td></tr>
+            <tr><td>Mining Companies &amp; Technical</td><td class="count-covered">4</td><td class="count-partial">1</td><td class="count-not">2</td><td><span class="v-badge v-covered">Strong fit</span></td></tr>
+            <tr><td>ESG, Sustainability &amp; Compliance</td><td class="count-covered">3</td><td class="count-partial">2</td><td class="count-not">2</td><td><span class="v-badge v-partial">Partial fit</span></td></tr>
+            <tr><td>Financial &amp; Investment Professionals</td><td class="count-covered">2</td><td class="count-partial">1</td><td class="count-not">2</td><td><span class="v-badge v-not">Limited fit</span></td></tr>
+            <tr><td>Commodity Traders &amp; Brokers</td><td class="count-covered">2</td><td class="count-partial">2</td><td class="count-not">1</td><td><span class="v-badge v-partial">Partial fit</span></td></tr>
+            <tr><td>Legal / Regulatory</td><td class="count-covered">1</td><td class="count-partial">2</td><td class="count-not">2</td><td><span class="v-badge v-not">Limited fit</span></td></tr>
+            <tr><td>Government &amp; Policy</td><td class="count-covered">4</td><td class="count-partial">3</td><td class="count-not">0</td><td><span class="v-badge v-covered">Strong fit</span></td></tr>
+            <tr><td>Development Finance / Aid</td><td class="count-covered">4</td><td class="count-partial">2</td><td class="count-not">1</td><td><span class="v-badge v-covered">Strong fit</span></td></tr>
+            <tr><td>Academia &amp; Research</td><td class="count-covered">1</td><td class="count-partial">4</td><td class="count-not">2</td><td><span class="v-badge v-not">Limited fit</span></td></tr>
+            <tr><td>Journalists &amp; Editors</td><td class="count-covered">4</td><td class="count-partial">2</td><td class="count-not">1</td><td><span class="v-badge v-covered">Strong fit</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="fit-caption">Strong fit: the majority of core needs are covered today with no more than one hard gap. Partial fit: coverage is real but roughly even with gaps. Limited fit: the audience's central job — valuation, litigation, statistical research — sits mostly outside what an intelligence-aggregation platform does. Five of ten audiences land in Strong fit; the clearest whitespace is downstream analysis tooling (financial modelling, legal casework, academic export) rather than the underlying data layer.</p>
+    </section>
+
+    <!-- ================= COMPARISON ================= -->
+    <section class="compare-section" id="compare">
+      <div class="chapter-divider">
+        <div class="chapter-title">
+          <h2>Cross-audience comparison</h2>
+          <p>The master reference across all ten workflows — kept as the summary view of this research.</p>
+        </div>
+      </div>
+      <div class="table-scroll">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th>Audience</th><th>Main information need</th><th>Typical sources</th>
+              <th>Platforms / websites</th><th>Working tools</th><th>Main pain point</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mining Analysts &amp; Researchers</td>
+              <td>Mines, production, companies, commodities, regulation, risk</td>
+              <td>Government, companies, registries, reports, news</td>
+              <td>S&amp;P, GlobalData, Bloomberg, company sites</td>
+              <td>Excel, SQL, Python, GIS, BI</td>
+              <td>Fragmented research</td>
+            </tr>
+            <tr>
+              <td>Mining Companies &amp; Technical</td>
+              <td>Geology, exploration, concessions, spatial data</td>
+              <td>Geological surveys, cadastres, technical reports, imagery</td>
+              <td>ArcGIS, QGIS, Google Earth, geological platforms</td>
+              <td>GIS, geological software, Excel, SQL</td>
+              <td>Integrating spatial / technical datasets</td>
+            </tr>
+            <tr>
+              <td>ESG / Sustainability / Compliance</td>
+              <td>Environmental, social, governance and regulatory information</td>
+              <td>Company reports, regulators, environmental agencies, NGOs</td>
+              <td>ESG databases, government portals, company sites</td>
+              <td>Excel, GIS, Power BI, reporting tools</td>
+              <td>Mine-level ESG information is fragmented</td>
+            </tr>
+            <tr>
+              <td>Finance / Investment</td>
+              <td>Financials, assets, production, costs, prices, risk</td>
+              <td>Company filings, markets, government, research</td>
+              <td>Bloomberg, S&amp;P Capital IQ, LSEG, GlobalData</td>
+              <td>Excel, financial models, Python, BI</td>
+              <td>Connecting financial and physical asset information</td>
+            </tr>
+            <tr>
+              <td>Commodity Traders / Brokers</td>
+              <td>Prices, supply, inventory, disruptions, logistics</td>
+              <td>Exchanges, mines, trade data, news</td>
+              <td>Bloomberg, LSEG, LME, COMEX, SHFE, SGX</td>
+              <td>Trading terminals, Excel, Python</td>
+              <td>Connecting market data with physical supply events</td>
+            </tr>
+            <tr>
+              <td>Legal / Regulatory</td>
+              <td>Licences, ownership, permits, regulatory actions</td>
+              <td>Mining registries, ministries, regulators, legal records</td>
+              <td>Cadastres, government portals, legal databases</td>
+              <td>Browser, Excel, GIS, document tools</td>
+              <td>Dispersed and changing regulatory records</td>
+            </tr>
+            <tr>
+              <td>Government / Policy</td>
+              <td>National mining sector, regulation, investment, production, risk</td>
+              <td>Ministries, geological surveys, statistics, companies</td>
+              <td>Government portals, World Bank, AfDB, IMF</td>
+              <td>Excel, GIS, BI, statistical tools</td>
+              <td>Cross-agency / cross-country fragmentation</td>
+            </tr>
+            <tr>
+              <td>Development Finance</td>
+              <td>Project, governance, ESG, country and economic risk</td>
+              <td>DFIs, government, company, ESG and research</td>
+              <td>World Bank, IFC, AfDB, company sites</td>
+              <td>Excel, GIS, BI, reports</td>
+              <td>Project-level evidence scattered across institutions</td>
+            </tr>
+            <tr>
+              <td>Academia</td>
+              <td>Historical, geological, economic and environmental datasets</td>
+              <td>Journals, governments, companies, international organisations</td>
+              <td>Google Scholar, ResearchGate, World Bank, geological surveys</td>
+              <td>R, Python, Excel, SQL, QGIS, ArcGIS</td>
+              <td>Dataset discovery, cleaning and integration</td>
+            </tr>
+            <tr>
+              <td>Media</td>
+              <td>Events, companies, mines, regulation, historical context</td>
+              <td>News, government, company, regulatory sources</td>
+              <td>Reuters, Bloomberg, FT, Mining Journal, company sites</td>
+              <td>Search, news tools, spreadsheets, CMS</td>
+              <td>Verification and contextual research</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ================= COMMON PATTERN ================= -->
+    <section id="pattern" style="padding-bottom:2rem;">
+      <div class="chapter-divider">
+        <div class="chapter-title">
+          <h2>The common pattern</h2>
+          <p>Ten different roles. One shared problem underneath.</p>
+        </div>
+      </div>
+      <div class="role-chips" style="margin-bottom:0;">
+        <span class="role-chip">Analyst</span><span class="role-chip">Mining company</span><span class="role-chip">ESG</span>
+        <span class="role-chip">Investor</span><span class="role-chip">Trader</span><span class="role-chip">Lawyer</span>
+        <span class="role-chip">Government</span><span class="role-chip">Development finance</span>
+        <span class="role-chip">Academic</span><span class="role-chip">Journalist</span>
+      </div>
+
+      <div class="pattern-flow">
+        <div class="line"></div>
+        <div class="box">SAME PROBLEM</div>
+        <div class="line"></div>
+        <div class="box strong">INFORMATION IS FRAGMENTED</div>
+      </div>
+
+      <div class="eco-columns">
+        <div class="eco-col c-discover">
+          <h4>Websites</h4>
+          <ul><li>Government portals</li></ul>
+        </div>
+        <div class="eco-col c-verify">
+          <h4>Documents</h4>
+          <ul><li>Company reports</li></ul>
+        </div>
+        <div class="eco-col c-analyse">
+          <h4>Databases</h4>
+          <ul><li>Markets / exchanges</li></ul>
+        </div>
+      </div>
+
+      <svg class="eco-svg" viewBox="0 0 900 40" preserveAspectRatio="xMidYMid meet" style="margin-top:0.25rem;">
+        <path d="M150,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M450,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+        <path d="M750,4 L450,34" style="stroke:var(--line-strong);stroke-width:2;fill:none"/>
+      </svg>
+
+      <ol class="route" style="margin-top:1rem;">
+        <li><span class="route-idx">01</span>Collection</li>
+        <li><span class="route-idx">02</span>Cleaning / reconciliation</li>
+        <li><span class="route-idx">03</span>Cross-checking</li>
+        <li><span class="route-idx">04</span>Analysis</li>
+        <li><span class="route-idx">05</span>Report / decision / action</li>
+      </ol>
+    </section>
+
+    <footer class="doc-footer">
+      <p>MINING INTELLIGENCE USER LANDSCAPE — INTERNAL RESEARCH — NOT FOR DISTRIBUTION</p>
+      <p>PREPARED AUG 2026</p>
+    </footer>
+
+  </main>
+</div>
+</body>
+</html>

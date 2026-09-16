@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MINEASK Gap Analysis - Persona Needs vs Current Capabilities</title>
+<style>
+  :root {
+    --primary: #162235;
+    --primary-mid: #1e3a52;
+    --primary-light: #1B6B7A;
+    --accent: #37DCF2;
+    --accent-dim: rgba(55,220,242,0.12);
+    --text: #1a1a1a;
+    --text-sec: #4a5568;
+    --bg: #ffffff;
+    --surface: #f7f9fb;
+    --surface-alt: #edf2f5;
+    --border: #dce3e8;
+    --done-green: #065f46;
+    --done-green-bg: #d1fae5;
+    --done-green-border: #10b981;
+    --gap-red: #991b1b;
+    --gap-red-bg: #fee2e2;
+    --gap-red-border: #ef4444;
+    --partial-amber: #92400e;
+    --partial-amber-bg: #fef3c7;
+    --partial-amber-border: #f59e0b;
+    --rec-blue: #1e40af;
+    --rec-blue-bg: #dbeafe;
+    --rec-blue-border: #3b82f6;
+    --card-shadow: 0 2px 12px rgba(22,34,53,0.08);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--surface);
+    line-height: 1.7;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%);
+    color: #fff;
+    padding: 70px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -80px;
+    top: -80px;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: rgba(55,220,242,0.05);
+  }
+  .hero-inner { max-width: 940px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .hero h1 { font-size: 34px; font-weight: 800; line-height: 1.2; margin-bottom: 14px; }
+  .hero p { font-size: 16px; color: #94a8b8; max-width: 700px; line-height: 1.7; }
+
+  /* ── Sticky Nav ── */
+  .nav-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .nav-inner {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+  }
+  .nav-inner a {
+    text-decoration: none;
+    color: var(--text-sec);
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 13px 13px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-inner a:hover { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+
+  /* ── Container ── */
+  .container { max-width: 940px; margin: 0 auto; padding: 36px 30px 80px; }
+
+  /* ── Overview Stats ── */
+  .overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 44px;
+  }
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+  }
+  .stat-number { font-size: 36px; font-weight: 900; line-height: 1; margin-bottom: 6px; }
+  .stat-number.green { color: var(--done-green); }
+  .stat-number.amber { color: var(--partial-amber); }
+  .stat-number.red { color: var(--gap-red); }
+  .stat-label { font-size: 13px; color: var(--text-sec); font-weight: 500; }
+  .stat-sub { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+  /* ── Persona Section ── */
+  .persona-section { margin-bottom: 56px; }
+  .persona-section:last-child { margin-bottom: 0; }
+  .persona-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  .persona-num {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--primary-light);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .persona-title h2 { font-size: 20px; font-weight: 700; color: var(--primary); }
+  .persona-endgoal {
+    background: var(--surface-alt);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    color: var(--text-sec);
+    line-height: 1.65;
+  }
+  .persona-endgoal strong { color: var(--primary); }
+
+  /* ── Gap Table ── */
+  .gap-table-wrap {
+    overflow-x: auto;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    box-shadow: var(--card-shadow);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    text-align: left;
+    padding: 11px 14px;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+  thead th:first-child { border-radius: 7px 0 0 0; width: 36px; text-align: center; }
+  thead th:nth-child(2) { width: 22%; }
+  thead th:last-child { border-radius: 0 7px 0 0; }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) { background: var(--surface); }
+  td.step-num { text-align: center; font-weight: 700; color: var(--primary); font-size: 13px; }
+  td.status-cell { text-align: center; width: 90px; }
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .badge-done { background: var(--done-green-bg); color: var(--done-green); }
+  .badge-partial { background: var(--partial-amber-bg); color: var(--partial-amber); }
+  .badge-gap { background: var(--gap-red-bg); color: var(--gap-red); }
+
+  /* ── Recommendation cards ── */
+  .recs-heading {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--rec-blue);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .recs-heading::after { content: ''; flex: 1; height: 1px; background: var(--rec-blue-border); opacity: 0.3; }
+  .rec-card {
+    background: var(--rec-blue-bg);
+    border-left: 4px solid var(--rec-blue-border);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .rec-card:last-child { margin-bottom: 0; }
+  .rec-card .rec-gap {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gap-red);
+    margin-bottom: 4px;
+  }
+  .rec-card .rec-how {
+    font-size: 13.5px;
+    color: var(--text-sec);
+    line-height: 1.65;
+  }
+  .rec-card .rec-how strong { color: var(--text); }
+
+  /* ── Cross-cutting section ── */
+  .crosscut {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px 36px;
+    margin-top: 48px;
+    box-shadow: var(--card-shadow);
+  }
+  .crosscut h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .theme-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .theme-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    background: var(--surface);
+  }
+  .theme-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 8px;
+  }
+  .theme-card p {
+    font-size: 13px;
+    color: var(--text-sec);
+    line-height: 1.65;
+    margin-bottom: 0;
+  }
+  .theme-card .affected {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .hero { padding: 50px 20px 36px; }
+    .hero h1 { font-size: 24px; }
+    .overview { grid-template-columns: 1fr; }
+    .theme-grid { grid-template-columns: 1fr; }
+    .persona-body-padding { padding: 0 4px; }
+    thead th, tbody td { padding: 8px 10px; font-size: 11.5px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Gap Analysis</div>
+    <h1>MINEASK: What's Done, What's Not, and How to Close the Gaps</h1>
+    <p>A side-by-side comparison of real mining sector persona needs against MINEASK's current capabilities, identifying every unresolved workflow step and proposing concrete ways the platform can address each one.</p>
+  </div>
+</div>
+
+<!-- Nav -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="#consultant">Consultant</a>
+    <a href="#esg">ESG Manager</a>
+    <a href="#analyst">Investment Analyst</a>
+    <a href="#legal">Legal Manager</a>
+    <a href="#operations">Ops Manager</a>
+    <a href="#risk">Risk Manager</a>
+    <a href="#themes">Cross-Cutting Themes</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ═══ Overview Stats ═══ -->
+  <div class="overview">
+    <div class="stat-card">
+      <div class="stat-number green">39</div>
+      <div class="stat-label">Steps Fully Solved</div>
+      <div class="stat-sub">out of 53 total workflow steps</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number amber">8</div>
+      <div class="stat-label">Steps Partially Solved</div>
+      <div class="stat-sub">capability exists but incomplete</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number red">6</div>
+      <div class="stat-label">Steps Not Yet Solved</div>
+      <div class="stat-sub">gaps requiring new development</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 1. CONSULTANT                                    -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="consultant">
+    <div class="persona-title">
+      <div class="persona-num">01</div>
+      <h2>Mining / Minerals Consultant</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Deliver a verified, defensible due diligence report that gives the client clear Go / No-Go confidence on a concession, backed by traceable data sources, within days rather than weeks.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Receive brief / locate concession</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Pin or select concession in workspace</td></tr>
+          <tr><td class="step-num">2</td><td>Collect public records manually</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Orchestrator runs all agents in parallel; dossier in ~47 seconds</td></tr>
+          <tr><td class="step-num">3</td><td>Verify title and fiscal compliance</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Cadaster + EITI join with gap-year flagging</td></tr>
+          <tr><td class="step-num">4</td><td>Map the licensing pathway</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Rules engine: Act 703 ladder, agencies, timelines, hard stops</td></tr>
+          <tr><td class="step-num">5</td><td>Assess logistics and infrastructure</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Logistics agent: road km, port distance, nearby plants</td></tr>
+          <tr><td class="step-num">6</td><td>Investigate land tenure and community</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Land &amp; Community Brief: stool land, District Assembly, L.I. 2175</td></tr>
+          <tr><td class="step-num">7</td><td>Evaluate security and galamsey exposure</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Voxel NDVI change detection + Sentinel incidents</td></tr>
+          <tr><td class="step-num">8</td><td>Plan the field visit</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Section 8 Handoff Pack: verified vs must-verify checklist</td></tr>
+          <tr><td class="step-num">9</td><td>Assemble the client report</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Dossier renderer exists; white-label PDF export planned</td></tr>
+          <tr><td class="step-num">10</td><td>Incorporate field corrections</td><td class="status-cell"><span class="badge badge-gap">Not Yet</span></td><td>In-product confirm-and-correct loop not built</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: White-label PDF report export (Step 9)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Build a report templating engine that maps dossier data fields (title verification, ESG screening, logistics, community brief) into client-branded PDF templates. The dossier renderer already produces structured output; the missing piece is a template layer that applies client logos, colour schemes, cover pages, and executive summary formatting. This can leverage existing PDF generation libraries and allow consultants to save reusable templates per client. Priority: Phase 3, high impact for the primary persona.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Data-correction flywheel (Step 10)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Add an in-app correction interface where consultants can flag a data point as incorrect (e.g., wrong stool name, outdated boundary coordinates), provide the corrected value, and submit it for review. Accepted corrections update the platform's database, improving accuracy for all future users. This creates a virtuous cycle: field intelligence flows back into the system, making every subsequent dossier more reliable. It directly addresses the consultant's pain point that "field data corrections never feed back upstream." Priority: Phase 2, foundational for long-term data quality.</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 2. ESG & COMPLIANCE MANAGER                   -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="esg">
+    <div class="persona-title">
+      <div class="persona-num">02</div>
+      <h2>ESG and Compliance Manager</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Maintain continuous, auditable ESG compliance across all operational sites while producing investor-ready reports that demonstrate responsible mining practices and de-risk the social license to operate.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Define assessment scope / select site</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Eco agent input: select mine or draw impact area on the map</td></tr>
+          <tr><td class="step-num">2</td><td>Check protected-area proximity</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>WDPA buffer layer + EPA refusal-risk trigger</td></tr>
+          <tr><td class="step-num">3</td><td>Assess water stress and downstream risk</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>WRI Aqueduct zones + watershed + contaminated-basin flags</td></tr>
+          <tr><td class="step-num">4</td><td>Track deforestation and vegetation loss</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Global Forest Watch + NDVI anomaly detection</td></tr>
+          <tr><td class="step-num">5</td><td>Evaluate tailings and legacy liabilities</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Tailings-proximity samples + satellite change detection</td></tr>
+          <tr><td class="step-num">6</td><td>Understand community relations risk</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel incident data + community brief from Land agent</td></tr>
+          <tr><td class="step-num">7</td><td>Structure ESG report against frameworks</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Persona picks framework; dossier framed accordingly</td></tr>
+          <tr><td class="step-num">8</td><td>Monitor permit conditions</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Roadmap steps include EIA, bond, WRC scrutiny triggers</td></tr>
+          <tr><td class="step-num">9</td><td>Continuous environmental monitoring</td><td class="status-cell"><span class="badge badge-gap">Not Yet</span></td><td>Ground Watch scheduled re-runs planned but not built</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Framework-structured ESG reporting (Step 7)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Build a reporting engine that maps MINEASK data fields to specific GRI, SASB, Equator Principles, and IFC Performance Standards disclosure requirements. Each framework has a defined set of indicators; the platform already collects the underlying data (protected areas, water stress, deforestation, community risk). The missing piece is a mapping layer that tags each data point with the relevant framework indicators and auto-populates disclosure tables. This directly addresses the pain point that "manual framework-to-data mapping is slow." Priority: Phase 3, high demand from institutional investors.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Continuous environmental monitoring (Step 9)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Activate Ground Watch to run scheduled spatial queries on a daily, weekly, or monthly cadence. The platform already has the data connectors (satellite imagery, GFW, Aqueduct) and the analysis logic (NDVI anomaly detection, water stress scoring). Ground Watch would simply re-run these on a schedule and flag changes via dashboard alerts or email digests. This transforms MINEASK from a one-time screening tool into a persistent monitoring platform for the ESG Manager, who currently lacks "a unified ESG screening tool" for ongoing compliance. Priority: Phase 3, highest-impact single feature across all personas.</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 3. INVESTMENT ANALYST                          -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="analyst">
+    <div class="persona-title">
+      <div class="persona-num">03</div>
+      <h2>Investment Analyst</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Make fast, well-supported Go / No-Go investment decisions with full visibility into legal, environmental, and infrastructure risks, and maintain ongoing monitoring of portfolio assets to protect invested capital.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Screen and identify targets</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Pin the site in the workspace</td></tr>
+          <tr><td class="step-num">2</td><td>Verify title and ownership</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Cadaster: holder, boundary, disputes</td></tr>
+          <tr><td class="step-num">3</td><td>Identify legal showstoppers</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Roadmap hard stops: unratified lease, WDPA refusal risk</td></tr>
+          <tr><td class="step-num">4</td><td>Check commodity price backdrop</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Valua: current prices, 60-month trend data</td></tr>
+          <tr><td class="step-num">5</td><td>Assess economic breakers</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Dossier surfaces infrastructure gaps and ESG risk drivers</td></tr>
+          <tr><td class="step-num">6</td><td>Benchmark against peers</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Valua peer benchmark data</td></tr>
+          <tr><td class="step-num">7</td><td>Form Go / No-Go recommendation</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Persona prompt + confidence score</td></tr>
+          <tr><td class="step-num">8</td><td>Monitor asset post-investment</td><td class="status-cell"><span class="badge badge-gap">Not Yet</span></td><td>Ground Watch not yet built</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Qualitative economic breaker assessment (Step 5)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Deepen the infrastructure and ESG analysis by adding structured scoring for each economic breaker category: logistics (road condition index, port queue times, nearest rail head), water availability (Aqueduct baseline + seasonal variation), and power (grid connection status, off-grid solar viability). Currently the dossier "surfaces" these risks but does not score or compare them systematically. A structured risk score per category would let analysts quickly determine which breakers are material for a given asset. Priority: Phase 2, moderate effort.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Go/No-Go confidence scoring (Step 7)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Build a weighted decision model that aggregates all resolved risk signals (title status, legal showstoppers, ESG flags, infrastructure scores, fiscal compliance) into a composite investment confidence score. The model should be transparent: analysts should see which factors drove the score up or down. This supplements rather than replaces their financial model, directly addressing the need for "structured thinking, not gut instinct" in investment committee presentations. Priority: Phase 2, high analytical value.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Post-investment asset monitoring (Step 8)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Enable Ground Watch for portfolio monitoring: the analyst bookmarks invested assets and sets a monitoring cadence. The system then tracks regulatory changes, incident activity, environmental indicators, and license status changes on a schedule, alerting the analyst when any signal crosses a defined threshold. This directly addresses the pain point that "post-investment monitoring is manual" and protects invested capital. Priority: Phase 3, depends on Ground Watch.</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 4. LEGAL & COMPLIANCE MANAGER                 -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="legal">
+    <div class="persona-title">
+      <div class="persona-num">04</div>
+      <h2>Legal and Compliance Manager</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Provide legally defensible, fully auditable opinions on mineral rights and regulatory compliance, enabling the organization to operate with confidence that its title position is secure and obligations are met.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Confirm title and license validity</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Cadaster: holder of record, concession type</td></tr>
+          <tr><td class="step-num">2</td><td>Check overlapping claims and disputes</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Cadaster: adjacent concessions, dispute markers</td></tr>
+          <tr><td class="step-num">3</td><td>Verify boundaries against ground</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Voxel: boundary overlaid on high-res satellite imagery</td></tr>
+          <tr><td class="step-num">4</td><td>Check license expiry and renewal</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Cadaster: status + expiring within 12 months query</td></tr>
+          <tr><td class="step-num">5</td><td>Review fiscal compliance</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>EITI payment history with gap-year analysis</td></tr>
+          <tr><td class="step-num">6</td><td>Advise on licensing pathway</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Versioned, verifiable rules engine (not LLM-synthesized)</td></tr>
+          <tr><td class="step-num">7</td><td>Check encumbrances and charges</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Not in public data; flagged as must verify at Lands Registry</td></tr>
+          <tr><td class="step-num">8</td><td>Maintain audit trail</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>Admin audit log + per-fact lineage and confidence scores</td></tr>
+          <tr><td class="step-num">9</td><td>Validate regulatory content</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Rulebook is YAML, reviewable and redlineable by counsel</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Encumbrance and charge verification (Step 7)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> This is the one gap that cannot be fully solved by technology alone, because encumbrances are recorded at the Lands Registry and are not available in digital public datasets. However, MINEASK can address this in two ways: (1) add a structured checklist that prompts the legal manager with exactly what to request at the Lands Registry, including the specific form numbers and supporting documents needed, turning an open-ended task into a guided process; and (2) explore partnerships or data integrations with Lands Commission digitisation efforts to eventually incorporate this data directly. The honest flagging approach ("must verify at Lands Registry") is already the right design philosophy. Priority: Phase 2 for the guided checklist, longer-term for data integration.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Comprehensive legal audit trail (Step 8)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Expand the existing per-fact lineage system into a full legal evidence pack exporter. For every conclusion in a legal opinion, the system should be able to produce a supporting document pack that includes: the source data record, the timestamp of retrieval, the specific regulatory provision or gazette notice it maps to, and the confidence score. This pack should be exportable as a PDF appendix that can be appended to legal opinions or filed with regulators. This directly addresses the pain point that "manual audit trail is time-consuming" and makes every opinion defensible in court or before regulators. Priority: Phase 2, high value for the legal persona's core requirement of auditability.</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 5. MINE OPERATIONS MANAGER                    -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="operations">
+    <div class="persona-title">
+      <div class="persona-num">05</div>
+      <h2>Mine Operations Manager</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Keep the mine running safely and at planned production levels by having real-time visibility into all site operations, early warning of emerging problems, and the intelligence to make proactive rather than reactive decisions.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Review equipment fleet status</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Telemetry: equipment assets + activity nodes</td></tr>
+          <tr><td class="step-num">2</td><td>Monitor haul cycles and productivity</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Telemetry: haul corridor data, average cycle time</td></tr>
+          <tr><td class="step-num">3</td><td>Track stockpile volumes</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Telemetry: stockpile layer + volume estimation</td></tr>
+          <tr><td class="step-num">4</td><td>Detect unauthorized or anomalous activity</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Shadow Activity Index from satellite and sensor data</td></tr>
+          <tr><td class="step-num">5</td><td>Monitor terrain and slope stability</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Voxel: change detection, NDVI anomaly alerts</td></tr>
+          <tr><td class="step-num">6</td><td>Assess haul route security</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: corridor risk scoring, incidents near routes</td></tr>
+          <tr><td class="step-num">7</td><td>Monitor boundary encroachment</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: ASM encroachment layer with SAR data</td></tr>
+          <tr><td class="step-num">8</td><td>Manage real-time operations and dispatch</td><td class="status-cell"><span class="badge badge-gap">Not Fixed</span></td><td>By design: MINEASK is intelligence, not a control room</td></tr>
+          <tr><td class="step-num">9</td><td>Continuous automated monitoring</td><td class="status-cell"><span class="badge badge-gap">Not Yet</span></td><td>Ground Watch scheduled runs planned but not built</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Real-time operations and dispatch (Step 8) -- Outside product scope by design</div>
+      <div class="rec-how"><strong>How MINEASK should handle this:</strong> This gap is intentionally outside MINEASK's scope. Real-time dispatch and control-room functions belong to specialized mining operations platforms (e.g., Modular Mining, Caterpillar Fleet Management). MINEASK's role is to provide the <strong>intelligence layer</strong> that feeds into those systems: site security status, encroachment alerts, terrain stability warnings, and haul route risk scores. The recommended approach is to build API integrations or data export pipelines that feed MINEASK's intelligence into existing dispatch and fleet management systems, rather than building a competing control room. This addresses the ops manager's need for a "unified site intelligence dashboard" without duplicating tools that already exist. Priority: Phase 3 integrations, not standalone features.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Continuous automated monitoring (Step 9)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Ground Watch is the solution here. For the operations manager specifically, Ground Watch should be configured to run site intelligence queries on a daily or shift-change cadence: satellite-based encroachment checks, slope stability change detection, shadow activity monitoring, and haul route incident scanning. Results should be delivered as a "daily site intelligence brief" that the operations manager reviews at the start of each shift. This transforms MINEASK from an on-demand query tool into the proactive early-warning system that the ops manager needs to move from "reactive firefighting" to "proactive management." Priority: Phase 3, core feature.</div>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════ -->
+  <!-- 6. RISK & SECURITY MANAGER                     -->
+  <!-- ════════════════════════════════════════════════════ -->
+  <div class="persona-section" id="risk">
+    <div class="persona-title">
+      <div class="persona-num">06</div>
+      <h2>Risk and Security Manager</h2>
+    </div>
+    <div class="persona-endgoal">
+      <strong>End goal:</strong> Provide operations and leadership with continuous, actionable threat intelligence that enables proactive risk mitigation, protects personnel and assets, and supports informed decision-making across the mine's area of influence.
+    </div>
+
+    <div class="gap-table-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Workflow Step</th><th>Status</th><th>Current MINEASK Capability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="step-num">1</td><td>Define monitoring scope and thresholds</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Persona fields: radius (10/50/100 km), threat level</td></tr>
+          <tr><td class="step-num">2</td><td>Track incidents near sites</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: ACLED + GDELT incident feeds</td></tr>
+          <tr><td class="step-num">3</td><td>Assess ASM encroachment</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: SAR-based encroachment detection</td></tr>
+          <tr><td class="step-num">4</td><td>Score transport corridor risk</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: risk corridor analysis (e.g., Takoradi to Kumasi)</td></tr>
+          <tr><td class="step-num">5</td><td>Map political and unrest hotspots</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Sentinel: unrest hotspots, regional political risk score</td></tr>
+          <tr><td class="step-num">6</td><td>Identify high-risk concessions</td><td class="status-cell"><span class="badge badge-done">Fixed</span></td><td>Risk overlays + cadastral intersection analysis</td></tr>
+          <tr><td class="step-num">7</td><td>Develop early-warning indicators</td><td class="status-cell"><span class="badge badge-partial">Partly</span></td><td>GDELT event data + NDVI environmental proxies</td></tr>
+          <tr><td class="step-num">8</td><td>Operate alerting and 24/7 monitoring</td><td class="status-cell"><span class="badge badge-gap">Not Yet</span></td><td>Ground Watch not yet built</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="recs-heading">Recommendations to Close Gaps</div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Early-warning indicator system (Step 7)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> The current approach uses proxy signals (GDELT events, NDVI changes) which is a good foundation. To build a true early-warning system, MINEASK should add: (1) temporal trend analysis that detects accelerating incident frequencies rather than one-off events; (2) composite risk scoring that weights multiple proxy signals (social media activity spikes, environmental stress indicators, political event calendars) into a single escalation score; and (3) configurable alert thresholds that let the risk manager define what constitutes "early warning" for each site. The key insight is that early-warning is about <strong>trends and velocities</strong>, not snapshots. Priority: Phase 2 for trend analysis, Phase 3 for composite scoring.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-gap">Gap: Live alerting and 24/7 monitoring (Step 8)</div>
+      <div class="rec-how"><strong>How MINEASK can do it:</strong> Ground Watch with push notifications is the primary solution. For the risk manager specifically, the system should support: (1) configurable alert rules (e.g., "alert me if any incident occurs within 10 km of Site A" or "alert me if the corridor risk score for Route B increases by more than 20%"); (2) multi-channel delivery (email, SMS, Slack/Teams webhook) so alerts reach the risk manager regardless of where they are; and (3) an escalation protocol that routes critical alerts to senior leadership if not acknowledged within a defined window. This addresses the pain point that "24/7 monitoring requires dedicated staff" by automating the monitoring layer and only requiring human attention when thresholds are breached. Priority: Phase 3, highest-value feature for this persona.</div>
+    </div>
+  </div>
+
+
+  <!-- ═══ Cross-Cutting Themes ═══ -->
+  <div class="crosscut" id="themes">
+    <h2>Cross-Cutting Themes: What the Gaps Reveal</h2>
+    <p style="font-size:14.5px; color:var(--text-sec); margin-bottom:24px; line-height:1.7;">Looking across all six personas, the unresolved gaps cluster into four distinct themes. These are not isolated issues but structural patterns that, if addressed together, would multiply the platform's value.</p>
+
+    <div class="theme-grid">
+      <div class="theme-card">
+        <h3>1. Ground Watch Is the Universal Multiplier</h3>
+        <p>Four of six personas (ESG Manager, Investment Analyst, Ops Manager, Risk Manager) have continuous monitoring as a gap, and the Consultant would benefit from it for post-engagement tracking. Ground Watch is not one feature; it is the feature that transforms MINEASK from a point-in-time tool into a persistent intelligence platform. Every monitoring gap resolves when Ground Watch ships.</p>
+        <div class="affected">Affects: ESG, Analyst, Ops, Risk, Consultant (5 of 6 personas)</div>
+      </div>
+
+      <div class="theme-card">
+        <h3>2. Export and Reporting Engine</h3>
+        <p>The Consultant needs white-label PDFs, the ESG Manager needs framework-structured reports, the Legal Manager needs auditable evidence packs, and the Analyst needs investment committee-ready briefs. All four needs can be served by a single flexible reporting engine with template support, data-field mapping, and multi-format export (PDF, DOCX, Excel). This is a force multiplier for adoption.</p>
+        <div class="affected">Affects: Consultant, ESG, Legal, Analyst (4 of 6 personas)</div>
+      </div>
+
+      <div class="theme-card">
+        <h3>3. The Data-Correction Flywheel</h3>
+        <p>Every persona encounters data that is stale, incomplete, or incorrect. Currently there is no mechanism for field-verified corrections to flow back into the platform. Building a structured correction interface would compound in value over time: every correction improves the system for all subsequent users, creating a network effect that makes the platform progressively more reliable and defensible.</p>
+        <div class="affected">Affects: Consultant, Legal, Ops (3 of 6 personas directly; all benefit indirectly)</div>
+      </div>
+
+      <div class="theme-card">
+        <h3>4. Integration, Not Replacement</h3>
+        <p>Two gaps (Ops Manager's real-time dispatch, Legal Manager's encumbrance checks) are outside MINEASK's scope by design, and that is correct. The platform should not try to be a control room or a land registry. Instead, it should invest in API integrations and data export pipelines that feed its intelligence into the specialised tools that already serve those functions. This is how MINEASK becomes infrastructure rather than a standalone app.</p>
+        <div class="affected">Affects: Ops, Legal (2 of 6 personas; architectural principle for all)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TerraPulze — Persona Workflow Analysis</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { gd: { DEFAULT: '#E8B84B', d: '#C48E1C' }, bl: '#3B82F6', cy: '#22D3EE', ar: '#F43F5E', t1: '#111827', t2: '#4B5563', t3: '#6B7280', b1: '#E5E7EB', b2: '#D1D5DB', pg: '#FAFBFC', sc: '#F4F6F8', sf: '#FFFFFF' } } } }</script>
+    <style>
+        * {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #111827;
+            background: #FAFBFC
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F4F6F8
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D1D5DB;
+            border-radius: 3px
+        }
+
+        .nl {
+            transition: all .15s;
+            border-left: 2px solid transparent
+        }
+
+        .nl:hover {
+            color: #3B82F6;
+            border-left-color: #3B82F6;
+            background: rgba(59, 130, 246, .04)
+        }
+
+        .cl {
+            transition: box-shadow .2s, transform .2s
+        }
+
+        .cl:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .06);
+            transform: translateY(-1px)
+        }
+
+        h1 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -.02em
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: 700
+        }
+
+        h3 {
+            font-size: 24px;
+            font-weight: 700
+        }
+
+        .dv {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #E5E7EB, transparent)
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace
+        }
+
+        .r-g {
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0
+        }
+
+        .r-y {
+            background: #FFFBEB;
+            color: #92400E;
+            border: 1px solid #FDE68A
+        }
+
+        .r-r {
+            background: #FFF1F2;
+            color: #9F43F5E;
+            border: 1px solid #FECDD3
+        }
+
+        .r-b {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border: 1px solid #BFDBFE
+        }
+
+        .tg {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .sn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="relative overflow-hidden"
+        style="background:linear-gradient(135deg,#111827,#1E293B 35%,#0F172A 65%,#111827)">
+        <div class="absolute inset-0 pointer-events-none" style="opacity:.12">
+            <div class="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full"
+                style="background:radial-gradient(circle,#E8B84B,transparent 70%)"></div>
+            <div class="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full"
+                style="background:radial-gradient(circle,#22D3EE,transparent 70%)"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-xl" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#E8B84B">TerraPulze</span>
+            </div>
+            <h1 class="text-white md:text-[50px]">Persona Workflow<br><span style="color:#E8B84B">Analysis</span></h1>
+            <p class="mt-6 max-w-2xl leading-relaxed" style="color:#94A3B8">Step-by-step evaluation of TerraPulze
+                against the daily workflows of six mining-sector personas — identifying what's addressed, what's
+                partial, and what's unresolved.</p>
+            <div class="flex flex-wrap gap-3 mt-8 text-sm text-white">
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#E8B84B" data-icon="lucide:users"></span>6 Personas</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#22D3EE" data-icon="lucide:list-checks"></span>50+ Workflow Steps
+                </div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#3B82F6" data-icon="lucide:layers"></span>6 Product Layers</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 flex">
+        <nav class="hidden lg:block w-60 shrink-0 sticky top-6 self-start py-8 pr-5"
+            style="border-right:1px solid #E5E7EB;max-height:calc(100vh - 48px);overflow-y:auto">
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2" style="color:#6B7280">Overview</div>
+            <a href="#purpose" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Purpose</a>
+            <a href="#e2e" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">End-to-End
+                Flow</a>
+            <a href="#legend" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Rating
+                Legend</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Personas</div>
+            <a href="#p1" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Field
+                Geologist</a>
+            <a href="#p2" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Exploration
+                Manager</a>
+            <a href="#p3" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining CEO</a>
+            <a href="#p4" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Investor /
+                Consultant</a>
+            <a href="#p5" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining
+                Finance</a>
+            <a href="#p6" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Regulator</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Synthesis
+            </div>
+            <a href="#cross" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Cross-Persona
+                Map</a>
+            <a href="#solves" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Solves
+                Best</a>
+            <a href="#biggap" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Biggest
+                Gap</a>
+            <a href="#arch" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5"
+                style="color:#4B5563">Architecture</a>
+            <a href="#priority" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5"
+                style="color:#4B5563">Priority</a>
+            <a href="#final" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Final
+                Evaluation</a>
+        </nav>
+
+        <main class="flex-1 min-w-0 py-8 lg:pl-10">
+
+            <!-- PURPOSE -->
+            <section id="purpose" class="mb-12">
+                <h2 class="mb-4">Purpose of This Evaluation</h2>
+                <p class="leading-relaxed max-w-3xl" style="color:#4B5563">For each persona and each major daily task,
+                    this evaluation determines: what the user is trying to accomplish, what problem occurs, what
+                    TerraPulze currently addresses, whether the workflow is fully/partially/unresolved, what would close
+                    the gap, and the resulting outcome.</p>
+                <div class="rounded-xl p-4 mt-6" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <p class="text-sm" style="color:#1E40AF">Capabilities publicly described for TerraPulze are treated
+                        as <strong>current capabilities</strong>. Proposed features/endpoints are
+                        <strong>recommendations</strong>, not existing functionality. The public application describes
+                        ML-based identification of copper, gold and lithium anomalies with scientifically rated
+                        confidence.</p>
+                </div>
+            </section>
+
+            <!-- LEGEND -->
+            <section id="legend" class="mb-12">
+                <h3 class="mb-4">Capability Rating</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="rounded-lg p-4 r-g">
+                        <div class="font-bold text-sm mb-1">🟢 Addressed</div>
+                        <p class="text-xs">Directly supports the workflow</p>
+                    </div>
+                    <div class="rounded-lg p-4 r-y">
+                        <div class="font-bold text-sm mb-1">🟡 Partial</div>
+                        <p class="text-xs">Helps, but another tool still needed</p>
+                    </div>
+                    <div class="rounded-lg p-4 r-r">
+                        <div class="font-bold text-sm mb-1">🔴 Unresolved</div>
+                        <p class="text-xs">Outside current core capability</p>
+                    </div>
+                    <div class="rounded-lg p-4 r-b">
+                        <div class="font-bold text-sm mb-1">🔵 Opportunity</div>
+                        <p class="text-xs">Strong candidate for future feature</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- E2E -->
+            <section id="e2e" class="mb-16">
+                <h2 class="mb-4">End-to-End Mining Workflow</h2>
+                <p class="text-sm mb-6" style="color:#4B5563">The six personas interact with different stages of the
+                    same broader process. The same geological evidence should move through all stages without being
+                    repeatedly recreated.</p>
+                <div class="bg-white rounded-xl p-6 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <div class="min-w-[420px] flex flex-col items-center gap-2">
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Field Geologist</div>
+                        <div class="text-xs" style="color:#065F46">↓ Collect geological evidence</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Exploration Manager</div>
+                        <div class="text-xs" style="color:#92400E">↓ Interpret + prioritize</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Mining CEO</div>
+                        <div class="text-xs" style="color:#1E40AF">↓ Strategic/corporate decision</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#F5F3FF;border:1px solid #DDD6FE;color:#5B21B6">Consultant / Investor
+                        </div>
+                        <div class="text-xs" style="color:#5B21B6">↓ Independently validate</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Investment Firm</div>
+                        <div class="text-xs" style="color:#92400E">↓ Assess risk + allocate capital</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#FFF1F2;border:1px solid #FECDD3;color:#9F1239">Government Regulator</div>
+                        <div class="text-xs" style="color:#9F1239">↓ Validate legality + compliance</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 1 ============ -->
+            <section id="p1" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-white text-2xl"
+                            data-icon="lucide:compass"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 1
+                        </div>
+                        <h2>Field Geologist</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#3B82F6">Find → Navigate → Observe → Sample → Record
+                    → Validate → Report</p>
+
+                <!-- S1 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">1</span>
+                        <h4 class="font-bold">Review Exploration Assignment</h4><span class="ml-auto tg r-y">🟡
+                            Partial</span>
+                    </div>
+                    <p class="text-sm mb-2" style="color:#4B5563"><strong>Pain:</strong> Information distributed across
+                        GIS, PDFs, Excel, emails, maps, reports. Geologist spends significant time determining what to
+                        investigate.</p>
+                    <p class="text-sm" style="color:#4B5563"><strong>Recommendation:</strong> Create a <em>Field
+                            Mission</em> attached to a project — containing target coordinates, ranking, geological
+                        context, field objectives, required samples, assigned geologist, due date.</p>
+                </div>
+                <!-- S2 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">2</span>
+                        <h4 class="font-bold">Review Available Geological Data</h4><span class="ml-auto tg r-g">🟢
+                            Addressed</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">One of the strongest use cases. Brings datasets and spatial
+                        context into a unified environment. <strong>Outcome:</strong> Less tool switching + faster
+                        interpretation.</p>
+                </div>
+                <!-- S3 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">3</span>
+                        <h4 class="font-bold">Acquire/Prepare Datasets</h4><span class="ml-auto tg r-y">🟢 / 🟡</span>
+                    </div>
+                    <p class="text-sm mb-2" style="color:#4B5563">Ingestion workflow exists. <strong>Improve:</strong>
+                        Add Data Quality Gate: Upload → Format check → CRS check → Coordinate validation → Missing-value
+                        → Duplicate → Spatial → Quality score → Ready.</p>
+                </div>
+                <!-- S4 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">4</span>
+                        <h4 class="font-bold">Examine Satellite Context</h4><span class="ml-auto tg r-g">🟢
+                            Addressed</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Satellite context and remote-sensing-derived indicators are
+                        in the workflow. <strong>Outcome:</strong> Faster from imagery → interpretation.</p>
+                </div>
+                <!-- S5 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">5</span>
+                        <h4 class="font-bold">Generate Exploration Targets</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Core value proposition. ML identification of anomalies with
+                        scientifically rated confidence. <strong>Outcome:</strong> Prioritized areas instead of manual
+                        review.</p>
+                </div>
+                <!-- S6 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">6</span>
+                        <h4 class="font-bold">Understand Why Target Generated</h4><span class="ml-auto tg r-g">🟢
+                            Addressed</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Explainable scoring/SHAP. Geologist treats AI as decision
+                        support, not a black box.</p>
+                </div>
+                <!-- S7 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">7</span>
+                        <h4 class="font-bold">Plan Field Visit</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Target locations help, but full field-program management is
+                        a gap. <strong>Feature:</strong> Field Mission Planner — moves from "Here are targets" to "Here
+                        is what you need to do next."</p>
+                </div>
+                <!-- S8 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">8</span>
+                        <h4 class="font-bold">Navigate to Target Offline</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Offline field functionality is an important part of the
+                        value proposition.</p>
+                </div>
+                <!-- S9 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">9</span>
+                        <h4 class="font-bold">Record Geological Observations</h4><span class="ml-auto tg r-y">🟡
+                            Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Digital Field Observation Form —
+                        every observation auto-inherits project, target, coordinates, date/time, user. Observation
+                        becomes structured evidence, not just a note.</p>
+                </div>
+                <!-- S10 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">10</span>
+                        <h4 class="font-bold">Collect &amp; Track Samples</h4><span class="ml-auto tg r-r">🔴 Major
+                            Gap</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Sample Management — Target →
+                        Sample → Chain of custody → Laboratory → Assay → Validation → Target update. Connects physical
+                        evidence to digital intelligence.</p>
+                </div>
+                <!-- S11 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">11</span>
+                        <h4 class="font-bold">Compare Field Evidence with AI Prediction</h4><span
+                            class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Target Validation — Status: AI
+                        Generated → Field Pending → Confirmed → Partially Confirmed → Rejected. Makes TerraPulze a
+                        <em>learning</em> workflow.</p>
+                </div>
+                <!-- S12 -->
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">12</span>
+                        <h4 class="font-bold">Recommend Next Action</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Target ranking helps, but decision should incorporate field
+                        and assay evidence.</p>
+                </div>
+
+                <!-- Summary table -->
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Summary</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Review targets</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Review data</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Data ingestion</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Satellite</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Target gen</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Explain target</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Offline nav</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Field planning</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Observations</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Target
+                                validation</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Final rec</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Sample mgmt</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Assay tracking</span>
+                        </div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#FFF1F2;border:1px solid #FECDD3">
+                        <p class="text-xs font-bold" style="color:#9F1239">Biggest opportunity: Close the loop — AI
+                            target → field observation → sample → assay → validated target.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 2 ============ -->
+            <section id="p2" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#E8B84B"><span class="iconify text-[#111827] text-2xl"
+                            data-icon="lucide:briefcase"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 2
+                        </div>
+                        <h2>Exploration Manager</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#C48E1C">Collect → Interpret → Prioritize → Allocate
+                    → Execute → Monitor → Decide</p>
+
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">1</span>
+                        <h4 class="font-bold">Review Portfolio</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Project/target intelligence useful, but full multi-project
+                        dashboard is a major opportunity.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">2</span>
+                        <h4 class="font-bold">Review New Data</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Aligns closely with exploration intelligence purpose.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">3</span>
+                        <h4 class="font-bold">Rank Targets</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">AI scoring provides foundation. <strong>Improve:</strong>
+                        Allow ranking on geological potential + confidence + accessibility + cost + constraints.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">4</span>
+                        <h4 class="font-bold">Assign Work</h4><span class="ml-auto tg r-r">🔴 Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Add Exploration Task Management.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">5</span>
+                        <h4 class="font-bold">Plan Budget</h4><span class="ml-auto tg r-r">🔴 Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Add Target Economics.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">6</span>
+                        <h4 class="font-bold">Monitor Progress</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Intelligence at several stages, but not complete
+                        project-management lifecycle.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">7</span>
+                        <h4 class="font-bold">Drill Decision</h4><span class="ml-auto tg r-y">🟢/🟡</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Target intelligence supports, but final decision requires
+                        field evidence, assay, drilling cost, model, risk, accessibility. <strong>Feature:</strong>
+                        Drill Decision Workspace.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-[#111827]"
+                            style="background:#E8B84B">8</span>
+                        <h4 class="font-bold">Report to Management</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Summary</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Portfolio</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Data review</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Target gen/rank</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Team assign</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Budget</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Monitor</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Sample/assay</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡/🟢</span><span>Drill
+                                priority</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Reporting</span></div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <p class="text-xs font-bold" style="color:#92400E">Opportunity: Transform from "target
+                            intelligence platform" into "exploration decision-management platform."</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 3 ============ -->
+            <section id="p3" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#111827"><span class="iconify text-2xl" style="color:#E8B84B"
+                            data-icon="lucide:crown"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 3
+                        </div>
+                        <h2>Mining CEO / Major Corporation</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#111827">Understand → Compare → Assess Risk →
+                    Allocate Capital → Communicate → Decide</p>
+
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">1</span>
+                        <h4 class="font-bold">Review Portfolio</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Underlying intelligence can feed an executive dashboard,
+                        but requires a dedicated management layer.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">2</span>
+                        <h4 class="font-bold">Understand Technical Potential</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">AI scores and evidence simplify complex geological
+                        information.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">3</span>
+                        <h4 class="font-bold">Review Supporting Evidence</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Explainable intelligence and provenance move from
+                        "geologist says promising" to "here's the evidence."</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">4</span>
+                        <h4 class="font-bold">Compare Assets</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Project Comparison — target
+                        potential, data confidence, field validation, licence status, maturity, risk, next-stage cost.
+                    </p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">5</span>
+                        <h4 class="font-bold">Decide Whether to Invest Further</h4><span class="ml-auto tg r-y">🟡
+                            Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Technical evidence supported; <strong>missing:</strong>
+                        NPV, IRR, CAPEX, OPEX, cash flow, commodity scenarios.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">6</span>
+                        <h4 class="font-bold">Board/Investor Material</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#111827">7</span>
+                        <h4 class="font-bold">Evaluate Acquisition</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Strong technical support; acquisition also requires legal,
+                        financial, environmental, licence, contractual. <strong>Feature:</strong> Acquisition
+                        Due-Diligence Workspace.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <div class="grid grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Portfolio</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Geological intel</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Evidence</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Compare assets</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Capital alloc</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Financial model</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Investor reports</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Acquisition DD</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Legal/corp
+                                decision</span></div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                        <p class="text-xs font-bold" style="color:#1E40AF">Opportunity: Create an Executive Intelligence
+                            Layer on top of the geological engine.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 4 ============ -->
+            <section id="p4" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#4B5563"><span class="iconify text-2xl" style="color:#22D3EE"
+                            data-icon="lucide:search"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#6B7280">Persona 4
+                        </div>
+                        <h2>Investor / Independent Consultant</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#4B5563">Receive → Organize → Verify → Reinterpret →
+                    Identify Risk → Report → Recommend</p>
+
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">1</span>
+                        <h4 class="font-bold">Receive Project Information</h4><span class="ml-auto tg r-y">🟡
+                            Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Data ingestion helps, but dedicated investor/consultant
+                        data room would significantly improve workflow.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">2</span>
+                        <h4 class="font-bold">Organize Data</h4><span class="ml-auto tg r-y">🟢/🟡</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">3</span>
+                        <h4 class="font-bold">Verify Provenance</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Provenance is particularly important — consultant must
+                        defend conclusions.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">4</span>
+                        <h4 class="font-bold">Independently Review Target</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Target scores, layers, geochemistry, geophysics, satellite,
+                        explainability.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">5</span>
+                        <h4 class="font-bold">Identify Data Gaps</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Data Completeness Score — e.g.,
+                        "Technical evidence completeness: 76%".</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">6</span>
+                        <h4 class="font-bold">Assess Technical Risk</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Needs dedicated risk framework: data, geological,
+                        exploration, licence, environmental, technical.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#4B5563">7</span>
+                        <h4 class="font-bold">Produce Independent Report</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <div class="grid grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Data intake</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Organization</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Provenance</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Target review</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Interpretation</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Data gaps</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Risk</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Report</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Recommendation</span>
+                        </div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#F5F3FF;border:1px solid #DDD6FE">
+                        <p class="text-xs font-bold" style="color:#5B21B6">Opportunity: Create a Technical Due-Diligence
+                            Workspace.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 5 ============ -->
+            <section id="p5" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#C48E1C"><span class="iconify text-white text-2xl"
+                            data-icon="lucide:landmark"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 5
+                        </div>
+                        <h2>Investment Firm / Mining Finance</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#C48E1C">Screen → Investigate → Validate → Model
+                    Risk → Model Economics → Decide → Monitor</p>
+
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">1</span>
+                        <h4 class="font-bold">Screen Opportunity</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Geological screening possible; needs investment-specific
+                        interface.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">2</span>
+                        <h4 class="font-bold">Technical Due Diligence</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">One of the most valuable extensions of the platform.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">3</span>
+                        <h4 class="font-bold">Verify Exploration Claims</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Target evidence + provenance + explainability. "Show me the
+                        evidence."</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">4</span>
+                        <h4 class="font-bold">Assess Technical Risk</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Technical Risk Score — data
+                        quality, geological uncertainty, target confidence, field validation, assay coverage, licence
+                        risk.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">5</span>
+                        <h4 class="font-bold">Feed Financial Model</h4><span class="ml-auto tg r-r">🔴 Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Recommended integration:</strong> TerraPulze →
+                        Financial Model. Provide: target count, geological confidence, exploration stage, drilling
+                        requirements, scenarios, risks.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">6</span>
+                        <h4 class="font-bold">Investment Committee</h4><span class="ml-auto tg r-y">🟡 Partial</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Investment Technical DD Report.
+                    </p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#C48E1C">7</span>
+                        <h4 class="font-bold">Monitor Financed Projects</h4><span class="ml-auto tg r-r">🔴
+                            Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Investment Monitoring Dashboard —
+                        exploration progress, targets validated, drilling, results, capital spent.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <div class="grid grid-cols-4 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Screening</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Tech DD</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Verify</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Risk</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Fin model</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Committee</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Monitoring</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Reporting</span></div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#FFFBEB;border:1px solid #FDE68A">
+                        <p class="text-xs font-bold" style="color:#92400E">Opportunity: Position as the technical
+                            intelligence layer feeding mining investment decisions — not replacing financial modelling.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 6 ============ -->
+            <section id="p6" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#3B82F6"><span class="iconify text-2xl" style="color:#22D3EE"
+                            data-icon="lucide:shield-check"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#3B82F6">Persona 6
+                        </div>
+                        <h2>Government Regulator</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-2 text-sm font-bold" style="color:#3B82F6">Receive → Validate → Screen → Review →
+                    Decide → Monitor → Audit</p>
+
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">1</span>
+                        <h4 class="font-bold">Receive Application</h4><span class="ml-auto tg r-r">🔴 Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563"><strong>Feature:</strong> Regulatory Case Management.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">2</span>
+                        <h4 class="font-bold">Validate Licence Location</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">3</span>
+                        <h4 class="font-bold">Check Spatial Overlaps</h4><span class="ml-auto tg r-g">🟢 Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Mapping and compliance layers provide a foundation.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">4</span>
+                        <h4 class="font-bold">Review Technical Evidence</h4><span class="ml-auto tg r-g">🟢
+                            Strong</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Regulator uses the same evidence as the company — doesn't
+                        rely solely on summarized reports.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">5</span>
+                        <h4 class="font-bold">Environmental Constraints</h4><span class="ml-auto tg r-y">🟢/🟡</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Spatial screening supports; complete permitting workflow
+                        requires more than a map layer.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">6</span>
+                        <h4 class="font-bold">Request Additional Info</h4><span class="ml-auto tg r-r">🔴
+                            Unresolved</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">7</span>
+                        <h4 class="font-bold">Regulatory Decision</h4><span class="ml-auto tg r-r">🔴 Unresolved</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Needs formal case management: approval, rejection,
+                        conditional approval, appeals.</p>
+                </div>
+                <div class="bg-white rounded-xl p-5 mb-3 cl" style="border:1px solid #E5E7EB">
+                    <div class="flex flex-wrap items-center gap-2 mb-2"><span class="sn text-white"
+                            style="background:#3B82F6">8</span>
+                        <h4 class="font-bold">Audit Decision</h4><span class="ml-auto tg r-y">🟡 Strong
+                            Opportunity</span>
+                    </div>
+                    <p class="text-sm" style="color:#4B5563">Provenance/audit trails could become highly valuable. Full
+                        reconstruction: Application → Data → Analysis → Evidence → Reviewer → Decision → Date.</p>
+                </div>
+
+                <div class="bg-white rounded-xl p-5 mt-4" style="border:1px solid #E5E7EB">
+                    <div class="grid grid-cols-3 gap-2 text-xs">
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Application</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Licence valid</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Overlaps</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-g">🟢</span><span>Evidence</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Enviro</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Info request</span>
+                        </div>
+                        <div class="flex items-center gap-2"><span class="tg r-r">🔴</span><span>Decision</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Compliance</span></div>
+                        <div class="flex items-center gap-2"><span class="tg r-y">🟡</span><span>Audit</span></div>
+                    </div>
+                    <div class="rounded-lg p-3 mt-3" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <p class="text-xs font-bold" style="color:#065F46">Opportunity: Build a Regulatory Intelligence
+                            &amp; Compliance Layer on top of the existing geological/spatial infrastructure.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ CROSS-PERSONA MAP ============ -->
+            <section id="cross" class="mb-20">
+                <h2 class="mb-6">Cross-Persona Workflow Mapping</h2>
+                <p class="text-sm mb-6" style="color:#4B5563">The most important section for product documentation — how
+                    each workflow stage maps across all six personas.</p>
+                <div class="bg-white rounded-xl p-4 md:p-6 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <table class="w-full text-xs" style="border-collapse:collapse;min-width:900px">
+                        <thead>
+                            <tr style="border-bottom:2px solid #E5E7EB">
+                                <th class="text-left py-2 pr-2 font-bold" style="color:#6B7280">Stage</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">Geologist</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">Manager</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">CEO</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">Consultant</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">Finance</th>
+                                <th class="text-center py-2 px-1 font-bold" style="color:#6B7280">Regulator</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Project setup</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Data ingestion</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Data quality</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">GIS/map</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Satellite</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Target gen</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Target explain</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Field planning</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Offline field</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Observations</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Sample mgmt</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Assay mgmt</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Target validation</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Portfolio mgmt</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Budget mgmt</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Due diligence</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Tech reporting</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟡</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Reg screening</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                                <td class="text-center">🟢</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F4F6F8">
+                                <td class="py-1.5 pr-2 font-bold">Reg case mgmt</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">—</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🟡</td>
+                                <td class="text-center">🔴</td>
+                            </tr>
+                            <tr>
+                                <td class="py-1.5 pr-2 font-bold">Production/ops</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                                <td class="text-center">🔴</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ SOLVES BEST ============ -->
+            <section id="solves" class="mb-20">
+                <h2 class="mb-4">What TerraPulze Currently Solves Best</h2>
+                <p class="text-sm mb-6" style="color:#4B5563">The strongest value proposition is the <strong>technical
+                        exploration intelligence layer</strong>.</p>
+                <div class="bg-white rounded-xl p-6 md:p-8 overflow-x-auto"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <div class="min-w-[380px] flex flex-col items-center gap-2.5">
+                        <div class="rounded-xl px-6 py-2 font-bold text-white text-sm" style="background:#111827">
+                            Exploration Data</div>
+                        <div style="color:#3B82F6">↓</div>
+                        <div class="flex gap-2">
+                            <div class="rounded-lg px-3 py-1.5 text-xs font-bold"
+                                style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Geophysics</div>
+                            <div class="rounded-lg px-3 py-1.5 text-xs font-bold"
+                                style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Geochemistry</div>
+                            <div class="rounded-lg px-3 py-1.5 text-xs font-bold"
+                                style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Satellite</div>
+                        </div>
+                        <div style="color:#3B82F6">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">Data Analysis</div>
+                        <div style="color:#1E40AF">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF">AI / ML Interpretation
+                        </div>
+                        <div style="color:#1E40AF">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Target Generation</div>
+                        <div style="color:#92400E">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#FFFBEB;border:1px solid #FDE68A;color:#92400E">Target Confidence</div>
+                        <div style="color:#92400E">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#F5F3FF;border:1px solid #DDD6FE;color:#5B21B6">Explainable Evidence</div>
+                        <div style="color:#5B21B6">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Field Investigation</div>
+                        <div style="color:#065F46">↓</div>
+                        <div class="rounded-lg px-5 py-2 font-bold text-sm"
+                            style="background:#ECFDF5;border:1px solid #A7F3D0;color:#065F46">Technical Report</div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ BIGGEST GAP ============ -->
+            <section id="biggap" class="mb-20">
+                <h2 class="mb-4">The Biggest Unresolved Workflow</h2>
+                <p class="text-sm mb-6" style="color:#4B5563">Across all personas, the single biggest gap is the break
+                    between <strong>target generation</strong> and <strong>verified exploration evidence</strong>.</p>
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    <div class="rounded-xl p-5" style="background:#FFF1F2;border:1px solid #FECDD3">
+                        <h4 class="font-bold text-sm mb-3" style="color:#9F1239">Current Conceptual Flow</h4>
+                        <p class="text-sm mono" style="color:#9F1239">Data → AI → Target → Report</p>
+                    </div>
+                    <div class="rounded-xl p-5" style="background:#ECFDF5;border:1px solid #A7F3D0">
+                        <h4 class="font-bold text-sm mb-3" style="color:#065F46">Required Future Flow</h4>
+                        <p class="text-xs mono leading-loose" style="color:#065F46">Data → AI Analysis → Target → Field
+                            Validation → Observation → Sample → Assay → Target Update → Drill Decision → Evaluation →
+                            Investment Decision → Regulatory Evidence</p>
+                    </div>
+                </div>
+                <p class="text-sm" style="color:#4B5563">Each persona consumes the output of the previous persona. The
+                    evidence generated at the first step should be trustworthy, traceable and reusable through the final
+                    decision.</p>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ ARCHITECTURE ============ -->
+            <section id="arch" class="mb-20">
+                <h2 class="mb-6">Recommended Product Architecture</h2>
+                <p class="text-sm mb-8" style="color:#4B5563">Six experience layers around one shared data foundation.
+                </p>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                                style="background:#3B82F6">1</div>
+                            <h4 class="font-bold" style="color:#3B82F6">Exploration Intelligence</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">Field Geologist</p>
+                        <p class="text-xs" style="color:#4B5563">Maps · Data · Satellite · Targets · Field work ·
+                            Observations</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
+                                style="background:#E8B84B;color:#111827">2</div>
+                            <h4 class="font-bold" style="color:#C48E1C">Exploration Management</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">Exploration Manager</p>
+                        <p class="text-xs" style="color:#4B5563">Projects · Targets · Teams · Tasks · Budgets · Programs
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
+                                style="background:#111827;color:#E8B84B">3</div>
+                            <h4 class="font-bold">Executive Intelligence</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">CEO</p>
+                        <p class="text-xs" style="color:#4B5563">Portfolio · Opportunities · Risks · Capital decisions ·
+                            Reports</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                                style="background:#5B21B6">4</div>
+                            <h4 class="font-bold" style="color:#5B21B6">Technical Due Diligence</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">Consultant</p>
+                        <p class="text-xs" style="color:#4B5563">Data rooms · Provenance · Evidence · Risk · Reports</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
+                                style="background:#C48E1C;color:white">5</div>
+                            <h4 class="font-bold" style="color:#C48E1C">Investment Intelligence</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">Finance</p>
+                        <p class="text-xs" style="color:#4B5563">Technical risk · Comparison · Inputs · Scenarios ·
+                            Monitoring</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                                style="background:#22D3EE">6</div>
+                            <h4 class="font-bold" style="color:#0E7490">Regulatory Intelligence</h4>
+                        </div>
+                        <p class="text-xs mb-2" style="color:#6B7280">Government</p>
+                        <p class="text-xs" style="color:#4B5563">Licence validation · Compliance · Enviro · Audit ·
+                            Cases</p>
+                    </div>
+                </div>
+                <div class="rounded-xl p-4 mt-4" style="background:#F4F6F8;border:1px solid #E5E7EB">
+                    <p class="text-sm font-bold text-center" style="color:#111827">All six use the same underlying:
+                        Project → Dataset → Analysis → Target → Evidence → Decision → Audit</p>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PRIORITY ============ -->
+            <section id="priority" class="mb-20">
+                <h2 class="mb-6">Recommended Priority</h2>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-xl p-5 md:p-6 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#F43F5E">1</span></div>
+                            <div>
+                                <h3 style="color:#F43F5E">Close the Field Evidence Loop</h3>
+                                <p class="text-xs" style="color:#6B7280">Highest priority</p>
+                            </div>
+                        </div>
+                        <p class="text-sm mb-2" style="color:#4B5563">Build: Field observations · Sample management ·
+                            Assay integration · Target validation · Field-to-target feedback</p>
+                        <p class="text-sm font-bold" style="color:#111827"><em>Connects AI target generation to actual
+                                geological evidence.</em></p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-5 md:p-6 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold"
+                                style="background:#E8B84B;color:#111827">2</div>
+                            <div>
+                                <h3 style="color:#C48E1C">Exploration Management</h3>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color:#4B5563">Tasks · Team assignments · Programs · Target ranking ·
+                            Budget tracking · Drill decisions</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-5 md:p-6 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold"
+                                style="background:#111827;color:#E8B84B">3</div>
+                            <div>
+                                <h3>Executive Intelligence</h3>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color:#4B5563">Portfolio dashboard · Project comparison · Risk
+                            dashboard · Executive summaries · Capital workflow</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-5 md:p-6 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#5B21B6">4</div>
+                            <div>
+                                <h3 style="color:#5B21B6">Technical Due Diligence</h3>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color:#4B5563">Data rooms · Provenance · Completeness · Risk ·
+                            Evidence matrix · Independent reporting</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-5 md:p-6 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-white"
+                                style="background:#22D3EE">5</div>
+                            <div>
+                                <h3 style="color:#0E7490">Regulatory Intelligence</h3>
+                            </div>
+                        </div>
+                        <p class="text-sm" style="color:#4B5563">Licence applications · Spatial compliance ·
+                            Environmental · Cases · Audit · Approvals</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ FINAL ============ -->
+            <section id="final" class="mb-10">
+                <h2 class="mb-6">Final Evaluation</h2>
+                <div class="bg-white rounded-xl p-6 md:p-8 mb-6"
+                    style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <h3 class="mb-4">Current Position</h3>
+                    <ul class="text-sm space-y-2" style="color:#4B5563">
+                        <li><strong style="color:#065F46">Strongly addresses:</strong> Data ingestion, spatial
+                            interpretation, remote sensing, AI-assisted target generation, target explanation, technical
+                            reporting.</li>
+                        <li><strong style="color:#92400E">Partially addresses:</strong> Field execution, exploration
+                            management, executive decision-making, due diligence, compliance.</li>
+                        <li><strong style="color:#9F1239">Does not currently cover:</strong> Laboratory management,
+                            drilling operations, financial modelling, corporate finance, mine planning, production, full
+                            regulatory case management.</li>
+                    </ul>
+                </div>
+
+                <div class="rounded-xl p-6 md:p-8" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <h3 class="font-bold mb-4" style="color:#1E40AF">Strategic Opportunity</h3>
+                    <p class="leading-relaxed mb-4" style="color:#1E40AF">Make TerraPulze the <strong>shared evidence
+                            and intelligence layer</strong> connecting exploration to downstream decisions:</p>
+                    <p class="text-sm font-bold mono mb-6" style="color:#111827">Collect → Analyze → Predict → Validate
+                        → Decide → Finance → Regulate</p>
+                    <p class="leading-relaxed mb-4" style="color:#1E40AF">One geological dataset serves all six personas
+                        while each receives information relevant to their specific decision.</p>
+                    <div class="bg-white rounded-lg p-4" style="border:1px solid #BFDBFE">
+                        <p class="text-xs font-bold mb-1" style="color:#111827">Field Geologist:</p>
+                        <p class="text-xs mb-2" style="color:#4B5563">"Where should I investigate?"</p>
+                        <p class="text-xs font-bold mb-1" style="color:#111827">Exploration Manager:</p>
+                        <p class="text-xs mb-2" style="color:#4B5563">"Which target should I fund?"</p>
+                        <p class="text-xs font-bold mb-1" style="color:#111827">CEO:</p>
+                        <p class="text-xs mb-2" style="color:#4B5563">"Which asset should I advance?"</p>
+                        <p class="text-xs font-bold mb-1" style="color:#111827">Consultant:</p>
+                        <p class="text-xs mb-2" style="color:#4B5563">"Can the evidence support that claim?"</p>
+                        <p class="text-xs font-bold mb-1" style="color:#111827">Investment Firm:</p>
+                        <p class="text-xs mb-2" style="color:#4B5563">"Is the risk-adjusted return worth funding?"</p>
+                        <p class="text-xs font-bold mb-1" style="color:#111827">Regulator:</p>
+                        <p class="text-xs" style="color:#4B5563">"Is the activity legal, compliant and properly
+                            evidenced?"</p>
+                    </div>
+                    <p class="text-sm font-bold mt-4" style="color:#1E40AF">TerraPulze's opportunity is to make the
+                        evidence generated at the first step <strong>trustworthy, traceable and reusable</strong> all
+                        the way through the final decision.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="mt-20 py-10" style="background:#F4F6F8;border-top:1px solid #E5E7EB">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-sm" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#C48E1C">TerraPulze</span>
+            </div>
+            <p class="text-sm" style="color:#6B7280">Persona Workflow Analysis — Confidential</p>
+        </div>
+    </footer>
+</body>
+
+</html>

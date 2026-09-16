@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TerraPulze — Persona Business Value Proposition</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { gd: { DEFAULT: '#E8B84B', d: '#C48E1C' }, bl: '#3B82F6', cy: '#22D3EE', ar: '#F43F5E', t1: '#111827', t2: '#4B5563', t3: '#6B7280', b1: '#E5E7EB', b2: '#D1D5DB', pg: '#FAFBFC', sc: '#F4F6F8', sf: '#FFFFFF' } } } }</script>
+    <style>
+        * { scroll-behavior: smooth }
+        body { font-family: Inter, sans-serif; font-size: 16px; font-weight: 400; color: #111827; background: #FAFBFC }
+        ::-webkit-scrollbar { width: 6px }
+        ::-webkit-scrollbar-track { background: #F4F6F8 }
+        ::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px }
+        .nl { transition: all .15s; border-left: 2px solid transparent }
+        .nl:hover { color: #3B82F6; border-left-color: #3B82F6; background: rgba(59,130,246,.04) }
+        .cl { transition: box-shadow .2s, transform .2s }
+        .cl:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); transform: translateY(-1px) }
+        h1 { font-size: 40px; font-weight: 800; line-height: 1.1; letter-spacing: -.02em }
+        h2 { font-size: 32px; font-weight: 700 }
+        h3 { font-size: 24px; font-weight: 700 }
+        .dv { height: 1px; background: linear-gradient(90deg,transparent,#E5E7EB,transparent) }
+        .mono { font-family: 'JetBrains Mono', monospace }
+        .tg { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700 }
+        .sn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; font-size: 12px; font-weight: 700; flex-shrink: 0 }
+        .bar-track { height: 10px; border-radius: 999px; background: #F1F5F9; overflow: hidden }
+        .bar-fill { height: 100%; border-radius: 999px }
+    </style>
+</head>
+
+<body>
+
+    <header class="relative overflow-hidden"
+        style="background:linear-gradient(135deg,#111827,#1E293B 35%,#0F172A 65%,#111827)">
+        <div class="absolute inset-0 pointer-events-none" style="opacity:.12">
+            <div class="absolute -top-32 -right-32 w-[480px] h-[480px] rounded-full"
+                style="background:radial-gradient(circle,#E8B84B,transparent 70%)"></div>
+            <div class="absolute -bottom-24 -left-24 w-[360px] h-[360px] rounded-full"
+                style="background:radial-gradient(circle,#22D3EE,transparent 70%)"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-6 py-16 md:py-24">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-xl" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#E8B84B">TerraPulze</span>
+            </div>
+            <h1 class="text-white md:text-[50px]">Persona Business Value<br><span style="color:#E8B84B">Proposition</span></h1>
+            <p class="mt-6 max-w-2xl leading-relaxed" style="color:#94A3B8">What each persona spends today doing
+                the work manually, what TerraPulze gives back in time and cost, and the business outcome that
+                follows — for the six core users of the platform.</p>
+            <div class="flex flex-wrap gap-3 mt-8 text-sm text-white">
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#E8B84B" data-icon="lucide:users"></span>6 Personas</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#22D3EE" data-icon="lucide:clock"></span>Time-to-Value</div>
+                <div class="flex items-center gap-2 rounded-full px-4 py-2" style="background:rgba(255,255,255,.08)">
+                    <span class="iconify" style="color:#3B82F6" data-icon="lucide:coins"></span>Cost Avoided</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 flex">
+        <nav class="hidden lg:block w-60 shrink-0 sticky top-6 self-start py-8 pr-5"
+            style="border-right:1px solid #E5E7EB;max-height:calc(100vh - 48px);overflow-y:auto">
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2" style="color:#6B7280">Overview</div>
+            <a href="#basis" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Basis for Estimates</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Personas</div>
+            <a href="#p1" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Field Geologist</a>
+            <a href="#p2" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Exploration Manager</a>
+            <a href="#p3" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Mining CEO</a>
+            <a href="#p4" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Independent Consultant</a>
+            <a href="#p5" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Finance Banker</a>
+            <a href="#p6" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Regulator</a>
+            <div class="text-[10px] font-bold uppercase tracking-[.16em] mb-2 mt-5" style="color:#6B7280">Synthesis</div>
+            <a href="#summary" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Summary Table</a>
+            <a href="#outcome" class="nl block py-1.5 px-3 text-sm rounded-r-md mb-.5" style="color:#4B5563">Bottom Line</a>
+        </nav>
+
+        <main class="flex-1 min-w-0 py-8 lg:pl-10">
+
+            <!-- BASIS -->
+            <section id="basis" class="mb-14">
+                <h2 class="mb-4">Basis for These Estimates</h2>
+                <p class="leading-relaxed max-w-3xl" style="color:#4B5563">Each persona below is scored on the same
+                    three dimensions: the time the task takes done manually versus with TerraPulze, the cost that
+                    time and rework represents, and the business outcome that follows from getting there faster.</p>
+                <div class="rounded-xl p-4 mt-6" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <p class="text-sm" style="color:#1E40AF">Figures are directional estimates built from typical
+                        West African junior-exploration cost structures (drilling, field mobilization, technical
+                        advisory and consulting rates) and the workflow steps identified in the Persona Workflow
+                        Analysis. They are illustrative of the scale of value TerraPulze can create, not audited
+                        client figures — treat them as a starting frame to validate with real pilot data.</p>
+                </div>
+            </section>
+
+            <!-- ============ PERSONA 1 — FIELD GEOLOGIST ============ -->
+            <section id="p1" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#ECFDF5;border:1px solid #A7F3D0"><span class="iconify text-2xl"
+                            style="color:#065F46" data-icon="lucide:compass"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#065F46">Persona 1</div>
+                        <h2>Field Geologist</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#065F46">Decides where to look, and whether what's on the ground matches the model.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Desk-Based Target Selection</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~15 days</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:7%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~1 day</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">AI-generated, confidence-rated anomalies replace
+                        the manual desk study that would otherwise precede every field mobilization.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Avoiding one unproductive field mobilization
+                            (crew, vehicle, fuel, accommodation) saves roughly <strong>$3,000–$8,000</strong> per
+                            trip. Avoiding a single unproductive 100m drill hole guided to a false-positive target
+                            saves <strong>$15,000–$30,000</strong> at typical $150–$300/m drilling costs.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">More field days spent verifying real anomalies
+                            instead of searching blind; a faster, evidence-backed path from raw concession to
+                            drill-ready target; offline navigation removes round-trips to base for data.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 2 — EXPLORATION MANAGER ============ -->
+            <section id="p2" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#E8B84B"><span class="iconify text-[#111827] text-2xl"
+                            data-icon="lucide:briefcase"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#C48E1C">Persona 2</div>
+                        <h2>Exploration Manager</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#C48E1C">Owns the budget, the ranking, and the case made to leadership.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Quarterly Portfolio Review &amp; Target Ranking</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~6 days</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:8%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~half a day</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">Consolidated, cross-project target ranking replaces
+                        spreadsheet reconciliation across programs.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">On a typical $500K–$2M annual junior exploration
+                            budget, a 10–15% improvement in allocating spend toward higher-probability targets
+                            represents <strong>$50,000–$300,000</strong> redirected away from lower-priority ground,
+                            plus reduced analyst/GIS technician hours each review cycle.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Defensible, evidence-based budget decisions rather
+                            than gut calls; faster reaction when new data lands mid-quarter; fewer wasted program
+                            cycles chasing targets that don't hold up.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 3 — MINING CEO ============ -->
+            <section id="p3" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#EFF6FF;border:1px solid #BFDBFE"><span class="iconify text-2xl"
+                            style="color:#1E40AF" data-icon="lucide:building-2"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#1E40AF">Persona 3</div>
+                        <h2>Junior Mining CEO</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#1E40AF">Answers to the board and the market — needs credible material, fast.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Investor-Ready Technical Summary</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~3 weeks</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:14%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~3 days</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">Standardized project comparison and executive
+                        summaries replace the usual back-and-forth with external consultants before a raise or board pack.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Reduces reliance on external technical-writing or
+                            consulting fees per investor package, typically <strong>$5,000–$15,000</strong> per
+                            engagement in West African junior contexts — and shortens the runway burned waiting on
+                            third parties during a live financing window.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">More consistent, credible investor materials on
+                            demand; ability to move on time-sensitive financing windows instead of missing them
+                            waiting for a report.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 4 — INDEPENDENT CONSULTANT ============ -->
+            <section id="p4" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#F5F3FF;border:1px solid #DDD6FE"><span class="iconify text-2xl"
+                            style="color:#5B21B6" data-icon="lucide:search-check"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#5B21B6">Persona 4</div>
+                        <h2>Independent Consultant</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#5B21B6">Gets paid to say whether the evidence actually holds up.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Technical Due Diligence per Engagement</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~4 weeks</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:35%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~1.5 weeks</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">A structured evidence matrix and data-provenance
+                        trail replaces manual reconciliation of disparate formats across the data room.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">At $150–$300/hr billing rates, cutting 60–80 hours
+                            off a diligence engagement frees roughly <strong>$9,000–$24,000</strong> of capacity per
+                            project — passed on as competitive pricing, or reinvested into more engagements per year.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Higher engagement throughput per year; reduced
+                            liability exposure from evidence gaps that get missed under manual review; a stronger
+                            reputation for rigor with repeat clients.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 5 — MINING FINANCE BANKER ============ -->
+            <section id="p5" class="mb-20">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#FFFBEB;border:1px solid #FDE68A"><span class="iconify text-2xl"
+                            style="color:#92400E" data-icon="lucide:landmark"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#92400E">Persona 5</div>
+                        <h2>Mining Finance Banker</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#92400E">Decides whether the risk-adjusted return is worth funding — and keeps watching after.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Technical Risk Assessment per Deal</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~5 weeks</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:30%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~1.5 weeks</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">Standardized risk scoring and scenario comparison
+                        replace waiting on ad-hoc third-party technical reviews for every deal.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Reduces external technical-advisory fees per
+                            assessment, typically <strong>$10,000–$30,000</strong> in comparable markets — and
+                            continuous monitoring in place of annual reporting can catch deteriorating projects
+                            early enough to limit loan-loss exposure.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Faster deal velocity means more capital deployed
+                            per year on the same team; ongoing risk visibility across the loan portfolio rather than
+                            waiting for the next annual report.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- ============ PERSONA 6 — GOVERNMENT REGULATOR ============ -->
+            <section id="p6" class="mb-16">
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                        style="background:#FFF1F2;border:1px solid #FECDD3"><span class="iconify text-2xl"
+                            style="color:#9F1239" data-icon="lucide:scale"></span></div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[.16em]" style="color:#9F1239">Persona 6</div>
+                        <h2>Government Regulator</h2>
+                    </div>
+                </div>
+                <p class="mt-3 mb-6 text-sm font-bold" style="color:#9F1239">Needs to know the activity is legal, compliant, and properly evidenced.</p>
+
+                <div class="bg-white rounded-xl p-6 mb-4 cl" style="border:1px solid #E5E7EB">
+                    <h4 class="font-bold mb-3">Time: Licence Compliance Check per Application</h4>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">Manual</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:100%;background:#F43F5E"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~3 weeks</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs w-28 shrink-0" style="color:#6B7280">With TerraPulze</span>
+                        <div class="bar-track flex-1"><div class="bar-fill" style="width:18%;background:#10B981"></div></div>
+                        <span class="text-xs font-bold w-24 text-right" style="color:#111827">~3 days</span>
+                    </div>
+                    <p class="text-xs mt-3" style="color:#6B7280">Automated spatial compliance validation replaces
+                        manual cross-referencing of licence boundaries against paper and disconnected spatial records.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#F43F5E" data-icon="lucide:coins"></span>
+                            <h4 class="font-bold text-sm">Cost Avoided</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Time saved per case translates directly into more
+                            applications cleared with the same headcount — equivalent to adding compliance capacity
+                            without the added payroll cost of new hires.</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-5 cl" style="border:1px solid #E5E7EB">
+                        <div class="flex items-center gap-2 mb-2"><span class="iconify" style="color:#3B82F6" data-icon="lucide:target"></span>
+                            <h4 class="font-bold text-sm">Business Value</h4></div>
+                        <p class="text-sm" style="color:#4B5563">Faster, more consistent licence approvals; a
+                            stronger audit trail for enforcement; better spatial visibility to catch unlicensed or
+                            non-compliant activity earlier.</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- SUMMARY TABLE -->
+            <section id="summary" class="mb-16">
+                <h2 class="mb-6">Summary: Time Reclaimed by Persona</h2>
+                <div class="bg-white rounded-xl p-4 md:p-6 overflow-x-auto" style="border:1px solid #E5E7EB;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+                    <table class="w-full text-sm" style="border-collapse:collapse">
+                        <thead>
+                            <tr style="border-bottom:2px solid #E5E7EB">
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#111827">Persona</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#111827">Core Task</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#111827">Manual</th>
+                                <th class="text-left py-3 pr-3 font-bold" style="color:#111827">TerraPulze</th>
+                                <th class="text-left py-3 font-bold" style="color:#111827">Cost Avoided (Range)</th>
+                            </tr>
+                        </thead>
+                        <tbody style="color:#4B5563">
+                            <tr style="border-bottom:1px solid #F1F5F9">
+                                <td class="py-3 pr-3 font-bold" style="color:#065F46">Field Geologist</td>
+                                <td class="py-3 pr-3">Desk-based target selection</td>
+                                <td class="py-3 pr-3">~15 days</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~1 day</td>
+                                <td class="py-3">$3,000–$30,000 / avoided trip or hole</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F1F5F9">
+                                <td class="py-3 pr-3 font-bold" style="color:#C48E1C">Exploration Manager</td>
+                                <td class="py-3 pr-3">Portfolio review &amp; ranking</td>
+                                <td class="py-3 pr-3">~6 days / quarter</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~0.5 day</td>
+                                <td class="py-3">$50,000–$300,000 / year</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F1F5F9">
+                                <td class="py-3 pr-3 font-bold" style="color:#1E40AF">Mining CEO</td>
+                                <td class="py-3 pr-3">Investor-ready summary</td>
+                                <td class="py-3 pr-3">~3 weeks</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~3 days</td>
+                                <td class="py-3">$5,000–$15,000 / package</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F1F5F9">
+                                <td class="py-3 pr-3 font-bold" style="color:#5B21B6">Independent Consultant</td>
+                                <td class="py-3 pr-3">Technical due diligence</td>
+                                <td class="py-3 pr-3">~4 weeks</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~1.5 weeks</td>
+                                <td class="py-3">$9,000–$24,000 / engagement</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #F1F5F9">
+                                <td class="py-3 pr-3 font-bold" style="color:#92400E">Finance Banker</td>
+                                <td class="py-3 pr-3">Technical risk assessment</td>
+                                <td class="py-3 pr-3">~5 weeks</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~1.5 weeks</td>
+                                <td class="py-3">$10,000–$30,000 / deal</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 pr-3 font-bold" style="color:#9F1239">Regulator</td>
+                                <td class="py-3 pr-3">Licence compliance check</td>
+                                <td class="py-3 pr-3">~3 weeks</td>
+                                <td class="py-3 pr-3 font-bold" style="color:#10B981">~3 days</td>
+                                <td class="py-3">Added case capacity, no added headcount</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <div class="dv my-14"></div>
+
+            <!-- BOTTOM LINE -->
+            <section id="outcome" class="mb-10">
+                <h2 class="mb-6">The Bottom Line</h2>
+                <div class="rounded-xl p-6 md:p-8" style="background:#EFF6FF;border:1px solid #BFDBFE">
+                    <p class="leading-relaxed mb-4" style="color:#1E40AF">Across all six personas, the pattern is
+                        the same: TerraPulze does not replace expert judgment, it removes the weeks of manual
+                        reconciliation that used to sit in front of it. Every persona gets the same underlying
+                        evidence, formatted for the decision they actually have to make.</p>
+                    <p class="text-sm font-bold mono mb-6" style="color:#111827">Days → Hours &nbsp;|&nbsp; Ad-hoc → Standardized &nbsp;|&nbsp; Reactive → Continuous</p>
+                    <p class="leading-relaxed" style="color:#1E40AF">The compounding value sits in the shared
+                        evidence layer: a target validated by a field geologist strengthens the case an Exploration
+                        Manager makes to a CEO, which is the same evidence a Consultant checks, a Banker prices, and
+                        a Regulator approves — collected once, trusted everywhere it's reused.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="mt-20 py-10" style="background:#F4F6F8;border-top:1px solid #E5E7EB">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:#E8B84B"><span
+                        class="iconify text-[#111827] text-sm" data-icon="lucide:mountain"></span></div><span
+                    class="text-sm font-bold tracking-widest uppercase" style="color:#C48E1C">TerraPulze</span>
+            </div>
+            <p class="text-sm" style="color:#6B7280">Persona Business Value Proposition — Confidential</p>
+        </div>
+    </footer>
+</body>
+
+</html>

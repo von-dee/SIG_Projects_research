@@ -1,0 +1,216 @@
+# TerraPulse — Presentation Guide
+
+> Your cheat-sheet for tomorrow's presentation. Everything in simple language.
+
+---
+
+## Part 1: How Target Ranking Works (Step by Step)
+
+### The Big Picture
+
+We take the licence area, divide it into a grid of **10,000 squares** (100 × 100). Each square is called a **cell**. We score every cell from 0 to 100 for "how promising is this spot for gold", then pick the best few as drill targets.
+
+---
+
+### Step 1 — Score Each Cell on 5 Clues
+
+For every cell on the grid, we measure **5 things** (called "evidence layers"). Each clue gets a score between 0 and 1 (where 1 = very promising), and each clue has a **weight** that says how much we trust it.
+
+| # | Clue | Full Name / What It Means | Weight | Why This Weight? |
+|---|---|---|---:|---|
+| 1 | **Geochemistry** | Soil samples tested in a lab. Gold and arsenic leak into surrounding soil from a buried deposit. High readings = something was down there. | **30%** | Most direct sign a gold system existed |
+| 2 | **Structure** | Cracks, faults and shears underground — the "plumbing" that gold travels through. Detected as sharp edges in magnetic readings. | **25%** | Gold deposits sit on these structures |
+| 3 | **Magnetics** | How magnetic the ground is. Gold chemistry **destroys** magnetic minerals, so a magnetic **dip** (low reading) is actually a good sign. This is the only **inverted** clue — low = good. | **20%** | Indicates the right chemistry happened |
+| 4 | **Rock Type (Lithology)** | Some rocks host gold well, others don't. Ancient volcanic rock = high score. Loose surface soil/gravel = low score. | **15%** | Gold only forms in certain rock types |
+| 5 | **Nearby Known Deposits** | Gold clusters together. Being near a known mine means the wider geology is right. | **10%** | Lowest weight because it partly measures where people already looked, not where gold actually is |
+
+**The calculation:** Multiply each clue by its weight → add them up → multiply by 100 = the cell's score out of 100.
+
+> **Example:** A cell scoring 0.9 on geochemistry and 0.8 on structure gets:
+> (0.9 × 0.30) + (0.8 × 0.25) + ... = weighted sum → × 100 = score
+
+> [!IMPORTANT]
+> **If a project is missing a clue** (e.g. no geochemistry data), the weights automatically re-adjust so the remaining clues still add up to 100%. The project isn't penalised — it just scores on whatever evidence it has.
+
+---
+
+### Step 2 — Make the Score Explainable (SHAP)
+
+The scores from Step 1 are fed into a tool called **XGBoost** (a standard machine-learning tool), which learns to copy our own arithmetic. It doesn't discover anything new.
+
+Then a technique called **SHAP** (SHapley Additive exPlanations — a method that breaks down a score into contributions) answers: *"Of this cell's score of 84, how much came from geochemistry? How much from structure?"*
+
+This is how a geologist can see **why** a spot ranked highly — not just trust a number.
+
+> [!NOTE]
+> The machine learning exists purely to make our own reasoning inspectable. It contributes no geology of its own.
+
+---
+
+### Step 3 — Rule Out No-Go Ground (Protected Areas)
+
+Any cell inside a **national park or protected reserve** is **forced to zero**. Not reduced — **zeroed**.
+
+A protected area is a legal fact, not a geological opinion. No amount of promising geology is allowed to outvote it.
+
+---
+
+### Step 4 — Turn 10,000 Cells Into a Shortlist
+
+Three sub-steps produce the final target list:
+
+#### 4a. Filter
+A cell qualifies only if it meets **BOTH** conditions:
+- It's in the **top 10%** of all cells
+- It scores at least **60 out of 100**
+
+> [!IMPORTANT]
+> If nothing clears the bar, the system returns **no targets at all**. A weak project gets an honest "nothing here" rather than five mediocre suggestions presented as good ones.
+
+#### 4b. Group (Cluster)
+One real deposit makes a whole patch of neighbouring cells look good. Listing the top 5 cells individually would often mean listing 5 cells sitting on the **same** anomaly — one target reported 5 times.
+
+So neighbouring high-scoring cells are grouped into clusters using **HDBSCAN** (Hierarchical Density-Based Spatial Clustering of Applications with Noise — a method that finds natural groupings of different sizes). Each cluster becomes one target.
+
+#### 4c. Rank
+Each cluster gets:
+- A **location** (pulled toward its strongest cells, not just the geographic middle)
+- A **score** (its single best cell's score)
+- A **mean score** (average across all cells in the cluster)
+- A **cell count** (how many cells it covers)
+- A **depth estimate** (how far down the source might be, from magnetic data using Euler deconvolution)
+
+Clusters are **sorted by their best cell's score**. The **top 5** become the ranked drill targets.
+
+---
+
+### Summary Flow
+
+```
+User's survey data + Public data
+        ↓
+Grid the licence area (100×100 cells)
+        ↓
+Score each cell on 5 clues (weighted sum → 0-100)
+        ↓
+Feed to XGBoost → SHAP breaks down "why"
+        ↓
+Zero out protected areas
+        ↓
+Filter: top 10% AND ≥60 score
+        ↓
+Cluster with HDBSCAN (group neighbouring cells)
+        ↓
+Rank clusters by peak score → Top 5 = Drill Targets
+```
+
+---
+
+## Part 2: Data Sources — What, Why, and Where From
+
+### At a Glance
+
+| # | Data Source | What It Gives Us | How We Get It | Role |
+|---|---|---|---|---|
+| 1 | **User's Survey Data** (magnetics) | Magnetic field measurements from the ground | 📁 **File upload** (XYZ/CSV/GRD/DAT/TIF, drag-and-drop) | Primary anomaly evidence — feeds the "magnetics" and "structure" scoring clues |
+| 2 | **User's Geochemistry Data** | Soil sample lab results (gold, arsenic, etc.) | 📁 **File upload** (CSV) | Feeds the "geochemistry" scoring clue (the most heavily weighted) |
+| 3 | **User's Assay Certificates** | Lab certificates confirming mineral grades | 📁 **File upload** (PDF) | Linked to spatial sample points — supports geochemistry |
+| 4 | **Sentinel-2** (ESA satellite imagery) | Iron oxide, clay/hydroxyl, and vegetation indices | 🌐 **API** — Microsoft Planetary Computer STAC API | Alteration signature — feeds the lithology/alteration scoring |
+| 5 | **Copernicus DEM GLO-30** (Digital Elevation Model) | Slope, hillshade, terrain | 🌐 **API** — Microsoft Planetary Computer STAC API | Terrain context and access (display layer, not scored) |
+| 6 | **NOAA EMAG2v3** (Earth Magnetic Anomaly Grid) | Regional magnetic anomaly | 🌐 **API** — Remote COG (Cloud-Optimised GeoTIFF) file read via GDAL | Regional structural context (display layer, not primary scoring evidence — too coarse at ~2 arc-minute resolution) |
+| 7 | **Macrostrat** | Rock types (lithology), geological age, structural units | 🌐 **API** — Macrostrat REST API (`macrostrat.org/api/v2/geologic_units/map`) | Feeds the "rock type" scoring clue — classifies rocks by gold-hosting favourability |
+| 8 | **OneGeology / BRGM** (Bureau de Recherches Géologiques et Minières) | Geological map images | 🌐 **API** — WMS (Web Map Service) proxy to OneGeology/BRGM servers | Visual interpretation backdrop on the map (not scored) |
+| 9 | **USGS MRDS** (United States Geological Survey — Mineral Resources Data System) | Known mineral deposits and occurrences | 📁 **Seeded file** — A curated seed of 14 real West African gold deposits is hardcoded in the codebase. Full MRDS load is planned. | Feeds the "nearby known deposits" scoring clue + verifies deposit names in generated reports |
+| 10 | **WDPA** (World Database on Protected Areas) / Ghana Protected Areas | National parks, reserves, conservation boundaries | 📁 **Bundled GeoJSON file** — OSM-derived (OpenStreetMap), Ghana-clipped, shipped with the source code | Hard exclusion — cells inside protected areas are zeroed (not scored, vetoed) |
+| 11 | **OpenStreetMap (OSM)** — Roads | Road network, highway classifications | 📁 **Bundled GeoJSON file** — OSM-derived Ghana road network, shipped with the source code | Access and logistics context (display layer) |
+
+---
+
+### Detailed Breakdown by Delivery Method
+
+#### 📁 File Upload (User provides)
+
+| Source | File Format | What Happens After Upload |
+|---|---|---|
+| Magnetics survey | XYZ, CSV, GRD, DAT, TIF (up to 500 MB) | Validated, checksummed, parsed, reprojected, kriged to a regular 50m grid, reduced to pole, depth estimated, written as a COG (Cloud-Optimised GeoTIFF) |
+| Geochemistry | CSV | Column auto-detection, unit handling, deduplication, percentile thresholds (85th/95th/99th) computed per element from the project's own sample population |
+| Assay certificates | PDF | Sample IDs and assay tables extracted, linked to spatial sample points by ID match |
+
+#### 🌐 API (Platform fetches automatically to the licence boundary)
+
+| Source | API / Protocol | Endpoint |
+|---|---|---|
+| Sentinel-2 L2A | STAC API (SpatioTemporal Asset Catalog) | `https://planetarycomputer.microsoft.com/api/stac/v1` — collection `sentinel-2-l2a` |
+| Copernicus DEM GLO-30 | STAC API | `https://planetarycomputer.microsoft.com/api/stac/v1` — collection `cop-dem-glo-30` |
+| NOAA EMAG2v3 | COG remote read via GDAL/rasterio | Configured URL in settings (`emag2_cog_url`) |
+| Macrostrat geology | REST API (HTTP GET, JSON response) | `https://macrostrat.org/api/v2/geologic_units/map?lat=...&lng=...` |
+| OneGeology / BRGM geology maps | WMS (Web Map Service) 1.1.1 `GetMap` | Configured URL in settings (`geology_wms_url`), proxied through our backend to fix CORS |
+
+#### 📁 Bundled Files (Shipped with the application)
+
+| Source | File | Location in Codebase |
+|---|---|---|
+| Ghana Protected Areas | `ghana_protected_areas.geojson` (OSM-derived, real boundaries) | `backend/app/data/ghana_protected_areas.geojson` |
+| Ghana Road Network | `ghana_roads.geojson` (OSM-derived, major roads) | `backend/app/data/ghana_roads.geojson` |
+| Known Gold Deposits | Hardcoded seed (14 real West African deposits: Obuasi, Tarkwa, Damang, etc.) | `backend/app/services/mineral_sites_service.py` — `SeedSource` class |
+
+---
+
+### Why These Sources?
+
+Every source had to clear **4 bars**:
+
+1. **Global coverage** — works anywhere, not just one country
+2. **Commercial licence** — legally usable in a commercial product
+3. **Stable programmatic access** — can be fetched automatically by code
+4. **Appropriate resolution** — detailed enough for the decision it informs
+
+> [!TIP]
+> **The deliberate design:** Public data is used for *context and weighting*; the user's own survey data is the *primary anomaly evidence*. Regional magnetics at 2 arc-minutes cannot define a drill target and is never asked to. This is why the platform is useful on day one but gets materially better once a customer uploads their own ground or airborne survey.
+
+---
+
+## Abbreviations / Glossary
+
+| Abbreviation | Full Form |
+|---|---|
+| **AOI** | Area of Interest (the licence boundary polygon) |
+| **BRGM** | Bureau de Recherches Géologiques et Minières (French geological survey) |
+| **COG** | Cloud-Optimised GeoTIFF (a raster image format optimised for streaming) |
+| **CORS** | Cross-Origin Resource Sharing (a browser security mechanism) |
+| **CSV** | Comma-Separated Values |
+| **DEM** | Digital Elevation Model |
+| **EMAG2** | Earth Magnetic Anomaly Grid version 2 |
+| **ESA** | European Space Agency |
+| **GDAL** | Geospatial Data Abstraction Library |
+| **GIS** | Geographic Information System |
+| **GeoJSON** | A format for encoding geographic data structures in JSON |
+| **HDBSCAN** | Hierarchical Density-Based Spatial Clustering of Applications with Noise |
+| **IUCN** | International Union for Conservation of Nature |
+| **JORC** | Joint Ore Reserves Committee (Australian reporting code for mining) |
+| **KML** | Keyhole Markup Language (Google Earth format) |
+| **L2A** | Level-2A (atmospherically corrected satellite imagery) |
+| **MGRS** | Military Grid Reference System (how Sentinel-2 tiles are named) |
+| **MRDS** | Mineral Resources Data System (USGS database of known deposits) |
+| **NDVI** | Normalised Difference Vegetation Index |
+| **NI 43-101** | National Instrument 43-101 (Canadian mining disclosure standard) |
+| **NOAA** | National Oceanic and Atmospheric Administration |
+| **nT** | nanoTesla (unit of magnetic field strength) |
+| **OSM** | OpenStreetMap |
+| **PDF** | Portable Document Format |
+| **QP** | Qualified Person (under NI 43-101 or JORC reporting standards) |
+| **REST** | Representational State Transfer (a type of web API) |
+| **RLS** | Row-Level Security (database access control) |
+| **RTP** | Reduction To Pole (a magnetic data processing step) |
+| **SHAP** | SHapley Additive exPlanations (a method to explain individual predictions) |
+| **STAC** | SpatioTemporal Asset Catalog (a standard for describing geospatial data) |
+| **SWIR** | Short-Wave Infrared (satellite bands used for mineral detection) |
+| **TIF/TIFF** | Tagged Image File Format |
+| **TMI** | Total Magnetic Intensity |
+| **USGS** | United States Geological Survey |
+| **UTM** | Universal Transverse Mercator (a coordinate system) |
+| **WDPA** | World Database on Protected Areas |
+| **WGS84** | World Geodetic System 1984 (the standard GPS coordinate system) |
+| **WMS** | Web Map Service (an OGC standard for serving map images) |
+| **XGBoost** | eXtreme Gradient Boosting (a machine-learning algorithm) |
+| **XYZ** | A point-data format: X (longitude), Y (latitude), Z (measurement value) |

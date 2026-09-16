@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MINEASK Persona Workflow Analysis</title>
+<style>
+  :root {
+    --primary: #162235;
+    --primary-light: #1B6B7A;
+    --accent: #37DCF2;
+    --accent-warm: #92761f;
+    --text: #1a1a1a;
+    --text-muted: #5B6B7D;
+    --bg: #ffffff;
+    --surface: #f8f9fa;
+    --border: #dee2e6;
+    --header-bg: #1B6B7A;
+    --header-text: #ffffff;
+    --row-alt: #f0f4f5;
+    --verdict-fixed-color: #1A6B3A;
+    --verdict-fixed-bg: #E8F5E9;
+    --verdict-partly-color: #8B6914;
+    --verdict-partly-bg: #FFF8E1;
+    --verdict-not-color: #8B3A3A;
+    --verdict-not-bg: #FFEBEE;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.65;
+  }
+
+  /* ── Cover ── */
+  .cover {
+    background: var(--primary);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    left: 60px;
+    top: 10%;
+    bottom: 10%;
+    width: 4px;
+    background: var(--accent);
+  }
+  .cover-inner {
+    max-width: 720px;
+    margin-left: 40px;
+  }
+  .cover-label {
+    font-size: 13px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+  .cover-title {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .cover-subtitle {
+    font-size: 18px;
+    color: #B0B8C0;
+    margin-bottom: 40px;
+    line-height: 1.6;
+  }
+  .cover-meta {
+    font-size: 14px;
+    color: #90989F;
+  }
+  .cover-meta span { display: block; margin-bottom: 4px; }
+  .cover-footer {
+    position: absolute;
+    bottom: 30px;
+    left: 60px;
+    right: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #687078;
+  }
+
+  /* ── Body Container ── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 50px 30px 80px;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 30px 40px;
+    margin-bottom: 50px;
+  }
+  .toc h2 {
+    font-size: 20px;
+    color: var(--primary);
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .toc ul { list-style: none; }
+  .toc li { margin-bottom: 8px; }
+  .toc a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .toc a:hover { color: var(--primary-light); }
+  .toc .toc-h2 { padding-left: 24px; }
+  .toc .toc-h2 a { color: var(--text-muted); font-size: 13px; }
+
+  /* ── Headings ── */
+  h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 50px 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--primary-light);
+  }
+  h1:first-of-type { margin-top: 0; }
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 30px 0 12px;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: 20px 0 8px;
+  }
+
+  /* ── Body text ── */
+  p {
+    margin-bottom: 12px;
+    text-align: justify;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+  }
+
+  /* ── Tables ── */
+  .table-wrapper {
+    overflow-x: auto;
+    margin: 20px 0;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    background: var(--header-bg);
+    color: var(--header-text);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+    white-space: nowrap;
+  }
+  thead th:first-child { border-radius: 6px 0 0 0; text-align: center; }
+  thead th:last-child { border-radius: 0 6px 0 0; text-align: center; }
+  tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:last-child td:first-child { border-radius: 0 0 0 6px; }
+  tbody tr:last-child td:last-child { border-radius: 0 0 6px 0; }
+  td.step { text-align: center; font-weight: 600; width: 50px; }
+  td.verdict {
+    text-align: center;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .verdict-fixed { color: var(--verdict-fixed-color); background: var(--verdict-fixed-bg); }
+  .verdict-partly { color: var(--verdict-partly-color); background: var(--verdict-partly-bg); }
+  .verdict-not { color: var(--verdict-not-color); background: var(--verdict-not-bg); }
+
+  /* ── Table caption ── */
+  .table-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin: 8px 0 20px;
+  }
+
+  /* ── Summary table center alignment ── */
+  .summary-table td:not(:first-child) { text-align: center; }
+  .summary-table thead th:not(:first-child) { text-align: center; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .cover { padding: 40px 20px; }
+    .cover::before { left: 20px; }
+    .cover-inner { margin-left: 20px; }
+    .cover-title { font-size: 28px; }
+    .container { padding: 30px 16px 60px; }
+    h1 { font-size: 22px; }
+    table { font-size: 11px; }
+    thead th, tbody td { padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Cover ── -->
+<div class="cover">
+  <div class="cover-inner">
+    <div class="cover-label">MINEASK Platform</div>
+    <h1 class="cover-title">Persona Workflow<br>Analysis</h1>
+    <p class="cover-subtitle">Step-by-step evaluation of how the MINEASK platform addresses the daily workflows of six key mining sector personas, mapping each task against current system capabilities.</p>
+    <div class="cover-meta">
+      <span>Documentation Reference</span>
+      <span>August 2026</span>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <span>MINEASK</span>
+    <span>Confidential</span>
+  </div>
+</div>
+
+<!-- ── Body ── -->
+<div class="container">
+
+  <!-- TOC -->
+  <nav class="toc">
+    <h2>Table of Contents</h2>
+    <ul>
+      <li><a href="#exec-summary">Executive Summary</a></li>
+      <li><a href="#methodology">Methodology and Scope</a></li>
+      <li><a href="#consultant">1. Consultant</a></li>
+      <li><a href="#esg">2. ESG and Compliance Manager</a></li>
+      <li><a href="#analyst">3. Investment Analyst</a></li>
+      <li><a href="#legal">4. Legal and Compliance Manager</a></li>
+      <li><a href="#operations">5. Mine Operations Manager</a></li>
+      <li><a href="#risk">6. Risk and Security Manager</a></li>
+      <li><a href="#summary">Cross-Persona Coverage Summary</a></li>
+      <li><a href="#patterns">Key Patterns and Strategic Implications</a></li>
+    </ul>
+  </nav>
+
+  <!-- Executive Summary -->
+  <h1 id="exec-summary">Executive Summary</h1>
+  <p>This document provides a step-by-step evaluation of how the MINEASK platform addresses the daily workflows of six key personas in the mining and minerals value chain. Each persona's real job tasks are mapped against what MINEASK currently does, with a clear verdict per step indicating whether the problem is fixed, partly addressed, or not yet solved.</p>
+  <p>The six personas covered are: Consultant, ESG and Compliance Manager, Investment Analyst, Legal and Compliance Manager, Mine Operations Manager, and Risk and Security Manager. Together, these roles represent the full spectrum of pre-investment due diligence, ongoing compliance, operational monitoring, and risk management activities that mining sector professionals perform.</p>
+  <p>Across all six personas, a consistent pattern emerges: query-and-assess workflows are well-solved today, while continuous monitoring capabilities are roadmapped for future phases. The Consultant persona, which the system was originally designed around, achieves the highest coverage at 8 of 10 steps fully fixed. The Legal and Compliance Manager and Mine Operations Manager follow closely, with 7 and 7 of their core steps addressed respectively.</p>
+  <p>This analysis is intended to serve as documentation-ready reference material for internal product teams, prospective clients evaluating MINEASK, investors assessing product-market fit, and any stakeholder who needs to understand where the platform delivers value today and where the development roadmap is headed.</p>
+
+  <!-- Methodology -->
+  <h1 id="methodology">Methodology and Scope</h1>
+  <p>Each persona analysis follows the same structured methodology. First, the core job of the persona is defined in a single sentence that captures the essence of their role. Then, each discrete step of their actual daily workflow is listed in sequence, alongside what MINEASK does to address that step. Every step receives a verdict: <strong>Fixed</strong> (the problem is solved today), <strong>Partly</strong> (partial capability exists), or <strong>Not Yet / Not Fixed</strong> (the capability is on the roadmap or outside the product's scope by design).</p>
+  <p>The data sources feeding each verdict include the MINEASK product's current agent architecture (Cadaster, EITI, Sentinel, Voxel, Eco, Logistics, and Valua agents), the rules engine based on Ghana's Minerals and Mining Act 703, satellite imagery and geospatial data integrations, and the planned feature roadmap across Phase 2 and Phase 3 development milestones. The assessment reflects the system's capabilities as of the current release.</p>
+  <p>It is important to note that MINEASK is designed as an intelligence and assessment platform, not a control-room or real-time dispatch system. Capabilities that require live operational control, such as equipment dispatch or 24/7 alerting, are explicitly marked as outside the current product scope, though the Ground Watch feature planned for Phase 3 will move the platform closer to continuous monitoring.</p>
+
+  <!-- 1. Consultant -->
+  <h1 id="consultant">1. Consultant</h1>
+  <h2>Core Job</h2>
+  <p>Turn a client's question about whether a site is worth investing in into a verified, defensible report before capital or field teams are committed.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Client hands over a location or concession ID</td><td>User drops a pin or selects a concession in the workspace</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Spend a week pulling public records by hand: Minerals Commission, EITI, road maps, protected-area shapefiles, conflict databases</td><td>Orchestrator runs all agents in parallel; full dossier in approximately 47 seconds</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Verify who actually holds the title and whether they paid royalties</td><td>Cadaster + EITI join: holder of record, payment history 2004-2023, gap years flagged</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Map the licensing path (Recon &gt; Prospecting &gt; Mining Lease &gt; permits)</td><td>Rules engine: exact Act 703 ladder, agencies, timelines, hard stops</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Check whether ore can actually move (roads, port, processing)</td><td>Logistics agent: road km, port distance, nearby plants</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">6</td><td>Figure out whose land it is and who to pay or engage</td><td>Land &amp; Community Brief: stool land, District Assembly, L.I. 2175 compensation framework</td><td class="verdict verdict-fixed">Fixed (v1)</td></tr>
+        <tr><td class="step">7</td><td>Assess galamsey and security exposure</td><td>Voxel NDVI change detection + Sentinel incidents and ASM data</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">8</td><td>Build a field-visit plan and checklist</td><td>Section 8 Handoff Pack: verified-from-data versus must-verify checklist</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">9</td><td>Assemble the client report</td><td>Dossier renderer; white-label PDF export planned</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">10</td><td>Correct local data they know is wrong (stool names, boundaries)</td><td>In-product confirm and correct loop</td><td class="verdict verdict-not">Not yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 1: 1. Consultant - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>This is the persona the system was built around. Steps 1 through 8 are fully solved today, transforming what was previously a week of manual record-pulling into an afternoon of structured analysis. The remaining gaps are PDF export (Phase 3) and the data-correction flywheel (Phase 2), which will further strengthen the feedback loop between field intelligence and the platform.</p>
+
+  <!-- 2. ESG & Compliance Manager -->
+  <h1 id="esg">2. ESG and Compliance Manager</h1>
+  <h2>Core Job</h2>
+  <p>Screen sites for environmental and social risk, stay compliant with permits, and report against established ESG frameworks.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Request a site or draw an impact area</td><td>Eco agent input: select mine or draw impact area on the map</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Check protected-area proximity</td><td>WDPA buffer layer + EPA refusal-risk trigger in roadmap</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Assess water stress and downstream risk</td><td>WRI Aqueduct zones + watershed + contaminated-basin flags</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Track deforestation and vegetation loss</td><td>Global Forest Watch data points + NDVI anomaly detection</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Check tailings proximity and legacy liabilities</td><td>Tailings-proximity samples + satellite change detection</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">6</td><td>Understand community relations risk</td><td>Sentinel incident data + community brief from Land agent</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">7</td><td>Structure reporting against GRI, SASB, Equator Principles, or EPA standards</td><td>Persona picks framework; dossier is framed accordingly</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">8</td><td>Track permit conditions (EIA, bond, buffer rules)</td><td>Roadmap steps include EIA, bond, WRC scrutiny triggers</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">9</td><td>Continuously monitor sites for environmental deterioration</td><td>Ground Watch scheduled re-runs for temporal monitoring</td><td class="verdict verdict-not">Not yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 2: 2. ESG & Compliance Manager - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>Screening capability (steps 2 through 6) is strongly solved today, covering protected areas, water stress, deforestation, tailings, and community risk in a single query. The unsolved half of this persona's job is automated framework reporting (step 7) and continuous environmental monitoring (step 9), both of which are on the development roadmap.</p>
+
+  <!-- 3. Investment Analyst -->
+  <h1 id="analyst">3. Investment Analyst</h1>
+  <h2>Core Job</h2>
+  <p>Decide whether an asset is worth investing in by screening fast, understanding risks that could kill the deal, and making a defensible recommendation.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Identify a target (often from a screener like MineSentinel)</td><td>Pin the site in the workspace</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Verify title and who owns it</td><td>Cadaster: holder, boundary, disputes</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Find legal showstoppers</td><td>Roadmap hard stops: unratified lease = void, WDPA = refusal risk</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Check commodity price backdrop</td><td>Valua: current prices, 60-month trend data</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Understand what could break the economics (logistics, water, power)</td><td>Dossier surfaces infrastructure gaps and ESG risk drivers</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">6</td><td>Compare against peer projects</td><td>Valua peer benchmark data</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">7</td><td>Form a Go or No-Go recommendation</td><td>Persona prompt + confidence score</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">8</td><td>Monitor the asset after investment</td><td>Ground Watch</td><td class="verdict verdict-not">Not yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 3: 3. Investment Analyst - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>MINEASK fixes the risk-discovery half of the job (steps 2 through 6) with verifiable data, which is exactly the part that makes valuation defensible. The system deliberately does not attempt cross-country screening, as that is the domain of upstream tools. The qualitative assessment of economic breakers (step 5) and the go/no-go confidence score (step 7) are partial solutions that supplement, rather than replace, financial modeling.</p>
+
+  <!-- 4. Legal & Compliance Manager -->
+  <h1 id="legal">4. Legal and Compliance Manager</h1>
+  <h2>Core Job</h2>
+  <p>Verify that rights are real and valid, keep clients out of regulatory traps, and produce auditable legal opinions.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Confirm title and license validity</td><td>Cadaster: holder of record, concession type</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Check for overlapping claims and disputes</td><td>Cadaster: adjacent concessions, dispute markers</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Verify boundaries against the physical ground</td><td>Voxel: boundary overlaid on high-resolution satellite imagery</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Check license expiry and renewal position</td><td>Cadaster: status + expiring within 12 months query</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Look for fiscal red flags on the operator</td><td>EITI payment history with gap-year analysis</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">6</td><td>Advise on the licensing gauntlet</td><td>Versioned rules engine that is verifiable, not LLM-synthesized</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">7</td><td>Check encumbrances, charges, and renewal status</td><td>Not in public data; flagged as must verify at Lands Registry</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">8</td><td>Keep an audit trail of the work</td><td>Admin audit log + per-fact lineage and confidence scores</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">9</td><td>Validate the regulatory content themselves</td><td>Rulebook is YAML, reviewable and redlineable by counsel</td><td class="verdict verdict-fixed">Fixed</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 4: 4. Legal and Compliance Manager - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>The strongest persona fit after the Consultant. Steps 1 through 6 and step 9 are fully solved. The system is engineered around the one thing lawyers distrust most about AI, which is LLM guesswork, by making the regulatory rulebook deterministic, versioned, and reviewable. Encumbrances (step 7) and formal legal evidence packs (step 8) are handled honestly as checklist items rather than fabricated certainty.</p>
+
+  <!-- 5. Mine Operations Manager -->
+  <h1 id="operations">5. Mine Operations Manager</h1>
+  <h2>Core Job</h2>
+  <p>Keep the site running by monitoring equipment, stockpiles, haulage, and terrain, and catch problems early before they escalate.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Check equipment fleet status</td><td>Telemetry: equipment assets + activity nodes</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Monitor haul cycles and productivity</td><td>Telemetry: haul corridor data, average cycle time</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Track stockpile volumes</td><td>Telemetry: stockpile layer + volume estimation</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Detect shadow or unauthorized activity</td><td>Shadow Activity Index from satellite and sensor data</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Watch terrain stability and slope change</td><td>Voxel: change detection, NDVI anomaly alerts</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">6</td><td>Protect haul routes from security risk</td><td>Sentinel: corridor risk scoring, incidents near routes</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">7</td><td>Monitor ASM encroachment at the boundary</td><td>Sentinel: ASM encroachment layer with SAR data</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">8</td><td>Real-time operations visibility and dispatch</td><td>Not built; MINEASK is intelligence, not a control room</td><td class="verdict verdict-not">Not fixed</td></tr>
+        <tr><td class="step">9</td><td>Continuous automated monitoring</td><td>Ground Watch scheduled runs</td><td class="verdict verdict-not">Not yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 5: 5. Mine Operations Manager - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>MINEASK fixes periodic site intelligence (steps 1 through 7), answering the question of what is happening and whether anything is off. It does not fix live operations control (step 8), as the platform is designed for intelligence and assessment rather than real-time dispatch. The recurring monitoring path through WorkflowBuilder and Ground Watch is where sustained operational value will emerge as the product matures.</p>
+
+  <!-- 6. Risk & Security Manager -->
+  <h1 id="risk">6. Risk and Security Manager</h1>
+  <h2>Core Job</h2>
+  <p>Understand and communicate threat exposure including incidents, illegal mining, transport corridors, and political risk so operations and leadership can act.</p>
+  <h2>Step-by-Step Workflow Analysis</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead><tr><th>Step</th><th>What They Do Today</th><th>What MINEASK Does</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td class="step">1</td><td>Set a monitoring radius and threat threshold</td><td>Persona fields: 10 km, 50 km, or 100 km; low, medium, or high</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">2</td><td>Track incidents near each site</td><td>Sentinel: ACLED + GDELT incident feeds</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">3</td><td>Assess ASM encroachment</td><td>Sentinel: SAR-based encroachment detection + national context</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">4</td><td>Score transport corridor risk</td><td>Sentinel: risk corridor analysis (e.g., Takoradi to Kumasi)</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">5</td><td>Map political and unrest hotspots</td><td>Sentinel: unrest hotspots, regional political risk score</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">6</td><td>Identify which concessions sit in high-risk zones</td><td>Risk overlays + cadastral intersection analysis</td><td class="verdict verdict-fixed">Fixed</td></tr>
+        <tr><td class="step">7</td><td>Early-warning of emerging conflict</td><td>GDELT event data + NDVI environmental proxies</td><td class="verdict verdict-partly">Partly</td></tr>
+        <tr><td class="step">8</td><td>Live alerting and 24-7 monitoring</td><td>Ground Watch</td><td class="verdict verdict-not">Not yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 6: 6. Risk and Security Manager - Workflow Step Comparison</p>
+  <h2>Assessment</h2>
+  <p>Exposure assessment and threat mapping (steps 2 through 6) are well-solved, and the vocabulary of the platform matches this persona exactly. The system does not yet fix live alerting (step 8), so the documentation should frame the current capability as periodic risk assessment rather than security operations. Early-warning inference (step 7) uses proxy signals rather than a dedicated predictive model.</p>
+
+  <!-- Cross-Persona Summary -->
+  <h1 id="summary">Cross-Persona Coverage Summary</h1>
+  <p>The following table provides a consolidated view of how MINEASK covers each persona's workflow. The Fully Fixed column indicates the number of steps that are completely solved today, while Partly Fixed and Not Fixed columns identify the specific gaps. This summary is designed to serve as a quick-reference cheat-sheet for product planning, client conversations, and investor communications.</p>
+  <div class="table-wrapper">
+    <table class="summary-table">
+      <thead><tr><th>Persona</th><th>Fully Fixed</th><th>Partly Fixed</th><th>Not Fixed</th></tr></thead>
+      <tbody>
+        <tr><td>Consultant</td><td>8 of 10</td><td>1</td><td>1</td></tr>
+        <tr><td>ESG &amp; Compliance Manager</td><td>6 of 9</td><td>1</td><td>2</td></tr>
+        <tr><td>Investment Analyst</td><td>5 of 8</td><td>2</td><td>1</td></tr>
+        <tr><td>Legal &amp; Compliance Manager</td><td>7 of 9</td><td>2</td><td>0</td></tr>
+        <tr><td>Mine Operations Manager</td><td>7 of 9</td><td>0</td><td>2</td></tr>
+        <tr><td>Risk &amp; Security Manager</td><td>6 of 8</td><td>1</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-caption">Table 7: Persona Coverage Summary</p>
+
+  <!-- Key Patterns -->
+  <h1 id="patterns">Key Patterns and Strategic Implications</h1>
+  <p>Several patterns emerge from this analysis that are relevant for product strategy, client positioning, and investor communications. Understanding these patterns helps clarify where MINEASK creates the most value today and where future development investment will yield the highest returns.</p>
+
+  <h2>Query-and-Assess Is Solved</h2>
+  <p>The most consistent finding across all six personas is that MINEASK fully solves the query-and-assess portion of their workflows. Whether the user is a consultant verifying a concession title, a lawyer checking for overlapping claims, or a risk manager mapping threat corridors, the platform can retrieve, join, and present the relevant data in seconds rather than the hours or days these tasks typically require. This is the core value proposition of the system and the capability around which the entire agent architecture was designed.</p>
+
+  <h2>Continuous Monitoring Is the Universal Roadmap Item</h2>
+  <p>Every persona that requires ongoing vigilance, whether environmental monitoring for the ESG manager, asset monitoring for the investment analyst, or threat monitoring for the security manager, has continuous monitoring flagged as a gap. The Ground Watch feature, which enables scheduled re-runs of spatial and data queries, is the planned solution for this across all personas. This represents the single highest-impact development investment, as it transforms MINEASK from a point-in-time tool into a persistent intelligence platform.</p>
+
+  <h2>Export and Reporting Needs Vary by Persona</h2>
+  <p>The Consultant needs white-label PDF reports for clients. The ESG Manager needs framework-structured outputs for GRI or SASB reporting. The Legal Manager needs auditable evidence packs. Each of these export requirements is currently partly addressed or roadmapped, suggesting that a flexible export and reporting engine should be a priority in Phase 3 development. The dossier renderer exists today, but the specific formatting, branding, and structural requirements of each persona's output need dedicated attention.</p>
+
+  <h2>The System Is Honest About Its Boundaries</h2>
+  <p>A notable design philosophy visible in the workflow analysis is that MINEASK explicitly flags data it cannot verify rather than guessing. Encumbrances that require Lands Registry checks, local stool names that need field confirmation, and operational capabilities that belong in a control room are all marked as checklist items or flagged as outside scope. This transparency is particularly important for the Legal and Compliance persona, where fabricated certainty would be actively harmful. The YAML-based rules engine reinforces this by making regulatory logic inspectable and reviewable by counsel.</p>
+
+</div>
+</body>
+</html>

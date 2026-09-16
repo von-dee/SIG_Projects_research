@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineSentinel — Customer Success Stories</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1512;
+    --surface:#121b17;
+    --surface-2:#182420;
+    --line: rgba(233,237,229,0.09);
+    --line-strong: rgba(233,237,229,0.16);
+    --paper:#e9ede5;
+    --paper-dim:#a6b3aa;
+    --paper-dimmer:#6f7d74;
+    --malachite:#37b07c;
+    --malachite-dim:rgba(55,176,124,0.14);
+    --ochre:#d99a3c;
+    --ochre-dim:rgba(217,154,60,0.14);
+    --copper:#c06b42;
+    --copper-dim:rgba(192,107,66,0.14);
+    --radius:10px;
+    --disp: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 85% -10%, rgba(55,176,124,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at -5% 110%, rgba(217,154,60,0.08), transparent 60%),
+      var(--ink);
+    color:var(--paper);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{ background:var(--malachite); color:#06110c; }
+
+  .shell{ display:flex; min-height:100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .rail{
+    width:288px; flex:none;
+    border-right:1px solid var(--line);
+    padding:28px 16px 28px 24px;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .brand{ margin-bottom:24px; }
+  .brand .mark{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--malachite);
+  }
+  .brand .mark::before{
+    content:""; width:7px; height:7px; border-radius:50%;
+    background:var(--malachite); box-shadow:0 0 0 3px var(--malachite-dim);
+  }
+  .brand h1{
+    font-family:var(--disp); font-weight:600; font-size:19px; margin:10px 0 4px;
+    letter-spacing:-.01em;
+  }
+  .brand p{ margin:0; font-size:12.5px; color:var(--paper-dimmer); line-height:1.5; }
+
+  .railnav{ display:flex; flex-direction:column; gap:3px; margin-top:20px; }
+  .railnav-label{
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--paper-dimmer); padding:0 10px 8px;
+  }
+  .tab-btn{
+    display:flex; align-items:center; gap:11px;
+    background:none; border:none; cursor:pointer;
+    text-align:left; color:var(--paper-dim);
+    padding:9px 10px; border-radius:8px;
+    border-left:2px solid transparent;
+    font-family:var(--body);
+    transition:background .15s ease, color .15s ease;
+    width:100%;
+  }
+  .tab-btn:hover{ background:var(--surface); color:var(--paper); }
+  .tab-btn.active{
+    background:var(--surface-2); color:var(--paper);
+    border-left:2px solid var(--malachite);
+  }
+  .tab-btn .avatar{
+    flex:none; width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--disp); font-weight:600; font-size:11.5px;
+    background:var(--surface); border:1px solid var(--line-strong); color:var(--malachite);
+  }
+  .tab-btn.active .avatar{ background:var(--malachite-dim); border-color:var(--malachite); }
+  .tab-btn .avatar svg{ width:15px; height:15px; }
+  .tab-btn .tmeta{ min-width:0; }
+  .tab-btn .tname{ font-size:12.5px; line-height:1.35; color:var(--paper); }
+  .tab-btn .trole{ font-size:10.5px; line-height:1.3; color:var(--paper-dimmer); margin-top:2px; }
+
+  .mobile-strip{ display:none; }
+
+  /* ---------- Main ---------- */
+  main{ flex:1; min-width:0; padding:44px 52px 96px; max-width:980px; }
+  .story{ display:none; animation:fade .35s ease; }
+  .story.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  /* ---- hero ---- */
+  .s-hero{ display:flex; gap:18px; align-items:center; margin-bottom:8px; }
+  .s-avatar{
+    flex:none; width:64px; height:64px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--disp); font-weight:700; font-size:22px;
+    background:var(--malachite-dim); border:1px solid var(--malachite); color:var(--malachite);
+  }
+  .s-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--paper-dimmer);
+    text-transform:uppercase; margin-bottom:4px;
+  }
+  .s-eyebrow .code-big{ color:var(--malachite); font-weight:600; }
+  .s-name{ font-family:var(--disp); font-weight:600; font-size:26px; letter-spacing:-.01em; margin:0; line-height:1.15; }
+  .s-role{ font-size:13.5px; color:var(--paper-dim); margin:3px 0 0; }
+  .s-role b{ color:var(--paper); font-weight:600; }
+
+  .s-loc{
+    font-family:var(--mono); font-size:11px; color:var(--paper-dimmer);
+    margin:22px 0 30px; display:flex; align-items:center; gap:8px;
+  }
+  .s-loc::before{ content:"◎"; color:var(--ochre); }
+
+  /* ---- stat band (signature element) ---- */
+  .stat-band{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:14px;
+    overflow:hidden; margin-bottom:40px;
+  }
+  .stat-card{ background:var(--surface); padding:18px 16px 16px; }
+  .stat-card .sval{ font-family:var(--disp); font-weight:700; font-size:22px; color:var(--malachite); line-height:1.1; }
+  .stat-card .slabel{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--paper-dimmer); margin-top:7px;
+  }
+  .stat-card .sbar{
+    margin-top:12px; height:5px; border-radius:4px; background:var(--surface-2);
+    position:relative; overflow:hidden;
+  }
+  .stat-card .sbar i{
+    position:absolute; left:0; top:0; bottom:0; border-radius:4px;
+    background:linear-gradient(90deg, var(--ochre), var(--malachite));
+  }
+  .stat-card .sfrom{ font-size:10.5px; color:var(--paper-dimmer); margin-top:6px; }
+  .stat-card .sfrom s{ color:#e0a888; text-decoration:line-through; opacity:.75; }
+  .stat-card .sfrom em{ color:var(--malachite); font-style:normal; font-weight:600; }
+
+  @media (max-width:760px){ .stat-band{ grid-template-columns:repeat(2,1fr); } }
+
+  /* ---- section heads ---- */
+  .section-head{ display:flex; align-items:baseline; gap:10px; margin:0 0 12px; }
+  .section-head h3{
+    font-family:var(--disp); font-weight:600; font-size:14px; margin:0;
+    text-transform:uppercase; letter-spacing:.07em; color:var(--paper);
+  }
+  .section-head .tag{
+    font-family:var(--mono); font-size:10px; color:var(--paper-dimmer);
+  }
+
+  /* ---- narrative cards ---- */
+  .narrative{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:34px;
+  }
+  @media (max-width:700px){ .narrative{ grid-template-columns:1fr; } }
+  .n-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .n-card.challenge{ border-left:2px solid rgba(224,168,136,0.5); }
+  .n-card.scenario{ border-left:2px solid var(--ochre); }
+  .n-card h4{
+    font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    margin:0 0 8px; color:var(--paper-dimmer);
+  }
+  .n-card p{ font-size:13.5px; color:var(--paper-dim); line-height:1.65; margin:0; }
+
+  /* ---- journey stepper reused for "how" ---- */
+  .journey{ position:relative; margin-bottom:36px; }
+  .journey-track{ position:relative; padding-left:26px; border-left:2px dashed var(--line-strong); }
+  .step{ position:relative; padding-bottom:22px; }
+  .step:last-child{ padding-bottom:0; }
+  .step::before{
+    content:""; position:absolute; left:-31px; top:2px;
+    width:10px; height:10px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--malachite);
+  }
+  .step-head{ display:flex; align-items:baseline; gap:9px; margin-bottom:5px; flex-wrap:wrap; }
+  .step-num{ font-family:var(--mono); font-size:11px; color:var(--malachite); }
+  .step-title{ font-family:var(--disp); font-weight:600; font-size:15px; }
+  .step-desc{ font-size:13px; color:var(--paper-dim); line-height:1.6; max-width:70ch; margin:0; }
+
+  /* ---- outcome ---- */
+  .outcome{
+    background:linear-gradient(180deg, rgba(55,176,124,0.08), transparent);
+    border:1px solid var(--line); border-left:2px solid var(--malachite); border-radius:var(--radius);
+    padding:18px 20px; margin-bottom:34px;
+  }
+  .outcome p{ font-size:13.5px; color:var(--paper); line-height:1.7; margin:0; }
+
+  /* ---- chips ---- */
+  .chipwrap{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:38px; }
+  .chip{
+    font-family:var(--mono); font-size:11.5px; color:var(--paper-dim);
+    background:var(--surface); border:1px solid var(--line);
+    padding:6px 11px; border-radius:100px;
+  }
+
+  /* ---- pull quote ---- */
+  .quote-block{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:26px 26px 22px; margin-bottom:8px; position:relative;
+  }
+  .quote-mark{
+    font-family:var(--disp); font-size:46px; color:var(--malachite);
+    line-height:1; margin-bottom:2px; opacity:.85;
+  }
+  .quote-block p{
+    font-family:var(--disp); font-weight:500; font-size:19px; line-height:1.5;
+    color:var(--paper); margin:0 0 18px; letter-spacing:-.005em;
+  }
+  .quote-foot{ display:flex; align-items:center; gap:10px; }
+  .quote-foot .qav{
+    width:32px; height:32px; border-radius:50%; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--disp); font-weight:600; font-size:11.5px;
+    background:var(--malachite-dim); border:1px solid var(--malachite); color:var(--malachite);
+  }
+  .quote-foot .qname{ font-size:12.5px; color:var(--paper); font-weight:600; }
+  .quote-foot .qrole{ font-size:11.5px; color:var(--paper-dimmer); }
+
+  footer.credit{
+    margin-top:52px; padding-top:20px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--paper-dimmer);
+  }
+
+  @media (max-width: 880px){
+    .shell{ flex-direction:column; }
+    .rail{ display:none; }
+    .mobile-strip{
+      display:flex; gap:6px; overflow-x:auto; padding:16px 16px 12px;
+      position:sticky; top:0; background:var(--ink); z-index:10;
+      border-bottom:1px solid var(--line);
+    }
+    .mobile-strip button{
+      flex:none; font-family:var(--mono); font-size:11px; padding:7px 12px;
+      border-radius:100px; border:1px solid var(--line); background:var(--surface);
+      color:var(--paper-dim); white-space:nowrap;
+    }
+    .mobile-strip button.active{ border-color:var(--malachite); color:var(--malachite); }
+    main{ padding:24px 18px 70px; }
+    .s-name{ font-size:21px; }
+    .s-hero{ gap:12px; }
+    .s-avatar{ width:52px; height:52px; font-size:18px; }
+    .stat-band{ grid-template-columns:1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <span class="mark">MineSentinel</span>
+      <h1>Customer Success Stories</h1>
+      <p>Ten professionals, ten workflows — how each one turned research time into decisions.</p>
+    </div>
+    <div class="railnav-label">Stories</div>
+    <nav class="railnav" id="railnav"></nav>
+  </aside>
+
+  <div class="mobile-strip" id="mobileStrip"></div>
+
+  <main id="main"></main>
+</div>
+
+<script>
+const ICONS = {
+  analyst: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M10 19V4M16 19v-7M22 19V7"/></svg>',
+  geo:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 19l6-11 4 7 2-3 6 7H3z"/><circle cx="17" cy="6" r="1.6"/></svg>',
+  esg:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c5-1 8-5 8-11a13 13 0 0 0-8-3 13 13 0 0 0-8 3c0 6 3 10 8 11z"/><path d="M12 21V9"/></svg>',
+  finance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c.5.9 1.4 1.4 2.6 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.8-2.2-1.6-.4-2.6-1-2.6-2.2 0-1.2 1.1-2 2.6-2 1.2 0 2 .5 2.5 1.3M12 7v1.2M12 15.8V17"/></svg>',
+  trader:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h13M17 8l-3-3M17 8l-3 3M20 16H7M7 16l3-3M7 16l3 3"/></svg>',
+  legal:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l-3 6a3.2 3.2 0 0 0 6 0L5 8zM19 8l-3 6a3.2 3.2 0 0 0 6 0l-3-6zM5 8h14M9 21h6"/></svg>',
+  gov:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h16M5 10l7-5 7 5M6 10v8M18 10v8M3 21h18M9 13v4M15 13v4"/></svg>',
+  dfi:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12l3 3 6-6M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/></svg>',
+  academia:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8l10-4 10 4-10 4-10-4z"/><path d="M6 10v5c0 1.3 2.7 3 6 3s6-1.7 6-3v-5"/></svg>',
+  press:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z"/><path d="M17 8h3v10a2 2 0 0 1-2 2M7 8h6M7 12h6M7 16h4"/></svg>',
+};
+
+function initials(name){
+  return name.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+}
+
+const STORIES = [
+{
+  code:"01", icon:"analyst", userType:"Mining Analysts & Researchers",
+  name:"Amara Boateng", title:"Senior Mining Analyst", company:"Cascade Frontier Capital",
+  location:"Accra, Ghana",
+  stats:[
+    {v:"88%", l:"Research time cut", pct:88, from:"26 hrs", to:"3 hrs / briefing"},
+    {v:"Same day", l:"Report turnaround", pct:90, from:"5 days", to:"same day"},
+    {v:"5×", l:"Mine coverage per quarter", pct:75, from:"12 mines", to:"60+ mines"},
+    {v:"1", l:"Platform replacing sources", pct:97, from:"40+ sites", to:"1 platform"},
+  ],
+  scenario:"Amara leads sector coverage for a boutique investment research firm, producing a quarterly West Africa gold supply briefing that a dozen portfolio managers rely on to size positions.",
+  challenge:"Before MineSentinel, building that briefing meant stitching together government registries, company filings, news alerts and price data from more than 40 separate sources — most of Amara's week went to finding and reconciling data rather than analysing it, and the final numbers still needed a manual sanity check against three different naming conventions.",
+  how:[
+    {t:"Set up a scoped workspace", d:"Created a “West Africa Gold Supply — Q3” project with a set commodity and geographic scope, so every dataset pulled in automatically fit the brief."},
+    {t:"Worked the live map", d:"Toggled production, ownership and ESG layers and used the Site Detail Panel to check figures against the live LME gold price in the same view."},
+    {t:"Queried Copilot directly", d:"Asked natural‑language questions about disruptions and year‑on‑year output; got cited answers back in seconds instead of chasing footnotes."},
+    {t:"Generated the report set", d:"Produced Mine Profile and Commodity Supply reports as pre‑formatted PDF and CSV exports, ready to attach to the desk note."},
+    {t:"Shared the workspace", d:"Invited two junior analysts into the same project so the whole team worked from one normalised dataset instead of three spreadsheets."},
+  ],
+  outcome:"The Q3 briefing went out the same day data was pulled instead of five days later, and coverage expanded from 12 flagship mines to more than 60 — enough to catch a Ghanaian production dip a full week before it hit the wire services.",
+  features:["Copilot","Mine Profile Report","Commodity Supply Report","Site Detail Panel","Live Metal Price Ticker","Team Panel"],
+  quote:"I used to spend Mondays just finding the numbers. Now I spend Mondays deciding what they mean."
+},
+{
+  code:"02", icon:"geo", userType:"Mining Companies & Technical Professionals",
+  name:"Kwame Mensah", title:"Exploration Manager", company:"Ivoire Exploration SA",
+  location:"Abidjan, Côte d'Ivoire",
+  stats:[
+    {v:"3 wks → 1 pm", l:"GIS layer assembly", pct:95, from:"3 weeks", to:"1 afternoon"},
+    {v:"20 min", l:"Concession status check", pct:93, from:"2 days", to:"20 minutes"},
+    {v:"2", l:"Licence overlaps caught pre‑filing", pct:60, from:"0 flagged manually", to:"2 flagged automatically"},
+    {v:"340 km²", l:"Area assessed in one pass", pct:80, from:"assessed piecemeal", to:"assessed in one project"},
+  ],
+  scenario:"Kwame was scoping a new greenfield licence application over a 340 km² block in southern Côte d'Ivoire, and needed a clean read on existing concessions and geology before committing exploration budget.",
+  challenge:"Geological, licence and infrastructure data lived in separate government and internal systems with mismatched coordinate reference systems — assembling a usable GIS base layer for a single area of interest used to take his team the better part of three weeks.",
+  how:[
+    {t:"Drew the area of interest", d:"Set project type to Exploration / Technical and drew a bounding box; every dataset inside it — geology, licences, occurrences — loaded automatically, already in one coordinate system."},
+    {t:"Toggled the map layers", d:"Switched between geology, mineral occurrences, aeromag coverage, active licences and infrastructure without a single manual import."},
+    {t:"Drilled into two adjacent licences", d:"Used the GIS Feature Detail pane to check holder, status and expiry on blocks bordering the proposed application."},
+    {t:"Ran a spatial overlap query", d:"Asked the platform to surface any occurrence or licence conflict inside the drawn boundary before the application was filed."},
+    {t:"Generated the concession report", d:"Produced a Concession Status Report as a shareable PDF and shapefile for the land team and legal counsel."},
+  ],
+  outcome:"The overlap query caught two lapsed‑but‑contested licence boundaries before the filing went in, avoiding a dispute that would likely have delayed the application by months — and the base GIS layer that used to take three weeks was ready by the next morning.",
+  features:["Concession Status Report","GIS Feature Detail","Geological Context Report","Aeromag & Geochem Layers","Shapefile Export"],
+  quote:"We used to lose weeks just getting the map right. Now the map is right the moment we open the project."
+},
+{
+  code:"03", icon:"esg", userType:"ESG, Sustainability & Compliance Professionals",
+  name:"Priya Nandakumar", title:"ESG Portfolio Lead", company:"Anchorpoint Sustainable Capital",
+  location:"Singapore",
+  stats:[
+    {v:"1 day", l:"Tailings dossier, per facility", pct:89, from:"9 days", to:"1 day"},
+    {v:"48 hrs", l:"Full portfolio screening", pct:86, from:"3 weeks", to:"48 hours"},
+    {v:"82", l:"Assets screened in one pass", pct:100, from:"screened individually", to:"screened together"},
+    {v:"4", l:"High‑consequence facilities flagged", pct:100, from:"unknown", to:"identified & escalated"},
+  ],
+  scenario:"Priya runs the annual GISTM tailings compliance screening across an 82‑mine portfolio for a sustainability‑focused asset manager, a review that feeds directly into investment committee risk sign‑off.",
+  challenge:"Each tailings facility needed 13 or more structured data points pulled from siloed engineering reports, regulator filings and NGO disclosures — with 82 assets in scope, that manual assembly alone used to consume nearly the whole screening cycle.",
+  how:[
+    {t:"Scoped a portfolio project", d:"Created a “Portfolio ESG Screening — Q4” project covering all 82 holdings at once, rather than one workspace per asset."},
+    {t:"Activated the ESG overlays", d:"Turned on water stress, biodiversity sensitivity, community proximity and tailings layers, colour‑coded by severity, across the full map."},
+    {t:"Opened each facility's ESG tab", d:"Pulled the complete structured tailings record — construction type, height, capacity, consequence class, engineer‑of‑record status — for every asset in scope."},
+    {t:"Asked Copilot to benchmark", d:"Requested an IFC Performance Standards gap analysis per facility instead of assembling it by hand."},
+    {t:"Exported the screening report", d:"Generated a red/amber/green Portfolio ESG Screening Report ready to attach to the risk committee pack."},
+  ],
+  outcome:"Four high‑consequence facilities were flagged and escalated in the same cycle instead of surfacing piecemeal over the following quarter, and the full 82‑asset screen that used to take three weeks was ready in two days.",
+  features:["Tailings Risk Assessment Report","Portfolio ESG Screening Report","Copilot PS Gap Analysis","Water Stress & Biodiversity Layers","Incident History Timeline"],
+  quote:"Thirteen data points, times eighty‑two facilities, used to mean three weeks of chasing documents. Now it means two days of judgment calls."
+},
+{
+  code:"04A", icon:"finance", userType:"Financial & Investment Professionals",
+  name:"Daniel Osei", title:"Equity Research Analyst", company:"Sahel Capital Partners",
+  location:"Accra, Ghana",
+  stats:[
+    {v:"2 hrs", l:"Model inputs assembled", pct:87, from:"2 days", to:"2 hours"},
+    {v:"1 day", l:"Sector screen turnaround", pct:86, from:"1 week", to:"1 day"},
+    {v:"2.7×", l:"Coverage universe expanded", pct:62, from:"15 companies", to:"40 companies"},
+    {v:"1", l:"AISC discrepancy caught vs. disclosure", pct:100, from:"undetected", to:"flagged"},
+  ],
+  scenario:"Daniel was building a copper sector investment screen ahead of a client note comparing cost curves and reserve life across every listed West African producer.",
+  challenge:"Company financials and mine‑level operating data lived in separate systems, and production figures had to be taken largely on faith from company disclosure — non‑financial risk data then had to be bolted onto the model by hand.",
+  how:[
+    {t:"Opened company profiles", d:"Pulled corporate structure, asset portfolios and financial highlights for every listed copper producer in scope, linked directly to each asset on the map."},
+    {t:"Cross‑checked disclosed production", d:"Compared company‑reported output against MineSentinel's independent mine‑level production data, asset by asset."},
+    {t:"Watched the live ticker", d:"Kept spot copper prices and disruption Status Panels visible alongside the model the whole session."},
+    {t:"Asked Copilot to rank the field", d:"Requested a cost‑curve ranking and reserve‑life comparison across peers instead of building the pivot table manually."},
+    {t:"Exported the sector screen", d:"Generated an Investment Sector Screen as an Excel workbook, ready to drop straight into the note."},
+  ],
+  outcome:"The cross‑check surfaced an AISC figure that didn't reconcile with one producer's public disclosure — worth a follow‑up call before publication — and the coverage universe for the note grew from 15 to 40 companies without adding headcount.",
+  features:["Company Mining Asset Report","Investment Sector Screen","Mine Operational Factsheet","Copilot Cost‑Curve Ranking","Live Commodity Ticker"],
+  quote:"The model used to be built on what companies chose to tell us. Now it's built on what's actually happening at the pit."
+},
+{
+  code:"04B", icon:"trader", userType:"Commodity Traders & Brokers",
+  name:"Marcus Webb", title:"Base Metals Trader", company:"Northgate Commodities",
+  location:"London, UK",
+  stats:[
+    {v:"4 min", l:"Disruption research, per event", pct:95, from:"90 minutes", to:"4 minutes"},
+    {v:"Real time", l:"Alert‑to‑desk latency", pct:92, from:"same‑day", to:"real time"},
+    {v:"~6 hrs", l:"Ahead of consensus headline", pct:70, from:"reactive", to:"early positioning"},
+    {v:"61,000 t/yr", l:"Disrupted capacity sized instantly", pct:100, from:"estimated later", to:"known immediately"},
+  ],
+  scenario:"Marcus trades base metals and needed to react fast when a labour action broke out at the Chilanga copper mine in Zambia, an asset his desk was already watching.",
+  challenge:"Price feeds and physical mine information lived in different systems entirely — by the time a disruption was confirmed and sized, wire services and faster desks had often already moved the market.",
+  how:[
+    {t:"Watched the live map", d:"Saw the Chilanga disruption alert fire in real time against the copper layer, before it appeared on general newswires."},
+    {t:"Checked the site in context", d:"Opened Site Detail for annual production volume, alternative regional supply near Kansanshi, and port/rail proximity — all in one view."},
+    {t:"Pulled disruption history", d:"Saw this was the mine's third disruption in 24 months, each previously resolved within two to three weeks — useful context for sizing the trade's duration."},
+    {t:"Tracked the ticker", d:"Kept live spot and futures visible throughout, correlating price movement with the unfolding event."},
+    {t:"Generated the alert report", d:"Exported a Supply Disruption Alert Report to brief the rest of the desk in one document."},
+  ],
+  outcome:"The desk had a sized, contextualised view of the disruption — affected capacity, historical resolution time, and alternative supply — roughly six hours before it was fully priced into the market by slower‑moving participants.",
+  features:["Supply Disruption Alert Report","Metal Price Ticker","Mine Monitor Report","Site Detail Panel","Real‑time Disruption Alerts"],
+  quote:"In this job, being right two days later is the same as being wrong. I need to know before the headline, not after it."
+},
+{
+  code:"05A", icon:"legal", userType:"Legal & Regulatory Professionals",
+  name:"Ama Darko", title:"Partner, Mining & Natural Resources", company:"Darko & Partners LLP",
+  location:"Accra, Ghana",
+  stats:[
+    {v:"4 hrs", l:"Licence due diligence file", pct:97, from:"6 days", to:"4 hours"},
+    {v:"3 days", l:"Closing memo turnaround", pct:78, from:"2 weeks", to:"3 days"},
+    {v:"2.75×", l:"DD files cleared per quarter", pct:63, from:"4 files", to:"11 files"},
+    {v:"1", l:"Historical suspension caught early", pct:100, from:"buried in filings", to:"surfaced up front"},
+  ],
+  scenario:"Ama was leading due diligence on a licence acquisition for a client transaction, needing a defensible, source‑verified picture of the licence's legal standing before the deal could close.",
+  challenge:"Regulatory records were scattered across multiple government agencies, and legal status still needed independent verification — a single licence due diligence file used to take her team the better part of a week to compile.",
+  how:[
+    {t:"Opened the licence layer", d:"Viewed all polygons in the transaction area colour‑coded by status — active, expired, suspended, in application."},
+    {t:"Pulled the full licence record", d:"Number, holder, issuing authority, grant/expiry date and historical status changes, linked directly to the mine and corporate ownership chain."},
+    {t:"Asked Copilot to trace ownership", d:"Resolved the beneficial ownership chain from the licence holder up to the ultimate parent in one query."},
+    {t:"Checked the compliance trail", d:"Reviewed environmental permits and regulatory notices attached to the licence, source‑linked to the original registry records."},
+    {t:"Generated the DD report", d:"Produced a Licence Due Diligence Report and Corporate Ownership Report, both ready to attach to the closing file."},
+  ],
+  outcome:"The report surfaced a 2019 administrative suspension that hadn't come up in the client's own records — resolved and immaterial, but worth disclosing — and the full due diligence file that used to take six days was ready in an afternoon, keeping the transaction on its original closing date.",
+  features:["Licence Due Diligence Report","Corporate Ownership Report","Regulatory History Report","Copilot Beneficial Ownership Tracing"],
+  quote:"Clients don't pay us to find the licence record. They pay us to tell them what it means, fast. Now that's most of the job again."
+},
+{
+  code:"05B", icon:"gov", userType:"Government & Policy Professionals",
+  name:"Kofi Adjei", title:"Senior Policy Advisor", company:"Ghana Minerals Commission",
+  location:"Accra, Ghana",
+  stats:[
+    {v:"2 days", l:"Sector briefing assembled", pct:90, from:"3 weeks", to:"2 days"},
+    {v:"Next morning", l:"Ministerial briefing turnaround", pct:96, from:"10 days", to:"next morning"},
+    {v:"6", l:"Countries compared in one document", pct:100, from:"compiled by hand", to:"built into the platform"},
+    {v:"1 wk", l:"Delivered ahead of deadline", pct:70, from:"on deadline", to:"a week early"},
+  ],
+  scenario:"Kofi needed to prepare a ministerial briefing on national sector performance, alongside a six‑country regional comparison ahead of an ECOWAS critical minerals meeting.",
+  challenge:"Sector data was distributed across multiple government agencies with no shared format, and building a credible regional comparison meant weeks of manual compilation from each country's own reporting.",
+  how:[
+    {t:"Set the country scope", d:"Created a “Ghana Mining Sector Policy Review 2026” project, then a parallel “ECOWAS Critical Minerals Assessment” for the regional angle."},
+    {t:"Read the country summary", d:"Pulled total operating and exploration counts, production by commodity, top operators and FDI indicators in one view."},
+    {t:"Ran the regional comparison", d:"Used Regional Comparison mode to set Ghana side by side with five neighbouring producers on the same metrics."},
+    {t:"Queried Copilot on policy detail", d:"Asked for a direct comparison of large‑scale mining regulatory frameworks across the six jurisdictions."},
+    {t:"Generated the briefing set", d:"Produced a Sector Performance Briefing and Cross‑Country Comparison Report, sized for a ministerial read."},
+  ],
+  outcome:"The briefing was on the minister's desk a full week ahead of the meeting instead of arriving the night before, with the regional comparison — previously a multi‑week compilation exercise — built and verified in a single afternoon.",
+  features:["National Mining Sector Report","Cross‑Country Comparison Report","Sector Performance Briefing","Regional Comparison Mode","Copilot Policy‑Framework Queries"],
+  quote:"For once, the briefing was ready before the meeting was scheduled — not the other way around."
+},
+{
+  code:"06A", icon:"dfi", userType:"Development Finance & Aid Professionals",
+  name:"Elena Torres", title:"Investment Officer", company:"Frontier Development Finance Corp",
+  location:"Washington, D.C., USA",
+  stats:[
+    {v:"5 days", l:"Project DD dossier", pct:82, from:"4 weeks", to:"5 days"},
+    {v:"10 days", l:"IC memo turnaround", pct:67, from:"1 month", to:"10 days"},
+    {v:"3×", l:"Projects screened per quarter", pct:66, from:"baseline", to:"3× throughput"},
+    {v:"72%", l:"Data completeness, flagged not hidden", pct:72, from:"unclear gaps", to:"gaps stated up front"},
+  ],
+  scenario:"Elena was running an IFC Performance Standards compliance review on an artisanal gold site in Mali as part of a formalisation‑support investment case.",
+  challenge:"Project‑level information spanned multiple institutions and formats, governance and ESG evidence required slow qualitative research, and country‑level risk data didn't translate cleanly down to the specific project.",
+  how:[
+    {t:"Set the project scope", d:"Created an “IFC PS Compliance Review — Country Artisanal Mining Sector” project and activated ESG and governance overlays."},
+    {t:"Reviewed the mine profile", d:"Pulled ownership and governance structure, ESG record, infrastructure availability and community context in one page."},
+    {t:"Asked Copilot for the PS check", d:"Requested an IFC Performance Standards alignment check, which flagged specific gaps against PS1 and PS4 rather than a vague pass/fail."},
+    {t:"Noted the data gaps explicitly", d:"Used the completeness score to see exactly which fields — production disclosure, mainly — needed a supplementary field visit."},
+    {t:"Generated the DD report", d:"Produced a Project Due Diligence Report and ESG Safeguard Screening Report ready for the investment committee."},
+  ],
+  outcome:"The project cleared to investment committee three weeks ahead of the original timeline, with the PS1/PS4 gaps documented as a condition of disbursement rather than discovered after approval.",
+  features:["Project Due Diligence Report","ESG Safeguard Screening Report","Copilot PS Alignment Check","Country Extractives Assessment"],
+  quote:"We used to find the gaps after we'd already committed capital. Now we find them in the memo, where they belong."
+},
+{
+  code:"06B", icon:"academia", userType:"Academia & Research",
+  name:"Dr. Sarah Owusu", title:"Research Fellow, Dept. of Geology", company:"University of Ghana, Legon",
+  location:"Legon, Ghana",
+  stats:[
+    {v:"3 wks", l:"Dataset assembly", pct:90, from:"4 months", to:"3 weeks"},
+    {v:"1 semester", l:"Time to submission gained", pct:50, from:"on original timeline", to:"a semester early"},
+    {v:"214", l:"Mine records covered", pct:100, from:"scattered sources", to:"one integrated dataset"},
+    {v:"36 yrs", l:"Temporal range, GIS‑ready", pct:100, from:"manual geocoding needed", to:"spatial by default"},
+  ],
+  scenario:"Dr. Owusu's doctoral research examines the relationship between historical gold mining activity and deforestation across West Africa from 1990 to 2026.",
+  challenge:"Discovery, acquisition, cleaning and integration of source data used to consume most of her research time — each dataset required individual download and manual merging, and geocoding for GIS analysis was a separate, tedious step on top of that.",
+  how:[
+    {t:"Scoped the study area", d:"Created a project titled “Historical Gold Mining and Deforestation in West Africa 1990–2026” with a set geographic and temporal window."},
+    {t:"Explored across time", d:"Used temporal filters to see how mine activity and status shifted at different points across the 36‑year window."},
+    {t:"Exported analysis‑ready data", d:"Pulled CSV and GeoJSON exports directly into R and QGIS, with coordinate systems already reconciled."},
+    {t:"Queried Copilot for cumulative figures", d:"Got direct answers to historical and cumulative production questions, with pointers back to the full underlying dataset."},
+    {t:"Generated the methodology appendix", d:"Produced a Research Summary Report documenting dataset scope, counts and completeness for peer review."},
+  ],
+  outcome:"A literature review and data‑assembly phase that would typically span four months was compressed to three weeks, letting her submit her dissertation chapter a full semester ahead of schedule — and the resulting dataset has since been cited by two other regional researchers.",
+  features:["Dataset Export (CSV)","GeoJSON / Shapefile Export","Historical Production Dataset","Research Summary Report","Temporal Filtering"],
+  quote:"I used to explain my methodology chapter by describing three months of data wrangling. Now I get to spend that time on the actual research question."
+},
+{
+  code:"06C", icon:"press", userType:"Journalists & Editors",
+  name:"James Okafor", title:"Investigative Reporter", company:"The Continental Standard",
+  location:"Lagos, Nigeria",
+  stats:[
+    {v:"2 days", l:"Fact verification", pct:80, from:"10 days", to:"2 days"},
+    {v:"3 wks", l:"Tip‑to‑publish timeline", pct:50, from:"6 weeks", to:"3 weeks"},
+    {v:"12", l:"Independent sources cross‑checked in one place", pct:100, from:"scattered", to:"unified"},
+    {v:"1st", l:"Published ahead of a rival outlet", pct:100, from:"racing the clock", to:"published first"},
+  ],
+  scenario:"James was investigating alleged environmental violations at a gold mine near a rural community, working from a tip that pointed to unresolved water‑discharge issues and an opaque ownership structure.",
+  challenge:"Verifying the underlying claims took time he didn't have, primary sources were hard to locate, and understanding why the story actually mattered meant connecting production, ownership and ESG data that lived in entirely separate places.",
+  how:[
+    {t:"Opened a story project", d:"Created “Investigation: Gold Mine X Environmental Violations” and let the map load the site in its geographic context."},
+    {t:"Checked proximity to the community", d:"Used the GIS Feature Detail pane to confirm the tailings‑to‑village distance the tip had referenced."},
+    {t:"Pulled the factual record", d:"Reviewed the corporate ownership chain, licence validity, ESG incident history and regulatory actions, each attributed to a source."},
+    {t:"Cross‑referenced the company's own statements", d:"Asked Copilot to check public company statements against the platform's independent incident record."},
+    {t:"Generated the source pack", d:"Produced an Ownership Investigation Report and Incident Timeline Report to underpin the story before drafting."},
+  ],
+  outcome:"The investigation published three weeks after the initial tip instead of the usual six, with a documented ownership chain and incident timeline that held up under the outlet's legal review — and it ran two days ahead of a competing newsroom working the same story.",
+  features:["Ownership Investigation Report","Incident Timeline Report","Geographic Context Report","Copilot Source‑Attributed Answers","Regulatory History Report"],
+  quote:"The story was never really about finding the facts. It was about proving them fast enough to still be first."
+},
+];
+
+const railnav = document.getElementById('railnav');
+const mobileStrip = document.getElementById('mobileStrip');
+const main = document.getElementById('main');
+
+function renderStory(s, idx){
+  const stats = s.stats.map(st => `
+    <div class="stat-card">
+      <div class="sval">${st.v}</div>
+      <div class="slabel">${st.l}</div>
+      <div class="sbar"><i style="width:${st.pct}%"></i></div>
+      <div class="sfrom"><s>${st.from}</s> → <em>${st.to}</em></div>
+    </div>`).join('');
+
+  const steps = s.how.map((st,i) => `
+    <div class="step">
+      <div class="step-head">
+        <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="step-title">${st.t}</span>
+      </div>
+      <p class="step-desc">${st.d}</p>
+    </div>`).join('');
+
+  const chips = s.features.map(f => `<span class="chip">${f}</span>`).join('');
+
+  return `
+  <section class="story" id="story-${idx}">
+    <div class="s-hero">
+      <div class="s-avatar">${initials(s.name)}</div>
+      <div>
+        <div class="s-eyebrow"><span class="code-big">${s.code}</span> · Success Story</div>
+        <h2 class="s-name">${s.name}</h2>
+        <p class="s-role"><b>${s.title}</b> · ${s.company}</p>
+      </div>
+    </div>
+    <div class="s-loc">${s.location}</div>
+
+    <div class="stat-band">${stats}</div>
+
+    <div class="narrative">
+      <div class="n-card scenario">
+        <h4>The Scenario</h4>
+        <p>${s.scenario}</p>
+      </div>
+      <div class="n-card challenge">
+        <h4>The Challenge</h4>
+        <p>${s.challenge}</p>
+      </div>
+    </div>
+
+    <div class="section-head"><h3>How ${s.name.split(' ')[0]} used MineSentinel</h3><span class="tag">${s.how.length} steps</span></div>
+    <div class="journey"><div class="journey-track">${steps}</div></div>
+
+    <div class="section-head"><h3>The Outcome</h3></div>
+    <div class="outcome"><p>${s.outcome}</p></div>
+
+    <div class="section-head"><h3>Key features used</h3><span class="tag">${s.features.length}</span></div>
+    <div class="chipwrap">${chips}</div>
+
+    <div class="quote-block">
+      <div class="quote-mark">&ldquo;</div>
+      <p>${s.quote}</p>
+      <div class="quote-foot">
+        <div class="qav">${initials(s.name)}</div>
+        <div>
+          <div class="qname">${s.name}</div>
+          <div class="qrole">${s.title}, ${s.company}</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="credit">MineSentinel Customer Success · Internal · August 2026</footer>
+  </section>`;
+}
+
+main.innerHTML = STORIES.map(renderStory).join('');
+
+function shortMobileLabel(s){ return s.userType.split('&')[0].split(',')[0].trim(); }
+
+STORIES.forEach((s, idx) => {
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (idx===0 ? ' active' : '');
+  btn.innerHTML = `<span class="avatar">${ICONS[s.icon]}</span><span class="tmeta"><div class="tname">${s.userType}</div><div class="trole">${s.name} · ${s.company}</div></span>`;
+  btn.addEventListener('click', () => activate(idx));
+  railnav.appendChild(btn);
+
+  const mbtn = document.createElement('button');
+  mbtn.textContent = `${s.code} · ${shortMobileLabel(s)}`;
+  mbtn.className = idx===0 ? 'active' : '';
+  mbtn.addEventListener('click', () => activate(idx));
+  mobileStrip.appendChild(mbtn);
+});
+
+function activate(idx){
+  document.querySelectorAll('.story').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.mobile-strip button').forEach((el,i) => el.classList.toggle('active', i===idx));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+activate(0);
+</script>
+</body>
+</html>

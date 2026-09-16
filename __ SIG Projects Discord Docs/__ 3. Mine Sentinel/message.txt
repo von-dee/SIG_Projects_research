@@ -1,0 +1,111 @@
+#  [TIPS]
+## Ideal customer profile eg for a company
+
+Key Components to Include Firmographics: Industry, Size, Revenue, Location.Budget: Ability to pay for your solution.Technology Used: Specific software they use that makes them a better fit.Pain Points: The specific problem you solve (e.g., security, efficiency).Ideal User/Buyer: Job titles (e.g., "VP of Sales," "Engineering Manager").A well-defined ICP enables shorter sales cycles and higher customer retention
+
+## Questionnaire template
+Interview Questionnaire
+Section 1 — Background
+What is your role and what does your organization do in the mining sector?
+How involved are you in mining data, mineral reporting, or GIS monitoring?
+What kind of mining or mineral information do you work with most often?
+
+Examples:
+
+gold production
+concession data
+geological surveys
+environmental reports
+export data
+Section 2 — Current Workflow
+How do you currently collect or access mining-related data?
+What tools or software do you currently use?
+How is mining information shared internally?
+How long does it usually take to generate reports or retrieve mining insights?
+Is your current workflow mostly:
+manual
+spreadsheet-based
+GIS-based
+software-driven
+Section 3 — Pain Points (MOST IMPORTANT)
+What are the biggest challenges you face with mining data or monitoring today?
+What information do you wish was easier to access?
+Are there any delays, inaccuracies, or reporting bottlenecks?
+Have there been situations where poor visibility or missing data caused problems?
+How difficult is it to consolidate mining data from multiple sources?
+How often do these problems occur?
+daily
+weekly
+monthly
+rarely
+Which of these problems is the MOST painful?
+Section 4 — Existing Alternatives
+Are there existing platforms or systems you currently rely on?
+What do you like about them?
+What do you dislike or wish they could do better?
+Have you tried building internal systems for this before?
+Section 5 — GIS & Monitoring Validation
+How important is geospatial/map-based visibility for your work?
+Would interactive mining maps improve your workflows?
+What mining insights would you want to see on a dashboard?
+
+Examples:
+
+production
+concessions
+illegal mining
+exports
+environmental indicators
+Section 6 — Budget & Purchasing Signals
+Does your organization currently pay for:
+analytics tools
+GIS platforms
+mining intelligence software
+Who typically approves software purchases?
+What factors make a platform worth paying for?
+Would faster or centralized mining intelligence save:
+time
+money
+operational effort
+compliance effort
+How valuable would that be operationally?
+Section 7 — Priority & Urgency
+Compared to other operational problems, where does this rank?
+Is this problem urgent enough that leadership discusses it regularly?
+If a reliable platform existed today, how likely would your organization be to test it?
+Section 8 — Closing Questions
+What would an ideal mining intelligence platform look like for you?
+What features would be absolutely essential?
+Is there anyone else you think we should speak with?
+Would you be open to:
+early access
+pilot testing
+follow-up discussions
+Questions You SHOULD Ask Verbatim
+
+These are especially important.
+
+Ask:
+
+“Tell me about the last time this problem happened.”
+
+This gets real examples instead of opinions.
+
+Ask:
+
+“How are you solving this today?”
+
+This reveals:
+
+competitors
+workarounds
+spending behavior
+Ask:
+
+“What happens if this problem is not solved?”
+
+This reveals:
+
+urgency
+business impact
+willingness to pay

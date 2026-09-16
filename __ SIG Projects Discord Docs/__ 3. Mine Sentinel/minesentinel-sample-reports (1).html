@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineSentinel — Sample Generated Reports</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: oklch(0.98 0.003 250);
+    --bg-rail: oklch(0.975 0.004 250);
+    --bg-elevated: oklch(0.965 0.005 250);
+    --bg-card: oklch(1 0 0);
+    --bg-tint-malachite: oklch(0.94 0.03 155);
+    --bg-tint-ochre: oklch(0.95 0.035 85);
+    --bg-tint-copper: oklch(0.95 0.033 45);
+    --bg-tint-red: oklch(0.96 0.03 25);
+    --border: oklch(0.89 0.006 250);
+    --border-soft: oklch(0.93 0.005 250);
+    --malachite: oklch(0.46 0.12 155);
+    --malachite-dim: oklch(0.70 0.07 155);
+    --ochre: oklch(0.55 0.13 85);
+    --ochre-dim: oklch(0.75 0.08 85);
+    --copper: oklch(0.56 0.14 45);
+    --copper-dim: oklch(0.75 0.08 45);
+    --red: oklch(0.53 0.17 25);
+    --red-dim: oklch(0.75 0.09 25);
+    --ink: oklch(0.20 0.01 250);
+    --ink-dim: oklch(0.40 0.01 250);
+    --ink-faint: oklch(0.58 0.01 250);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-serif: 'Source Serif 4', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html{ scroll-behavior:smooth; }
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--ink); font-family:var(--font-body); line-height:1.6; -webkit-font-smoothing:antialiased; }
+  .topo{ position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.035; }
+  .shell{ position:relative; z-index:1; display:flex; min-height:100vh; }
+
+  .masthead{
+    position:sticky; top:0; z-index:20;
+    background:oklch(0.995 0.001 250);
+    border-bottom:1px solid var(--border-soft); padding:18px 30px 16px;
+  }
+  .masthead-row{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{ width:11px; height:11px; border-radius:2px; background:var(--malachite); box-shadow:0 0 0 3px var(--bg-tint-malachite); flex-shrink:0; }
+  .brand-name{ font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:0.02em; color:var(--ink); }
+  .brand-sub{ font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); letter-spacing:0.03em; }
+  h1.title{ font-family:var(--font-display); font-weight:600; font-size:22px; margin:10px 0 4px; color:var(--ink); letter-spacing:-0.01em; }
+  .path-chip{ font-family:var(--font-mono); font-size:11.5px; color:var(--malachite); background:var(--bg-tint-malachite); border:1px solid var(--malachite-dim); padding:3px 9px; border-radius:5px; white-space:nowrap; }
+  .source-note{ font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); margin-top:6px; }
+
+  .rail{ width:272px; flex-shrink:0; background:var(--bg-rail); border-right:1px solid var(--border-soft); padding:18px 12px 30px; position:sticky; top:0; align-self:flex-start; height:100vh; overflow-y:auto; }
+  .rail-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.12em; color:var(--ink-faint); text-transform:uppercase; padding:4px 10px 10px; }
+  .tab-btn{ display:flex; align-items:center; gap:10px; width:100%; background:transparent; border:1px solid transparent; border-left:3px solid transparent; border-radius:6px; padding:9px 10px; margin-bottom:2px; cursor:pointer; text-align:left; color:var(--ink-dim); transition:background .15s ease, border-color .15s ease, color .15s ease; }
+  .tab-btn:hover{ background:var(--bg-elevated); color:var(--ink); }
+  .tab-btn.active{ background:var(--bg-card); border-color:var(--border); border-left-color:var(--malachite); box-shadow:0 1px 2px oklch(0.2 0.01 250 / 0.05); color:var(--ink); }
+  .tab-code{ font-family:var(--font-mono); font-size:10.5px; font-weight:600; color:var(--ink-faint); background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:4px; padding:2px 6px; flex-shrink:0; min-width:30px; text-align:center; }
+  .tab-btn.active .tab-code{ color:var(--malachite); border-color:var(--malachite-dim); background:var(--bg-tint-malachite); }
+  .tab-label{ font-size:12.5px; font-weight:500; line-height:1.3; }
+  .tab-btn.active .tab-label{ color:var(--ink); font-weight:600; }
+
+  main{ flex:1; min-width:0; padding:28px 34px 90px; max-width:1000px; }
+
+  .report-doc{ background:var(--bg-card); border:1px solid var(--border-soft); border-top:3px solid var(--malachite); border-radius:10px; overflow:hidden; box-shadow:0 1px 3px oklch(0.2 0.01 250 / 0.05), 0 6px 24px oklch(0.2 0.01 250 / 0.04); }
+  .report-letterhead{ padding:26px 32px 20px; border-bottom:1px solid var(--border-soft); }
+  .lh-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; margin-bottom:14px; }
+  .lh-idbadges{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{ font-family:var(--font-mono); font-size:10.5px; padding:2px 8px; border-radius:20px; border:1px solid var(--border); color:var(--ink-dim); white-space:nowrap; }
+  .tag.pro{ color:var(--ochre); border-color:var(--ochre-dim); background:var(--bg-tint-ochre); font-weight:600; }
+  .tag.tab-name{ color:var(--malachite); border-color:var(--malachite-dim); background:var(--bg-tint-malachite); }
+  .tag.sample{ color:var(--copper); border-color:var(--copper-dim); background:var(--bg-tint-copper); font-weight:600; }
+  .lh-meta{ font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); text-align:right; }
+  h2.report-title{ font-family:var(--font-display); font-weight:600; font-size:25px; margin:0 0 10px; color:var(--ink); letter-spacing:-0.01em; }
+  .lh-generated-by{ font-size:13px; color:var(--ink-dim); margin-bottom:12px; }
+  .lh-generated-by b{ color:var(--ink); }
+  .filter-chips{ display:flex; gap:6px; flex-wrap:wrap; }
+  .filter-chip{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-dim); background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:5px; padding:3px 8px; }
+  .filter-chip .k{ color:var(--ink-faint); margin-right:3px; }
+
+  .contents-nav{ display:flex; gap:7px; flex-wrap:wrap; padding:14px 32px; background:var(--bg-elevated); border-bottom:1px solid var(--border-soft); }
+  .contents-nav .cn-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-right:4px; align-self:center; }
+  .contents-nav a{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-dim); text-decoration:none; background:var(--bg-card); border:1px solid var(--border-soft); border-radius:20px; padding:4px 10px; transition:border-color .15s, color .15s; }
+  .contents-nav a:hover{ border-color:var(--malachite-dim); color:var(--malachite); }
+
+  .report-body{ padding:26px 32px 6px; }
+  .section{ margin-bottom:30px; scroll-margin-top:90px; }
+  .section-label{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.09em; text-transform:uppercase; color:var(--copper); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid var(--border-soft); }
+  .narrative-text{ font-family:var(--font-serif); font-size:14.5px; color:var(--ink-dim); margin:0; line-height:1.7; }
+  .narrative-text b{ color:var(--ink); font-weight:600; font-family:var(--font-body); }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; }
+  .stat-tile{ background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:8px; padding:13px 15px; }
+  .stat-tile .v{ font-family:var(--font-display); font-weight:700; font-size:21px; color:var(--malachite); }
+  .stat-tile .l{ font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:0.05em; margin-top:3px; }
+
+  table.rtable{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  table.rtable th{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.05em; text-transform:uppercase; color:var(--ink-faint); text-align:left; padding:9px 11px; background:var(--bg-elevated); border-bottom:1px solid var(--border-soft); white-space:nowrap; }
+  table.rtable td{ padding:9px 11px; color:var(--ink-dim); border-bottom:1px solid var(--border-soft); white-space:nowrap; }
+  table.rtable tr:last-child td{ border-bottom:none; }
+  table.rtable tr:hover td{ background:var(--bg-elevated); }
+  table.rtable td.strong{ color:var(--ink); font-weight:600; }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border-soft); border-radius:8px; }
+  .table-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); margin-top:7px; }
+
+  ul.rlist{ margin:0; padding-left:19px; }
+  ul.rlist li{ font-size:13px; color:var(--ink-dim); margin-bottom:6px; }
+
+  .callout{ padding:13px 15px; border-radius:0 8px 8px 0; margin-top:4px; }
+  .callout.warn{ background:var(--bg-tint-red); border-left:3px solid var(--red); }
+  .callout.info{ background:var(--bg-tint-malachite); border-left:3px solid var(--malachite); }
+  .callout p{ margin:0; font-size:13px; color:var(--ink); }
+  .callout .clabel{ font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:5px; font-weight:600; }
+  .callout.warn .clabel{ color:var(--red); }
+  .callout.info .clabel{ color:var(--malachite); }
+
+  .chart-box{ border:1px solid var(--border-soft); border-radius:8px; padding:16px 14px 6px; background:var(--bg-elevated); }
+  .legend-row{ display:flex; gap:16px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+  .legend-item{ display:flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:10.5px; color:var(--ink-dim); }
+  .legend-dot{ width:8px; height:8px; border-radius:2px; }
+
+  .gauge-row{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .gauge-row:last-child{ margin-bottom:0; }
+  .gauge-label{ font-size:12.5px; color:var(--ink-dim); width:220px; flex-shrink:0; }
+  .gauge-track{ flex:1; height:8px; background:var(--bg-elevated); border:1px solid var(--border-soft); border-radius:6px; overflow:hidden; }
+  .gauge-fill{ height:100%; border-radius:6px; }
+  .gauge-value{ font-family:var(--font-mono); font-size:11px; color:var(--ink); width:110px; text-align:right; flex-shrink:0; }
+
+  .timeline{ position:relative; padding-left:2px; }
+  .tl-item{ display:flex; gap:14px; position:relative; padding-bottom:20px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-item:not(:last-child)::before{ content:''; position:absolute; left:5px; top:15px; bottom:-5px; width:1px; background:var(--border); }
+  .tl-dot{ width:11px; height:11px; border-radius:50%; background:var(--malachite); margin-top:3px; flex-shrink:0; box-shadow:0 0 0 3px var(--bg-tint-malachite); }
+  .tl-date{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); }
+  .tl-label{ font-weight:600; font-size:13px; color:var(--ink); margin:2px 0; }
+  .tl-text{ font-size:12.5px; color:var(--ink-dim); }
+
+  .methodology{ margin:6px 32px 0; padding:16px 0 20px; border-top:1px solid var(--border-soft); }
+  .methodology .m-label{ font-family:var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px; }
+  .methodology p{ font-family:var(--font-serif); font-style:italic; font-size:12px; color:var(--ink-faint); margin:0; line-height:1.6; }
+
+  .report-footer{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding:16px 32px; border-top:1px solid var(--border-soft); background:var(--bg-elevated); }
+  .export-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .export-btn{ font-family:var(--font-mono); font-size:11px; color:var(--ink-dim); border:1px solid var(--border); border-radius:6px; padding:6px 12px; background:var(--bg-card); cursor:default; user-select:none; }
+  .export-btn.primary{ color:var(--bg-card); background:var(--malachite); border-color:var(--malachite); font-weight:600; }
+  .footer-note{ font-family:var(--font-mono); font-size:10.5px; color:var(--ink-faint); }
+
+  .persona-context{ margin-bottom:16px; }
+  .persona-context .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px; }
+
+  @media (max-width: 860px){
+    .shell{ flex-direction:column; }
+    .rail{ width:100%; height:auto; position:sticky; top:0; z-index:15; display:flex; overflow-x:auto; overflow-y:hidden; padding:10px 10px; border-right:none; border-bottom:1px solid var(--border-soft); gap:4px; }
+    .rail-label{ display:none; }
+    .tab-btn{ width:auto; flex-shrink:0; margin-bottom:0; white-space:nowrap; border-left:none; border-bottom:3px solid transparent; }
+    .tab-btn.active{ border-left:none; border-bottom-color:var(--malachite); }
+    main{ padding:20px 14px 60px; }
+    .lh-meta{ text-align:left; }
+    .report-letterhead, .report-body, .report-footer, .contents-nav{ padding-left:16px; padding-right:16px; }
+    .methodology{ margin-left:16px; margin-right:16px; }
+    .gauge-label{ width:130px; font-size:11.5px; }
+  }
+  ::-webkit-scrollbar{ width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border); border-radius:6px; }
+  ::-webkit-scrollbar-track{ background:transparent; }
+</style>
+</head>
+<body>
+
+<svg class="topo" viewBox="0 0 1000 1000" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <g fill="none" stroke="oklch(0.46 0.12 155)" stroke-width="1">
+    <path d="M0,120 C200,180 300,60 500,120 C700,180 800,60 1000,120"/>
+    <path d="M0,220 C200,280 300,160 500,220 C700,280 800,160 1000,220"/>
+    <path d="M0,420 C220,480 320,360 520,420 C720,480 820,360 1000,420"/>
+    <path d="M0,620 C220,680 320,560 520,620 C720,680 820,560 1000,620"/>
+    <path d="M0,820 C220,880 320,760 520,820 C720,880 820,760 1000,820"/>
+  </g>
+</svg>
+
+<div class="masthead">
+  <div class="masthead-row">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div><div class="brand-name">MineSentinel</div><div class="brand-sub">Intelligence Hub</div></div>
+    </div>
+    <span class="path-chip">/reports — Sample Generated Reports</span>
+  </div>
+  <h1 class="title">Sample Reports — one flagship report per persona</h1>
+  <div class="source-note">Illustrative output only — figures, names, and events below are fabricated for demonstration and do not describe real mines, companies, or people.</div>
+</div>
+
+<div class="shell">
+  <nav class="rail" id="rail"></nav>
+  <main id="main"></main>
+</div>
+
+<script>
+const C = {
+  malachite:'oklch(0.46 0.12 155)', malachiteLight:'oklch(0.62 0.10 155)',
+  ochre:'oklch(0.55 0.13 85)', copper:'oklch(0.56 0.14 45)', red:'oklch(0.53 0.17 25)',
+  ink:'oklch(0.20 0.01 250)', inkDim:'oklch(0.40 0.01 250)', inkFaint:'oklch(0.58 0.01 250)',
+  border:'oklch(0.89 0.006 250)'
+};
+
+const REPORTS = [
+{
+  code:"01", label:"Mining Analysts & Researchers", persona:"Mining Analysts & Researchers",
+  title:"Nyarko Ridge Gold Project — Finance Dossier", id:"1.4", tab:"AI Generator", tier:"pro",
+  user:{ name:"K. Boateng", role:"Mining Sector Analyst" },
+  filters:[{k:"Country",v:"Ghana"},{k:"Commodity",v:"Gold"},{k:"Concession",v:"Nyarko Ridge Gold Project"},{k:"AI Persona",v:"Morgan Chen (Finance)"}],
+  sections:[
+    { type:"narrative", title:"Executive Summary",
+      text:"Nyarko Ridge is an advanced-stage gold project in the Ashanti Region with a 2.4 Moz Au Measured &amp; Indicated resource, targeting first pour in Q3 2028. At a base-case gold price of <b>$2,350/oz</b>, the project generates an after-tax <b>NPV(8%) of $612M</b> and a <b>24.6% IRR</b>, with payback in 3.8 years. Free cash flow remains positive down to a $1,900/oz gold price, indicating meaningful downside cushion." },
+    { type:"stats", title:"Key Metrics",
+      items:[ {l:"NPV @ 8%",v:"$612M"}, {l:"IRR",v:"24.6%"}, {l:"Payback",v:"3.8 yrs"}, {l:"Mine Life",v:"11 yrs"}, {l:"Initial CapEx",v:"$310M"}, {l:"CapEx / oz",v:"$129"} ] },
+    { type:"table", title:"Key Assumptions",
+      columns:["Assumption","Value"],
+      rows:[
+        ["Discount rate (WACC)","8.0%"],
+        ["Gold price deck","Consensus of 6 sell-side desks, Aug 2026"],
+        ["Reserve classification","JORC 2012 — Measured &amp; Indicated"],
+        ["GHS/USD exchange rate","15.8, held flat in real terms"],
+        ["Effective tax + royalty burden","35% corporate tax + 5% gross royalty"],
+      ] },
+    { type:"table", title:"DCF Cash-Flow Model ($M)",
+      columns:["Year","Revenue","Opex","CapEx","Royalties & Tax","Free Cash Flow"],
+      rows:[
+        ["Y1 (Construction)","0","0","-180","0","-180"],
+        ["Y2 (Ramp-up)","90","-45","-130","-4","-89"],
+        ["Y3","410","-155","-20","-18","217"],
+        ["Y4","430","-160","-15","-19","236"],
+        ["Y5","445","-165","-12","-20","248"],
+        ["Y6","420","-170","-10","-19","221"],
+        ["Y7","395","-172","-10","-18","195"],
+        ["Y8","360","-175","-8","-16","161"],
+      ], note:"Years 9–11 (tail production) omitted for brevity — full 11-year model available in export." },
+    { type:"chart-bar", title:"Free Cash Flow by Year ($M)",
+      data:[
+        {label:"Y1",value:-180,color:C.red},{label:"Y2",value:-89,color:C.red},{label:"Y3",value:217},
+        {label:"Y4",value:236},{label:"Y5",value:248},{label:"Y6",value:221},{label:"Y7",value:195},{label:"Y8",value:161}
+      ] },
+    { type:"table", title:"Commodity Price Sensitivity",
+      columns:["Gold Price ($/oz)","NPV @ 8%","IRR"],
+      rows:[
+        ["$1,900","$310M","14.2%"],
+        ["$2,150","$465M","19.8%"],
+        ["$2,350 (Base)","$612M","24.6%"],
+        ["$2,600","$802M","30.1%"],
+        ["$2,850","$985M","35.0%"],
+      ] },
+    { type:"list", title:"Market Risk Assessment",
+      items:[
+        "Gold price volatility — 30-day realized volatility currently 18%, above 5-year average of 14%",
+        "USD strength / DXY correlation of -0.6 with gold price over trailing 12 months",
+        "Ghana cedi (GHS) depreciation risk — historical average ~8%/year against USD, affects local opex",
+        "Ghana Minerals Income Investment Fund royalty stacking — potential 3–5% NPV impact under stacking scenarios",
+        "Power tariff escalation risk tied to VRA grid supply constraints in the Ashanti Region",
+      ] },
+  ],
+  methodology:"Cash flows modeled at real (2026) prices and discounted using the stated WACC. Reserve and grade data cross-referenced against Ghana Minerals Commission filings. Price sensitivity generated via a 10,000-iteration Monte Carlo simulation, collapsed to five illustrative scenarios above."
+},
+{
+  code:"02", label:"Mining Companies & Technical", persona:"Mining Companies & Technical Professionals",
+  title:"Boké Corridor Bauxite Complex — Master Project Dossier", id:"2.4", tab:"AI Generator", tier:"pro",
+  user:{ name:"E. Camara", role:"Exploration Manager" },
+  filters:[{k:"Country",v:"Guinea"},{k:"Commodity",v:"Bauxite"},{k:"Concession",v:"Boké Corridor Bauxite Complex"},{k:"AI Persona",v:"Combine All Personas"}],
+  sections:[
+    { type:"narrative", title:"Overview",
+      text:"This master dossier combines finance, environmental, social, governance, and operational findings for the Boké Corridor Bauxite Complex — intended for JV partner review and financier due diligence ahead of a Q1 2027 investment decision." },
+    { type:"stats", title:"Finance",
+      items:[ {l:"NPV @ 10%",v:"$940M"}, {l:"IRR",v:"21.3%"}, {l:"Payback",v:"4.6 yrs"}, {l:"CapEx",v:"$1.2B"}, {l:"Mine Life",v:"25 yrs"}, {l:"Base Price",v:"$58/t CIF"} ] },
+    { type:"table", title:"Key Assumptions",
+      columns:["Assumption","Value"],
+      rows:[
+        ["Discount rate","10.0%"],
+        ["Bauxite price deck","$58/t CIF — 3-yr trailing average blended with forward strip"],
+        ["Al₂O₃ recovery assumption","92%"],
+        ["Guinea fiscal burden","30% corporate tax + 0.75% ad valorem royalty"],
+        ["Rail tariff escalation","2.0% / year"],
+      ] },
+    { type:"table", title:"Environment",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Tailings design","Dry-stack, 40 Mt capacity"],
+        ["Seismic hazard","Low (PGA 0.05g)"],
+        ["Population within 5km of tailings","3,200"],
+        ["Water usage","1.8 Mm³ / yr"],
+        ["Baseline Water Stress index","3.2 / 5 (medium-high)"],
+        ["Scope 1 & 2 emissions","210 kt CO2e / yr"],
+        ["Carbon intensity","0.09 t CO2e / tonne bauxite"],
+      ] },
+    { type:"table", title:"Social",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Communities within 5km","3 villages (~11,400 people)"],
+        ["FPIC status","Consultation completed 2025"],
+        ["Grievance mechanism","Active — 14 logged / 9 resolved YTD"],
+        ["Local employment share","62% of workforce"],
+      ] },
+    { type:"table", title:"Governance",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Sovereign risk index (Guinea)","58 / 100 (moderate)"],
+        ["Regulatory compliance (24 mo.)","3 minor dust-control infractions"],
+        ["Environmental permit","Valid to 2031"],
+        ["Anti-corruption transparency score","41 / 100"],
+      ] },
+    { type:"table", title:"Operations",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Ore type","Gibbsite-dominant, 48% Al₂O₃ avg."],
+        ["Reactive silica","2.1% (low)"],
+        ["Pit stability — geotechnical factor of safety","1.4 (acceptable)"],
+        ["Rail access","32km spur to Kamsar port (existing)"],
+        ["Grid power connection","Pending, targeted 2027"],
+      ] },
+    { type:"chart-bar", title:"Production Ramp Profile (Mt / year)",
+      valueSuffix:"", data:[ {label:"Y1",value:2.0},{label:"Y2",value:4.5},{label:"Y3",value:6.0},{label:"Y4",value:6.0},{label:"Y5",value:6.0} ] },
+    { type:"callout", tone:"info", label:"AI Synthesis",
+      text:"The asset presents a bankable finance case with manageable operational risk. The primary items for JV/financier attention are the medium-high water stress rating and the pending 2027 grid connection, both of which should be addressed in covenant terms." },
+  ],
+  methodology:"Finance model built on a 25-year mine plan at nameplate 6 Mtpa. Environmental indicators combine company-disclosed monitoring data with biannual satellite change-detection. Governance and anti-corruption scores drawn from the MineSentinel Governance Index v3.2."
+},
+{
+  code:"03", label:"ESG & Compliance", persona:"ESG, Sustainability & Compliance Professionals",
+  title:"West Africa Portfolio — ESG & Ownership Report", id:"3.1", tab:"ESG & JV Shares", tier:null,
+  user:{ name:"A. Mensah", role:"ESG Analyst" },
+  filters:[{k:"Countries",v:"Ghana, Guinea, Mali, Côte d'Ivoire"},{k:"Concessions",v:"4 sites"},{k:"Scope",v:"Portfolio ESG review"}],
+  sections:[
+    { type:"table", title:"Key Assumptions",
+      columns:["Assumption","Value"],
+      rows:[
+        ["Scoring scale","0–100, higher indicates stronger performance"],
+        ["Pillar weighting","Environment 33% / Social 33% / Governance 34%"],
+        ["Data refresh cadence","Quarterly, with continuous satellite monitoring"],
+        ["Tailings hazard classification","ICOLD consequence-of-failure guidelines"],
+      ] },
+    { type:"table", title:"Environmental / Social / Governance Scoring by Site",
+      columns:["Site","Country","Commodity","E Score","S Score","G Score","Composite"],
+      rows:[
+        ["Nyarko Ridge","Ghana","Gold","71","68","74","71"],
+        ["Boké Corridor","Guinea","Bauxite","58","63","55","59"],
+        ["Kayes Corridor","Mali","Gold","49","52","44","48"],
+        ["Séguéla North","Côte d'Ivoire","Gold","66","70","61","66"],
+      ], note:"Composite is the weighted average of 34 underlying indicators per site." },
+    { type:"chart-grouped", title:"E / S / G Scores by Site",
+      groups:[
+        {label:"Nyarko Ridge", values:[71,68,74]},
+        {label:"Boké Corridor", values:[58,63,55]},
+        {label:"Kayes Corridor", values:[49,52,44]},
+        {label:"Séguéla North", values:[66,70,61]},
+      ], series:["Environment","Social","Governance"], colors:[C.malachite,C.ochre,C.copper] },
+    { type:"table", title:"Joint-Venture Ownership — Boké Corridor",
+      columns:["Party","Share"],
+      rows:[
+        ["Atlantic Bauxite Holdings","55%"],
+        ["Government of Guinea (carried interest)","30%"],
+        ["Mano River Development Fund","15%"],
+      ] },
+    { type:"callout", tone:"warn", label:"Tailings Assessment — Flagged Site: Kayes Corridor (Mali)",
+      text:"Upstream-construction facility, 12 Mt capacity, moderate seismic hazard, ~8,700 people within 10km. One minor seepage event recorded (2023, remediated). Upstream design plus population exposure warrants elevated monitoring frequency." },
+    { type:"list", title:"IFC Performance Standards Compliance Flags",
+      items:[
+        "PS1 (Environmental & social assessment) — compliant across all four sites",
+        "PS3 (Resource efficiency & pollution prevention) — Kayes Corridor flagged non-compliant (water use permit lapse, renewal in progress)",
+        "PS6 (Biodiversity) — Boké Corridor under review (forest buffer encroachment reported near northern boundary)",
+      ] },
+  ],
+  methodology:"ESG composite is an equal-weighted average of 34 indicators mapped to IFC Performance Standards, ICMM Mining Principles, and EITI disclosure criteria. Site-level satellite change-detection supplements company self-reported data on a rolling basis."
+},
+{
+  code:"04A", label:"Financial & Investment", persona:"Financial & Investment Professionals",
+  title:"Sikasso West Lithium Project — Investment Dossier", id:"4A.4", tab:"AI Generator", tier:"pro",
+  user:{ name:"T. Owusu", role:"Investment Analyst" },
+  filters:[{k:"Country",v:"Mali"},{k:"Commodity",v:"Lithium (spodumene)"},{k:"Concession",v:"Sikasso West Lithium Project"},{k:"AI Persona",v:"Morgan Chen (Finance)"}],
+  sections:[
+    { type:"narrative", title:"Investment Thesis Summary",
+      text:"Sikasso West is a hard-rock spodumene project targeting 1.2 Mtpa concentrate output from 2029. At a base-case concentrate price of <b>$1,150/t</b> and an <b>11.2% WACC</b>, the project returns an <b>NPV(11%) of $340M</b> and <b>19.4% IRR</b>. On a risk-adjusted basis — applying a 5.3% Mali sovereign risk premium — IRR compresses to <b>14.1%</b>, still above the fund's minimum hurdle rate." },
+    { type:"stats", title:"Key Metrics",
+      items:[ {l:"NPV @ 11%",v:"$340M"}, {l:"IRR",v:"19.4%"}, {l:"Risk-Adj. IRR",v:"14.1%"}, {l:"Payback",v:"4.9 yrs"}, {l:"CapEx",v:"$220M"}, {l:"WACC",v:"11.2%"} ] },
+    { type:"table", title:"Key Assumptions",
+      columns:["Assumption","Value"],
+      rows:[
+        ["WACC build-up","6.5% risk-free + country premium + equity premium"],
+        ["Spodumene benchmark","6% Li₂O concentrate, CIF China"],
+        ["Processing recovery","78%"],
+        ["Mali sovereign risk premium","5.3% (CDS-proxy blended with political risk index)"],
+      ] },
+    { type:"table", title:"CapEx Intensity",
+      columns:["Metric","Value"],
+      rows:[
+        ["Initial CapEx","$220M"],
+        ["Nameplate capacity","1.2 Mtpa concentrate"],
+        ["CapEx per tonne of annual capacity","$180 / t"],
+      ] },
+    { type:"table", title:"Spodumene Price Sensitivity",
+      columns:["Concentrate Price ($/t)","NPV @ 11%","IRR"],
+      rows:[
+        ["$850","$95M","10.8%"],
+        ["$1,000","$220M","15.6%"],
+        ["$1,150 (Base)","$340M","19.4%"],
+        ["$1,300","$455M","23.1%"],
+        ["$1,450","$565M","26.4%"],
+      ] },
+    { type:"chart-bar", title:"NPV by Price Scenario ($M)",
+      valuePrefix:"$", valueSuffix:"M",
+      data:[ {label:"$850",value:95},{label:"$1,000",value:220},{label:"$1,150",value:340},{label:"$1,300",value:455},{label:"$1,450",value:565} ] },
+    { type:"list", title:"Risk-Adjusted Return Notes",
+      items:[
+        "Sovereign risk premium reflects Mali's transitional governance period and regional security considerations",
+        "Lithium price assumptions benchmarked against a basket of 6% spodumene concentrate CIF China contracts",
+        "Currency exposure is largely USD-denominated for offtake; local opex exposed to CFA franc",
+      ] },
+  ],
+  methodology:"DCF built on a 12-year mine plan with 2-year construction lead time. WACC derived from a build-up method (risk-free rate, country risk premium, equity risk premium, size premium). Sensitivity table generated by holding all other variables at base case and flexing concentrate price only."
+},
+{
+  code:"04B", label:"Commodity Traders & Brokers", persona:"Commodity Traders & Brokers",
+  title:"Tambao Manganese Complex — Force Majeure Disruption Brief", id:"4B.1", tab:"Supply & Reserves", tier:null,
+  user:{ name:"R. Adjei", role:"Base Metals Analyst" },
+  filters:[{k:"Country",v:"Burkina Faso"},{k:"Commodity",v:"Manganese"},{k:"Event",v:"Force majeure — flooding, haul road"},{k:"Declared",v:"8 Aug 2026"}],
+  sections:[
+    { type:"callout", tone:"warn", label:"Event Summary",
+      text:"Force majeure declared 8 Aug 2026 at Tambao Manganese Complex following flood damage to the primary haul road. Ore movement suspended; repair timeline estimated at 3–6 weeks pending engineering assessment." },
+    { type:"stats", title:"Affected Site — Current Production",
+      items:[ {l:"Annual Output",v:"1.4 Mt Mn ore"}, {l:"Regional Supply Share",v:"~2.8%"}, {l:"Reserve Base",v:"38 Mt"}, {l:"Implied Mine Life",v:"27 yrs"} ] },
+    { type:"table", title:"Alternative Supply Sources (Same Commodity, Unaffected)",
+      columns:["Mine","Country","Annual Production","Spare Capacity"],
+      rows:[
+        ["Tambao Manganese Complex (affected)","Burkina Faso","1.4 Mt","—"],
+        ["Fada Manganese Belt","Burkina Faso","0.9 Mt","0.2 Mt"],
+        ["Kédougou Manganese Prospect","Senegal","0.5 Mt","0.1 Mt"],
+        ["Nimba Manganese Extension","Guinea / Liberia border","2.1 Mt","0.3 Mt"],
+      ] },
+    { type:"chart-bar", title:"Annual Production by Mine (Mt Mn ore)",
+      data:[
+        {label:"Tambao",value:1.4,color:C.red},
+        {label:"Fada Belt",value:0.9},
+        {label:"Kédougou",value:0.5},
+        {label:"Nimba Ext.",value:2.1},
+      ] },
+    { type:"table", title:"Forward Supply Projection — Disruption Scenario",
+      columns:["Scenario","Regional Mn Supply Impact","Est. Price Impact (44% grade, CIF China)"],
+      rows:[
+        ["Resolved within 3 weeks","-4% (Q3 2026)","+2–3%"],
+        ["Resolved within 6 weeks","-11% (Q3 2026)","+5–7%"],
+        ["Extends beyond 6 weeks","-18% (Q3 2026)","+6–9%"],
+      ] },
+    { type:"narrative", title:"Trading Context",
+      text:"The affected volume is modest relative to total regional supply, but Tambao is a marginal-cost swing producer for spot cargoes into the Chinese ferro-alloy market. Spare capacity at alternative sites is thin, limiting the market's ability to fully absorb an extended outage without price effect." },
+  ],
+  methodology:"Alternative supply identification limited to mines within a 400km transport radius with existing rail or port access. Price impact estimates derived from the historical elasticity of West Africa Mn ore CIF China spot price to regional supply shocks (estimated elasticity coefficient: -0.9)."
+},
+{
+  code:"05A", label:"Legal & Regulatory", persona:"Legal & Regulatory Professionals",
+  title:"Séguéla North Gold Belt — Regulatory & Governance Dossier", id:"5A.3", tab:"AI Generator", tier:"pro",
+  user:{ name:"N. Diallo", role:"Mining Lawyer" },
+  filters:[{k:"Country",v:"Côte d'Ivoire"},{k:"Commodity",v:"Gold"},{k:"Concession",v:"Séguéla North Gold Belt"},{k:"AI Persona",v:"A. Patel (Governance)"}],
+  sections:[
+    { type:"table", title:"Regulatory History",
+      columns:["Date","Action","Authority","Outcome"],
+      rows:[
+        ["2022-03","Mining permit renewal","Ministry of Mines & Geology","Approved — 10yr term"],
+        ["2023-11","Environmental compliance audit","ANDE (Environment Agency)","Passed, 2 minor findings"],
+        ["2024-06","Community relations inquiry","Prefecture of Séguéla","Resolved, no sanctions"],
+        ["2025-09","Export quota review","Ministry of Mines","Quota increased +12%"],
+      ] },
+    { type:"gauges", title:"Sovereign & Rule-of-Law Indices",
+      items:[
+        {label:"Sovereign Risk Score", pct:63, display:"63 / 100", color:C.copper},
+        {label:"Rule-of-Law Index (scaled)", pct:48, display:"0.48", color:C.malachite},
+        {label:"Political Stability Percentile", pct:41, display:"41st pct.", color:C.ochre},
+        {label:"CPI Transparency Proxy", pct:39, display:"39 / 100", color:C.red},
+      ] },
+    { type:"list", title:"Anti-Corruption & Transparency",
+      items:[
+        "Extractive Industries Transparency Initiative (EITI) status: Compliant (2025 validation report)",
+        "No open bribery or procurement-integrity investigations on record for this concession",
+        "Beneficial ownership disclosure filed and current as of 2025 validation cycle",
+      ] },
+    { type:"table", title:"Legal Framework Assessment",
+      columns:["Provision","Detail"],
+      rows:[
+        ["Governing code","Mining Code 2014, as amended 2021"],
+        ["Local content requirement","35% by 2027"],
+        ["Free carried interest to state","10%"],
+        ["Stability clause","In force until 2032"],
+      ] },
+    { type:"callout", tone:"info", label:"Governance Assessment",
+      text:"The concession's compliance record is clean over the review period, and the applicable stability clause reduces near-term fiscal-regime risk through 2032. The moderate rule-of-law index warrants standard (not enhanced) contractual protections in transaction documents." },
+  ],
+  methodology:"Governance indices sourced from the MineSentinel Governance Index v3.2, which blends World Bank Governance Indicators, EITI validation status, and Transparency International CPI proxy scores, normalized to a 0–100 scale."
+},
+{
+  code:"05B", label:"Government & Policy", persona:"Government & Policy Professionals",
+  title:"Ghana — National Mining Portfolio Risk Report", id:"5B.2", tab:"Risk & Lifecycles", tier:null,
+  user:{ name:"F. Asante", role:"Ministry of Mines Consultant" },
+  filters:[{k:"Country",v:"Ghana"},{k:"Scope",v:"All active concessions"}],
+  sections:[
+    { type:"table", title:"National Concession Portfolio",
+      columns:["Concession","Commodity","Lifecycle Stage","Compliance Status","Risk Flag"],
+      rows:[
+        ["Nyarko Ridge","Gold","Development","Compliant","Low"],
+        ["Obuasi Extension North","Gold","Production","Compliant","Low"],
+        ["Tarkwa Basin Block C","Gold","Production","1 open finding","Medium"],
+        ["Axim Coastal Sands","Bauxite / Titanium","Exploration","Compliant","Low"],
+        ["Bui Manganese Prospect","Manganese","Pre-feasibility","Compliant","Low"],
+        ["Volta Ridge Diamonds","Diamonds","Care & Maintenance","Compliant","Medium (idle 18+ mo.)"],
+      ] },
+    { type:"gauges", title:"Infrastructure Dependency",
+      items:[
+        {label:"Takoradi Port Utilization", pct:78, display:"78%", color:C.malachite},
+        {label:"Obuasi–Kumasi Rail Corridor", pct:55, display:"Fair", color:C.ochre},
+        {label:"National Grid Capacity Margin", pct:6, display:"6% (tight)", color:C.red},
+      ] },
+    { type:"list", title:"Political & Operational Risk Indicators",
+      items:[
+        "Next general election: December 2028 — policy continuity risk assessed low-to-moderate",
+        "Artisanal mining (galamsey) encroachment flagged at 2 of 6 tracked concessions",
+        "No royalty rate changes currently proposed in the sitting parliamentary session",
+      ] },
+    { type:"callout", tone:"warn", label:"Portfolio Attention Items",
+      text:"Tarkwa Basin Block C's open compliance finding and Volta Ridge Diamonds' extended idle status are the two portfolio items most likely to require ministry follow-up this quarter." },
+  ],
+  methodology:"Infrastructure utilization sourced from port authority throughput filings and national grid operator capacity reports. Concession lifecycle and compliance status cross-checked against the Minerals Commission cadastre on a rolling 30-day refresh."
+},
+{
+  code:"06A", label:"Development Finance / Aid", persona:"Development Finance / Aid Professionals",
+  title:"Kayes Gold Corridor Extension — DFI Safeguards & Investment Screening Dossier", id:"6A.3", tab:"AI Generator", tier:"pro",
+  user:{ name:"S. Ibrahim", role:"DFI Investment Officer" },
+  filters:[{k:"Country",v:"Mali"},{k:"Commodity",v:"Gold"},{k:"Concession",v:"Kayes Gold Corridor Extension"},{k:"AI Persona",v:"Combine All Personas"}],
+  sections:[
+    { type:"stats", title:"Finance",
+      items:[ {l:"NPV @ 10%",v:"$184M"}, {l:"IRR",v:"17.8%"}, {l:"Payback",v:"5.2 yrs"}, {l:"CapEx",v:"$145M"} ] },
+    { type:"table", title:"Environment",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Tailings design","Upstream construction, 9 Mt capacity"],
+        ["Water stress (Baseline Water Stress index)","4.1 / 5 (high)"],
+        ["Carbon intensity","0.14 t CO2e / oz"],
+      ] },
+    { type:"table", title:"Social",
+      columns:["Indicator","Value"],
+      rows:[
+        ["FPIC status","In progress — est. completion Q1 2027"],
+        ["Communities within 6km","2 villages (~6,100 people)"],
+        ["Resettlement","None planned"],
+      ] },
+    { type:"gauges", title:"Governance & Environmental Risk Indices",
+      items:[
+        {label:"Sovereign Risk (Mali)", pct:34, display:"34 / 100", color:C.red},
+        {label:"Anti-Corruption Score", pct:26, display:"26 / 100", color:C.red},
+        {label:"Water Stress (scaled)", pct:82, display:"4.1 / 5", color:C.copper},
+      ] },
+    { type:"table", title:"Operations",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Technical readiness","Bankable feasibility study complete (2025)"],
+        ["Ore grade","2.1 g/t Au average"],
+        ["Access infrastructure","45km unpaved road — upgrade required (+$18M)"],
+      ] },
+    { type:"callout", tone:"warn", label:"Safeguard Screening Recommendation",
+      text:"Elevated sovereign and governance risk, combined with an upstream-design tailings facility and incomplete FPIC, together indicate a Category A safeguard classification with enhanced monitoring covenants recommended prior to disbursement." },
+  ],
+  methodology:"Safeguard categorization follows IFC Performance Standards / Equator Principles screening criteria. Risk indices normalized to a 0–100 scale from the MineSentinel Governance Index v3.2; water stress rescaled from the WRI Aqueduct 1–5 baseline scale."
+},
+{
+  code:"06B", label:"Academia & Research", persona:"Academia & Research",
+  title:"West Africa Gold & Bauxite — 10-Year Historical Reserve & Production Dataset", id:"6B.1", tab:"Supply & Reserves", tier:null,
+  user:{ name:"Dr. L. Owusu-Ansah", role:"Mining Economics Researcher" },
+  filters:[{k:"Countries",v:"Ghana, Mali, Côte d'Ivoire, Burkina Faso, Guinea"},{k:"Commodities",v:"Gold, Bauxite"},{k:"Period",v:"2016–2025"}],
+  sections:[
+    { type:"table", title:"Aggregate Reserve & Production, 2016–2025",
+      columns:["Year","Au Reserve (Moz)","Au Production (Moz)","Bauxite Reserve (Mt, Guinea)","Bauxite Production (Mt)"],
+      rows:[
+        ["2016","61.2","3.8","7,400","48"],
+        ["2018","64.5","4.1","7,650","61"],
+        ["2020","67.1","4.3","7,900","82"],
+        ["2022","70.8","4.6","8,200","95"],
+        ["2024","74.2","4.9","8,550","108"],
+        ["2025","75.9","5.0","8,700","114"],
+      ], note:"Even-numbered years shown for brevity — full annual series (2016–2025) available in export." },
+    { type:"chart-line", title:"Aggregate Au Reserve Trend (Moz)",
+      data:[ {label:"2016",value:61.2},{label:"2018",value:64.5},{label:"2020",value:67.1},{label:"2022",value:70.8},{label:"2024",value:74.2},{label:"2025",value:75.9} ] },
+    { type:"narrative", title:"Forward Projection Assumptions",
+      text:"Base-case scenario applies a <b>2.1% CAGR</b> to the aggregate gold reserve base and a <b>3.4% CAGR</b> to bauxite production growth through 2030, derived from trailing 5-year trend lines across the filtered dataset." },
+    { type:"callout", tone:"info", label:"Exportable Underlying Data",
+      text:"A per-mine, per-year granularity CSV (1,240 rows) is available via the Dynamic Builder tab for direct import into R, Python, or Stata." },
+  ],
+  methodology:"CAGR derived via log-linear regression on the trailing 5-year reserve and production series (R² = 0.97 gold reserve, R² = 0.94 bauxite production). Country-level series harmonized across differing national geological survey reporting standards prior to aggregation."
+},
+{
+  code:"06C", label:"Journalists & Editors", persona:"Journalists & Editors",
+  title:"Nyarko Ridge Gold Project — Licence Suspension Investigative Dossier", id:"6C.4", tab:"AI Generator", tier:"pro",
+  user:{ name:"P. Boateng-Larbi", role:"Investigative Reporter" },
+  filters:[{k:"Country",v:"Ghana"},{k:"Concession",v:"Nyarko Ridge Gold Project"},{k:"Event",v:"Licence suspended 5 Aug 2026"},{k:"AI Persona",v:"Combine All Personas"}],
+  sections:[
+    { type:"callout", tone:"warn", label:"Event Summary",
+      text:"Licence suspended 5 Aug 2026 pending an environmental review triggered by a tailings dam inspection. Ministry of Mines describes the suspension as precautionary, pending an EPA Ghana review." },
+    { type:"timeline", title:"Timeline of Events",
+      events:[
+        {date:"Jul 2026", label:"Community water-quality concerns first reported", text:"Residents of Nyarko and Asubone raise informal concerns about discoloured well water."},
+        {date:"28 Jul 2026", label:"Formal grievance filed", text:"A written grievance is lodged with site management under the concession's community grievance mechanism."},
+        {date:"2 Aug 2026", label:"Seepage detected at MW-7", text:"Routine monitoring detects downstream seepage at monitoring well MW-7, triggering an internal inspection."},
+        {date:"5 Aug 2026", label:"Licence suspended", text:"Ministry of Mines suspends the operating licence pending an EPA Ghana environmental review."},
+      ] },
+    { type:"table", title:"Finance — Value at Risk",
+      columns:["Metric","Value"],
+      rows:[
+        ["Production value at risk","$1.1M / day (470 oz/day at $2,350/oz)"],
+        ["NPV exposure if suspension exceeds 90 days","-$38M"],
+      ] },
+    { type:"table", title:"Environment",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Inspection trigger","Downstream seepage detected at monitoring well MW-7 (2 Aug 2026)"],
+        ["Dam hazard classification","Significant hazard category"],
+        ["Prior incident history","None on record"],
+      ] },
+    { type:"list", title:"Social — Community Statements",
+      items:[
+        "Two nearby communities (Nyarko, Asubone) have reported water-quality concerns since July 2026",
+        "A formal grievance was filed with site management on 28 Jul 2026",
+      ] },
+    { type:"table", title:"Governance",
+      columns:["Indicator","Value"],
+      rows:[
+        ["Ministry of Mines position","Suspension \"precautionary, pending EPA Ghana review\""],
+        ["Compliance history","0 major infractions in 6 years prior to this event"],
+      ] },
+    { type:"list", title:"Operations",
+      items:[
+        "Independent geotechnical review ordered; completion expected in 4–6 weeks",
+        "Workforce of approximately 340 placed on partial stand-down during the review period",
+      ] },
+  ],
+  methodology:"Timeline reconstructed from site inspection logs, the community grievance register, and public Ministry of Mines statements. Financial exposure estimated using the disclosed production rate and spot gold price at time of suspension."
+},
+];
+
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+function statGrid(items){
+  return `<div class="stat-grid">${items.map(i => `<div class="stat-tile"><div class="v">${i.v}</div><div class="l">${i.l}</div></div>`).join('')}</div>`;
+}
+function dataTable(cols, rows, note){
+  return `<div class="table-wrap"><table class="rtable"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>
+    ${rows.map(r => `<tr>${r.map((cell,i) => `<td class="${i===0?'strong':''}">${cell}</td>`).join('')}</tr>`).join('')}
+  </tbody></table></div>${note ? `<div class="table-note">${note}</div>` : ''}`;
+}
+function gaugeRows(items){
+  return items.map(i => `<div class="gauge-row">
+    <div class="gauge-label">${i.label}</div>
+    <div class="gauge-track"><div class="gauge-fill" style="width:${Math.max(2,Math.min(100,i.pct))}%;background:${i.color||C.malachite}"></div></div>
+    <div class="gauge-value">${i.display}</div>
+  </div>`).join('');
+}
+function timelineHtml(events){
+  return `<div class="timeline">${events.map(e => `
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-content">
+        <div class="tl-date">${e.date}</div>
+        <div class="tl-label">${e.label}</div>
+        <div class="tl-text">${e.text}</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+function barChart(data, opts={}){
+  const w=680,h=opts.height||190;
+  const pad={t:26,r:14,b:32,l:14};
+  const innerW=w-pad.l-pad.r, innerH=h-pad.t-pad.b;
+  const vals=data.map(d=>d.value);
+  const maxV=Math.max(...vals,0), minV=Math.min(...vals,0);
+  const range=(maxV-minV)||1;
+  const zeroY=pad.t+innerH*(maxV/range);
+  const n=data.length, gap=innerW/n;
+  const barW=Math.min(gap*0.55,50);
+  let bars='';
+  data.forEach((d,i)=>{
+    const x=pad.l+gap*i+(gap-barW)/2;
+    const barH=Math.abs(d.value)/range*innerH;
+    const y=d.value>=0? zeroY-barH : zeroY;
+    const color=d.color||opts.color||C.malachite;
+    bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${Math.max(barH,1).toFixed(1)}" rx="3" fill="${color}"/>`;
+    const valY = d.value>=0 ? y-7 : y+barH+14;
+    bars+=`<text x="${(x+barW/2).toFixed(1)}" y="${valY.toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" fill="${C.inkDim}">${opts.valuePrefix||''}${d.value}${opts.valueSuffix||''}</text>`;
+    bars+=`<text x="${(x+barW/2).toFixed(1)}" y="${h-9}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="${C.inkFaint}">${d.label}</text>`;
+  });
+  const zeroLine = `<line x1="${pad.l}" y1="${zeroY.toFixed(1)}" x2="${w-pad.r}" y2="${zeroY.toFixed(1)}" stroke="${C.border}" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">${zeroLine}${bars}</svg>`;
+}
+function groupedBarChart(groups, colors, opts={}){
+  const w=680,h=opts.height||220;
+  const pad={t:26,r:14,b:42,l:14};
+  const innerW=w-pad.l-pad.r, innerH=h-pad.t-pad.b;
+  const maxV=100;
+  const n=groups.length, s=colors.length;
+  const groupGap=innerW/n;
+  const barW=Math.min((groupGap*0.7)/s,20);
+  const seriesGap=3;
+  let bars='';
+  groups.forEach((g,gi)=>{
+    const setW=barW*s+seriesGap*(s-1);
+    const gx=pad.l+groupGap*gi+(groupGap-setW)/2;
+    g.values.forEach((v,si)=>{
+      const barH=(v/maxV)*innerH;
+      const x=gx+si*(barW+seriesGap);
+      const y=pad.t+innerH-barH;
+      bars+=`<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" rx="2" fill="${colors[si]}"/>`;
+      bars+=`<text x="${(x+barW/2).toFixed(1)}" y="${(y-4).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="${C.inkDim}">${v}</text>`;
+    });
+    bars+=`<text x="${(gx+setW/2).toFixed(1)}" y="${h-22}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="${C.inkFaint}">${g.label}</text>`;
+  });
+  const baseline=`<line x1="${pad.l}" y1="${(pad.t+innerH).toFixed(1)}" x2="${w-pad.r}" y2="${(pad.t+innerH).toFixed(1)}" stroke="${C.border}" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">${baseline}${bars}</svg>`;
+}
+function lineChart(data, opts={}){
+  const w=680,h=opts.height||200;
+  const pad={t:26,r:24,b:32,l:24};
+  const innerW=w-pad.l-pad.r, innerH=h-pad.t-pad.b;
+  const vals=data.map(d=>d.value);
+  const maxV=Math.max(...vals), minV=Math.min(...vals);
+  const range=(maxV-minV)||1;
+  const n=data.length, stepX = n>1 ? innerW/(n-1) : 0;
+  const pts=data.map((d,i)=>({ x:pad.l+stepX*i, y:pad.t+innerH-((d.value-minV)/range)*innerH, d }));
+  const pathD=pts.map((p,i)=> (i===0?'M':'L')+p.x.toFixed(1)+','+p.y.toFixed(1)).join(' ');
+  const areaD = pathD + ` L${pts[pts.length-1].x.toFixed(1)},${(pad.t+innerH).toFixed(1)} L${pts[0].x.toFixed(1)},${(pad.t+innerH).toFixed(1)} Z`;
+  let dots='', labels='';
+  pts.forEach(p=>{
+    dots+=`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="${C.malachite}"/>`;
+    dots+=`<text x="${p.x.toFixed(1)}" y="${(p.y-11).toFixed(1)}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="${C.inkDim}">${p.d.value}</text>`;
+    labels+=`<text x="${p.x.toFixed(1)}" y="${h-9}" text-anchor="middle" font-family="Inter, sans-serif" font-size="10.5" fill="${C.inkFaint}">${p.d.label}</text>`;
+  });
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto;display:block;">
+    <path d="${areaD}" fill="${C.malachite}" opacity="0.08"/>
+    <path d="${pathD}" fill="none" stroke="${C.malachite}" stroke-width="2"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
+function renderSection(s, reportId){
+  const heading = s.title;
+  const id = `${reportId}-${slug(heading||'section')}`;
+  let inner = '';
+  if (s.type === 'narrative') inner = `<p class="narrative-text">${s.text}</p>`;
+  else if (s.type === 'stats') inner = statGrid(s.items);
+  else if (s.type === 'table') inner = dataTable(s.columns, s.rows, s.note);
+  else if (s.type === 'list') inner = `<ul class="rlist">${s.items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  else if (s.type === 'callout') inner = `<div class="callout ${s.tone}"><div class="clabel">${s.label}</div><p>${s.text}</p></div>`;
+  else if (s.type === 'chart-bar') inner = `<div class="chart-box">${barChart(s.data, s)}</div>`;
+  else if (s.type === 'chart-line') inner = `<div class="chart-box">${lineChart(s.data, s)}</div>`;
+  else if (s.type === 'chart-grouped') inner = `<div class="chart-box">${groupedBarChart(s.groups, s.colors, s)}<div class="legend-row">${s.series.map((name,i)=>`<span class="legend-item"><span class="legend-dot" style="background:${s.colors[i]}"></span>${name}</span>`).join('')}</div></div>`;
+  else if (s.type === 'gauges') inner = gaugeRows(s.items);
+  else if (s.type === 'timeline') inner = timelineHtml(s.events);
+  const showLabel = s.type !== 'callout';
+  return { html:`<div class="section" id="${id}">${showLabel && heading ? `<div class="section-label">${heading}</div>` : ''}${inner}</div>`, id, heading:heading||s.label };
+}
+
+function tagsFor(r){
+  let out = `<span class="tag tab-name">${r.tab}</span>`;
+  if (r.tier === 'pro') out += `<span class="tag pro">PRO</span>`;
+  out += `<span class="tag sample">SAMPLE</span>`;
+  return out;
+}
+
+function renderReport(r){
+  const rendered = r.sections.map(s => renderSection(s, r.code));
+  const nav = rendered.filter(x => x.heading).map(x => `<a href="#${x.id}">${x.heading}</a>`).join('');
+  return `
+    <div class="persona-context">
+      <div class="eyebrow">Persona ${r.code} — ${r.persona}</div>
+    </div>
+    <div class="report-doc">
+      <div class="report-letterhead">
+        <div class="lh-top">
+          <div class="lh-idbadges">${tagsFor(r)}</div>
+          <div class="lh-meta">Report ${r.id} · Generated 11 Aug 2026, 09:14 GMT</div>
+        </div>
+        <h2 class="report-title">${r.title}</h2>
+        <div class="lh-generated-by">Generated for <b>${r.user.name}</b> · ${r.user.role}</div>
+        <div class="filter-chips">${r.filters.map(f => `<span class="filter-chip"><span class="k">${f.k}:</span>${f.v}</span>`).join('')}</div>
+      </div>
+      <div class="contents-nav"><span class="cn-label">On this report</span>${nav}</div>
+      <div class="report-body">
+        ${rendered.map(x => x.html).join('')}
+      </div>
+      ${r.methodology ? `<div class="methodology"><div class="m-label">Methodology &amp; Sources</div><p>${r.methodology}</p></div>` : ''}
+      <div class="report-footer">
+        <div class="export-row">
+          <span class="export-btn primary">Export PDF</span>
+          <span class="export-btn">Export Markdown</span>
+          <span class="export-btn">Open in AI Copilot</span>
+        </div>
+        <div class="footer-note">MineSentinel Intelligence Hub · Sample output</div>
+      </div>
+    </div>
+  `;
+}
+
+let activeCode = REPORTS[0].code;
+
+function render(){
+  const rail = document.getElementById('rail');
+  const main = document.getElementById('main');
+
+  rail.innerHTML = `<div class="rail-label">Switch persona</div>` + REPORTS.map(r => `
+    <button class="tab-btn ${r.code === activeCode ? 'active' : ''}" data-code="${r.code}">
+      <span class="tab-code">${r.code}</span>
+      <span class="tab-label">${r.label}</span>
+    </button>
+  `).join('');
+
+  rail.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCode = btn.getAttribute('data-code');
+      render();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  const report = REPORTS.find(r => r.code === activeCode);
+  main.innerHTML = renderReport(report);
+}
+
+render();
+</script>
+
+</body>
+</html>

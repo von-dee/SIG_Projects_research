@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mining Sector Persona Profiles</title>
+<style>
+  :root {
+    --primary: #162235;
+    --primary-mid: #1e3a52;
+    --primary-light: #1B6B7A;
+    --accent: #37DCF2;
+    --text: #1a1a1a;
+    --text-secondary: #4a5568;
+    --bg: #ffffff;
+    --surface: #f7f9fb;
+    --surface-alt: #edf2f5;
+    --border: #dce3e8;
+    --card-shadow: 0 2px 12px rgba(22,34,53,0.08);
+    --goal-green: #065f46;
+    --goal-green-bg: #d1fae5;
+    --pain-amber: #92400e;
+    --pain-amber-bg: #fef3c7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text);
+    background: var(--surface);
+    line-height: 1.7;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%);
+    color: #fff;
+    padding: 80px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    bottom: -60px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(55,220,242,0.06);
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .hero h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+  .hero p { font-size: 17px; color: #a0b0c0; max-width: 640px; line-height: 1.7; }
+
+  /* ── Nav ── */
+  .nav-bar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .nav-inner a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 14px 14px;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-inner a:hover { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+
+  /* ── Container ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 30px 80px; }
+
+  /* ── Persona Card ── */
+  .persona-card {
+    background: var(--bg);
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 48px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .persona-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-mid) 100%);
+    padding: 28px 36px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .persona-number {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--accent);
+    opacity: 0.7;
+    line-height: 1;
+    min-width: 50px;
+  }
+  .persona-header-text h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .persona-header-text .tagline { font-size: 14px; color: #90a8b8; font-weight: 400; }
+  .persona-body { padding: 32px 36px; }
+
+  /* ── Sections within card ── */
+  .section { margin-bottom: 28px; }
+  .section:last-child { margin-bottom: 0; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--primary-light);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .section p { font-size: 15px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 10px; }
+  .section p:last-child { margin-bottom: 0; }
+
+  /* ── Workflow list ── */
+  .workflow-list { list-style: none; counter-reset: step; }
+  .workflow-list li {
+    counter-increment: step;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .workflow-list li::before {
+    content: counter(step);
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--surface-alt);
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+  .workflow-list li strong { color: var(--text); font-weight: 600; }
+  .workflow-list li span { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+  /* ── Goal box ── */
+  .goal-box {
+    background: var(--goal-green-bg);
+    border-left: 4px solid var(--goal-green);
+    border-radius: 0 8px 8px 0;
+    padding: 18px 22px;
+  }
+  .goal-box p { color: var(--goal-green); font-weight: 500; font-size: 14.5px; margin: 0; }
+
+  /* ── Pain point tags ── */
+  .pain-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .pain-tag {
+    background: var(--pain-amber-bg);
+    color: var(--pain-amber);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .hero { padding: 50px 20px 40px; }
+    .hero h1 { font-size: 26px; }
+    .persona-header { padding: 20px 22px; }
+    .persona-body { padding: 22px; }
+    .persona-number { font-size: 28px; min-width: 40px; }
+    .workflow-list li::before { width: 24px; height: 24px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Industry Reference</div>
+    <h1>Mining Sector Persona Profiles</h1>
+    <p>Detailed job descriptions, day-to-day workflows, pain points, and end goals for six key roles across the mining and minerals value chain.</p>
+  </div>
+</div>
+
+<!-- Sticky Nav -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a href="#consultant">Consultant</a>
+    <a href="#esg">ESG Manager</a>
+    <a href="#analyst">Investment Analyst</a>
+    <a href="#legal">Legal Manager</a>
+    <a href="#operations">Ops Manager</a>
+    <a href="#risk">Risk Manager</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 1. CONSULTANT                                  -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="consultant">
+    <div class="persona-header">
+      <div class="persona-number">01</div>
+      <div class="persona-header-text">
+        <h2>Mining / Minerals Consultant</h2>
+        <div class="tagline">Due Diligence and Advisory</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>A mining consultant is an external specialist hired by investors, mining companies, governments, or financial institutions to provide independent, expert-level assessment of mining projects and concessions. Their core function is to turn a client's question ("Is this site worth investing in?") into a verified, defensible report before capital or field teams are committed. They operate across the full project lifecycle, from early-stage greenfield exploration due diligence through to operational audits and divestment advisory.</p>
+        <p>Consultants typically work for specialist firms (e.g., SRK, Wood Mackenzie, CSA Global) or as independent practitioners. They are expected to combine technical geology knowledge with commercial awareness, regulatory understanding, and the ability to communicate complex findings to non-technical decision-makers. Their reports carry significant weight in investment committee discussions, board presentations, and regulatory submissions.</p>
+        <p>In West African markets like Ghana, consultants frequently navigate fragmented public data ecosystems, informal land tenure systems, and rapidly evolving regulatory frameworks. The role demands both deep local knowledge and the ability to synthesize findings into clear, actionable recommendations under tight timelines.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Receive the brief.</strong> A client provides a location, concession ID, or target area. The consultant clarifies scope, timeline, and deliverables. Most engagements start with a vague request ("check this area for us") that requires scoping before real work begins.</span></li>
+          <li><span><strong>Collect public records manually.</strong> This is the most time-consuming phase. The consultant visits or contacts the Minerals Commission, EPA, Lands Commission, and EITI secretariat to pull title records, royalty payments, license status, and environmental permits. In parallel, they gather shapefiles for protected areas, road networks, and conflict databases. This phase alone can take one to two weeks.</span></li>
+          <li><span><strong>Verify title and fiscal compliance.</strong> Cross-reference who actually holds the title against multiple sources, check for royalty arrears or gap years in payment history, and confirm the license is in good standing. Discrepancies between the Minerals Commission register and EITI reports are common and require investigation.</span></li>
+          <li><span><strong>Map the licensing pathway.</strong> Determine where the concession sits on the licensing ladder (Reconnaissance Licence, Prospecting Licence, Mining Lease, operating permits) and identify the agencies, timelines, and hard-stop conditions at each stage. This requires up-to-date knowledge of the Minerals and Mining Act and its amendments.</span></li>
+          <li><span><strong>Assess logistics and infrastructure.</strong> Check whether ore can physically move to market: road quality and distances, port access, nearby processing plants, power availability, and water supply. This often involves reviewing government infrastructure plans and satellite imagery of road conditions.</span></li>
+          <li><span><strong>Investigate land tenure and community.</strong> Identify whose land the concession sits on (stool land, family land, state land), the relevant District Assembly, and the compensation framework under L.I. 2175. Community relations and resettlement risk are increasingly critical in project viability assessments.</span></li>
+          <li><span><strong>Evaluate security and galamsey exposure.</strong> Assess the level of illegal mining (galamsey) activity in and around the concession, review incident databases, and evaluate the broader security environment. This often involves local contacts and site visits rather than desk research alone.</span></li>
+          <li><span><strong>Plan the field visit.</strong> Compile all desk findings into a structured field-visit checklist, separating what has been verified from data from what must be confirmed on the ground. This is the bridge between the desk phase and the site assessment phase.</span></li>
+          <li><span><strong>Assemble the client report.</strong> Synthesize all findings into a professional report with maps, tables, risk matrices, and recommendations. The report must be defensible, clearly sourced, and tailored to the client's decision-making needs. Formatting and branding requirements vary by client.</span></li>
+          <li><span><strong>Incorporate field corrections.</strong> After the site visit, update the report with ground-truth observations, correct any data that turned out to be wrong (e.g., incorrect stool names, boundary discrepancies), and deliver the final version.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">Weeks of manual data collection</span>
+          <span class="pain-tag">Fragmented government databases</span>
+          <span class="pain-tag">Stale or contradictory public records</span>
+          <span class="pain-tag">No single source of truth for title status</span>
+          <span class="pain-tag">Repetitive report formatting across clients</span>
+          <span class="pain-tag">Field data corrections never fed back upstream</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Deliver a verified, defensible due diligence report that gives the client clear Go / No-Go confidence on a concession or mining asset, backed by traceable data sources, within days rather than weeks.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2. ESG & COMPLIANCE MANAGER                  -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="esg">
+    <div class="persona-header">
+      <div class="persona-number">02</div>
+      <div class="persona-header-text">
+        <h2>ESG and Compliance Manager</h2>
+        <div class="tagline">Environmental, Social and Governance</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>The ESG and Compliance Manager is responsible for ensuring that a mining company's operations meet all environmental permits, social license obligations, and governance standards required by regulators, investors, and international frameworks. They sit at the intersection of regulatory compliance, community relations, environmental science, and corporate reporting.</p>
+        <p>In practice, this role involves screening new project sites for environmental and social risk before investment decisions are made, tracking ongoing compliance with permit conditions (Environmental Impact Assessments, reclamation bonds, buffer zone rules), and producing structured reports against established ESG frameworks such as GRI, SASB, the Equator Principles, or IFC Performance Standards. The role has grown significantly in importance over the past decade as institutional investors increasingly tie capital allocation to ESG performance.</p>
+        <p>The ESG Manager must maintain relationships with regulatory agencies (EPA, WRC, Minerals Commission), community leaders, and internal stakeholders (operations teams, legal, executive leadership). They are often the first to know when a site is falling out of compliance, and the last line of defense before a regulatory violation escalates into a fine, shutdown, or reputational crisis.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Define the assessment scope.</strong> Receive a request to evaluate a site or impact area, either for a new investment decision or an ongoing compliance review. Clarify which ESG framework applies and what the output needs to look like.</span></li>
+          <li><span><strong>Check protected-area proximity.</strong> Query protected area databases (WDPA, Ramsar sites, forest reserves) and apply buffer zones to determine whether the concession or its area of influence overlaps with or is too close to environmentally sensitive areas. This is often a pass/fail gate for project viability.</span></li>
+          <li><span><strong>Assess water stress and downstream risk.</strong> Evaluate water availability using tools like the WRI Aqueduct platform, identify watershed boundaries, and check for existing water contamination issues in the basin. Downstream communities and ecosystems are a major liability vector.</span></li>
+          <li><span><strong>Track deforestation and vegetation change.</strong> Use satellite data (Global Forest Watch, Landsat, Sentinel) to assess historical and current vegetation loss in and around the concession. This is critical for both permit compliance and investor-facing ESG disclosures.</span></li>
+          <li><span><strong>Evaluate tailings and legacy liabilities.</strong> Check proximity to existing tailings storage facilities (TSFs), review their safety records, and assess whether legacy environmental liabilities from previous mining operations could transfer to the current operator.</span></li>
+          <li><span><strong>Understand community relations risk.</strong> Review incident databases, media reports, and community engagement records to assess the state of relations between the mine and surrounding communities. Social license to operate is a non-negotiable prerequisite for sustained operations.</span></li>
+          <li><span><strong>Structure the ESG report.</strong> Organize findings against the chosen reporting framework (GRI Standards, SASB, Equator Principles). This involves mapping raw data to specific disclosure requirements, calculating metrics, and drafting narrative commentary. The report must satisfy both internal stakeholders and external auditors.</span></li>
+          <li><span><strong>Monitor permit conditions.</strong> Track the status of environmental permits, bonds, water use licenses, and buffer zone compliance. This is an ongoing obligation, not a one-time assessment, and lapses can result in operational shutdowns or fines.</span></li>
+          <li><span><strong>Continuous environmental monitoring.</strong> Set up or manage ongoing monitoring programs that track environmental indicators (water quality, air quality, vegetation health, noise levels) over time. This data feeds both compliance reporting and early warning systems.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">Data scattered across agencies and platforms</span>
+          <span class="pain-tag">No unified ESG screening tool</span>
+          <span class="pain-tag">Manual framework-to-data mapping is slow</span>
+          <span class="pain-tag">Continuous monitoring is resource-intensive</span>
+          <span class="pain-tag">Framework requirements change frequently</span>
+          <span class="pain-tag">Community risk hard to quantify</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Maintain continuous, auditable ESG compliance across all operational sites while producing investor-ready reports that demonstrate responsible mining practices and de-risk the social license to operate.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 3. INVESTMENT ANALYST                         -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="analyst">
+    <div class="persona-header">
+      <div class="persona-number">03</div>
+      <div class="persona-header-text">
+        <h2>Investment Analyst</h2>
+        <div class="tagline">Mining and Resources Finance</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>An investment analyst in the mining sector works for private equity firms, mining-focused funds, development finance institutions, or corporate M&A teams. Their job is to decide whether a mining asset or company is worth investing in by screening opportunities fast, understanding the risks that could kill the deal, and presenting a defensible investment recommendation to the decision committee.</p>
+        <p>The role combines financial modeling (NPV, IRR, payback period analysis) with technical due diligence understanding. While the analyst may not be a geologist, they must be able to evaluate geological reports, understand reserve and resource classifications (JORC Code, NI 43-101), and assess whether a project's economics are realistic. They work under significant time pressure, often needing to screen dozens of opportunities and deep-dive on a shortlist within a tight investment cycle.</p>
+        <p>In emerging market contexts, the analyst must also evaluate political risk, regulatory stability, infrastructure constraints, and foreign exchange exposure, none of which are captured in a standard DCF model but all of which can destroy value. The best analysts develop strong networks of local consultants, lawyers, and operators to supplement their desk research.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Screen and identify targets.</strong> Use internal screeners, broker reports, industry databases (e.g., MineSentinel, S&P Global), and network referrals to build a pipeline of potential investment opportunities. The goal is to quickly filter out obvious non-starters.</span></li>
+          <li><span><strong>Verify title and ownership.</strong> Confirm that the target actually holds the rights they claim to hold, that the title is valid and not expired or disputed, and that there are no hidden encumbrances. This is a hygiene check that, if skipped, can invalidate the entire investment thesis.</span></li>
+          <li><span><strong>Identify legal showstoppers.</strong> Look for fatal regulatory issues: unratified mining leases (which are legally void), concessions within protected areas (which face refusal risk or forced downsizing), or pending litigation that could freeze operations. These are binary risks that no amount of financial engineering can overcome.</span></li>
+          <li><span><strong>Check commodity price backdrop.</strong> Review current prices, 60-month trends, and forward curves for the relevant commodity. Understand where the asset sits on the cost curve and whether it would be marginal or profitable under stress scenarios.</span></li>
+          <li><span><strong>Assess economic breakers.</strong> Identify non-commodity factors that could destroy the project economics: lack of road or port access, water scarcity, power grid unreliability, or escalating community conflict. These qualitative factors are often the actual reason deals fail, not commodity prices.</span></li>
+          <li><span><strong>Benchmark against peers.</strong> Compare the target's key metrics (grade, cost per tonne, reserve life, capex intensity) against peer projects in the same region and commodity. This provides relative context for the valuation and highlights outliers that need explanation.</span></li>
+          <li><span><strong>Form the investment recommendation.</strong> Synthesize all findings into a Go / No-Go / Conditional recommendation with a confidence level. The recommendation must be supported by verifiable evidence and clearly articulate the key risks and mitigants. Investment committees expect structured thinking, not gut instinct.</span></li>
+          <li><span><strong>Monitor post-investment.</strong> After the investment is made, continue monitoring the asset for emerging risks: regulatory changes, community disputes, environmental incidents, or operational underperformance. This ongoing monitoring protects the fund's capital and informs exit timing.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">Due diligence takes weeks per asset</span>
+          <span class="pain-tag">Hard to find legal showstoppers quickly</span>
+          <span class="pain-tag">Qualitative risks are difficult to quantify</span>
+          <span class="pain-tag">Post-investment monitoring is manual</span>
+          <span class="pain-tag">Data sources are fragmented across countries</span>
+          <span class="pain-tag">Peer benchmarking data is expensive</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Make fast, well-supported Go / No-Go investment decisions with full visibility into legal, environmental, and infrastructure risks, and maintain ongoing monitoring of portfolio assets to protect invested capital.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 4. LEGAL & COMPLIANCE MANAGER                 -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="legal">
+    <div class="persona-header">
+      <div class="persona-number">04</div>
+      <div class="persona-header-text">
+        <h2>Legal and Compliance Manager</h2>
+        <div class="tagline">Regulatory and Title Integrity</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>The Legal and Compliance Manager in a mining company (or at a law firm serving mining clients) is the person responsible for ensuring that mineral rights are real and valid, that the company stays out of regulatory traps, and that all legal opinions produced are backed by auditable evidence. They are the ultimate safeguard against the kind of title disputes, regulatory non-compliance, and contractual pitfalls that can cost mining companies millions or result in license revocation.</p>
+        <p>This role requires deep familiarity with mining law (the Minerals and Mining Act, associated legislative instruments, and constitutional provisions on land), corporate law, environmental regulations, and fiscal policy. In jurisdictions like Ghana, where land ownership is split between customary authorities (stools/skins), the state, and private individuals, the legal complexity is significant. The Legal Manager must navigate statutory law, common law, and customary law simultaneously.</p>
+        <p>A critical aspect of this role is producing work that is auditable and defensible. Unlike consultants who can present findings as advisory, legal managers must be able to point to specific statutory provisions, gazette notices, or court rulings as the basis for every conclusion. Their work product may be scrutinized in court, by regulators, or by opposing parties in disputes, so precision and traceability are non-negotiable.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Confirm title and license validity.</strong> The first and most fundamental check: verify that the mining right or license is legally valid, held in the correct entity's name, and has not expired, been suspended, or been revoked. This involves cross-referencing the Minerals Commission register with the actual license document.</span></li>
+          <li><span><strong>Check for overlapping claims and disputes.</strong> Mining concessions in active regions frequently overlap or abut each other, creating boundary disputes that can paralyze operations. The legal manager must identify all adjacent concession holders and check for registered disputes, court injunctions, or mediation proceedings.</span></li>
+          <li><span><strong>Verify boundaries against the ground.</strong> The coordinates on a license document may not match the physical reality on the ground. Boundary verification involves overlaying the licensed coordinates on high-resolution satellite imagery and, where possible, conducting ground surveys to confirm the actual footprint.</span></li>
+          <li><span><strong>Check license expiry and renewal position.</strong> Mining licenses have finite terms and require renewal. The legal manager must track renewal deadlines, confirm that renewal applications have been submitted, and assess the risk of non-renewal based on compliance history and government policy.</span></li>
+          <li><span><strong>Review fiscal compliance.</strong> Examine the operator's payment history for royalties, corporate taxes, and other fiscal obligations. Gap years in payment history, outstanding arrears, or disputes with the revenue authority can indicate financial stress or governance issues that create legal exposure.</span></li>
+          <li><span><strong>Advise on the licensing pathway.</strong> Guide clients or internal teams through the regulatory gauntlet from reconnaissance through to full mining lease, identifying the exact sequence of applications, fees, public notices, and ministerial approvals required. Missing a step or misunderstanding a condition can set a project back months or years.</span></li>
+          <li><span><strong>Check encumbrances and charges.</strong> Some liabilities attach to mineral rights but are not recorded in the public mining register. Encumbrances, mortgages, charges, and court-ordered restrictions may exist at the Lands Registry or in court records, requiring physical searches that cannot be done remotely.</span></li>
+          <li><span><strong>Maintain an audit trail.</strong> Every legal opinion must be supported by a clear chain of evidence: which sources were consulted, when, and what they showed. This is both a professional obligation and a practical necessity if the opinion is later challenged.</span></li>
+          <li><span><strong>Validate regulatory content.</strong> Review the regulatory rules and interpretations that underpin the analysis, ensuring they are current, correctly applied, and consistent with the latest amendments, court decisions, and ministerial directives.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">No single database for title verification</span>
+          <span class="pain-tag">Boundary data is often inaccurate</span>
+          <span class="pain-tag">Encumbrances require physical registry visits</span>
+          <span class="pain-tag">Regulatory changes are hard to track</span>
+          <span class="pain-tag">Manual audit trail is time-consuming</span>
+          <span class="pain-tag">AI-generated legal analysis is untrustworthy</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Provide legally defensible, fully auditable opinions on mineral rights and regulatory compliance, enabling the organization to operate with confidence that its title position is secure and its regulatory obligations are met.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 5. MINE OPERATIONS MANAGER                   -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="operations">
+    <div class="persona-header">
+      <div class="persona-number">05</div>
+      <div class="persona-header-text">
+        <h2>Mine Operations Manager</h2>
+        <div class="tagline">Site-Level Production and Safety</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>The Mine Operations Manager is the senior on-site leader responsible for keeping the mine running safely, efficiently, and within budget. They oversee all aspects of daily production: equipment fleet management, haulage operations, stockpile handling, processing plant feed, and workforce coordination. Their primary objective is to meet production targets while maintaining safety standards and managing costs.</p>
+        <p>Operations managers live in a world of daily trade-offs: production pressure versus equipment maintenance, cost reduction versus safety investment, planned extraction sequences versus unexpected geological conditions. They must make rapid decisions based on incomplete information, often in remote locations with limited connectivity and support infrastructure. The role demands a combination of engineering knowledge, leadership skills, and practical mining experience.</p>
+        <p>In addition to core production responsibilities, the operations manager is increasingly expected to monitor site security (unauthorized access, illegal mining encroachment), environmental compliance (tailings management, water discharge, revegetation progress), and community relations. Modern mining operations are complex socio-technical systems, and the operations manager is the person holding it all together on a daily basis.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Review equipment fleet status.</strong> Start the day by checking the status of all major equipment: excavators, haul trucks, loaders, drills, and processing plant components. Track availability, utilization, and any planned or unplanned maintenance. Equipment downtime directly impacts production targets.</span></li>
+          <li><span><strong>Monitor haul cycles and productivity.</strong> Track the number of haul cycles completed, average cycle times, and tonnage moved per shift. Compare actuals against plan and identify bottlenecks. Haulage is typically the constraining factor in open-pit operations, so optimizing it has an outsized impact on production.</span></li>
+          <li><span><strong>Track stockpile volumes.</strong> Monitor ore and waste stockpile levels to ensure the processing plant has sufficient feed and that waste dump capacity is adequate. Stockpile management affects both short-term production and long-term mine plan adherence.</span></li>
+          <li><span><strong>Detect unauthorized or anomalous activity.</strong> Watch for signs of illegal mining (galamsey) within or near the concession boundary, unauthorized vehicle movement, or other security anomalies. Early detection prevents small incursions from becoming major operational disruptions.</span></li>
+          <li><span><strong>Monitor terrain and slope stability.</strong> For open-pit operations, pit wall stability is a critical safety concern. Track slope angles, monitor for signs of movement or cracking, and ensure that mining sequences do not create unsupported highwalls. Ground failure is one of the most serious risks in mining operations.</span></li>
+          <li><span><strong>Assess haul route security.</strong> Monitor the security situation along haul routes and access roads, which may pass through areas with community tensions, illegal mining activity, or other security risks. Route disruptions can strand ore shipments and halt production.</span></li>
+          <li><span><strong>Monitor boundary encroachment.</strong> Track activity along the concession boundary, particularly from artisanal and small-scale mining (ASM) operations. ASM encroachment is a persistent challenge in many African mining jurisdictions and can escalate into conflicts if not managed proactively.</span></li>
+          <li><span><strong>Manage real-time operations.</strong> Coordinate with shift supervisors, dispatchers, and processing plant managers to adjust the day's plan based on actual conditions. This is a real-time, hands-on function that cannot be done remotely or asynchronously.</span></li>
+          <li><span><strong>Set up periodic monitoring.</strong> Establish recurring checks and automated alerts for key operational parameters: equipment health, stockpile levels, environmental indicators, and security status. This transforms the role from reactive firefighting to proactive management.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">No unified site intelligence dashboard</span>
+          <span class="pain-tag">Manual tracking across multiple data sources</span>
+          <span class="pain-tag">Galamsey encroachment is hard to detect early</span>
+          <span class="pain-tag">Slope monitoring requires specialized equipment</span>
+          <span class="pain-tag">Security incidents on haul routes are unpredictable</span>
+          <span class="pain-tag">Reactive rather than proactive management</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Keep the mine running safely and at planned production levels by having real-time visibility into all site operations, early warning of emerging problems, and the intelligence to make proactive rather than reactive decisions.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 6. RISK & SECURITY MANAGER                    -->
+  <!-- ════════════════════════════════════════════════ -->
+  <div class="persona-card" id="risk">
+    <div class="persona-header">
+      <div class="persona-number">06</div>
+      <div class="persona-header-text">
+        <h2>Risk and Security Manager</h2>
+        <div class="tagline">Threat Assessment and Intelligence</div>
+      </div>
+    </div>
+    <div class="persona-body">
+
+      <div class="section">
+        <div class="section-label">Job Description</div>
+        <p>The Risk and Security Manager in the mining sector is responsible for understanding, communicating, and mitigating the full spectrum of threats that can affect mining operations. These include community conflict, political instability, illegal mining (galamsey/ASM), transport corridor risks, labor unrest, and environmental hazards. Their job is to ensure that operations and leadership have the information they need to act before threats materialize into crises.</p>
+        <p>This role sits between corporate security, government affairs, and operations. Unlike the operations manager who focuses on what is happening inside the fence line, the risk and security manager looks outward, monitoring the threat environment around the mine and along its supply chain. They maintain relationships with local security agencies, community leaders, industry peers, and intelligence providers to build a comprehensive threat picture.</p>
+        <p>In many mining jurisdictions, the threat landscape is dynamic and multi-dimensional. A single site may face simultaneous risks from illegal miners encroaching on the concession, community protests over employment or environmental damage, political pressure from national elections or policy changes, and logistics disruption from road blockades or port congestion. The risk manager must synthesize all of these into actionable intelligence that enables timely decision-making.</p>
+      </div>
+
+      <div class="section">
+        <div class="section-label">How They Normally Work</div>
+        <ol class="workflow-list">
+          <li><span><strong>Define the monitoring scope.</strong> Set monitoring radii (10 km, 50 km, or 100 km around each site) and threat thresholds (low, medium, high) that determine the sensitivity of their monitoring system. This calibration determines the volume and relevance of intelligence they receive.</span></li>
+          <li><span><strong>Track incidents near sites.</strong> Monitor incident databases (ACLED, GDELT, local police reports, company incident logs) for security events, protests, crimes, and other incidents occurring near operational sites. Pattern recognition in incident data can reveal emerging threats before they escalate.</span></li>
+          <li><span><strong>Assess ASM encroachment.</strong> Monitor artisanal and small-scale mining activity near the concession boundary using satellite imagery, local informants, and site security reports. ASM encroachment can escalate from isolated activity to organized occupation if not detected and addressed early.</span></li>
+          <li><span><strong>Score transport corridor risk.</strong> Evaluate the security risk along key supply routes, such as the Takoradi-to-Kumasi corridor in Ghana. This includes assessing road conditions, community tensions along the route, historical incident patterns, and seasonal risk factors (e.g., flooding during rainy season).</span></li>
+          <li><span><strong>Map political and unrest hotspots.</strong> Track political developments, election schedules, policy changes, and social unrest indicators that could affect operations. Regional political risk scores help prioritize which areas require closer attention and contingency planning.</span></li>
+          <li><span><strong>Identify high-risk concessions.</strong> Overlay risk data (incidents, ASM activity, political instability) with cadastral data to identify which specific concessions or license areas sit in high-risk zones. This enables risk-weighted portfolio management and informs acquisition and divestment decisions.</span></li>
+          <li><span><strong>Develop early-warning indicators.</strong> Build and refine predictive indicators that signal emerging conflict or escalating threat levels. These may include spikes in social media activity, environmental stress indicators (water scarcity, crop failure), or changes in local political dynamics. Early-warning is the frontier of the discipline and relies heavily on proxy signals.</span></li>
+          <li><span><strong>Operate alerting and monitoring.</strong> Maintain 24/7 or near-24/7 monitoring capability during periods of elevated threat. This involves managing alert systems, escalation protocols, and communication channels to ensure that critical intelligence reaches decision-makers in time to act.</span></li>
+        </ol>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Pain Points</div>
+        <div class="pain-tags">
+          <span class="pain-tag">Threat data is fragmented across sources</span>
+          <span class="pain-tag">No unified risk dashboard for multiple sites</span>
+          <span class="pain-tag">Early-warning signals are hard to detect</span>
+          <span class="pain-tag">ASM encroachment monitoring is manual</span>
+          <span class="pain-tag">24/7 monitoring requires dedicated staff</span>
+          <span class="pain-tag">Corridor risk scoring is subjective</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">End Goal</div>
+        <div class="goal-box">
+          <p>Provide operations and leadership with continuous, actionable threat intelligence that enables proactive risk mitigation, protects personnel and assets, and supports informed decision-making across the mine's area of influence.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

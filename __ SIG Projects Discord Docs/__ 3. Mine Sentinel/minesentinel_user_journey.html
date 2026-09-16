@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineSentinel — User Journey Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d1512;
+    --surface:#121b17;
+    --surface-2:#182420;
+    --line: rgba(233,237,229,0.09);
+    --line-strong: rgba(233,237,229,0.16);
+    --paper:#e9ede5;
+    --paper-dim:#a6b3aa;
+    --paper-dimmer:#6f7d74;
+    --malachite:#37b07c;
+    --malachite-dim:rgba(55,176,124,0.14);
+    --ochre:#d99a3c;
+    --ochre-dim:rgba(217,154,60,0.14);
+    --copper:#c06b42;
+    --copper-dim:rgba(192,107,66,0.14);
+    --radius:10px;
+    --disp: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 85% -10%, rgba(55,176,124,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at -5% 110%, rgba(217,154,60,0.08), transparent 60%),
+      var(--ink);
+    color:var(--paper);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{ background:var(--malachite); color:#06110c; }
+
+  .shell{ display:flex; min-height:100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .rail{
+    width:272px; flex:none;
+    border-right:1px solid var(--line);
+    padding:28px 18px 28px 24px;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .brand{ margin-bottom:26px; }
+  .brand .mark{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--malachite);
+  }
+  .brand .mark::before{
+    content:""; width:7px; height:7px; border-radius:50%;
+    background:var(--malachite); box-shadow:0 0 0 3px var(--malachite-dim);
+  }
+  .brand h1{
+    font-family:var(--disp); font-weight:600; font-size:20px; margin:10px 0 4px;
+    letter-spacing:-.01em;
+  }
+  .brand p{ margin:0; font-size:12.5px; color:var(--paper-dimmer); line-height:1.5; }
+
+  .railnav{ display:flex; flex-direction:column; gap:2px; margin-top:22px; }
+  .railnav-label{
+    font-family:var(--mono); font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--paper-dimmer); padding:0 10px 8px;
+  }
+  .tab-btn{
+    display:flex; align-items:center; gap:11px;
+    background:none; border:none; cursor:pointer;
+    text-align:left; color:var(--paper-dim);
+    padding:9px 10px; border-radius:8px;
+    border-left:2px solid transparent;
+    font-family:var(--body);
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab-btn:hover{ background:var(--surface); color:var(--paper); }
+  .tab-btn.active{
+    background:var(--surface-2); color:var(--paper);
+    border-left:2px solid var(--malachite);
+  }
+  .tab-btn .code{
+    font-family:var(--mono); font-size:10.5px; color:var(--malachite);
+    min-width:28px; flex:none;
+  }
+  .tab-btn.active .code{ color:var(--malachite); }
+  .tab-btn .icon{ flex:none; width:16px; height:16px; opacity:.85; }
+  .tab-btn .label{ font-size:13px; line-height:1.3; }
+
+  /* mobile tab strip */
+  .mobile-strip{ display:none; }
+
+  /* ---------- Main ---------- */
+  main{ flex:1; min-width:0; padding:40px 48px 90px; max-width:1000px; }
+  .persona{ display:none; animation:fade .35s ease; }
+  .persona.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .p-eyebrow{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; color:var(--paper-dimmer);
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+  }
+  .p-eyebrow .code-big{ color:var(--malachite); font-weight:600; }
+  .p-title{
+    font-family:var(--disp); font-weight:600; font-size:34px; letter-spacing:-.015em;
+    margin:0 0 8px; line-height:1.1;
+  }
+  .p-roles{ color:var(--paper-dimmer); font-size:14px; line-height:1.6; max-width:70ch; margin:0 0 34px; }
+
+  .section-head{
+    display:flex; align-items:baseline; gap:10px; margin:0 0 16px;
+  }
+  .section-head h3{
+    font-family:var(--disp); font-weight:600; font-size:15px; margin:0;
+    text-transform:uppercase; letter-spacing:.06em;
+  }
+  .section-head .n{ font-family:var(--mono); font-size:11px; color:var(--paper-dimmer); }
+
+  /* ---- pain transform cards ---- */
+  .pains{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+    gap:10px; margin-bottom:44px;
+  }
+  .pain-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 15px;
+  }
+  .pain-before{
+    font-size:12.5px; color:#e0a888; line-height:1.5; margin-bottom:8px;
+    padding-left:14px; border-left:2px solid rgba(224,168,136,0.4);
+  }
+  .pain-arrow{ color:var(--malachite); font-family:var(--mono); font-size:11px; margin:0 0 8px 14px; }
+  .pain-after{
+    font-size:13px; color:var(--paper); line-height:1.5; font-weight:500;
+    padding-left:14px; border-left:2px solid var(--malachite);
+  }
+
+  /* ---- journey stepper (core-sample style) ---- */
+  .journey{ position:relative; margin-bottom:48px; }
+  .journey-track{
+    position:relative; padding-left:26px;
+    border-left:2px dashed var(--line-strong);
+  }
+  .step{
+    position:relative; padding-bottom:26px;
+  }
+  .step:last-child{ padding-bottom:0; }
+  .step::before{
+    content:""; position:absolute; left:-31px; top:2px;
+    width:10px; height:10px; border-radius:50%;
+    background:var(--ink); border:2px solid var(--malachite);
+  }
+  .step-head{ display:flex; align-items:baseline; gap:9px; margin-bottom:6px; flex-wrap:wrap; }
+  .step-num{ font-family:var(--mono); font-size:11px; color:var(--malachite); }
+  .step-title{ font-family:var(--disp); font-weight:600; font-size:16px; }
+  .step-tag{
+    font-family:var(--mono); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--paper-dimmer); background:var(--surface); border:1px solid var(--line);
+    padding:2px 8px; border-radius:100px;
+  }
+  .step-desc{ font-size:13.5px; color:var(--paper-dim); line-height:1.65; max-width:70ch; margin:0; }
+  .step-desc b{ color:var(--paper); font-weight:600; }
+  .step-desc em{ color:var(--ochre); font-style:normal; }
+
+  /* ---- data chips ---- */
+  .chipwrap{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:44px; }
+  .chip{
+    font-family:var(--mono); font-size:11.5px; color:var(--paper-dim);
+    background:var(--surface); border:1px solid var(--line);
+    padding:6px 11px; border-radius:100px;
+  }
+
+  /* ---- reports ---- */
+  .reports{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:10px; margin-bottom:30px;
+  }
+  .report-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 15px;
+  }
+  .report-card .rname{
+    font-family:var(--disp); font-weight:600; font-size:13.5px; color:var(--ochre);
+    margin-bottom:5px;
+  }
+  .report-card .rdesc{ font-size:12.5px; color:var(--paper-dim); line-height:1.55; }
+
+  /* ---- sample report preview (document mock) ---- */
+  .doc-preview{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:0; margin-bottom:44px; overflow:hidden;
+  }
+  .doc-head{
+    padding:16px 20px; border-bottom:1px solid var(--line);
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    background:linear-gradient(180deg, rgba(55,176,124,0.06), transparent);
+  }
+  .doc-head-left .doc-kicker{
+    font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--malachite); margin-bottom:5px;
+  }
+  .doc-head-left .doc-title{ font-family:var(--disp); font-weight:600; font-size:17px; }
+  .doc-head-right{
+    font-family:var(--mono); font-size:10.5px; color:var(--paper-dimmer); text-align:right; line-height:1.6;
+  }
+  .doc-body{ padding:18px 20px 20px; }
+  .doc-fields{
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+    gap:12px 20px; margin-bottom:18px;
+  }
+  .doc-field .k{
+    font-family:var(--mono); font-size:10px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--paper-dimmer); margin-bottom:3px;
+  }
+  .doc-field .v{ font-size:13px; color:var(--paper); line-height:1.4; }
+  .doc-excerpt{
+    border-top:1px dashed var(--line-strong); padding-top:14px; margin-top:4px;
+  }
+  .doc-excerpt .ex-label{
+    font-family:var(--mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--paper-dimmer); margin-bottom:8px;
+  }
+  .doc-excerpt p{
+    font-size:13px; color:var(--paper-dim); line-height:1.65; margin:0;
+    border-left:2px solid var(--ochre); padding-left:13px;
+  }
+
+  /* ---- copilot mock ---- */
+  .copilot-box{
+    background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+    padding:16px 18px 18px;
+  }
+  .copilot-head{
+    display:flex; align-items:center; gap:8px; margin-bottom:14px;
+    font-family:var(--mono); font-size:11px; color:var(--paper-dimmer); letter-spacing:.06em;
+  }
+  .copilot-head .dot{ width:6px; height:6px; border-radius:50%; background:var(--malachite); }
+  .qbubble{
+    font-size:13px; color:var(--paper); line-height:1.5;
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:10px 10px 10px 3px;
+    padding:10px 13px; margin-bottom:8px; max-width:80ch;
+  }
+  .qbubble:last-child{ margin-bottom:0; }
+  .qbubble::before{ content:"“"; color:var(--malachite); font-family:var(--disp); margin-right:2px; }
+  .qbubble::after{ content:"”"; color:var(--malachite); font-family:var(--disp); margin-left:1px; }
+
+  footer.credit{
+    margin-top:60px; padding-top:20px; border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:11px; color:var(--paper-dimmer);
+  }
+
+  @media (max-width: 880px){
+    .shell{ flex-direction:column; }
+    .rail{ display:none; }
+    .mobile-strip{
+      display:flex; gap:6px; overflow-x:auto; padding:16px 16px 12px;
+      position:sticky; top:0; background:var(--ink); z-index:10;
+      border-bottom:1px solid var(--line);
+    }
+    .mobile-strip button{
+      flex:none; font-family:var(--mono); font-size:11px; padding:7px 12px;
+      border-radius:100px; border:1px solid var(--line); background:var(--surface);
+      color:var(--paper-dim); white-space:nowrap;
+    }
+    .mobile-strip button.active{ border-color:var(--malachite); color:var(--malachite); }
+    main{ padding:24px 18px 70px; }
+    .p-title{ font-size:26px; }
+    .doc-head-right{ text-align:left; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail" id="rail">
+    <div class="brand">
+      <span class="mark">MineSentinel</span>
+      <h1>User Journey Atlas</h1>
+      <p>How each of the ten personas moves through the platform — sign‑up to Copilot.</p>
+    </div>
+    <div class="railnav-label">Personas</div>
+    <nav class="railnav" id="railnav"></nav>
+  </aside>
+
+  <div class="mobile-strip" id="mobileStrip"></div>
+
+  <main id="main"></main>
+</div>
+
+<script>
+const ICONS = {
+  analyst: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 19V9M10 19V4M16 19v-7M22 19V7"/></svg>',
+  geo:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 19l6-11 4 7 2-3 6 7H3z"/><circle cx="17" cy="6" r="1.6"/></svg>',
+  esg:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21c5-1 8-5 8-11a13 13 0 0 0-8-3 13 13 0 0 0-8 3c0 6 3 10 8 11z"/><path d="M12 21V9"/></svg>',
+  finance: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c.5.9 1.4 1.4 2.6 1.4 1.6 0 2.7-.8 2.7-2 0-1.3-1.1-1.8-2.8-2.2-1.6-.4-2.6-1-2.6-2.2 0-1.2 1.1-2 2.6-2 1.2 0 2 .5 2.5 1.3M12 7v1.2M12 15.8V17"/></svg>',
+  trader:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h13M17 8l-3-3M17 8l-3 3M20 16H7M7 16l3-3M7 16l3 3"/></svg>',
+  legal:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v18M5 8l-3 6a3.2 3.2 0 0 0 6 0L5 8zM19 8l-3 6a3.2 3.2 0 0 0 6 0l-3-6zM5 8h14M9 21h6"/></svg>',
+  gov:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 10h16M5 10l7-5 7 5M6 10v8M18 10v8M3 21h18M9 13v4M15 13v4"/></svg>',
+  dfi:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 12l3 3 6-6M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0z"/></svg>',
+  academia:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 8l10-4 10 4-10 4-10-4z"/><path d="M6 10v5c0 1.3 2.7 3 6 3s6-1.7 6-3v-5"/></svg>',
+  press:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h13v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5z"/><path d="M17 8h3v10a2 2 0 0 1-2 2M7 8h6M7 12h6M7 16h4"/></svg>',
+};
+
+const PERSONAS = [
+{
+  code:"01", icon:"analyst",
+  title:"Mining Analysts & Researchers",
+  roles:"Mining Analysts · Mineral Intelligence Researchers · Research Fellows · Exploration Data Analysts · Mining Consultants · Market Analysts",
+  pains:[
+    {before:"Information fragmented across dozens of websites", after:"One platform unifying mine, company, price, geology, regulation and news data"},
+    {before:"Most time spent finding, not analysing", after:"AI‑powered search and Copilot surface answers instantly"},
+    {before:"No shared reporting standard across countries", after:"Normalised schema — consistent units, naming, date formats"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account at the MineSentinel sign‑up page with a work email or SSO login."},
+    {t:"Onboarding", d:"Select the Mining Analyst / Researcher role, commodity focus and regions of interest — the dashboard and map load pre‑filtered."},
+    {t:"Create a project", d:"New workspace such as “West Africa Gold Supply Analysis Q3 2026” with a set geographic and commodity scope."},
+    {t:"Work the map", d:"Toggle mines, concessions, infrastructure, geology and ESG layers. Click a marker for the Site Detail Panel; live LME/COMEX/SHFE ticker up top."},
+    {t:"Pull the data", d:"Identity, ownership, production, geology, licence, infrastructure, prices, financials, risk and news — every point source‑attributed."},
+    {t:"Ask Copilot", d:"Natural‑language queries return cited answers and can draft report sections directly into the project."},
+    {t:"Generate reports", d:"Mine Profile, Country Sector, Commodity Supply, Exploration Pipeline, Competitive Landscape, Risk Briefing — export as PDF or CSV/Excel."},
+    {t:"Share with the team", d:"Invite colleagues via the Team Panel — shared map views, notes on sites, assigned tasks."},
+  ],
+  data:["Mine identity & location","Operator & ownership chain","Status & lifecycle stage","Production history & forecasts","Exploration & resource estimates","Geology & deposit type","Licence & expiry","Infrastructure proximity","Live & historical prices","Company financials","Country & supply‑chain risk","AI‑tagged news"],
+  reports:[
+    {n:"Mine Profile Report", d:"A complete single‑mine data card pulling together identity, ownership, production, geology, licence status, an ESG flag summary and current price context — built for a quick, citable briefing on one asset."},
+    {n:"Country Mining Sector Report", d:"Every mine in a country broken out by lifecycle status, production totals by commodity, a regulatory overview and a summary of recent investment activity — used to brief on an entire jurisdiction at once."},
+    {n:"Commodity Supply Report", d:"The top producing mines for a commodity globally or by region, the production trend line, disruption history and a price overlay — built to answer “who supplies this, and how reliably.”"},
+    {n:"Exploration Pipeline Report", d:"Active exploration projects sorted by resource size, stage, operator and country — a forward‑looking view of what supply is coming, not just what exists today."},
+    {n:"Competitive Landscape Report", d:"An operator‑by‑operator breakdown for a country or commodity, showing production share and asset portfolio side by side — built for market‑structure and competitor analysis."},
+    {n:"Risk Intelligence Briefing", d:"Country risk, operational disruption history, regulatory change activity and ESG incidents rolled into one scoped briefing — used ahead of a decision that needs the risk picture, not just the production numbers."},
+  ],
+  sample:{
+    kicker:"Sample output · Mine Profile Report",
+    title:"Kaseri Gold Mine — Ghana",
+    meta:["Generated 11 Aug 2026","Scope: Single asset","Format: PDF · CSV"],
+    fields:[
+      {k:"Operator", v:"Meridian Gold West Africa Ltd"},
+      {k:"Parent company", v:"Meridian Resources Group"},
+      {k:"Status", v:"Operating"},
+      {k:"Commodities", v:"Gold (primary), Silver (by‑product)"},
+      {k:"2025 production", v:"212,400 oz Au"},
+      {k:"Licence", v:"GH‑ML‑1187 · expires Mar 2031"},
+    ],
+    excerptLabel:"Excerpt — Executive Summary",
+    excerpt:"Kaseri Gold Mine produced 212,400 oz of gold in 2025, a 6% increase on the prior year, driven by higher ore grades at the North Pit expansion. The mine holds a valid mining lease through 2031 and has recorded no major ESG incidents in the past 24 months. Production sits within 40 km of rail access to Takoradi port, and current AISC places the operation in the lower half of the West African cost curve."
+  },
+  copilot:[
+    "Which gold mines in Ghana have had production disruptions in the last 12 months?",
+    "Compare copper output from Zambia and the DRC since 2020.",
+    "What are the top 10 exploration projects by resource size in West Africa?",
+  ]
+},
+{
+  code:"02", icon:"geo",
+  title:"Mining Companies & Technical Professionals",
+  roles:"Exploration Managers · Exploration & Resource Geologists · Concession Managers · Land Managers · Geological Data Managers · Field Geologists",
+  pains:[
+    {before:"Geological, licence, exploration and infrastructure data live in different places", after:"All spatial layers unified in a single map environment"},
+    {before:"Coordinate reference system mismatches", after:"Handled server‑side; everything shown in one coordinate system"},
+    {before:"GIS layers assembled by hand", after:"Layers pre‑loaded and toggle‑able — no manual import"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Technical / Exploration during onboarding; set commodity and country focus. Default map surfaces geological and spatial layers."},
+    {t:"Create a project", d:"Name the area of interest, set type to Exploration / Technical, and draw a bounding box — every dataset inside it is pulled in automatically."},
+    {t:"Explore the map", d:"Toggle geology, mineral occurrences, geochem/aeromag coverage, active licences, historical claims, infrastructure, environmental sensitivity and satellite basemap."},
+    {t:"Drill into features", d:"Click a licence polygon for holder, status, grant/expiry, commodity and area. Click an occurrence for deposit type, discovery date and resource estimate."},
+    {t:"Run spatial queries", d:"The GIS Feature Detail pane answers questions like “show all gold occurrences within this licence block.”"},
+    {t:"Ask Copilot", d:"Extracts and summarises from historical exploration reports and geological survey data ingested into the platform."},
+    {t:"Generate reports", d:"Concession Status, Geological Context, Exploration Activity, Competitor Land Position, Infrastructure Proximity, Historical Mine Summary."},
+  ],
+  data:["Deposit & rock type","Structural geology & formations","Mineral occurrences & resource estimates","Exploration licences: holder, status, expiry","Historical drilling & assay records","Mine boundary polygons","Roads, rail, ports, power","Protected areas & water stress","Community & indigenous land","Satellite basemap"],
+  reports:[
+    {n:"Concession Status Report", d:"Every licence inside a defined area, listing holder, status, expiry and commodity — the standard first check before moving on any new ground."},
+    {n:"Geological Context Report", d:"A geological summary of an area — formations, structural interpretation and known occurrences — for framing a target before drilling is planned."},
+    {n:"Exploration Activity Report", d:"Active exploration projects in a region with operator, stage and commodity, so a team can see who else is working nearby and how advanced they are."},
+    {n:"Competitor Land Position Report", d:"Which companies hold licences across an area of interest, with an overlap analysis flagging any adjacency or conflict worth investigating."},
+    {n:"Infrastructure Proximity Report", d:"Distance from a mine or licence to the nearest road, rail, port and power connection — a fast input into early‑stage development economics."},
+    {n:"Historical Mine Summary", d:"Past production, ownership history and a geological description for a historic site — useful when re‑assessing brownfield or abandoned ground."},
+  ],
+  sample:{
+    kicker:"Sample output · Concession Status Report",
+    title:"Southern Côte d'Ivoire — Greenfield Assessment Area",
+    meta:["Generated 11 Aug 2026","Scope: Bounding box, 340 km²","Format: PDF · Shapefile"],
+    fields:[
+      {k:"Licences in scope", v:"14 (9 active, 3 in application, 2 expired)"},
+      {k:"Largest holder", v:"Ivoire Exploration SA — 4 blocks"},
+      {k:"Primary commodity", v:"Gold"},
+      {k:"Nearest infrastructure", v:"Sealed road 6 km · Grid power 22 km"},
+      {k:"Occurrences mapped", v:"37 documented gold occurrences"},
+      {k:"Coverage quality", v:"Aeromagnetic: full · Geochemistry: partial (61%)"},
+    ],
+    excerptLabel:"Excerpt — Area Summary",
+    excerpt:"The assessment area hosts 14 licences across four holders, with Ivoire Exploration SA controlling the largest contiguous position along the northern trend. Thirty‑seven documented gold occurrences cluster along a NE‑SW structural corridor consistent with regional Birimian greenstone geology. Two licences bordering the eastern boundary lapsed in 2024 and remain open for application. Aeromagnetic coverage is complete across the area; ground geochemistry currently covers 61% of the licensed ground."
+  },
+  copilot:[
+    "What geological formations host gold deposits in this licence block?",
+    "List all exploration licences held by Company X in Ghana.",
+    "Which exploration projects in my area are in the drilling stage?",
+  ]
+},
+{
+  code:"03", icon:"esg",
+  title:"ESG, Sustainability & Compliance Professionals",
+  roles:"ESG Officers & Analysts · Sustainability Managers · Environmental Analysts · Compliance Officers · Environmental Consultants",
+  pains:[
+    {before:"Environmental, social, regulatory and NGO evidence scattered across sources", after:"Mine‑level ESG profile aggregates all evidence in one place"},
+    {before:"Manual tailings assessment needs 13+ individual data points", after:"Tailings data structured as one complete, queryable record per facility"},
+    {before:"No way to track ESG incidents over time", after:"Incident history timeline per mine, by date, type and source"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select ESG / Sustainability / Compliance; the map pre‑loads water stress, biodiversity, community land and incident overlays."},
+    {t:"Create a project", d:"E.g. “Portfolio ESG Screening — Q4 2026” or “DRC Cobalt Supply Chain ESG Audit,” type Due Diligence."},
+    {t:"Activate ESG layers", d:"Water stress, biodiversity sensitivity, indigenous land, community proximity, tailings facilities, ESG incidents colour‑coded by severity."},
+    {t:"Open the ESG tab", d:"Environmental, social and governance record; full tailings facility data; IFC Performance Standards alignment status."},
+    {t:"Ask Copilot", d:"Screens portfolios, benchmarks against frameworks, and can draft a gap analysis on request."},
+    {t:"Generate reports", d:"Mine ESG Profile, Portfolio Screening, Tailings Risk Assessment, Supply Chain ESG, Regulatory Compliance, Community & Social Risk."},
+  ],
+  data:["Water & discharge permits","Air quality & biodiversity flags","Tailings: type, height, capacity, consequence class, ERoR, incident history","Community proximity & indigenous overlap","Labour disputes & conflict events","Permit & compliance status","GHG emissions & climate risk zone","ESG‑tagged news"],
+  reports:[
+    {n:"Mine ESG Profile", d:"The full environmental, social and governance record for one mine, including complete tailings data and its current IFC Performance Standards alignment status."},
+    {n:"Portfolio ESG Screening Report", d:"Risk scores across a whole list of mines or operators, presented red/amber/green by dimension, for screening a portfolio before it's a problem rather than after."},
+    {n:"Tailings Risk Assessment Report", d:"Every one of the 13+ structured data fields per facility in scope, with proximity and consequence scoring, replacing what's usually a manual, document‑by‑document assessment."},
+    {n:"Supply Chain ESG Report", d:"The ESG risk profile for every mine in a defined commodity supply chain — for example, all DRC cobalt producers feeding a specific buyer."},
+    {n:"Regulatory Compliance Report", d:"Permit status, regulatory actions and compliance events per mine, giving a clean compliance trail without chasing multiple agency records."},
+    {n:"Community & Social Risk Report", d:"Community proximity, indigenous land overlaps and conflict or dispute history per asset, for the social side of a due‑diligence file."},
+  ],
+  sample:{
+    kicker:"Sample output · Tailings Risk Assessment Report",
+    title:"TSF‑04 — Kolwezi Cobalt Complex, DRC",
+    meta:["Generated 11 Aug 2026","Scope: Single facility","Format: PDF · CSV"],
+    fields:[
+      {k:"Construction type", v:"Downstream, earthfill embankment"},
+      {k:"Height / Capacity", v:"38 m · 12.4 Mt"},
+      {k:"Consequence classification", v:"High (GISTM)"},
+      {k:"Engineer of Record", v:"Certified · last review Feb 2026"},
+      {k:"Nearest water body", v:"1.8 km — seasonal tributary"},
+      {k:"Population within exposure zone", v:"~2,300 residents"},
+    ],
+    excerptLabel:"Excerpt — Risk Summary",
+    excerpt:"TSF‑04 is classified High consequence under GISTM criteria, primarily on downstream population exposure rather than storage volume. The facility's most recent independent safety review (February 2026) recorded no unresolved findings. Proximity to a seasonal tributary 1.8 km downstream places the facility inside the platform's elevated water‑proximity band, and it is flagged for inclusion in the next quarterly portfolio screening cycle."
+  },
+  copilot:[
+    "Which gold mines in my portfolio have tailings facilities with high consequence classification?",
+    "List all mines within 10 km of a protected biodiversity area in Indonesia.",
+    "Draft an IFC Performance Standards gap analysis for Mine X.",
+  ]
+},
+{
+  code:"04A", icon:"finance",
+  title:"Financial & Investment Professionals",
+  roles:"Investment & Sector Analysts · Portfolio Managers · Equity Research Analysts · Investment Officers · Corporate Finance Professionals",
+  pains:[
+    {before:"Company financials and mine‑level asset data live in separate systems", after:"Company profile linked directly to its asset portfolio on the map"},
+    {before:"Production data depends entirely on company disclosure", after:"Disclosed data cross‑referenced against independent mine‑level data"},
+    {before:"Non‑financial risk has to be manually added to models", after:"Export‑ready tables with operational, ESG and regulatory data for model input"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Finance / Investment; set commodity and region focus. Dashboard loads company and asset views next to live prices."},
+    {t:"Create a project", d:"E.g. “Copper Mining Sector — Investment Screen Q3 2026,” type Investment Research."},
+    {t:"Open a company profile", d:"Corporate structure, asset portfolio linked on map, financial highlights, reserve summary, recent M&A."},
+    {t:"Drop into an asset", d:"Production by year, cash cost / AISC, expansion plans and capex, country risk, ESG flags."},
+    {t:"Watch the ticker", d:"Live spot and % change for tracked commodities; Status Panels flag disruptions and announcements."},
+    {t:"Ask Copilot", d:"Ranks producers by cost, compares reserve life across peers, profiles regulatory risk on request."},
+    {t:"Generate reports", d:"Company Mining Asset, Mine Operational Factsheet, Investment Sector Screen, Commodity Market, Country Risk, M&A Landscape."},
+  ],
+  data:["Revenue, EBITDA, net income, debt, cash","Asset portfolio by company","Production history & guidance","Cash cost, AISC, C1 cost","Reserves & resources by category","M&A: acquisitions, disposals, JVs","Spot & historical commodity prices","Country political & fiscal risk","Material ESG flags","Peer NAV comparables"],
+  reports:[
+    {n:"Company Mining Asset Report", d:"Every mine and project belonging to a company — location, status, production, costs and ESG flags — laid out as one asset‑level view of the business."},
+    {n:"Mine Operational Factsheet", d:"A single‑mine profile covering production, costs, reserve life, ownership and country risk, sized for quick reference inside a model or memo."},
+    {n:"Investment Sector Screen", d:"A ranked list of companies by commodity, with production, costs, ESG and country risk placed side by side for comparative screening."},
+    {n:"Commodity Market Report", d:"Price history, the top producers, supply disruption history and a demand outlook summary for a given commodity."},
+    {n:"Country Risk Report", d:"The regulatory environment, political risk, tax/royalty regime and the list of active mining companies for a country."},
+    {n:"M&A Transaction Landscape", d:"Recent deals, asset transfers and JV formations in a commodity or country, for tracking consolidation and deal flow."},
+  ],
+  sample:{
+    kicker:"Sample output · Company Mining Asset Report",
+    title:"Sahel Copper Corp — Asset Portfolio",
+    meta:["Generated 11 Aug 2026","Scope: Company‑wide","Format: PDF · Excel"],
+    fields:[
+      {k:"Assets in portfolio", v:"5 (3 operating, 2 development)"},
+      {k:"2025 group production", v:"148,000 t Cu"},
+      {k:"Group AISC", v:"US$4,120/t"},
+      {k:"Largest asset", v:"Chilanga Mine, Zambia — 61% of output"},
+      {k:"Net debt / EBITDA", v:"1.4x"},
+      {k:"Material ESG flags", v:"1 (community engagement, Chilanga)"},
+    ],
+    excerptLabel:"Excerpt — Portfolio Summary",
+    excerpt:"Sahel Copper Corp's group AISC of US$4,120/t sits near the sector median, with the Chilanga Mine in Zambia contributing 61% of consolidated output and carrying the company's only material ESG flag — an active community engagement process related to resettlement compensation. Two development assets in the DRC are expected to add a combined 40,000 t of annual capacity from 2028, contingent on the outcome of pending environmental permitting."
+  },
+  copilot:[
+    "What are the top 10 copper producers by AISC in the Americas?",
+    "List all gold mines operated by Company X with 2025 production figures.",
+    "Compare reserve life across the major lithium producers.",
+  ]
+},
+{
+  code:"04B", icon:"trader",
+  title:"Commodity Traders & Brokers",
+  roles:"Commodity Traders · Mineral Brokers · Gold Traders · Base Metals Analysts · Commodity Research Analysts",
+  pains:[
+    {before:"Need information fast — speed is everything", after:"Live price ticker plus real‑time disruption alerts"},
+    {before:"Price data and physical mine information sit in different systems", after:"Both live in one platform — map shows mines, ticker shows prices"},
+    {before:"Disruptions are only meaningful in context", after:"Site Detail shows production volume, alternative supply and port proximity together"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Commodity Trading / Brokerage; set primary commodities. Dashboard loads a supply‑focused view."},
+    {t:"Create a monitoring project", d:"E.g. “Copper Supply Watch — COMEX Position,” type Supply Intelligence / Trading."},
+    {t:"Watch the map", d:"All producing mines for the tracked commodity, with real‑time disruption alerts, guidance changes and new project announcements."},
+    {t:"Check a disrupted mine", d:"Annual production volume for context, alternative regional supply, logistics proximity, and historical disruption frequency."},
+    {t:"Track prices", d:"Live spot and relevant futures on the Metal Price Ticker."},
+    {t:"Ask Copilot", d:"Ranks supply‑relevant news by magnitude and quantifies disruption impact on request."},
+    {t:"Generate reports", d:"Supply Disruption Alert, Commodity Supply Snapshot, Mine Monitor, New Supply Pipeline, Country Supply Risk."},
+  ],
+  data:["Production by mine & country","Disruption events: date, cause, impact, duration","Development projects & expected first production","Port, rail and road access per mine","Live spot & futures curves","Exchange inventory levels","Industrial demand indicators"],
+  reports:[
+    {n:"Supply Disruption Alert Report", d:"Every disruption recorded in a period for a commodity — mine, cause and estimated production impact — built for speed when an event just broke."},
+    {n:"Commodity Supply Snapshot", d:"The top producing mines, current status, year‑to‑date production and any active disruptions, as a single current‑state view of a commodity."},
+    {n:"Mine Monitor Report", d:"Per‑mine production history, disruption history, a logistics summary and ownership, kept on hand for any mine on a standing watch list."},
+    {n:"New Supply Pipeline", d:"Development projects for a commodity with operator, location, capacity and expected start date — the forward supply picture."},
+    {n:"Country Supply Risk", d:"Every active mine in a producing country, its disruption history, political risk and export infrastructure, for assessing country‑level supply exposure."},
+  ],
+  sample:{
+    kicker:"Sample output · Supply Disruption Alert Report",
+    title:"Copper — West & Southern Africa, August 2026",
+    meta:["Generated 11 Aug 2026","Scope: Commodity‑wide, 30‑day window","Format: PDF · CSV"],
+    fields:[
+      {k:"Active disruptions", v:"2"},
+      {k:"Combined affected capacity", v:"~61,000 t/yr"},
+      {k:"Primary cause", v:"Labour action — Chilanga Mine, Zambia"},
+      {k:"Duration so far", v:"6 days, ongoing"},
+      {k:"Nearest alternative supply", v:"Kansanshi region, 140 km east"},
+      {k:"Historical disruption frequency (Chilanga)", v:"3 events in past 24 months"},
+    ],
+    excerptLabel:"Excerpt — Alert Summary",
+    excerpt:"A labour action at the Chilanga Mine in Zambia entered its sixth day, affecting an estimated 61,000 t/yr of annualised copper capacity with no confirmed resolution timeline. This is the mine's third recorded disruption in 24 months, each previously resolved within two to three weeks. Regional alternative supply near Kansanshi remains unaffected and retains available rail capacity to port."
+  },
+  copilot:[
+    "Which copper mines are currently disrupted, and what's their combined production capacity?",
+    "What percentage of global nickel supply comes from Indonesia?",
+    "What new gold mines are expected to come online in the next 18 months?",
+  ]
+},
+{
+  code:"05A", icon:"legal",
+  title:"Legal & Regulatory Professionals",
+  roles:"Mining Lawyers · Regulatory Affairs Consultants & Advisors · Concession Advisors · Licensing Specialists",
+  pains:[
+    {before:"Regulatory records are distributed across government sources", after:"Aggregated licence and regulatory records per mine"},
+    {before:"Legal status needs independent verification", after:"Source‑attributed data with links to original registry records"},
+    {before:"Historical regulatory actions buried in old documents", after:"Regulatory action history per mine, searchable by date and type"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Legal / Regulatory; set geographic focus. Dashboard loads licence and regulatory layers prominently."},
+    {t:"Create a project", d:"E.g. “Ghana Mining Licence Due Diligence — Client Name,” type Legal / Regulatory Due Diligence."},
+    {t:"Explore the licence layer", d:"All polygons colour‑coded by status — active, expired, suspended, in application."},
+    {t:"Open a licence record", d:"Number, holder, issuing authority, grant/expiry date, status, commodity, area, historical status changes."},
+    {t:"Open the Licence tab", d:"Full record linked to the mine, corporate ownership chain, compliance status, environmental permits, regulatory notices."},
+    {t:"Ask Copilot", d:"Resolves beneficial ownership chains and flags licences approaching expiry."},
+    {t:"Generate reports", d:"Licence Due Diligence, Corporate Ownership, Regulatory History, Licence Portfolio, Overlap/Conflict, Regulatory Change Summary."},
+  ],
+  data:["Licence number, status, expiry, authority, grant date, area, commodity","Licence holder & corporate parent","Beneficial ownership (where disclosed)","Applicable law & recent regulatory changes","Permit conditions & compliance record","Environmental permit status & violations","Previous holders & ownership transfers","Licence boundary polygons & overlaps"],
+  reports:[
+    {n:"Licence Due Diligence Report", d:"The full record for a licence — holder, authority, status, expiry, conditions, history and corporate chain — assembled for a transaction or compliance check."},
+    {n:"Corporate Ownership Report", d:"The corporate structure traced from the ultimate parent company down to the specific mine licence, for untangling complex ownership."},
+    {n:"Regulatory History Report", d:"All regulatory actions, permits and notices for a mine over time, giving a full compliance trail in one document."},
+    {n:"Licence Portfolio Report", d:"Every licence held by a company in a country, with status, expiry and commodity, for reviewing an entire holding at once."},
+    {n:"Overlap / Conflict Report", d:"Licence boundaries that overlap or sit adjacent to protected areas, community land or other licences — flagged before they become a dispute."},
+    {n:"Regulatory Change Summary", d:"Recent policy and legal changes in a jurisdiction relevant to mining, kept current for advisory work."},
+  ],
+  sample:{
+    kicker:"Sample output · Licence Due Diligence Report",
+    title:"Licence GH‑EL‑2291 — Ashanti Region, Ghana",
+    meta:["Generated 11 Aug 2026","Scope: Single licence","Format: PDF"],
+    fields:[
+      {k:"Status", v:"Active"},
+      {k:"Holder", v:"Meridian Gold West Africa Ltd"},
+      {k:"Issuing authority", v:"Minerals Commission, Ghana"},
+      {k:"Grant / Expiry", v:"Mar 2021 → Mar 2031"},
+      {k:"Area", v:"18.4 hectares"},
+      {k:"Beneficial owner", v:"Meridian Resources Group (disclosed)"},
+    ],
+    excerptLabel:"Excerpt — Findings",
+    excerpt:"Licence GH‑EL‑2291 is active and in good standing, with no unresolved regulatory notices on record. Corporate ownership traces cleanly from the licence holder to its disclosed parent, Meridian Resources Group, with no intermediate shell entities identified. The licence boundary does not overlap any protected area or adjacent concession. One historical status change is on record: a 2019 suspension for an administrative filing lapse, resolved within 60 days and not repeated since."
+  },
+  copilot:[
+    "What is the licence status and expiry date for Mine X?",
+    "Who is the ultimate beneficial owner of the company holding licence [number]?",
+    "Which licences in this region are due to expire in the next 12 months?",
+  ]
+},
+{
+  code:"05B", icon:"gov",
+  title:"Government & Policy Professionals",
+  roles:"Ministry of Mines Consultants · Regulatory Affairs Advisors · Policy Consultants · Government Geologists · Extractives Governance Professionals",
+  pains:[
+    {before:"Data distributed between government agencies", after:"Cross‑agency data aggregated per country and asset"},
+    {before:"Regional comparisons require substantial compilation", after:"Side‑by‑side country comparison built into the platform"},
+    {before:"Connecting policy changes to actual mining assets takes extra research", after:"Regulatory alerts linked directly to specific mine records"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Government / Policy; set country or region scope. Platform loads a sector‑overview lens."},
+    {t:"Create a project", d:"E.g. “Ghana Mining Sector Policy Review 2026” or “ECOWAS Critical Minerals Assessment.”"},
+    {t:"Read the country summary", d:"Total operating/exploration counts, production by commodity, top operators, active regulatory changes, FDI indicators."},
+    {t:"Filter and compare", d:"Filter by commodity, status or operator type; Regional Comparison mode sets two countries side by side."},
+    {t:"Ask Copilot", d:"Answers sector statistics and policy‑framework comparisons across jurisdictions."},
+    {t:"Generate reports", d:"National Mining Sector, Country Investment Climate, Critical Minerals Endowment, Regulatory Change Log, Cross‑Country Comparison, Sector Performance Briefing."},
+  ],
+  data:["Known deposits & mineral occurrences","National production by commodity & export volumes","Active exploration & new developments, capex","Licence regime & tax/royalty policy","Mining‑related infrastructure","Active operators by nationality & production share","Country‑level ESG risk profile","Political & regulatory stability indicators"],
+  reports:[
+    {n:"National Mining Sector Report", d:"Every mine in the country, production by commodity, the operator landscape and a regulatory framework summary — a full sector picture in one document."},
+    {n:"Country Investment Climate Report", d:"Active exploration, the development pipeline, FDI trends, the fiscal regime and political risk, aimed at investors and internal policy planning alike."},
+    {n:"Critical Minerals Endowment Report", d:"Known deposits and resources of critical minerals in a country or region, built for strategic mineral‑security assessments."},
+    {n:"Regulatory Change Log", d:"Every policy and regulatory change in a jurisdiction over a defined period, kept as an auditable record for advisory or legislative work."},
+    {n:"Cross‑Country Comparison Report", d:"Production, investment, regulation and risk laid out side by side across two or more countries, replacing a manual compilation exercise."},
+    {n:"Sector Performance Briefing", d:"An executive summary of sector health — production, investment, incidents and regulatory change — sized for a ministerial briefing."},
+  ],
+  sample:{
+    kicker:"Sample output · National Mining Sector Report",
+    title:"Ghana — National Mining Sector, 2026",
+    meta:["Generated 11 Aug 2026","Scope: Country‑wide","Format: PDF · Excel"],
+    fields:[
+      {k:"Operating mines", v:"38"},
+      {k:"Active exploration projects", v:"112"},
+      {k:"2025 gold production", v:"4.1 Moz"},
+      {k:"Top operator by share", v:"Meridian Gold West Africa Ltd — 14%"},
+      {k:"FDI in exploration (2025)", v:"US$310M"},
+      {k:"Regulatory changes (12 mo)", v:"3 (royalty, EIA, local content)"},
+    ],
+    excerptLabel:"Excerpt — Sector Summary",
+    excerpt:"Ghana's mining sector produced 4.1 Moz of gold in 2025, with the top ten operators accounting for 68% of national output. Exploration investment rose 12% year‑on‑year, concentrated in the Ashanti and Western regions. Three regulatory changes took effect over the past 12 months, most significantly a revised local‑content requirement for exploration service contracts, which the sector's foreign operators have flagged as the primary near‑term compliance item."
+  },
+  copilot:[
+    "What are the top 5 mineral commodities produced in Ghana by volume?",
+    "Compare the regulatory frameworks for large‑scale mining in Ghana and Côte d'Ivoire.",
+    "List all foreign operators active in the DRC cobalt sector.",
+  ]
+},
+{
+  code:"06A", icon:"dfi",
+  title:"Development Finance & Aid Professionals",
+  roles:"DFI Investment Officers · Project Finance Specialists · Country Programme Officers · Extractives Governance Advisors",
+  pains:[
+    {before:"Project‑level information spans multiple institutions and formats", after:"Project‑level mine profile aggregates all relevant evidence"},
+    {before:"Governance and ESG information requires qualitative research", after:"ESG record structured and machine‑readable per asset"},
+    {before:"Country‑level risk data doesn't translate to project level", after:"Project‑level risk flags derived from mine‑specific data, not national averages"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Development Finance / Aid; set country focus, typically emerging or frontier mining markets."},
+    {t:"Create a project", d:"E.g. “IFC PS Compliance Review — Country Artisanal Mining Sector,” type Development Assessment / DD."},
+    {t:"Activate ESG + governance overlays", d:"Filter by project stage, operator type or commodity across the mapped scope."},
+    {t:"Review the mine profile", d:"Ownership and governance structure, ESG record, infrastructure availability, community context, commodity significance, country risk."},
+    {t:"Ask Copilot", d:"Checks IFC Performance Standards alignment and surfaces governance records across a company's African operations."},
+    {t:"Generate reports", d:"Project Due Diligence, Sector Governance Assessment, ESG Safeguard Screening, Country Extractives Assessment, Supply Chain Transparency."},
+  ],
+  data:["Project name, status, stage, commodity, owner","Ownership transparency & disclosure quality","Environmental & social record, community engagement","Political stability & fiscal regime","Road/rail/port access & power availability","Population proximity & conflict history","Commodity strategic importance & demand outlook"],
+  reports:[
+    {n:"Project Due Diligence Report", d:"A full profile of a mine or project — ownership, governance, ESG, country risk and infrastructure — built for an investment committee decision."},
+    {n:"Sector Governance Assessment", d:"Governance quality assessed across a country's mining sector as a whole, for country‑level programming decisions."},
+    {n:"ESG Safeguard Screening Report", d:"An IFC Performance Standards alignment check per mine, structured to slot directly into a safeguard compliance file."},
+    {n:"Country Extractives Assessment", d:"A national sector view covering production, governance, ESG, infrastructure and investment, for country‑strategy work."},
+    {n:"Supply Chain Transparency Report", d:"The ownership and ESG profile of every mine in a supply chain, for transparency and traceability commitments."},
+  ],
+  sample:{
+    kicker:"Sample output · Project Due Diligence Report",
+    title:"Diani Artisanal Gold Site — Mali",
+    meta:["Generated 11 Aug 2026","Scope: Single project","Format: PDF"],
+    fields:[
+      {k:"Stage", v:"Formalisation / transition to small‑scale"},
+      {k:"Operator type", v:"Cooperative, locally owned"},
+      {k:"IFC PS alignment", v:"Partial — PS1, PS4 gaps flagged"},
+      {k:"Nearest grid power", v:"31 km"},
+      {k:"Community conflict history", v:"None recorded, past 5 years"},
+      {k:"Data completeness", v:"72% — production disclosure partial"},
+    ],
+    excerptLabel:"Excerpt — Risk & Readiness",
+    excerpt:"The Diani site is midway through a formalisation process supported by the national artisanal mining programme, with governance and labour standards documentation still incomplete against IFC PS1 and PS4. No community conflict has been recorded in the past five years, and the cooperative's disclosure quality has improved over the last two reporting cycles. Data completeness across the profile stands at 72%, with production volumes the largest remaining gap — flagged here rather than silently omitted."
+  },
+  copilot:[
+    "What is the IFC PS compliance status for Mine X?",
+    "List artisanal mining sites in this country with documented community conflict.",
+    "What is the governance record of Company X across its African operations?",
+  ]
+},
+{
+  code:"06B", icon:"academia",
+  title:"Academia & Research",
+  roles:"University Lecturers · Professors · Research Fellows · Graduate Researchers · Mining, Economics & Geology Researchers",
+  pains:[
+    {before:"Discovery → acquisition → cleaning → integration takes most of research time", after:"A cleaned, integrated, georeferenced dataset ready to query"},
+    {before:"Many datasets require individual download and manual merge", after:"API access and structured exports eliminate manual assembly"},
+    {before:"Geocoding and GIS integration is a separate manual step", after:"All data spatial by default, with GIS‑ready exports"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work or university email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Academic Research; set research focus — commodity, geography or topic."},
+    {t:"Create a project", d:"E.g. “Historical Gold Mining and Deforestation in West Africa 1990–2026,” with geographic and temporal scope."},
+    {t:"Explore spatially and in time", d:"Use temporal filters to see mine activity at different points in history."},
+    {t:"Export the dataset", d:"CSV or GeoJSON for R, Python, QGIS or ArcGIS; run spatial queries in GIS Feature Detail."},
+    {t:"Ask Copilot", d:"Answers historical and cumulative queries directly, or points to the full dataset behind them."},
+    {t:"Generate outputs", d:"Dataset Export, GeoJSON/Shapefile Export, Historical Production Dataset, Geological Occurrence Dataset, ESG Incident Dataset, Research Summary."},
+  ],
+  data:["Mine records: name, location, status & owner history","Deposit type, formation, mineral occurrence, geochemistry","Historical exploration & resource estimate history","ESG incident & environmental permit history","Regulatory change history by country","Ownership changes & asset transfers","Historical commodity price series","GeoJSON exports: mine boundaries, licence polygons, occurrence points"],
+  reports:[
+    {n:"Dataset Export (CSV)", d:"Structured tabular data for any scope, ready to drop into R, Stata or Python for statistical analysis without further cleaning."},
+    {n:"GeoJSON / Shapefile Export", d:"Spatial data formatted for direct use in QGIS, ArcGIS or Python GIS libraries, with coordinate systems already reconciled."},
+    {n:"Historical Production Dataset", d:"Time‑series production data for every mine in scope, built for longitudinal analysis."},
+    {n:"Geological Occurrence Dataset", d:"All mineral occurrences in a region with their full attribute set, for geological or resource‑distribution studies."},
+    {n:"ESG Incident Dataset", d:"Structured incident records suited to quantitative analysis rather than qualitative case‑by‑case review."},
+    {n:"Research Summary Report", d:"A descriptive summary of a dataset's scope — counts, distributions and timeline — useful as a methodology appendix."},
+  ],
+  sample:{
+    kicker:"Sample output · Research Summary Report",
+    title:"Historical Gold Mining, West Africa (1990–2026)",
+    meta:["Generated 11 Aug 2026","Scope: Regional, 36‑year window","Format: PDF · CSV"],
+    fields:[
+      {k:"Mines covered", v:"214 records, 6 countries"},
+      {k:"Temporal coverage", v:"1990–2026, annual resolution"},
+      {k:"Total recorded production", v:"186.4 Moz Au"},
+      {k:"Status transitions logged", v:"312 (exploration → production, closures, etc.)"},
+      {k:"Data completeness", v:"89% average across fields"},
+      {k:"Export formats available", v:"CSV, GeoJSON, Shapefile"},
+    ],
+    excerptLabel:"Excerpt — Dataset Description",
+    excerpt:"This dataset covers 214 gold mining sites across six West African countries between 1990 and 2026, drawing on national registries, company disclosures and historical geological surveys. Average field completeness is 89%, with the weakest coverage in pre‑2005 production figures for artisanal and small‑scale sites. Three hundred and twelve status transitions are logged, including 47 closures and 61 exploration‑to‑production conversions, providing a basis for longitudinal analysis of sector formalisation over the period."
+  },
+  copilot:[
+    "What is the total historical gold production from mines in West Africa since 2000?",
+    "List all copper mines that transitioned from exploration to production between 2015 and 2025.",
+    "Provide a dataset of all active mining licences in Ghana with holder, issue date and commodity.",
+  ]
+},
+{
+  code:"06C", icon:"press",
+  title:"Journalists & Editors",
+  roles:"Mining & Business Journalists · Investigative Reporters · Financial Editors · Data Journalists · Environmental Correspondents",
+  pains:[
+    {before:"Verifying claims takes time", after:"Source‑attributed data; Copilot cites sources for every answer"},
+    {before:"Primary sources are hard to find", after:"Licence registry, regulatory and company data aggregated in one place"},
+    {before:"Understanding an event's significance means connecting several datasets", after:"Site Detail connects production, price, ownership and ESG in one view"},
+  ],
+  steps:[
+    {t:"Sign up", d:"Create an account with a work email or SSO login and verify it."},
+    {t:"Onboarding", d:"Select Journalist / Media; dashboard loads a news‑oriented view — disruption alerts and incident markers up front."},
+    {t:"Create a project per story", d:"E.g. “Investigation: Gold Mine X Environmental Violations,” type Investigation / Story Research."},
+    {t:"Investigate on the map", d:"Mine shown in geographic context — proximity to communities, water bodies, protected areas."},
+    {t:"Open the factual record", d:"Corporate ownership chain, production and licence validity, ESG incident history, regulatory actions, AI‑tagged news events."},
+    {t:"Cross‑reference claims", d:"Copilot checks company statements against independent platform data; GIS Feature Detail answers spatial questions like tailings‑to‑village distance."},
+    {t:"Ask Copilot", d:"Traces ownership changes, incident histories and a mine's share of national or global output."},
+    {t:"Generate outputs", d:"Mine Factsheet, Incident Timeline, Ownership Investigation, Regulatory History, Geographic Context, Production Significance."},
+  ],
+  data:["Name, operator, owner, corporate chain, location","Current & historical production, share of supply","Ownership changes over time","Licence validity, issuer, expiry","Environmental violations, accidents, community conflicts, fines","Government orders, suspensions, notices","Proximity to settlements & indigenous land","Commodity price context"],
+  reports:[
+    {n:"Mine Factsheet", d:"A quick‑reference, shareable card covering owner, production, licence status and an ESG summary — built to be dropped straight into a story or shared with an editor."},
+    {n:"Incident Timeline Report", d:"A chronological list of every recorded incident and violation at a mine, for tracing a pattern over time rather than a single event."},
+    {n:"Ownership Investigation Report", d:"The corporate chain traced from the licence holder to the ultimate beneficial owner, for stories that hinge on who's really behind an asset."},
+    {n:"Regulatory History Report", d:"Every government regulatory action against a mine or company, compiled as a single documented record."},
+    {n:"Geographic Context Report", d:"A map showing the mine's location relative to communities, water bodies and protected areas, for stories where proximity is the story."},
+    {n:"Production Significance Report", d:"A mine's share of national and global production, used to establish why a given mine or event actually matters."},
+  ],
+  sample:{
+    kicker:"Sample output · Mine Factsheet",
+    title:"Kaseri Gold Mine — Ghana",
+    meta:["Generated 11 Aug 2026","Scope: Single asset, shareable","Format: PDF"],
+    fields:[
+      {k:"Owner (ultimate)", v:"Meridian Resources Group"},
+      {k:"Ownership last changed", v:"2019 — acquired from Torvane Minerals"},
+      {k:"Licence status", v:"Valid, expires Mar 2031"},
+      {k:"Share of national gold output", v:"~5.2%"},
+      {k:"ESG incidents (5 yr)", v:"1 — water discharge notice, 2023, resolved"},
+      {k:"Nearest community", v:"Kaseri village, 2.1 km"},
+    ],
+    excerptLabel:"Excerpt — Factsheet Summary",
+    excerpt:"Kaseri Gold Mine has been owned by Meridian Resources Group since a 2019 acquisition from Torvane Minerals and holds a valid mining licence through 2031. The mine represents approximately 5.2% of Ghana's national gold output. One ESG incident is on record in the past five years — a 2023 water discharge notice, resolved within the regulator's compliance window with no repeat findings. The nearest community, Kaseri village, sits 2.1 km from the pit boundary."
+  },
+  copilot:[
+    "Who ultimately owns Mine X, and when did ownership change?",
+    "What environmental incidents have been recorded at Mine X in the past 5 years?",
+    "Compare what Company said in its sustainability report against its ESG incident record.",
+  ]
+},
+];
+
+const railnav = document.getElementById('railnav');
+const mobileStrip = document.getElementById('mobileStrip');
+const main = document.getElementById('main');
+
+function renderPersona(p, idx){
+  const pains = p.pains.map(pc => `
+    <div class="pain-card">
+      <div class="pain-before">${pc.before}</div>
+      <div class="pain-arrow">↓ solved by</div>
+      <div class="pain-after">${pc.after}</div>
+    </div>`).join('');
+
+  const steps = p.steps.map((s,i) => `
+    <div class="step">
+      <div class="step-head">
+        <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="step-title">${s.t}</span>
+      </div>
+      <p class="step-desc">${s.d}</p>
+    </div>`).join('');
+
+  const chips = p.data.map(d => `<span class="chip">${d}</span>`).join('');
+
+  const reports = p.reports.map(r => `
+    <div class="report-card">
+      <div class="rname">${r.n}</div>
+      <div class="rdesc">${r.d}</div>
+    </div>`).join('');
+
+  const sampleMeta = p.sample.meta.map(m => `<div>${m}</div>`).join('');
+  const sampleFields = p.sample.fields.map(f => `
+    <div class="doc-field">
+      <div class="k">${f.k}</div>
+      <div class="v">${f.v}</div>
+    </div>`).join('');
+
+  const copilot = p.copilot.map(q => `<div class="qbubble">${q}</div>`).join('');
+
+  return `
+  <section class="persona" id="persona-${idx}">
+    <div class="p-eyebrow"><span class="code-big">${p.code}</span> · User Journey</div>
+    <h2 class="p-title">${p.title}</h2>
+    <p class="p-roles">${p.roles}</p>
+
+    <div class="section-head"><h3>Pain points solved</h3><span class="n">${p.pains.length}</span></div>
+    <div class="pains">${pains}</div>
+
+    <div class="section-head"><h3>Platform journey</h3><span class="n">${p.steps.length} steps</span></div>
+    <div class="journey"><div class="journey-track">${steps}</div></div>
+
+    <div class="section-head"><h3>Data they can access</h3><span class="n">${p.data.length}</span></div>
+    <div class="chipwrap">${chips}</div>
+
+    <div class="section-head"><h3>Copilot in action</h3></div>
+    <div class="copilot-box">
+      <div class="copilot-head"><span class="dot"></span> COPILOT · EXAMPLE QUERIES</div>
+      ${copilot}
+    </div>
+
+    <div class="section-head" style="margin-top:44px;"><h3>Reports they can generate</h3><span class="n">${p.reports.length}</span></div>
+    <div class="reports">${reports}</div>
+
+    <div class="doc-preview">
+      <div class="doc-head">
+        <div class="doc-head-left">
+          <div class="doc-kicker">${p.sample.kicker}</div>
+          <div class="doc-title">${p.sample.title}</div>
+        </div>
+        <div class="doc-head-right">${sampleMeta}</div>
+      </div>
+      <div class="doc-body">
+        <div class="doc-fields">${sampleFields}</div>
+        <div class="doc-excerpt">
+          <div class="ex-label">${p.sample.excerptLabel}</div>
+          <p>${p.sample.excerpt}</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="credit">MineSentinel User Guide · Internal · August 2026</footer>
+  </section>`;
+}
+
+main.innerHTML = PERSONAS.map(renderPersona).join('');
+
+function shortLabel(p){
+  return p.title.split('&')[0].split(',')[0].trim();
+}
+
+PERSONAS.forEach((p, idx) => {
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (idx===0 ? ' active' : '');
+  btn.innerHTML = `<span class="icon">${ICONS[p.icon]}</span><span class="code">${p.code}</span><span class="label">${shortLabel(p)}</span>`;
+  btn.addEventListener('click', () => activate(idx));
+  railnav.appendChild(btn);
+
+  const mbtn = document.createElement('button');
+  mbtn.textContent = `${p.code} · ${shortLabel(p)}`;
+  mbtn.className = idx===0 ? 'active' : '';
+  mbtn.addEventListener('click', () => activate(idx));
+  mobileStrip.appendChild(mbtn);
+});
+
+function activate(idx){
+  document.querySelectorAll('.persona').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.tab-btn').forEach((el,i) => el.classList.toggle('active', i===idx));
+  document.querySelectorAll('.mobile-strip button').forEach((el,i) => el.classList.toggle('active', i===idx));
+  window.scrollTo({top:0, behavior:'instant'});
+}
+
+activate(0);
+</script>
+</body>
+</html>

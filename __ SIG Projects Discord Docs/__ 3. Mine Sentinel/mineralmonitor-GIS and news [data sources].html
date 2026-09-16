@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MineralMonitor · Data Source Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0e12;
+    --surface: #12161c;
+    --surface2: #181d25;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8ecf0;
+    --muted: #8896a4;
+    --faint: #4a5560;
+
+    --gold: #e8a827;
+    --gold-dim: #7a5210;
+    --gold-bg: rgba(232,168,39,0.08);
+
+    --geo: #3aadab;
+    --geo-dim: #1c5a59;
+    --geo-bg: rgba(58,173,171,0.08);
+
+    --conflict: #e05252;
+    --conflict-dim: #6e2020;
+    --conflict-bg: rgba(224,82,82,0.08);
+
+    --mineral: #6f9de8;
+    --mineral-dim: #1e3a6e;
+    --mineral-bg: rgba(111,157,232,0.08);
+
+    --news: #b07de8;
+    --news-dim: #4a2a7a;
+    --news-bg: rgba(176,125,232,0.08);
+
+    --kg: #52c47a;
+    --kg-dim: #1a5232;
+    --kg-bg: rgba(82,196,122,0.08);
+
+    --env: #4fc08d;
+    --env-dim: #1a6040;
+    --env-bg: rgba(79,192,141,0.08);
+
+    --paid-dot: #e05252;
+    --free-dot: #52c47a;
+    --attr-dot: #e8a827;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 0;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+    gap: 24px;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .brand-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--gold);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-icon svg { width: 16px; height: 16px; fill: #0b0e12; }
+
+  .brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 540px;
+  }
+
+  .stats-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .stat-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .legend-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .legend-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot-free { background: var(--free-dot); }
+  .dot-paid { background: var(--paid-dot); }
+  .dot-attr { background: var(--attr-dot); }
+
+  .cat-block {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  section { margin-bottom: 40px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .cat-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+
+  .section-count {
+    font-size: 12px;
+    color: var(--faint);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color 0.15s, background 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    border-color: var(--border2);
+    background: var(--surface2);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 10px 0 0 10px;
+  }
+
+  .card.geo::before { background: var(--geo); }
+  .card.mineral::before { background: var(--mineral); }
+  .card.conflict::before { background: var(--conflict); }
+  .card.news::before { background: var(--news); }
+  .card.kg::before { background: var(--kg); }
+  .card.env::before { background: var(--env); }
+  .card.mining::before { background: var(--gold); }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .access-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .access-free {
+    background: rgba(82,196,122,0.12);
+    color: #52c47a;
+    border: 1px solid rgba(82,196,122,0.25);
+  }
+  .access-paid {
+    background: rgba(224,82,82,0.12);
+    color: #e05252;
+    border: 1px solid rgba(224,82,82,0.25);
+  }
+  .access-attr {
+    background: rgba(232,168,39,0.12);
+    color: #e8a827;
+    border: 1px solid rgba(232,168,39,0.25);
+  }
+  .access-reg {
+    background: rgba(111,157,232,0.12);
+    color: #6f9de8;
+    border: 1px solid rgba(111,157,232,0.25);
+  }
+  .access-new {
+    background: rgba(79,192,141,0.12);
+    color: #4fc08d;
+    border: 1px solid rgba(79,192,141,0.25);
+    margin-right: 4px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--faint);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  .card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--faint);
+    text-decoration: none;
+    transition: color 0.12s;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  .card-link:hover { color: var(--text); }
+
+  .card-link svg {
+    width: 10px;
+    height: 10px;
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  .formats {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .fmt {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--mineral);
+    background: var(--mineral-bg);
+    border: 1px solid rgba(111,157,232,0.2);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .fmt.geo { color: var(--geo); background: var(--geo-bg); border-color: rgba(58,173,171,0.2); }
+  .fmt.gold { color: var(--gold); background: var(--gold-bg); border-color: rgba(232,168,39,0.2); }
+  .fmt.env { color: var(--env); background: var(--env-bg); border-color: rgba(79,192,141,0.2); }
+  .fmt.red { color: var(--conflict); background: var(--conflict-bg); border-color: rgba(224,82,82,0.2); }
+  .fmt.kg { color: var(--kg); background: var(--kg-bg); border-color: rgba(82,196,122,0.2); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  footer {
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  footer p {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--faint);
+  }
+
+  .footer-tags { display: flex; gap: 8px; }
+
+  @media (max-width: 640px) {
+    .page { padding: 32px 16px 60px; }
+    h1 { font-size: 24px; }
+    header { grid-template-columns: 1fr; }
+    .stats-row { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 16 16"><polygon points="8,1 15,5 15,11 8,15 1,11 1,5"/></svg>
+        </div>
+        <span class="brand-name">MineralMonitor</span>
+      </div>
+      <h1>Data Source Registry</h1>
+      <p class="subtitle">Classified inventory of geospatial, mineral, conflict, environmental, and intelligence data sources for West Africa coverage.</p>
+    </div>
+    <div class="stats-row">
+      <span class="stat-pill">v1.0 · May 2026</span>
+      <span class="stat-pill">19 sources catalogued</span>
+      <span class="stat-pill">Phase 1 · Ghana focus</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div class="legend-group"><div class="dot dot-free"></div><span class="legend-label">Free / Open</span></div>
+    <div class="legend-group"><div class="dot dot-attr"></div><span class="legend-label">Free + Attribution required</span></div>
+    <div class="legend-group"><div class="dot dot-paid"></div><span class="legend-label">Paid / Commercial</span></div>
+    <div style="width:1px;background:var(--border);margin:0 4px;"></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--mineral)"></div><span class="legend-label">Geospatial / GIS</span></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--gold)"></div><span class="legend-label">Mineral / Mining</span></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--conflict)"></div><span class="legend-label">Conflict / Security</span></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--env)"></div><span class="legend-label">Environmental</span></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--news)"></div><span class="legend-label">News / Intelligence</span></div>
+    <div class="legend-group"><div class="cat-block" style="background:var(--kg)"></div><span class="legend-label">Knowledge Graph</span></div>
+  </div>
+
+
+  <!-- GIS / GEOSPATIAL -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--mineral-bg);color:var(--mineral);border:1px solid rgba(111,157,232,0.25)">Geospatial · GIS</span>
+      <span class="section-count">6 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">RCMRD Africa GeoPortal — Mineral Deposits</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">RCMRD-hosted ArcGIS Open Data layer of African mineral deposit locations with GeoJSON/REST API access. Regional boundaries noted as non-official. Primary geospatial backbone for deposit pin layer in MineralMonitor.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">GeoJSON</span>
+            <span class="fmt">REST API</span>
+            <span class="fmt">ArcGIS FS</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">deposit-locations</span>
+          <span class="tag">Africa-wide</span>
+          <span class="tag">rcmrd</span>
+        </div>
+        <a class="card-link" href="https://ofesa-geoportal.rcmrd.org/datasets/4c916cfc2b8540a887422b50b38152a1_0/explore" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          ofesa-geoportal.rcmrd.org
+        </a>
+      </div>
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">Africa GeoPortal (ArcGIS MapViewer)</span>
+          <span class="access-badge access-attr">Attribution</span>
+        </div>
+        <p class="card-desc">Esri-powered pan-African GIS explorer. Aggregates datasets from government agencies, research orgs, and NGOs. Supports WMS/WMTS, FeatureServer, and tile exports. Attribution to Esri/RCMRD required on derived products.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">WMS</span>
+            <span class="fmt">WMTS</span>
+            <span class="fmt">FeatureServer</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">multi-theme</span>
+          <span class="tag">government</span>
+          <span class="tag">esri</span>
+        </div>
+        <a class="card-link" href="https://africageoportal.maps.arcgis.com/apps/mapviewer" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          africageoportal.maps.arcgis.com
+        </a>
+      </div>
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">RCMRD Africa GeoPortal — Dataset Search</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">RCMRD's open data search portal hosting land cover, climate, elevation, conflict, and resource datasets for sub-Saharan and East Africa. Searchable by keyword; provides direct shapefile and tile downloads.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">Shapefile</span>
+            <span class="fmt">GeoTIFF</span>
+            <span class="fmt">REST</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">land-cover</span>
+          <span class="tag">elevation</span>
+          <span class="tag">rcmrd</span>
+        </div>
+        <a class="card-link" href="https://rcmrd.africageoportal.com/search?collection=dataset&q=africa" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          rcmrd.africageoportal.com
+        </a>
+      </div>
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">Overture Maps Foundation</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Open map dataset from the Linux Foundation (Amazon, Meta, Microsoft, TomTom). Provides globally consistent base layers — buildings, roads, places, divisions, water — in Parquet and GeoParquet. Ideal for MVT tile generation via <code>martin</code>.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">GeoParquet</span>
+            <span class="fmt">PMTiles</span>
+            <span class="fmt">GeoJSON</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">base-map</span>
+          <span class="tag">roads</span>
+          <span class="tag">linux-foundation</span>
+        </div>
+        <a class="card-link" href="https://overturemaps.org" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          overturemaps.org
+        </a>
+      </div>
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">Free GIS Datasets (rtwilson.com)</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Curated, categorised directory of ~500 freely available GIS datasets. Covers physical geography, hydrology, mineral resources, conflict, population, and country-specific data including Kenya, South Africa, and Namibia. Useful as a discovery index.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">Shapefile</span>
+            <span class="fmt">KML</span>
+            <span class="fmt">GeoTIFF</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">directory</span>
+          <span class="tag">mineral-resources</span>
+          <span class="tag">hydrology</span>
+        </div>
+        <a class="card-link" href="https://freegisdata.rtwilson.com/" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          freegisdata.rtwilson.com
+        </a>
+      </div>
+
+      <div class="card mineral">
+        <div class="card-top">
+          <span class="card-title">IBAT Alliance — Biodiversity &amp; Protected Area Tool</span>
+          <span class="access-badge access-paid">Paid</span>
+        </div>
+        <p class="card-desc">Integrates WDPA, IUCN Red List, and World Heritage data into a single API. Designed for ESG and environmental impact assessments near mining concessions. Subscription pricing; tiered plans for businesses vs. NGOs.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">API</span>
+            <span class="fmt">Shapefile</span>
+            <span class="fmt">PDF reports</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">biodiversity</span>
+          <span class="tag">esg</span>
+          <span class="tag">impact-assessment</span>
+        </div>
+        <a class="card-link" href="https://www.ibat-alliance.org/pricing" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          ibat-alliance.org/pricing
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- MINERAL / MINING -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--gold-bg);color:var(--gold);border:1px solid rgba(232,168,39,0.25)">Mineral · Mining</span>
+      <span class="section-count">5 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card mining">
+        <div class="card-top">
+          <span class="card-title">USGS Africa Mineral Industries GIS</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">USGS National Minerals Information Center geodatabase covering 58 African mineral-producing countries. Includes mining infrastructure, processing facilities, export ports, and exploration sites. 2021 data release (ref year 2018); GeoPDF update published July 2024. CC0 licensed.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt gold">File GDB</span>
+            <span class="fmt gold">GeoPDF</span>
+            <span class="fmt gold">Shapefile</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">authoritative</span>
+          <span class="tag">cc0</span>
+          <span class="tag">58-countries</span>
+        </div>
+        <a class="card-link" href="https://usgs.gov/data/compilation-geospatial-data-gis-mineral-industries-and-related-infrastructure-africa" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          usgs.gov · doi:10.5066/P97EQWXP
+        </a>
+      </div>
+
+      <div class="card mining">
+        <div class="card-top">
+          <span class="card-title">Cm Mining Corporation — Africa Mining Data</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Commercial mining operator publishing summaries of gold, cobalt, lithium, and diamond output data across key African countries. Useful as a secondary signal for commodity production intelligence. Not a raw data feed — editorial synthesis.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt gold">HTML</span>
+            <span class="fmt gold">Charts</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">gold</span>
+          <span class="tag">cobalt</span>
+          <span class="tag">lithium</span>
+          <span class="tag">editorial</span>
+        </div>
+        <a class="card-link" href="https://minerals.co.com/africa-mining-data/" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          minerals.co.com
+        </a>
+      </div>
+
+      <div class="card mining">
+        <div class="card-top">
+          <span class="card-title">openAFRICA — Mining &amp; Cadastre Datasets</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Code for Africa's grassroots open data repository. Hosts mining cadastre maps, concession boundaries, conflict data, and SDG datasets liberated from government sources. Irregular update cadence; quality varies by country. Supported by AWS and World Bank.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt gold">CSV</span>
+            <span class="fmt gold">Shapefile</span>
+            <span class="fmt gold">GeoJSON</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">cadastre</span>
+          <span class="tag">concessions</span>
+          <span class="tag">code-for-africa</span>
+        </div>
+        <a class="card-link" href="https://open.africa" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          open.africa
+        </a>
+      </div>
+
+      <div class="card mining">
+        <div class="card-top">
+          <span class="card-title">EITI — Extractive Industries Transparency Initiative</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Annual country-level reports on tax payments, production volumes, and licence data from signatory nations including Ghana, Guinea, Sierra Leone, Liberia, and Côte d'Ivoire. Machine-readable since 2020. Directly aligned with MineralMonitor's EITI public atlas layer.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt gold">JSON</span>
+            <span class="fmt gold">CSV</span>
+            <span class="fmt gold">API</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">transparency</span>
+          <span class="tag">payments</span>
+          <span class="tag">ecowas-coverage</span>
+        </div>
+        <a class="card-link" href="https://eiti.org/data" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          eiti.org/data
+        </a>
+      </div>
+
+      <div class="card mining">
+        <div class="card-top">
+          <span class="card-title">World Bank — Mineral Markets &amp; Open Data</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">World Bank Commodity Price Data (Pink Sheet) offers monthly historical and current prices for gold, bauxite, manganese, and iron ore. DataBank API provides macro and FDI context for the CMRI scoring model.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt gold">REST API</span>
+            <span class="fmt gold">XLSX</span>
+            <span class="fmt gold">CSV</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">commodity-prices</span>
+          <span class="tag">cmri-input</span>
+          <span class="tag">pink-sheet</span>
+        </div>
+        <a class="card-link" href="https://data.worldbank.org/indicator/CM.MKT.LCAP.GD.ZS" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          data.worldbank.org
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ENVIRONMENTAL -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--env-bg);color:var(--env);border:1px solid rgba(79,192,141,0.25)">Environmental</span>
+      <span class="section-count">3 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card env">
+        <div class="card-top">
+          <span class="card-title">Protected Planet · WDPA Africa</span>
+          <span class="access-badge access-attr">Attribution</span>
+        </div>
+        <p class="card-desc">UNEP-WCMC's World Database on Protected Areas for Africa. 9,008 total protected areas across 58 countries, updated March 2026. Covers national parks, biosphere reserves, and Other Effective Conservation Measures (OECMs). Critical for mine proximity analysis and ESG overlays.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt env">Shapefile</span>
+            <span class="fmt env">GeoJSON</span>
+            <span class="fmt env">API</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">wdpa</span>
+          <span class="tag">9008-areas</span>
+          <span class="tag">unep-wcmc</span>
+          <span class="tag">2026-data</span>
+        </div>
+        <a class="card-link" href="https://www.protectedplanet.net/region/AF" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          protectedplanet.net/region/AF
+        </a>
+      </div>
+
+      <div class="card env">
+        <div class="card-top">
+          <span class="card-title">UNEP GRiD Geneva — Platforms</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">UNEP's Global Resource Information Database. Hosts environmental datasets on deforestation, freshwater stress, land degradation, and climate hazards relevant to mining-adjacent communities. Access may require bot-challenge bypass; direct fetch blocked by Anubis protection.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt env">GeoTIFF</span>
+            <span class="fmt env">NetCDF</span>
+            <span class="fmt env">WMS</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">deforestation</span>
+          <span class="tag">climate-hazard</span>
+          <span class="tag">unep</span>
+          <span class="tag">⚠ bot-protect</span>
+        </div>
+        <a class="card-link" href="https://unepgrid.ch/en/platforms" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          unepgrid.ch/en/platforms
+        </a>
+      </div>
+
+      <div class="card env">
+        <div class="card-top">
+          <span class="card-title">Copernicus Sentinel-2 (ESA)</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">EU's open satellite program. Sentinel-2 provides 10m multispectral imagery every 5 days, enabling mine tailings detection, artisanal site monitoring, and vegetation change. Pre-catalogued in MineralMonitor architecture. Access via Copernicus Data Space API or STAC endpoints.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt env">GeoTIFF</span>
+            <span class="fmt env">STAC</span>
+            <span class="fmt env">COG</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">10m-resolution</span>
+          <span class="tag">5-day-revisit</span>
+          <span class="tag">esa</span>
+          <span class="tag">asm-monitoring</span>
+        </div>
+        <a class="card-link" href="https://dataspace.copernicus.eu/" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          dataspace.copernicus.eu
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- CONFLICT / SECURITY -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--conflict-bg);color:var(--conflict);border:1px solid rgba(224,82,82,0.25)">Conflict · Security</span>
+      <span class="section-count">2 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card conflict">
+        <div class="card-top">
+          <span class="card-title">ACLED — Armed Conflict Location &amp; Event Data</span>
+          <span class="access-badge access-reg">Free · Reg</span>
+        </div>
+        <p class="card-desc">Gold-standard disaggregated conflict dataset. Records precise dates, locations, actors, and event types for political violence and protests globally. Africa coverage from 1997; weekly updates within days of events. 230+ countries. Used by UNHCR, OCHA, and ICG. Free API key via myACLED account.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt red">REST API</span>
+            <span class="fmt red">CSV</span>
+            <span class="fmt red">XLSX</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">weekly-updates</span>
+          <span class="tag">georeferenced</span>
+          <span class="tag">1997-present</span>
+          <span class="tag">cmri-input</span>
+        </div>
+        <a class="card-link" href="https://acleddata.com/conflict-data" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          acleddata.com
+        </a>
+      </div>
+
+      <div class="card conflict">
+        <div class="card-top">
+          <span class="card-title">Africa Knowledge Platform — ACLED WMS Layer</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">EC Joint Research Centre's Africa Knowledge Platform exposes ACLED 2020–2025 event data as a WMS/WFS service via GeoServer. Permits direct tile/layer consumption in MapLibre without ACLED registration. Updated weekly.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt red">WMS</span>
+            <span class="fmt red">GeoServer</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">maplibre-ready</span>
+          <span class="tag">jrc</span>
+          <span class="tag">2020-2025</span>
+        </div>
+        <a class="card-link" href="https://africa-knowledge-platform.ec.europa.eu/node/47008" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          africa-knowledge-platform.ec.europa.eu
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- NEWS / INTELLIGENCE -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--news-bg);color:var(--news);border:1px solid rgba(176,125,232,0.25)">News · Intelligence</span>
+      <span class="section-count">2 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card news">
+        <div class="card-top">
+          <span class="card-title">Commodity TV</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Mineral and mining focused video news platform. Covers gold, critical minerals, and African mining developments through interviews and company spotlights. Useful as a curated signal source for the AI intel brief module; not machine-readable.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">Video</span>
+            <span class="fmt">RSS</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">gold</span>
+          <span class="tag">company-news</span>
+          <span class="tag">editorial</span>
+        </div>
+        <a class="card-link" href="https://www.commodity-tv.com/" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          commodity-tv.com
+        </a>
+      </div>
+
+      <div class="card news">
+        <div class="card-top">
+          <span class="card-title">NewsData.io — Search &amp; Live News API</span>
+          <span class="access-badge access-reg">Freemium · Reg</span>
+        </div>
+        <p class="card-desc">REST API aggregating news from 100+ countries with full-text search, category filtering, and geographic targeting. Free tier allows 200 req/day. Relevant for mining regulatory news, strike alerts, and export policy updates in West Africa. Supports keyword + domain + country filters.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt">REST API</span>
+            <span class="fmt">JSON</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">200-req-free</span>
+          <span class="tag">keyword-filter</span>
+          <span class="tag">intel-briefs</span>
+        </div>
+        <a class="card-link" href="https://newsdata.io/search-news" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          newsdata.io
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- KNOWLEDGE GRAPH -->
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:var(--kg-bg);color:var(--kg);border:1px solid rgba(82,196,122,0.25)">Knowledge Graph · Events</span>
+      <span class="section-count">2 sources</span>
+    </div>
+    <div class="cards">
+
+      <div class="card kg">
+        <div class="card-top">
+          <span class="card-title">GDELT Project — Global Knowledge Graph</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">Largest open spatio-temporal dataset in existence. Archives 215+ years of global news into structured event, person, location, and tone records. Raw CSV download (2.5TB+/year) or query via Google BigQuery. Especially powerful for mining protest signals, government action events, and supply chain disruptions in West Africa.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt kg">CSV</span>
+            <span class="fmt kg">BigQuery</span>
+            <span class="fmt kg">REST</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">215yr-archive</span>
+          <span class="tag">event-graph</span>
+          <span class="tag">protest-signals</span>
+          <span class="tag">bigquery</span>
+        </div>
+        <a class="card-link" href="https://www.gdeltproject.org/data.html#rawdatafiles" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          gdeltproject.org
+        </a>
+      </div>
+
+      <div class="card kg">
+        <div class="card-top">
+          <span class="card-title">Humanitarian Data Exchange (HDX)</span>
+          <span class="access-badge access-free">Free</span>
+        </div>
+        <p class="card-desc">UNOCHA's open humanitarian data platform. Hosts ACLED bulk files, UNHCR displacement data, food insecurity indicators, and admin boundary datasets for every ECOWAS country. Especially valuable for the CMRI social stability sub-index and humanitarian overlay layers.</p>
+        <div class="card-footer">
+          <div class="formats">
+            <span class="fmt kg">CSV</span>
+            <span class="fmt kg">Shapefile</span>
+            <span class="fmt kg">REST API</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="tag">unocha</span>
+          <span class="tag">displacement</span>
+          <span class="tag">ecowas-coverage</span>
+          <span class="tag">cmri-input</span>
+        </div>
+        <a class="card-link" href="https://data.humdata.org" target="_blank">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 L10 2 M4 2 H10 V8"/></svg>
+          data.humdata.org
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section>
+    <div class="section-header">
+      <span class="cat-tag" style="background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border)">Integration notes</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;">
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">CMRI Inputs</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">ACLED (conflict score) · GDELT (event tone) · HDX (displacement) · World Bank (GDP/FDI) · EITI (governance) · Protected Planet (environmental constraint)</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;">
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Map Layers → Source</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">Deposit pins → RCMRD GeoJSON · Base tiles → Overture Maps → martin MVT · Concessions → openAFRICA · Protected zones → WDPA · Conflict → ACLED WMS</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;">
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">AI Intel Brief Feeds</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">NewsData.io (keyword: mining + country) · GDELT Analysis Service (sentiment + entity extraction) · Commodity TV RSS (editorial signal)</p>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;">
+        <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px">Phase 1 · Ghana Priority</p>
+        <p style="font-size:13px;color:var(--muted);line-height:1.6">Minerals: gold, bauxite, manganese · Key sources: USGS GIS + EITI Ghana + RCMRD deposits + Sentinel-2 ASM monitoring + ACLED West Africa filter</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>MineralMonitor · Data Source Registry · May 2026 · Phase 1 Ghana</p>
+    <div class="footer-tags">
+      <span class="tag">19 sources</span>
+      <span class="tag">14 free</span>
+      <span class="tag">2 freemium</span>
+      <span class="tag">2 attribution</span>
+      <span class="tag">1 paid</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
