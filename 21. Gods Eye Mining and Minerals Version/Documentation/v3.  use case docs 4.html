@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTHERLODE — Use Case Flows (ML-DOC-002)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04080c;--bg2:#060d13;--panel:#0a1319;--brd:#183242;--brd2:#234a5e;
+  --acc:#ffb454;--grn:#39d98a;--red:#ff5f56;--cy:#5bd6dd;--dim:#5f7268;
+  --txt:#cfe0d6;--txt2:#9fb2a8;--mono:'IBM Plex Mono',monospace;--head:'Chakra Petch',sans-serif;
+  --a-USER:#39d98a;--a-SYS:#ffb454;--a-FEED:#5bd6dd;--a-DEV:#e79ad2;--a-RCPT:#c9a7ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:13px/1.7 var(--mono);overflow-x:hidden}
+::selection{background:rgba(255,180,84,.3)}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--brd2)}::-webkit-scrollbar-track{background:var(--bg)}
+a{color:var(--cy);text-decoration:none}a:hover{color:var(--acc)}
+.doc{display:flex;min-height:100vh}
+#side{position:sticky;top:0;width:276px;height:100vh;overflow-y:auto;flex:none;background:var(--bg2);
+  border-right:1px solid var(--brd);padding:18px 0 40px;z-index:20}
+#side .sbrand{padding:10px 20px 14px;border-bottom:1px solid var(--brd);margin-bottom:10px}
+#side .sbrand b{font-family:var(--head);letter-spacing:.2em;font-size:15px;color:#fff;display:block}
+#side .sbrand span{font-size:9px;letter-spacing:.24em;color:var(--dim)}
+#side .sgroup{font-size:9px;letter-spacing:.26em;color:var(--dim);padding:15px 20px 4px}
+#side a{display:flex;gap:9px;padding:4px 20px;font-size:11.5px;color:var(--txt2);border-left:2px solid transparent}
+#side a .n{color:var(--dim);font-size:9.5px;min-width:38px;padding-top:1px}
+#side a:hover{color:var(--txt);background:rgba(255,180,84,.04)}
+#side a.on{color:var(--acc);border-left-color:var(--acc);background:rgba(255,180,84,.06)}
+main{flex:1;min-width:0;max-width:980px;margin:0 auto;padding:0 34px 120px}
+section{padding-top:50px;scroll-margin-top:8px}
+h2{font-family:var(--head);font-size:20px;letter-spacing:.1em;color:#fff;margin-bottom:4px}
+h2 .sn{color:var(--acc);margin-right:12px;font-size:14px;letter-spacing:.2em}
+h2 .mlchip{float:right;font-size:9px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--brd);padding:2px 8px;margin-top:6px}
+p.lead{color:var(--txt2);margin-bottom:16px;font-size:12.5px}
+h3{font-family:var(--head);font-size:12px;letter-spacing:.18em;color:var(--acc);margin:26px 0 8px}
+p{margin:8px 0}
+b{color:var(--txt)}.dim{color:var(--dim)}.grn{color:var(--grn)}.rd{color:var(--red)}.amb{color:var(--acc)}.cyn{color:var(--cy)}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:12px 0}
+th{font-family:var(--head);font-size:9.5px;letter-spacing:.16em;color:var(--dim);text-align:left;border-bottom:1px solid var(--brd2);padding:6px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--brd);padding:6px 9px;vertical-align:top}
+tr:hover td{background:rgba(255,180,84,.03)}
+kbd{border:1px solid var(--brd2);background:#02060a;padding:1px 7px;font-size:11px;color:var(--acc);white-space:nowrap}
+.cmd{display:inline-block;background:#02060a;border:1px solid var(--brd2);color:var(--grn);padding:1px 8px;font-size:11px;cursor:pointer;white-space:nowrap}
+.cmd:hover{border-color:var(--grn)}
+.note{border:1px solid var(--brd2);border-left:3px solid var(--acc);background:rgba(255,180,84,.04);padding:10px 16px;margin:14px 0;font-size:12px}
+.note.red{border-left-color:var(--red);background:rgba(255,95,86,.04)}
+.note.grn{border-left-color:var(--grn);background:rgba(57,217,138,.04)}
+.note .nt{font-family:var(--head);font-size:10px;letter-spacing:.2em;color:var(--acc);display:block;margin-bottom:3px}
+.note.red .nt{color:var(--red)}
+.hero{padding:60px 0 10px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+.hero .doccode{font-size:10px;letter-spacing:.3em;color:var(--dim)}
+.hero h1{font-family:var(--head);font-size:40px;letter-spacing:.12em;color:#fff;margin:6px 0}
+.hero .tag{color:var(--txt2);font-size:13px;max-width:660px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 6px}
+.chip{font-size:9px;letter-spacing:.16em;border:1px solid var(--brd2);padding:3px 9px;color:var(--txt2)}
+.chip.on{color:var(--grn);border-color:var(--grn)}
+.chip.amb{color:var(--acc);border-color:var(--acc)}
+.actors{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:12px 0}
+.act{border:1px solid var(--brd);background:var(--panel);padding:10px 13px}
+.act b{font-family:var(--head);font-size:11px;letter-spacing:.16em;display:block;color:#fff;border-left:3px solid;padding-left:8px;margin-bottom:4px}
+.act span{font-size:10px;color:var(--dim);display:block;line-height:1.55}
+.act .auc{margin-top:6px;font-size:9.5px;color:var(--txt2);letter-spacing:.06em}
+.uc{border:1px solid var(--brd);background:var(--panel);padding:0;margin:16px 0 0}
+.uc .uch{display:flex;align-items:baseline;gap:12px;padding:10px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.uc .uch .uid{font-family:var(--head);font-size:14px;letter-spacing:.14em;color:var(--acc)}
+.uc .uch .ut{font-family:var(--head);font-size:13px;letter-spacing:.12em;color:#fff;flex:1}
+.uc .uch .uml{font-size:9px;letter-spacing:.14em;color:var(--dim)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-bottom:1px solid var(--brd)}
+.mcell{padding:8px 16px;border-right:1px solid var(--brd)}
+.mcell:last-child{border-right:none}
+.mcell .mk{font-size:8.5px;letter-spacing:.22em;color:var(--dim);display:block;margin-bottom:2px}
+.mcell .mv{font-size:11px;color:var(--txt)}
+.mcell.post .mv{color:var(--grn)}
+.flow{padding:16px 16px 10px}
+.fnode{border:1px solid var(--brd);border-left:3px solid var(--dim);background:var(--bg2);padding:7px 12px;display:flex;gap:10px;align-items:flex-start}
+.fnode .fn{flex:none;width:22px;height:22px;border:1px solid var(--brd2);color:var(--dim);font-size:10px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.fnode .fa{flex:none;font-size:8.5px;letter-spacing:.14em;border:1px solid;padding:1px 6px;margin-top:3px;min-width:42px;text-align:center}
+.fnode .ft{font-size:11.5px;color:var(--txt);flex:1}
+.farr{text-align:center;color:var(--dim);font-size:11px;line-height:20px}
+.a-USER{border-left-color:var(--a-USER)}.a-USER .fa{color:var(--a-USER);border-color:var(--a-USER)}
+.a-SYS{border-left-color:var(--a-SYS)}.a-SYS .fa{color:var(--a-SYS);border-color:var(--a-SYS)}
+.a-FEED{border-left-color:var(--a-FEED)}.a-FEED .fa{color:var(--a-FEED);border-color:var(--a-FEED)}
+.a-DEV{border-left-color:var(--a-DEV)}.a-DEV .fa{color:var(--a-DEV);border-color:var(--a-DEV)}
+.a-RCPT{border-left-color:var(--a-RCPT)}.a-RCPT .fa{color:var(--a-RCPT);border-color:var(--a-RCPT)}
+.fbr{margin:4px 0 4px 44px;border-left:2px dashed var(--acc);padding:4px 10px;font-size:10.5px;color:var(--txt2);background:rgba(255,180,84,.03)}
+.fbr b{color:var(--acc);letter-spacing:.1em;font-size:9px;margin-right:6px}
+.altbox{border-top:1px solid var(--brd);padding:10px 16px 12px}
+.altbox .ah{font-size:9px;letter-spacing:.22em;color:var(--dim);margin-bottom:6px}
+.altrow{display:flex;gap:10px;padding:3px 0;font-size:11px;border-bottom:1px dashed var(--brd)}
+.altrow b{color:var(--red);font-size:9.5px;letter-spacing:.08em;min-width:26px;flex:none;padding-top:1px}
+.altrow .ac{color:var(--txt2);flex:1}
+.uclinks{border-top:1px solid var(--brd);padding:9px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:10px;color:var(--dim);letter-spacing:.1em}
+.cov{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:12px 0}
+.covc{border:1px solid var(--brd);background:var(--panel);padding:7px 10px}
+.covc .cm{font-size:9px;letter-spacing:.18em;color:var(--acc)}
+.covc .cp{font-size:9.5px;color:var(--txt2);margin-top:2px;line-height:1.5}
+.covc.docref{border-style:dashed}
+.trace{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:12px 0;font-size:10px}
+.tri{border:1px solid var(--brd2);color:var(--txt2);padding:3px 9px;letter-spacing:.1em;background:var(--panel)}
+.tri b{color:var(--acc)}
+.tra{color:var(--dim)}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--acc);
+  color:var(--acc);padding:6px 16px;font-size:11px;letter-spacing:.12em;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
+#toast.show{opacity:1}
+#top-btn{position:fixed;right:22px;bottom:22px;z-index:50;background:var(--panel);border:1px solid var(--brd2);color:var(--txt2);
+  padding:6px 11px;cursor:pointer;font:10px var(--mono);letter-spacing:.2em}
+#top-btn:hover{border-color:var(--acc);color:var(--acc)}
+@media(max-width:900px){
+  .doc{display:block}
+  #side{position:relative;width:100%;height:auto;display:flex;flex-wrap:wrap;padding:8px}
+  #side .sbrand,#side .sgroup{display:none}
+  #side a{padding:4px 10px;border:1px solid var(--brd);margin:2px}
+  #side a.on{border-color:var(--acc)}
+  main{padding:0 16px 80px}
+  .hero h1{font-size:28px}
+  .fbr{margin-left:14px}
+  h2 .mlchip{float:none;display:inline-block;margin-top:0}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<nav id="side">
+  <div class="sbrand"><b>MOTHERLODE</b><span>USE CASE FLOWS · ML-DOC-002</span></div>
+  <div class="sgroup">A · ENTRY &amp; BOOT</div>
+  <a href="#uc1"><span class="n">UC-01</span>FIRST BOOT — MISSION</a>
+  <a href="#uc2"><span class="n">UC-02</span>SHARE-LINK ENTRY</a>
+  <a href="#uc3"><span class="n">UC-03</span>ONBOARDING DRILL</a>
+  <div class="sgroup">B · SURVEY &amp; NAVIGATION</div>
+  <a href="#uc4"><span class="n">UC-04</span>INTERFACE ORIENTATION</a>
+  <a href="#uc5"><span class="n">UC-05</span>GLOBE NAVIGATION</a>
+  <a href="#uc6"><span class="n">UC-06</span>LAYER MANAGEMENT</a>
+  <a href="#uc7"><span class="n">UC-07</span>COMMODITY SURVEY</a>
+  <a href="#uc8"><span class="n">UC-08</span>CONTACT DISCOVERY</a>
+  <div class="sgroup">C · TRACK &amp; DIVE</div>
+  <a href="#uc9"><span class="n">UC-09</span>TRACK A CONTACT</a>
+  <a href="#uc10"><span class="n">UC-10</span>PIT MODE DIVE</a>
+  <div class="sgroup">D · OPTICS &amp; OVERLAY</div>
+  <a href="#uc11"><span class="n">UC-11</span>SENSOR SWITCHING</a>
+  <a href="#uc12"><span class="n">UC-12</span>DETECTION MESH</a>
+  <div class="sgroup">E · COMMAND &amp; AUTOMATION</div>
+  <a href="#uc13"><span class="n">UC-13</span>CONSOLE EXECUTION</a>
+  <a href="#uc14"><span class="n">UC-14</span>DISTRICT TOUR</a>
+  <div class="sgroup">F · LIVE FEEDS</div>
+  <a href="#uc15"><span class="n">UC-15</span>WIRE RESPONSE</a>
+  <a href="#uc16"><span class="n">UC-16</span>PRICE CONSULTATION</a>
+  <a href="#uc17"><span class="n">UC-17</span>SEISMIC MONITORING</a>
+  <div class="sgroup">G · STATE &amp; DATA</div>
+  <a href="#uc18"><span class="n">UC-18</span>SHARE-LINK GENERATION</a>
+  <a href="#uc19"><span class="n">UC-19</span>DIRECTORY LOOKUP</a>
+  <div class="sgroup">H · REFERENCE</div>
+  <a href="#uc20"><span class="n">UC-20</span>SOURCES CONSULTATION</a>
+  <a href="#uc21"><span class="n">UC-21</span>TECH &amp; KEYBOARD REF</a>
+  <div class="sgroup">I · MAINTENANCE &amp; EXTENSION</div>
+  <a href="#uc22"><span class="n">UC-22</span>ERROR RECOVERY</a>
+  <a href="#uc23"><span class="n">UC-23</span>EXTENSION WORKFLOW</a>
+  <div class="sgroup">J · APPENDIX</div>
+  <a href="#uc24"><span class="n">UC-24</span>APPENDIX CONSULTATION</a>
+</nav>
+
+<main>
+
+<header class="hero">
+  <div class="doccode">ML-DOC-002 · USE CASE FLOWS · REVISION B</div>
+  <h1>USE CASE FLOWS</h1>
+  <div class="tag">Operational walkthroughs for every page of the MOTHERLODE field manual — 24 flows across 10 operational groups, each with actors, numbered main flow, IF-branch points, alternate paths, and postconditions. Cross-referenced to ML-DOC-001 and to live commands.</div>
+  <div class="chips">
+    <span class="chip on">24 USE CASES</span>
+    <span class="chip">25/25 MANUAL PAGES COVERED</span>
+    <span class="chip">5 ACTORS</span>
+    <span class="chip amb">MATCHES CONSOLE v0.1.1</span>
+  </div>
+</header>
+
+<section id="notation">
+  <h2><span class="sn">UC-00</span>HOW TO READ A FLOW</h2>
+  <p class="lead">The notation used in every diagram below.</p>
+  <div class="actors">
+    <div class="act"><b style="border-color:var(--a-USER)">OPERATOR</b><span>The human at the console — drags, clicks, types, decides.</span><div class="auc">Badge: <span class="grn">USER</span> — green rail</div></div>
+    <div class="act"><b style="border-color:var(--a-SYS)">SYSTEM</b><span>The console itself — renders, flies, tracks, parses, recolors.</span><div class="auc">Badge: <span class="amb">SYS</span> — amber rail</div></div>
+    <div class="act"><b style="border-color:var(--a-FEED)">SIMULATED FEED</b><span>The local generators — wire, prices, seismicity. Act on their own clocks.</span><div class="auc">Badge: <span class="cyn">FEED</span> — cyan rail</div></div>
+    <div class="act"><b style="border-color:var(--a-DEV)">DEVELOPER</b><span>Extends the console — adds mines, commodities, tours, sensors.</span><div class="auc">Badge: <span style="color:var(--a-DEV)">DEV</span> — magenta rail</div></div>
+    <div class="act"><b style="border-color:var(--a-RCPT)">RECIPIENT</b><span>Receives a share link and reconstructs the view of the sender.</span><div class="auc">Badge: <span style="color:var(--a-RCPT)">RCPT</span> — violet rail</div></div>
+  </div>
+  <ul class="dim" style="list-style:none;font-size:11.5px">
+    <li>▸ <b>Numbered nodes</b> = main success scenario, top to bottom, in temporal order.</li>
+    <li>▸ <b class="amb">IF</b> boxes (dashed) = branch points attached to a step — conditions that reroute the flow.</li>
+    <li>▸ <b class="rd">E#</b> rows = alternate paths &amp; exceptions listed after the flow.</li>
+    <li>▸ <b class="grn">POSTCONDITION</b> = the state the world must hold when the flow succeeds.</li>
+    <li>▸ Green <span class="cmd" data-cmd="track escondida">command</span> chips copy to clipboard — paste straight into the console.</li>
+  </ul>
+</section>
+
+<section id="catalog">
+  <h2><span class="sn">UC-00</span>USE CASE CATALOG</h2>
+  <p class="lead">All 24 flows at a glance. Every manual page ML-01 → ML-25 is covered — the matrix below proves it.</p>
+  <div id="catbody"></div>
+  <h3>MANUAL COVERAGE MATRIX</h3>
+  <div class="cov" id="covbody"></div>
+</section>
+
+<div id="ucbody"></div>
+
+<section id="trace">
+  <h2><span class="sn">UC-25</span>END-TO-END SESSION TRACE</h2>
+  <p class="lead">A typical first session — how the flows chain in practice. Order is habitual, not mandatory.</p>
+  <div class="trace" id="tracebody"></div>
+  <div class="note grn"><span class="nt">READING THE CHAIN</span>
+  Boot configures → layers scope the survey → discovery finds a contact → tracking locks it → pit mode dives it → sensors re-skin it → the console automates it → a tour shows the district → the wire interrupts with a lead → a price query frames it → a share link hands the whole session to someone else. Twenty-eight minutes, zero keys.</div>
+</section>
+
+</main>
+</div>
+<div id="toast">COPIED</div>
+<button id="top-btn">▲ TOP</button>
+
+<!-- ================= SCRIPT A — DATA + RENDER ================= -->
+<script>
+'use strict';
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var ML={1:'overview',2:'quickstart',3:'firstfive',4:'interface',5:'globe',6:'layers',7:'commodities',
+  8:'glyphs',9:'tracking',10:'pit',11:'sensors',12:'detection',13:'console',14:'tours',15:'wire',
+  16:'ticker',17:'seismic',18:'share',19:'directory',20:'sources',21:'hood',22:'keyboard',
+  23:'troubleshooting',24:'extending',25:'appendix'};
+function mlLink(n){return '<a href="manual.html#'+ML[n]+'" title="opens the field manual">ML-'+String(n).padStart(2,'0')+'</a>';}
+
+var UC=[
+{id:1,g:'A · ENTRY &amp; BOOT',t:'FIRST BOOT — MISSION SELECT',ml:[2,14],
+ actor:'Operator — first session',trig:'Opens index.html with no URL hash',pre:'None — cold start',
+ post:'Mission state applied · splash closed · globe live',
+ flow:[
+  ['SYS','Boot log types 11 lines — MRDS 122 / GTP 11 / PLANTS 7 mount; wire armed; 7/7 sensors verified.',
+    [['init error thrown','red FATAL INIT ERROR line prints + ENTER ANYWAY escape → UC-22']]],
+  ['SYS','Five mission cards + ENTER NOW render beneath the log.',
+    [['SKIP pressed during typing','typing aborts instantly; cards show immediately — button becomes ENTER NOW'],
+     ['ENTER NOW pressed','default all-on state applied; jump to step 5']]],
+  ['USER','Picks a mission card — e.g. HAZARD WATCH.'],
+  ['SYS','Preset applied — layer set configured, flagship site tracked, camera flies in.'],
+  ['SYS','Splash closes; console prints orientation lines (dataset totals + starter commands).'],
+  ['USER','Proceeds to survey → UC-05.']],
+ alts:[
+  ['E1','URL hash present → entry reroutes to UC-02 before any boot typing.'],
+  ['E2','Fonts CDN unreachable → cosmetic only; system monospace fallback, no functional change.']],
+ cmds:['track escondida'],keys:[]},
+
+{id:2,g:'A · ENTRY &amp; BOOT',t:'SHARE-LINK ENTRY',ml:[18],
+ actor:'Link recipient',trig:'URL opened with a #s=… hash',pre:'A share link produced by UC-18',
+ post:'View of the sender reconstructed — style, layers, camera, target',
+ flow:[
+  ['SYS','applyHash() parses s / c / h / p / y / t / z / tr.'],
+  ['SYS','Sensor style, commodity layers and hazard layers restored exactly.',
+    [['parse error thrown','error logged to console panel; entry falls back to normal boot → UC-01']]],
+  ['SYS','Camera yaw / tilt / zoom restored (values clamped to legal ranges).'],
+  ['SYS','Tracked target re-tracked — telemetry card rebuilds, sim counters reseed.',
+    [['tr id unknown in dataset','track silently skipped; camera + layers still restored']]],
+  ['SYS','Splash bypassed entirely; toast — STATE RESTORED FROM LINK.'],
+  ['RCPT','Continues the handed-off session → UC-09 handoffs available immediately.']],
+ alts:[
+  ['E1','Partial hash (e.g. only s=nvg) → only that fragment applied; rest defaults.'],
+  ['E2','Hash present but empty → treated as absent; normal boot path.']],
+ cmds:[],keys:[]},
+
+{id:3,g:'A · ENTRY &amp; BOOT',t:'ONBOARDING DRILL — THE FIRST FIVE MINUTES',ml:[3],
+ actor:'New operator',trig:'Fresh session; mission chosen (or skipped)',pre:'Console on the globe screen',
+ post:'Operator fluent in the four jobs — survey, track, dive, command',
+ flow:[
+  ['USER','<span class="cmd" data-cmd="track escondida">track escondida</span> (or clicks the Chile belt).'],
+  ['SYS','Camera flies to Antofagasta; reticle + telemetry card up.'],
+  ['USER','Presses <kbd>P</kbd>.'],
+  ['SYS','Pit Mode renders — terraced benches, spiral ramp, animated haul trucks → UC-10.'],
+  ['USER','<kbd>Esc</kbd>, then <span class="cmd" data-cmd="show lithium">show lithium</span>, then <span class="cmd" data-cmd="pit">pit</span>.'],
+  ['SYS','Atacama brine-pond grid renders — five evaporation stages, pipeline, salt crusts.'],
+  ['USER','Cycles <kbd>3</kbd> · <kbd>4</kbd> · <kbd>7</kbd> — NVG, Ironbow, Spectral → UC-11.'],
+  ['USER','<span class="cmd" data-cmd="tour hazards">tour hazards</span> → UC-14.'],
+  ['SYS','Seven tailings case-file stops fly past with narrated captions.'],
+  ['USER','<span class="cmd" data-cmd="reset">reset</span> — comes home.']],
+ alts:[
+  ['E1','Any globe drag mid-tour → tour auto-cancels, control returns instantly.'],
+  ['E2','Lost at any point → <span class="cmd" data-cmd="help">help</span> prints the full command catalog.']],
+ cmds:['track escondida','show lithium','tour hazards','reset'],keys:['P','Esc','3','4','7']},
+
+{id:4,g:'B · SURVEY &amp; NAVIGATION',t:'INTERFACE ORIENTATION',ml:[4,8],
+ actor:'New operator',trig:'Wants a mental map of the console before operating',pre:'Field manual open',
+ post:'All 9 screen zones + 7 contact glyphs understood',
+ flow:[
+  ['USER','Opens ML-04 in the field manual.'],
+  ['SYS','Interface map renders — 9 numbered zones mirroring the live screen.'],
+  ['USER','Reads zone callouts; cross-checks glyph legend in ML-08.'],
+  ['USER','On a narrow screen, presses the <b>▤ / ▥</b> header buttons.'],
+  ['SYS','Side panels collapse / re-expand (auto-collapsed below 1180 px).']],
+ alts:[
+  ['E1','HUD strip hidden → <kbd>H</kbd> restores it.'],
+  ['E2','Console input unfocused → <kbd>/</kbd> focuses it without firing other keys.']],
+ cmds:[],keys:['H','/']},
+
+{id:5,g:'B · SURVEY &amp; NAVIGATION',t:'GLOBE NAVIGATION',ml:[5],
+ actor:'Operator',trig:'Desire to move the planet',pre:'Globe visible (not in Pit Mode)',
+ post:'Region of interest centered · HUD lat/lon correct',
+ flow:[
+  ['USER','Drags — yaw and tilt change; sensitivity divides by zoom level.'],
+  ['SYS','All geometry re-projects every frame; FPS counter updates in the header.'],
+  ['USER','Releases mid-motion.'],
+  ['SYS','Inertia glide — velocity decays ×0.93 per frame.'],
+  ['USER','Wheel-scrolls or pinches.'],
+  ['SYS','Zoom target eases to the [0.9, 12] clamp; HUD altitude recalculates.'],
+  ['SYS','After 4 s idle — auto-spin engages (if enabled, untracked, untoured).']],
+ alts:[
+  ['E1','Target tracked → auto-spin suppressed on purpose.'],
+  ['E2','Tour running → a meaningful drag cancels it rather than fighting it.'],
+  ['E3','Zoom floor or ceiling hit → value clamps silently; HUD keeps truthful altitude.']],
+ cmds:['zoom 4','zoom out','spin off'],keys:[]},
+
+{id:6,g:'B · SURVEY &amp; NAVIGATION',t:'LAYER MANAGEMENT',ml:[6],
+ actor:'Operator',trig:'Wants a specific survey scope',pre:'Layers panel visible',
+ post:'Globe reflects the active commodity / hazard set exactly',
+ flow:[
+  ['USER','Clicks the <b>LI</b> commodity row.'],
+  ['SYS','Layer flag flips; panel re-syncs; roster flagged dirty.'],
+  ['SYS','Twelve lithium sites render next frame — ◆ glyphs for the brine ops.'],
+  ['USER','<b>ALL OFF</b>, then <span class="cmd" data-cmd="show copper">show copper</span>.'],
+  ['SYS','Only CU contacts render; tier-2 sites gated below zoom 1.7×.'],
+  ['USER','Enables the <b>Tailings Facilities</b> row.'],
+  ['SYS','Eleven hazard records appear; failed dams pulse red.']],
+ alts:[
+  ['E1','Multi-commodity site (e.g. Grasberg CU+AU) → renders if ANY of its commodities is on.'],
+  ['E2','Console <span class="cmd" data-cmd="show tailings">show tailings</span> mirrors the panel toggle exactly.'],
+  ['E3','Every layer off → empty globe + roster guidance line; not an error.']],
+ cmds:['show copper','show tailings','show all','hide all'],keys:[]},
+
+{id:7,g:'B · SURVEY &amp; NAVIGATION',t:'COMMODITY SURVEY',ml:[7],
+ actor:'Analyst',trig:'Choosing what to survey by metal',pre:'Manual ML-07 open or console available',
+ post:'A commodity scope selected and its flagship site in view',
+ flow:[
+  ['USER','Opens ML-07 — the live-generated commodity table.'],
+  ['SYS','Eighteen rows render: swatch, code, group, site count, key tier-1 sites.'],
+  ['USER','Picks a metal — e.g. REE → Mountain Pass.'],
+  ['USER','Returns to the console: <span class="cmd" data-cmd="track mountain pass">track mountain pass</span>.'],
+  ['SYS','Camera flies + tracks the chosen flagship.']],
+ alts:[
+  ['E1','Bare commodity word in console (<span class="cmd" data-cmd="lithium">lithium</span>) → layer toggled on AND auto-flights to its tier-1 flagship.'],
+  ['E2','Count sanity check → <span class="cmd" data-cmd="how many lithium mines">how many lithium mines</span> prints dataset totals.']],
+ cmds:['track mountain pass','lithium','how many lithium mines'],keys:[]},
+
+{id:8,g:'B · SURVEY &amp; NAVIGATION',t:'CONTACT DISCOVERY',ml:[5],
+ actor:'Operator',trig:'Finding sites worth tracking',pre:'At least one layer on',
+ post:'A specific contact identified and selected for tracking',
+ flow:[
+  ['SYS','Sites render per LOD — tier-1 always; tier-2 from zoom 1.7×.'],
+  ['SYS','Labels appear: tier-1 at 2.0×, all at 2.8× — or forced with <kbd>L</kbd>.'],
+  ['SYS','Roster lists in-view contacts, sorted by distance from view center, cap 30.'],
+  ['USER','Zooms into a district — e.g. the Pilbara.'],
+  ['SYS','Roster refills with district contacts.',
+    [['a target is tracked','subheader switches to ≤ 500 KM OF TARGET; list re-scopes']]],
+  ['USER','Clicks a roster row.'],
+  ['SYS','Tracks it → UC-09.']],
+ alts:[
+  ['E1','Roster empty → guidance line: enable layers or zoom in.'],
+  ['E2','<kbd>T</kbd> → steps roster rows in distance order without touching the mouse.']],
+ cmds:['contacts'],keys:['L','T']},
+
+{id:9,g:'C · TRACK &amp; DIVE',t:'TRACK A CONTACT',ml:[9],
+ actor:'Operator',trig:'Click on a marker (or a track command)',pre:'Site visible under LOD rules',
+ post:'Live telemetry dossier · handoffs armed',
+ flow:[
+  ['USER','Clicks a marker — pick radius 18 px.'],
+  ['SYS','Nearest contact resolved; track state set; SIM counters seeded (ore / energy / fleet).'],
+  ['SYS','flyTo(lat, lng, ≥3.4×) begins; auto-spin off; telemetry card builds.'],
+  ['SYS','Reticle renders — dashed ring, corner brackets, edge lines, ID tag.',
+    [['target on far hemisphere','limb arrow at the globe edge points toward it, with name label']]],
+  ['SYS','From zoom 2.5× — assay rings at 40 / 80 / 160 km draw around the site.'],
+  ['USER','Reads the dossier — operator, method, assay, production; SIM counters tick each second.'],
+  ['USER','Chooses a handoff: <b>PIT MODE</b> → UC-10 · <b>NEAREST TSF / PLANT</b> · <kbd>T</kbd> next contact.',
+    [['NEAREST TSF pressed','layer auto-enabled if off; nearest record by great-circle distance tracked + toast with km'],
+     ['NEAREST PLANT pressed','same, against the 7-plant register']]],
+  ['USER','Clicks empty ocean to release.'],
+  ['SYS','Track cleared; card closes; roster rescopes.']],
+ alts:[
+  ['E1','Console <span class="cmd" data-cmd="track grasberg">track grasberg</span> — fuzzy match: 1 hit tracks; N hits list candidates; 0 hits return an honest error.'],
+  ['E2','<kbd>Esc</kbd> chain → closes pit / tour / modal before releasing the track — one key, context-aware.'],
+  ['E3','Track cleared while Pit Mode open → overlay auto-exits safely.']],
+ cmds:['track grasberg','untrack','assay grasberg','whats this'],keys:['T','Esc']},
+
+{id:10,g:'C · TRACK &amp; DIVE',t:'PIT MODE DIVE',ml:[10],
+ actor:'Operator',trig:'<kbd>P</kbd>, PIT MODE button, or pit command — with a track active',pre:'A tracked contact',
+ post:'Modeled scene inspected · returned to globe cleanly',
+ flow:[
+  ['USER','Presses <kbd>P</kbd> with a target tracked.',
+    [['no target tracked','toast — TRACK A SITE FIRST; flow ends here']]],
+  ['SYS','Overlay opens; canvas sized to window; title composed per contact kind.'],
+  ['SYS','Scene loop starts — variant by type: OP benches + ramp + trucks · UG headframe + cage + stopes · BR pond grid · TSF dam section · plant / development site plan.'],
+  ['SYS','Mouse movement adds parallax; active sensor palette re-skins the scene live.'],
+  ['USER','Reads bench depth labels (site-specific: Bingham −1,200 m…) and the HUD strip — ore / energy / fleet, marked SIM.'],
+  ['USER','<kbd>Esc</kbd> or EXIT PIT.'],
+  ['SYS','Overlay closes; globe rendering resumes without state loss.']],
+ alts:[
+  ['E1','Closed / legacy site → rust palette, water pool on the floor, CARE &amp; MAINTENANCE banner, no trucks.'],
+  ['E2','TSF target → tailings cross-section — embankment raises, decant tower, blinking piezometer; failed dams show the release-footprint note.'],
+  ['E3','Underground target at Mponeng → levels relabeled to −4,000 m, deepest mine on Earth.']],
+ cmds:['pit'],keys:['P','Esc']},
+
+{id:11,g:'D · OPTICS &amp; OVERLAY',t:'SENSOR SWITCHING',ml:[11],
+ actor:'Operator',trig:'A style key, stylebar click, or style word',pre:'Any console state',
+ post:'Entire console re-skinned — globe + markers + UI chrome — zero reload',
+ flow:[
+  ['USER','Presses <kbd>1</kbd>–<kbd>7</kbd>, clicks a stylebar button, or types a bare style word.'],
+  ['SYS','Palette swapped; body data-style set — CSS variables recolor every panel.'],
+  ['SYS','Markers recolor by mode — color / mono / heat / heat2.',
+    [['FLIR modes','tier-1 sites render hot white-yellow; tier-2 cool — the majors visibly glow']]],
+  ['SYS','Toast confirms — SENSOR ▸ NVG.']],
+ alts:[
+  ['E1','Console bare digit (<span class="cmd" data-cmd="4">4</span>) → same path as the key.'],
+  ['E2','Unknown style word → the seven options are listed back, nothing changes.'],
+  ['E3','Scanline intensity follows the style automatically (CRT heaviest, NOIR near-zero).']],
+ cmds:['nvg','crt','flir','noir','spectral','style spectral'],keys:['1','2','3','4','5','6','7']},
+
+{id:12,g:'D · OPTICS &amp; OVERLAY',t:'DETECTION MESH',ml:[12],
+ actor:'Operator',trig:'<kbd>D</kbd> or detect on',pre:'Contacts visible',
+ post:'Machine-vision overlay active on the nearest contacts',
+ flow:[
+  ['USER','Presses <kbd>D</kbd>.'],
+  ['SYS','Visible contacts ranked by screen distance; nearest 36 bracketed.'],
+  ['SYS','Tags render — site code + confidence 92–99%, stable (derived from the site ID hash, no flicker).'],
+  ['USER','Rotates / zooms the globe.'],
+  ['SYS','Boxes and tags re-project every frame with the camera.']],
+ alts:[
+  ['E1','More than 36 visible → density cap keeps the nearest; the outer set stays unbracketed.'],
+  ['E2','<kbd>D</kbd> again → overlay off instantly.']],
+ cmds:['detect on','detect off'],keys:['D']},
+
+{id:13,g:'E · COMMAND &amp; AUTOMATION',t:'CONSOLE COMMAND EXECUTION',ml:[13],
+ actor:'Operator',trig:'Enter pressed in the ML console',pre:'Console input focused',
+ post:'Action performed — or an honest error naming the problem',
+ flow:[
+  ['USER','<kbd>/</kbd> focuses the input; types a command; presses Enter.'],
+  ['SYS','Prompt echoed to the log; command pushed onto history.'],
+  ['SYS','Parser normalizes the text, strips filler verbs (take me / show me / switch to), matches style words, digits, then commands.'],
+  ['SYS','Executes the verb — camera, query, layer, feed, or state action.'],
+  ['SYS','Result line logged — green ok · amber warn · red err.']],
+ alts:[
+  ['E1','↑ / ↓ → history replay without retyping.'],
+  ['E2','Multiple matches → numbered candidate list; re-issue with a sharper name.'],
+  ['E3','Unknown input → "Unknown command. Try help." — never a silent no-op.'],
+  ['E4','While typing, all global hotkeys suppressed — keys reach the input only.']],
+ cmds:['help','clear'],keys:['/','↑','↓']},
+
+{id:14,g:'E · COMMAND &amp; AUTOMATION',t:'DISTRICT TOUR',ml:[14],
+ actor:'Operator',trig:'TOUR ▸ button, or tour command',pre:'Globe mode (pit closed first)',
+ post:'District flown end-to-end — or cancelled cleanly mid-flight',
+ flow:[
+  ['USER','Presses <b>TOUR ▸</b> (cycles tours) or <span class="cmd" data-cmd="tour copper">tour copper</span>.',
+    [['tour name unknown','the five options are listed back']]],
+  ['SYS','Tour state created; caption bar appears; first stop tracked.'],
+  ['SYS','Each stop: camera eases in 2.6 s → caption types the site note → hold 4.6 s → next.'],
+  ['SYS','Final stop consumed → tour ends; toast — TOUR COMPLETE.'],
+  ['USER','Optionally cancels mid-tour: <kbd>Esc</kbd> or a deliberate globe drag.'],
+  ['SYS','Caption bar drops; manual control returns with the last stop still tracked.']],
+ alts:[
+  ['E1','HAZARDS tour → the TSF layer auto-enables if it was off.'],
+  ['E2','Pit Mode open when a tour starts → pit closes first, then the tour flies.'],
+  ['E3','Stop site missing from the dataset → that stop is filtered out before the chain builds.']],
+ cmds:['tour copper','tour battery','tour iron','tour precious','tour hazards'],keys:['Esc']},
+
+{id:15,g:'F · LIVE FEEDS',t:'WIRE MONITORING &amp; RESPONSE',ml:[15],
+ actor:'Operator + simulated feed',trig:'A new wire entry every ~8 s',pre:'Console running',
+ post:'Lead either investigated (tracked) or noted and left',
+ flow:[
+  ['FEED','Synthesizes an entry from seven template families — blast, seismic, TSF advisory, quote, production, safety drill, permit.'],
+  ['SYS','Entry stamped UTC, severity-colored, tagged (SIM) inline, unshifted into the feed (cap 40).',
+    [['entry references a site','blip ring paints on the globe for 8 s — if the incidents layer is on']]],
+  ['USER','Notices a WARN entry — e.g. a TSF piezometer advisory.'],
+  ['USER','Clicks the wire item.'],
+  ['SYS','Referenced contact tracked + camera flies; Contacts tab raised automatically.']],
+ alts:[
+  ['E1','Incidents layer off → list still updates; only the globe blips are suppressed.'],
+  ['E2','Feed over 40 entries → oldest trimmed, newest always on top.'],
+  ['E3','Safety entries are always drills — the feed never fabricates casualties, by design.']],
+ cmds:['seismic'],keys:[]},
+
+{id:16,g:'F · LIVE FEEDS',t:'PRICE CONSULTATION',ml:[16],
+ actor:'Analyst',trig:'A ticker glance or a price command',pre:'Console running',
+ post:'Indicative figure obtained — always framed as SIM, never advice',
+ flow:[
+  ['FEED','Sixteen instruments random-walk ±0.35% every 2.6 s.'],
+  ['SYS','Ticker values update in place; change % flashes green / red.',
+    [['ticker hovered','scroll animation pauses for reading; resumes on mouse-out']]],
+  ['USER','Wants a figure for the log: <span class="cmd" data-cmd="price gold">price gold</span>.'],
+  ['SYS','WIRE ▸ GOLD 2,384.5 USD/oz (+0.21%) — SIMULATED.'],
+  ['USER','Quotes nothing to anyone as investment guidance.']],
+ alts:[
+  ['E1','Metal not found → the sixteen instrument keys are listed back.'],
+  ['E2','Commodity words map to instruments (copper→Cu, potash→MOP, uranium→U3O8).']],
+ cmds:['price gold','price copper','price uranium'],keys:[]},
+
+{id:17,g:'F · LIVE FEEDS',t:'SEISMIC MONITORING',ml:[17],
+ actor:'Operator + simulated feed',trig:'Event spawn every ~9–15 s (layer on)',pre:'Seismicity layer enabled',
+ post:'Event observed and expired; window rolls',
+ flow:[
+  ['FEED','Spawns an event within ±0.6° of a monitored deep mine — Mponeng, El Teniente, Norilsk, Sudbury, Chuquicamata, Kamoá-Kakula, Oyu Tolgoi.'],
+  ['SYS','ML 1.5–3.4 stamped; dual cyan rings expand for 5.2 s, then expire.'],
+  ['SYS','Rolling window holds ~7 live events; oldest culled first.'],
+  ['USER','Optionally forces one: <span class="cmd" data-cmd="seismic">seismic</span>.'],
+  ['SYS','Event seeds immediately near a monitored mine.']],
+ alts:[
+  ['E1','Layer off → no spawns at all.'],
+  ['E2','Boot → four events pre-seeded so the globe is alive from the first frame.']],
+ cmds:['seismic'],keys:[]},
+
+{id:18,g:'G · STATE &amp; DATA',t:'SHARE-LINK GENERATION',ml:[18],
+ actor:'Operator',trig:'SHARE button or share command',pre:'A view worth handing off',
+ post:'A live target handed off — not a bookmark',
+ flow:[
+  ['USER','Presses <b>SHARE</b> or types <span class="cmd" data-cmd="share">share</span>.'],
+  ['SYS','State serialized — s style · c commodity set · h/p hazard layers · y/t/z camera · tr tracked target.'],
+  ['SYS','URL copied to clipboard; toast confirms; console logs the handoff line.'],
+  ['USER','Passes the URL to a colleague.'],
+  ['RCPT','Opens it → UC-02 reconstructs the exact session.']],
+ alts:[
+  ['E1','Clipboard API unavailable → copy fails silently; the state string remains re-derivable via the same command.'],
+  ['E2','No target tracked → the tr fragment is simply omitted; camera + layers still carry.']],
+ cmds:['share'],keys:[]},
+
+{id:19,g:'G · STATE &amp; DATA',t:'SITE DIRECTORY LOOKUP',ml:[19],
+ actor:'Analyst',trig:'Needs the register, not the globe',pre:'Field manual open (ML-19)',
+ post:'Record located — coordinates, assay / hazard, and note in hand',
+ flow:[
+  ['USER','Opens ML-19 in the field manual.'],
+  ['SYS','140 records render — 122 mines · 11 tailings · 7 plants, sorted by name.'],
+  ['USER','Types lithium into the search box.'],
+  ['SYS','Live filter narrows rows across name / country / operator / commodity / note; count updates.'],
+  ['USER','Applies filter chips — MINES · ENERGY TRANSITION · ACTIVE.'],
+  ['USER','Clicks a row.'],
+  ['SYS','Dossier row expands — coordinates, assay or hazard rating, full note.']],
+ alts:[
+  ['E1','No matches → an explicit NO MATCHING RECORDS row; filters combine AND-wise.'],
+  ['E2','Click again → dossier collapses.']],
+ cmds:[],keys:[]},
+
+{id:20,g:'H · REFERENCE',t:'SOURCES &amp; HONESTY CONSULTATION',ml:[20],
+ actor:'Analyst / presenter',trig:'About to quote or publish anything from the console',pre:'POWER UP modal or manual ML-20 open',
+ post:'Claim framed correctly — public-approximate vs simulated',
+ flow:[
+  ['USER','Opens <b>POWER UP</b> in the app, or ML-20 in the manual.'],
+  ['SYS','Layer / source / auth table renders — 🟢 LOCAL (public, approximate) vs 🟡 SIM.'],
+  ['USER','Checks which markers sit on the numbers being quoted.'],
+  ['SYS','The disclaimer and THE LINE enforce scope — sites and infrastructure, never people.']],
+ alts:[
+  ['E1','Modal reopened any time — button or <span class="cmd" data-cmd="sources">sources</span>.'],
+  ['E2','Basemap ladder consulted → expectations set: stylized vector, deliberately not survey-grade.']],
+ cmds:['sources','about'],keys:[]},
+
+{id:21,g:'H · REFERENCE',t:'TECHNICAL &amp; KEYBOARD REFERENCE',ml:[21,22],
+ actor:'Operator / integrator',trig:'Needs to know how it works or which key does what',pre:'Manual ML-21 / ML-22 open',
+ post:'Fact located and applied back in the app',
+ flow:[
+  ['USER','Opens ML-21 (under the hood) or ML-22 (keyboard map).'],
+  ['SYS','Projection math, camera model, LOD rules — or the full key table — render.'],
+  ['USER','Looks up a binding — e.g. <kbd>P</kbd>.'],
+  ['SYS','Row reads: PIT MODE — on tracked site; exits if already inside.'],
+  ['USER','Returns to the app and applies it.']],
+ alts:[
+  ['E1','Command chips in the manual copy to clipboard for direct pasting into the console.'],
+  ['E2','Robustness notes consulted → why one bad frame can never freeze the console.']],
+ cmds:[],keys:[]},
+
+{id:22,g:'I · MAINTENANCE &amp; EXTENSION',t:'ERROR RECOVERY',ml:[23],
+ actor:'Operator hitting a fault',trig:'Any fault — init throw, runtime throw, frame throw',pre:'A failure has occurred',
+ post:'Fault named, surfaced, and worked around — console keeps running',
+ flow:[
+  ['SYS','Fault occurs somewhere in the pipeline.'],
+  ['SYS','The matching trap fires:',
+    [['init-level','boot log shows FATAL INIT ERROR + stack; SKIP becomes ENTER ANYWAY'],
+     ['runtime-level','console panel prints RUNTIME ERROR: &lt;message&gt;'],
+     ['frame-level','render loop already rescheduled itself — worst case is one dropped frame']]],
+  ['USER','Reads the named error; opens ML-23 for the matching symptom row.'],
+  ['USER','Applies the documented fix — e.g. <span class="cmd" data-cmd="show all">show all</span> for an empty roster, <span class="cmd" data-cmd="spin on">spin on</span> for a frozen globe.'],
+  ['SYS','State recovers; no reload required.']],
+ alts:[
+  ['E1','Parse-level failure (script never ran — the v0.1.0 quote bug) → v0.1.1 surfaces it as a red FATAL line; nothing is silent.'],
+  ['E2','Performance drag → zoom out, detection off, labels auto — documented pressure valves.']],
+ cmds:['show all','spin on','reset'],keys:[]},
+
+{id:23,g:'I · MAINTENANCE &amp; EXTENSION',t:'EXTENSION WORKFLOW',ml:[24],
+ actor:'Developer',trig:'A mine, commodity, tour or sensor needs adding',pre:'index.html open in an editor',
+ post:'Console extended — render loop untouched',
+ flow:[
+  ['DEV','Adds one mk() line to MINES[] — id, name, country, operator, commodities, type, lat, lng, prod, grade, note, tier, status.'],
+  ['DEV','Reloads the file.'],
+  ['SYS','Site auto-coded (CU-0xx), joins its commodity layers, roster, wire templates and pit dispatch on load.',
+    [['site type is OP with status D','renders as △ development glyph + site-plan pit scene automatically']]],
+  ['DEV','Optionally scales up: a commodity (3 edits — declare, group, reference) · a tour (1 entry) · a sensor palette (1 object).'],
+  ['DEV','Reloads again — boot log counts update; mission cards reflect the new totals.']],
+ alts:[
+  ['E1','Typo in a data string → whole-script parse failure; caught by the init trap as a red FATAL line (→ UC-22). Keep notes double-quoted.'],
+  ['E2','New commodity unused by any mine → row renders with count 0; harmless.'],
+  ['E3','New tour with unknown ids → stops filtered out before the chain builds.']],
+ cmds:[],keys:[]},
+
+{id:24,g:'J · APPENDIX',t:'APPENDIX CONSULTATION',ml:[25],
+ actor:'Operator',trig:'Needs a region coordinate, the changelog, or license terms',pre:'Manual ML-25 open',
+ post:'Fact retrieved; flight or decision executed from it',
+ flow:[
+  ['USER','Opens ML-25 — region register (44), changelog, license.'],
+  ['SYS','Tables render: region id + lat/lon + name; version history; MIT terms.'],
+  ['USER','Picks a region — e.g. gras (Lac de Gras diamonds).'],
+  ['USER','Console: <span class="cmd" data-cmd="fly to gras">fly to gras</span>.'],
+  ['SYS','Camera eases to the documented coordinates.']],
+ alts:[
+  ['E1','Region word not recognized → console lists nothing but stays honest; site names work identically.'],
+  ['E2','Changelog consulted → the v0.1.1 dead-splash incident and its fix are understood before ever being hit.']],
+ cmds:['fly to gras','fly to chile'],keys:[]}
+];
+
+/* ---- render ---- */
+function cmdChip(c){return '<span class="cmd" data-cmd="'+c+'">'+c+'</span>';}
+function kbdChip(k){return '<kbd>'+k+'</kbd>';}
+
+(function(){
+  var h='<table><tr><th>ID</th><th>USE CASE</th><th>PRIMARY ACTOR</th><th>SUCCESS POSTCONDITION</th><th>MANUAL</th></tr>';
+  UC.forEach(function(u){
+    h+='<tr><td class="dim"><b>UC-'+String(u.id).padStart(2,'0')+'</b></td><td><b>'+u.t+'</b></td><td class="dim">'+u.actor+'</td><td class="dim">'+u.post+'</td><td>'+u.ml.map(mlLink).join(' ')+'</td></tr>';
+  });
+  $('#catbody').innerHTML=h+'</table>';
+})();
+
+(function(){
+  var COV={1:'this catalog',2:'UC-01',3:'UC-03',4:'UC-04',5:'UC-05 · UC-08',6:'UC-06',7:'UC-07',8:'UC-04',
+    9:'UC-09',10:'UC-10',11:'UC-11',12:'UC-12',13:'UC-13',14:'UC-01 · UC-14',15:'UC-15',16:'UC-16',
+    17:'UC-17',18:'UC-02 · UC-18',19:'UC-19',20:'UC-20',21:'UC-21',22:'UC-21',23:'UC-22',24:'UC-23',25:'UC-24'};
+  var h='';
+  for(var i=1;i<=25;i++){
+    h+='<div class="covc'+(i===1?' docref':'')+'"><div class="cm">ML-'+String(i).padStart(2,'0')+'</div><div class="cp">'+COV[i]+'</div></div>';
+  }
+  $('#covbody').innerHTML=h;
+})();
+
+(function(){
+  var host=$('#ucbody'),lastGroup='';
+  UC.forEach(function(u){
+    if(u.g!==lastGroup){
+      var gh=document.createElement('div');
+      gh.className='grouphd';
+      gh.innerHTML='<h2 style="margin-top:44px"><span class="sn">◆</span>GROUP '+u.g+'</h2>';
+      host.appendChild(gh);
+      lastGroup=u.g;
+    }
+    var sec=document.createElement('section');
+    sec.id='uc'+u.id;
+    var inner='<h2><span class="sn">UC-'+String(u.id).padStart(2,'0')+'</span>'+u.t+
+      '<span class="mlchip">'+u.ml.map(mlLink).join(' · ')+'</span></h2>'+
+      '<div class="uc"><div class="uch"><span class="uid">UC-'+String(u.id).padStart(2,'0')+'</span><span class="ut">'+u.t+'</span>'+
+      '<span class="uml">GROUP '+u.g+'</span></div>'+
+      '<div class="mgrid">'+
+        '<div class="mcell"><span class="mk">PRIMARY ACTOR</span><span class="mv">'+u.actor+'</span></div>'+
+        '<div class="mcell"><span class="mk">TRIGGER</span><span class="mv">'+u.trig+'</span></div>'+
+        '<div class="mcell"><span class="mk">PRECONDITION</span><span class="mv">'+u.pre+'</span></div>'+
+        '<div class="mcell post"><span class="mk">POSTCONDITION</span><span class="mv">'+u.post+'</span></div>'+
+      '</div><div class="flow">';
+    var n=0;
+    u.flow.forEach(function(step){
+      n++;
+      inner+='<div class="fnode a-'+step[0]+'"><span class="fn">'+n+'</span><span class="fa">'+step[0]+'</span><div class="ft">'+step[1]+'</div></div>';
+      if(step[2])step[2].forEach(function(br){inner+='<div class="fbr"><b>IF</b>'+br[0]+'<span class="dim"> — '+br[1]+'</span></div>';});
+      if(n<u.flow.length)inner+='<div class="farr">▼</div>';
+    });
+    inner+='</div>';
+    if(u.alts&&u.alts.length){
+      inner+='<div class="altbox"><div class="ah">ALTERNATE PATHS &amp; EXCEPTIONS</div>'+
+        u.alts.map(function(a){return '<div class="altrow"><b>'+a[0]+'</b><span class="ac">'+a[1]+'</span></div>';}).join('')+'</div>';
+    }
+    var cmds=(u.cmds||[]).map(cmdChip).join(' ');
+    var keys=(u.keys||[]).map(kbdChip).join(' ');
+    inner+='<div class="uclinks"><span>TRY:</span>'+(cmds||'<span class="dim">—</span>')+
+      (keys?'<span>KEYS:</span>'+keys:'')+'</div></div>';
+    sec.innerHTML=inner;
+    host.appendChild(sec);
+  });
+})();
+
+(function(){
+  var chain=['UC-01 boot','UC-06 layers','UC-08 discovery','UC-09 track','UC-10 pit','UC-11 sensors',
+    'UC-13 console','UC-14 tour','UC-15 wire lead','UC-16 price','UC-18 share'];
+  $('#tracebody').innerHTML=chain.map(function(c,i){
+    var parts=c.split(' ');
+    return (i?'<span class="tra">▸</span>':'')+'<span class="tri"><b>'+parts[0]+'</b> '+parts.slice(1).join(' ')+'</span>';
+  }).join('');
+})();
+
+/* ---- chrome ---- */
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.cmd');if(!c)return;
+  var txt=c.dataset.cmd||c.textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){});
+  var t=$('#toast');t.textContent='COPIED ▸ '+txt;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},1400);
+});
+(function(){
+  var links={};
+  $$('#side a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(en.isIntersecting){
+        $$('#side a').forEach(function(a){a.classList.remove('on');});
+        var l=links[en.target.id];if(l)l.classList.add('on');
+      }
+    });
+  },{rootMargin:'-12% 0px -75% 0px'});
+  document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s);});
+})();
+ $('#top-btn').onclick=function(){scrollTo({top:0,behavior:'smooth'});};
+</script>
+
+<!-- ================= SCRIPT B — GUARD =================
+     Runs even if Script A failed to parse. Ensures every sidebar
+     link resolves (stub sections for anything missing) and any
+     failure is visible as a red banner. Deliberately minimal. -->
+<script>
+(function(){
+  try{
+    var host=document.getElementById('ucbody');
+    if(!host)return;
+    var STUBS=[
+      ['uc1','UC-01','FIRST BOOT — MISSION SELECT'],
+      ['uc2','UC-02','SHARE-LINK ENTRY'],
+      ['uc3','UC-03','ONBOARDING DRILL — THE FIRST FIVE MINUTES'],
+      ['uc4','UC-04','INTERFACE ORIENTATION'],
+      ['uc5','UC-05','GLOBE NAVIGATION'],
+      ['uc6','UC-06','LAYER MANAGEMENT'],
+      ['uc7','UC-07','COMMODITY SURVEY'],
+      ['uc8','UC-08','CONTACT DISCOVERY'],
+      ['uc9','UC-09','TRACK A CONTACT'],
+      ['uc10','UC-10','PIT MODE DIVE'],
+      ['uc11','UC-11','SENSOR SWITCHING'],
+      ['uc12','UC-12','DETECTION MESH'],
+      ['uc13','UC-13','CONSOLE COMMAND EXECUTION'],
+      ['uc14','UC-14','DISTRICT TOUR'],
+      ['uc15','UC-15','WIRE MONITORING &amp; RESPONSE'],
+      ['uc16','UC-16','PRICE CONSULTATION'],
+      ['uc17','UC-17','SEISMIC MONITORING'],
+      ['uc18','UC-18','SHARE-LINK GENERATION'],
+      ['uc19','UC-19','SITE DIRECTORY LOOKUP'],
+      ['uc20','UC-20','SOURCES &amp; HONESTY CONSULTATION'],
+      ['uc21','UC-21','TECHNICAL &amp; KEYBOARD REFERENCE'],
+      ['uc22','UC-22','ERROR RECOVERY'],
+      ['uc23','UC-23','EXTENSION WORKFLOW'],
+      ['uc24','UC-24','APPENDIX CONSULTATION']
+    ];
+    var missing=0;
+    for(var i=0;i<STUBS.length;i++){
+      if(!document.getElementById(STUBS[i][0])){
+        missing++;
+        var s=document.createElement('section');
+        s.id=STUBS[i][0];
+        s.innerHTML='<h2><span class="sn">'+STUBS[i][1]+'</span>'+STUBS[i][2]+
+          '<span class="mlchip">STUB — RENDER FAULT</span></h2>'+
+          '<div class="note red"><span class="nt">RENDER FAULT</span>This flow could not be drawn because the flows script did not complete. The sidebar still navigates — press F12 and check the browser console for the exact error line.</div>';
+        host.appendChild(s);
+      }
+    }
+    if(missing>0){
+      var m=document.querySelector('main');
+      var b=document.createElement('div');
+      b.className='note red';
+      b.style.marginTop='18px';
+      b.innerHTML='<span class="nt">SCRIPT FAULT — '+(missing===STUBS.length?'NOTHING RENDERED':'PARTIAL RENDER')+'</span>'+
+        'The flows script failed before finishing ('+missing+' of '+STUBS.length+' sections missing). '+
+        'Stub sections were created so every link resolves. Open the browser console (F12) — the red error will point at one exact line, almost always a quote problem in the data.';
+      m.insertBefore(b,m.firstChild);
+    }
+  }catch(e){/* last resort — never throw from the guard itself */}
+})();
+</script>
+</body>
+</html>

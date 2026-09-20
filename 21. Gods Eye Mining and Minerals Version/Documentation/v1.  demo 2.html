@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTHERLODE // Mineral Survey Console</title>
+<meta name="description" content="A mineral reconnaissance satellite in your browser. The deposits are real, the data is public.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04080c; --panel:rgba(7,14,20,.93); --brd:#183242; --brd2:#234a5e;
+  --acc:#ffb454; --grn:#39d98a; --red:#ff5f56; --cy:#5bd6dd;
+  --txt:#cfe0d6; --dim:#5f7268; --font:'IBM Plex Mono',monospace; --head:'Chakra Petch',sans-serif;
+  --scan:.06;
+}
+body[data-style=crt]{--acc:#39ff88;--txt:#8dffa8;--grn:#39ff88;--cy:#39ff88;--dim:#2f7a4a;--brd:#1d5426;--scan:.2}
+body[data-style=nvg]{--acc:#d6ffe0;--txt:#c2ffd0;--grn:#8dff9e;--cy:#8dff9e;--dim:#4a8a58;--brd:#2c6a36;--scan:.12}
+body[data-style=ironbow]{--acc:#ffb454;--txt:#ffd9a0;--grn:#ff9d45;--cy:#ff8c1a;--dim:#8a4a1a;--brd:#6b1600;--scan:.09}
+body[data-style=whitehot]{--acc:#fff;--txt:#eee;--grn:#bbb;--cy:#aaa;--dim:#666;--brd:#444;--scan:.06}
+body[data-style=noir]{--acc:#fff;--txt:#f2f2f2;--grn:#fff;--cy:#ccc;--dim:#888;--brd:#3a3a3a;--scan:.04}
+body[data-style=spectral]{--acc:#b18cff;--txt:#e4dcff;--grn:#a08cff;--cy:#c3a8ff;--dim:#6a5a9a;--brd:#37306a;--scan:.05}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font:12px/1.5 var(--font);overflow:hidden;user-select:none}
+button{font:11px var(--font);background:transparent;border:1px solid var(--brd2);color:var(--txt);
+  padding:3px 10px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase}
+button:hover{border-color:var(--acc);color:var(--acc)}
+button.acc{border-color:var(--acc);color:var(--acc)}
+input{font:12px var(--font);background:rgba(0,0,0,.5);border:1px solid var(--brd);color:var(--txt);padding:4px 8px;outline:none}
+input:focus{border-color:var(--acc)}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-thumb{background:var(--brd2)}
+::-webkit-scrollbar-track{background:transparent}
+#top{position:fixed;top:0;left:0;right:0;height:46px;display:flex;align-items:center;gap:16px;padding:0 14px;
+  background:linear-gradient(180deg,rgba(4,9,12,.97),rgba(4,9,12,.85));border-bottom:1px solid var(--brd);z-index:60}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--head);font-weight:700;letter-spacing:.22em;font-size:15px;color:#fff;white-space:nowrap}
+.brand .sub{font-weight:500;font-size:9px;letter-spacing:.3em;color:var(--dim);margin-left:2px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--grn);box-shadow:0 0 10px var(--grn);animation:pu 2.2s infinite}
+@keyframes pu{50%{opacity:.3}}
+#hudline{margin-left:auto;font-size:10px;color:var(--dim);letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hudline b{color:var(--grn);font-weight:500}
+#clock{font-size:11px;color:var(--txt);letter-spacing:.1em;white-space:nowrap}
+.chip{font-size:9px;letter-spacing:.14em;border:1px solid var(--brd2);color:var(--dim);padding:2px 7px;white-space:nowrap}
+.chip.on{color:var(--grn);border-color:var(--grn)}
+#top .btns{display:flex;gap:6px}
+#globe{position:fixed;inset:0;cursor:crosshair;touch-action:none}
+#globe.grab{cursor:grabbing}
+#hudcenter{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:30;font-size:10px;letter-spacing:.14em;
+  color:var(--dim);background:rgba(0,0,0,.4);border:1px solid var(--brd);padding:3px 14px;white-space:nowrap}
+#hudcenter b{color:var(--acc);font-weight:500}
+.panel{position:fixed;top:58px;width:292px;background:var(--panel);border:1px solid var(--brd);z-index:40;
+  backdrop-filter:blur(5px);display:flex;flex-direction:column;max-height:calc(100vh - 152px)}
+#left{left:12px}
+#right{right:12px}
+.ph{padding:7px 11px;font-family:var(--head);font-size:11px;letter-spacing:.18em;border-bottom:1px solid var(--brd);color:var(--acc);flex:none}
+.pc{overflow-y:auto;padding:8px 11px;flex:1;min-height:0}
+.sect{margin:12px 0 4px;font-size:9px;letter-spacing:.22em;color:var(--dim)}
+.sect:first-child{margin-top:2px}
+.lrow{display:flex;align-items:center;gap:8px;padding:2.5px 2px;cursor:pointer;letter-spacing:.05em}
+.lrow:hover .ln{color:var(--acc)}
+.lrow.off{opacity:.35}
+.lrow .sw{width:8px;height:8px;flex:none}
+.lrow .ln{flex:1;font-size:11px;text-transform:uppercase}
+.lrow .cnt{color:var(--dim);font-size:10px}
+.tgl{width:10px;height:10px;border:1px solid var(--dim);flex:none;position:relative}
+.lrow:not(.off) .tgl{border-color:var(--acc)}
+.lrow:not(.off) .tgl::after{content:'';position:absolute;inset:2px;background:var(--acc)}
+.opbtns{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.opbtns button{flex:1;font-size:9px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:9px;color:var(--dim);margin:4px 0 2px}
+.legend i{display:inline-block;width:7px;height:7px;margin-right:4px}
+#left .mini{font-size:9px;color:var(--dim);line-height:1.5;margin-top:10px;border-top:1px solid var(--brd);padding-top:8px}
+.tabs{display:flex;border-bottom:1px solid var(--brd);flex:none}
+.tabbtn{flex:1;border:none;border-right:1px solid var(--brd);padding:7px 0;color:var(--dim);letter-spacing:.18em;font-size:10px}
+.tabbtn.on{color:var(--acc);background:rgba(255,180,84,.06)}
+#roster-sub{font-size:9px;color:var(--dim);letter-spacing:.12em;margin:2px 0 6px}
+.rrow{display:flex;align-items:baseline;gap:7px;padding:2.5px 3px;cursor:pointer;font-size:11px}
+.rrow:hover{background:rgba(255,180,84,.07)}
+.rrow.trk{background:rgba(57,217,138,.1);outline:1px solid rgba(57,217,138,.35)}
+.rg{width:12px;flex:none;font-size:9px}
+.rn{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.04em}
+.rc{font-size:9px;color:var(--dim)}
+.rd{font-size:9px;color:var(--dim);width:56px;text-align:right}
+.wi{display:flex;gap:8px;padding:5px 4px;border-bottom:1px solid rgba(24,50,66,.5);cursor:pointer;font-size:10.5px;line-height:1.45}
+.wi:hover{background:rgba(91,214,221,.06)}
+.wi .wt{color:var(--dim);flex:none;font-size:9px;padding-top:2px}
+.wi.sev-info{border-left:2px solid var(--cy)}
+.wi.sev-warn{border-left:2px solid var(--acc)}
+.wi.sev-alert{border-left:2px solid var(--red)}
+.wi.sev-alert .wtxt{color:var(--red)}
+#trackcard{display:none;border-top:1px solid var(--brd);flex:none;max-height:46%;overflow-y:auto;background:rgba(10,20,26,.6)}
+#trackcard.show{display:block}
+#tk-head{display:flex;align-items:center;gap:8px;padding:8px 11px;border-bottom:1px solid var(--brd)}
+#tk-name{font-family:var(--head);font-size:13px;letter-spacing:.1em;color:#fff;flex:1}
+#tk-status{font-size:9px;letter-spacing:.14em;padding:1px 6px;border:1px solid}
+.st-A{color:var(--grn);border-color:var(--grn)}
+.st-D{color:var(--cy);border-color:var(--cy)}
+.st-C{color:var(--dim);border-color:var(--dim)}
+.tk-meta{padding:7px 11px;font-size:10.5px}
+.tk-meta .r{display:flex;gap:8px;padding:1.5px 0}
+.tk-meta .k{width:84px;color:var(--dim);flex:none;letter-spacing:.08em}
+.tk-meta .v{flex:1;color:var(--txt)}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin:3px 0}
+.cc{font-size:9px;letter-spacing:.1em;border:1px solid;padding:1px 6px}
+#tk-note{padding:2px 11px 8px;font-size:9.5px;color:var(--dim);line-height:1.55}
+#tk-live{display:flex;gap:14px;padding:6px 11px;border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);font-size:9px;color:var(--dim);letter-spacing:.08em}
+#tk-live b{color:var(--acc);font-weight:500;display:block;font-size:11px;letter-spacing:.04em}
+#tk-btns{display:flex;gap:6px;padding:8px 11px}
+#tk-btns button{flex:1;font-size:9px;padding:5px 2px}
+#tk-close{flex:0 0 30px!important}
+#stylebar{position:fixed;left:50%;transform:translateX(-50%);bottom:46px;display:flex;gap:5px;z-index:45}
+#stylebar button{font-size:9px;padding:4px 9px;background:var(--panel)}
+#stylebar button.on{border-color:var(--acc);color:var(--acc);box-shadow:0 0 12px rgba(255,180,84,.25)}
+#console{position:fixed;left:12px;bottom:46px;width:492px;z-index:46;background:var(--panel);border:1px solid var(--brd);backdrop-filter:blur(5px)}
+#chead{display:flex;align-items:center;gap:8px;padding:4px 10px;border-bottom:1px solid var(--brd);font-size:9px;letter-spacing:.2em;color:var(--dim)}
+#chead b{color:var(--acc);font-weight:600;letter-spacing:.24em}
+#clog{max-height:118px;overflow-y:auto;padding:5px 10px;font-size:10.5px;line-height:1.5}
+#clog div{white-space:pre-wrap}
+.c-ok{color:var(--grn)} .c-warn{color:var(--acc)} .c-err{color:var(--red)} .c-dim{color:var(--dim)} .c-txt{color:var(--txt)}
+#cform{display:flex;align-items:center;gap:8px;padding:5px 10px;border-top:1px solid var(--brd)}
+#cform .pfx{color:var(--acc);font-size:11px}
+#cin{flex:1;background:transparent;border:none;padding:2px 0}
+#ticker{position:fixed;left:0;right:0;bottom:0;height:34px;background:rgba(3,7,10,.97);border-top:1px solid var(--brd);
+  display:flex;align-items:center;overflow:hidden;z-index:50}
+#ticker:hover .ttrack{animation-play-state:paused}
+#tk-inner{display:flex;width:max-content;animation:tk 70s linear infinite}
+.ttrack{display:inline-flex;gap:34px;white-space:nowrap;align-items:center;padding-right:34px}
+@keyframes tk{to{transform:translateX(-50%)}}
+.titem{font-size:11px;letter-spacing:.05em}
+.titem b{color:var(--acc);font-weight:600}
+.titem i{font-style:normal;font-size:9.5px;margin-left:5px}
+.up{color:var(--grn)} .down{color:var(--red)}
+.ttag{color:var(--dim);font-size:9px;letter-spacing:.2em}
+#pit{position:fixed;inset:0;z-index:300;background:#010304;display:none}
+#pit.show{display:block}
+#pitc{position:absolute;inset:0}
+.pit-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:14px;padding:10px 14px;z-index:2}
+#pit-title{font-family:var(--head);letter-spacing:.16em;font-size:12px;color:var(--acc)}
+.pit-hud{position:absolute;left:12px;right:12px;bottom:44px;z-index:2;display:flex;gap:18px;flex-wrap:wrap;
+  background:rgba(2,6,8,.8);border:1px solid var(--brd);padding:8px 14px;font-size:10px;letter-spacing:.1em;color:var(--dim)}
+.pit-hud b{color:var(--txt);font-weight:500}
+.pit-warn{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:9px;letter-spacing:.18em;color:var(--dim);z-index:2}
+#tourbar{position:fixed;top:86px;left:50%;transform:translateX(-50%);z-index:80;max-width:640px;
+  background:var(--panel);border:1px solid var(--brd);padding:7px 16px;font-size:11px;letter-spacing:.06em;display:none}
+#tourbar.show{display:block}
+#tourbar .tt{font-size:9px;letter-spacing:.24em;color:var(--acc);margin-bottom:2px}
+#splash{position:fixed;inset:0;z-index:500;background:#020507;display:flex;align-items:center;justify-content:center}
+#splash .box{width:min(860px,92vw)}
+#bootlog{font-size:12px;line-height:1.75;color:#8dffa8;min-height:280px;white-space:pre-wrap;letter-spacing:.03em}
+#bootlog .dim{color:#2f7a4a}#bootlog .err{color:#ff5f56}#bootlog .ok{color:#39ff88}
+#splash .brandline{font-family:var(--head);font-size:30px;letter-spacing:.3em;color:#fff;margin-bottom:4px}
+#splash .tagline{color:var(--dim);font-size:11px;letter-spacing:.16em;margin-bottom:22px}
+#missions{display:none;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:26px}
+#missions.show{display:grid}
+.mi{border:1px solid var(--brd);background:rgba(8,16,22,.8);padding:12px;cursor:pointer;display:flex;flex-direction:column;gap:8px}
+.mi:hover{border-color:var(--acc)}
+.mi .mt{font-family:var(--head);font-size:12px;letter-spacing:.14em;color:var(--acc)}
+.mi .md{font-size:10px;color:var(--dim);line-height:1.55;flex:1}
+.mi .go{font-size:9px;letter-spacing:.2em;color:var(--grn)}
+#btn-skip{position:absolute;top:16px;right:18px}
+#modal{position:fixed;inset:0;z-index:460;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center}
+#modal.show{display:flex}
+.mbox{width:min(760px,94vw);max-height:86vh;overflow-y:auto;background:var(--panel);border:1px solid var(--brd2);padding:0 0 18px}
+.mbox h2{font-family:var(--head);letter-spacing:.2em;font-size:15px;color:var(--acc);padding:14px 20px;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between}
+.mbox .mbody{padding:16px 20px;font-size:11.5px;line-height:1.7}
+.mbox h3{font-size:11px;letter-spacing:.2em;color:var(--txt);margin:16px 0 6px}
+.mbox table{width:100%;border-collapse:collapse;font-size:10.5px;margin:6px 0}
+.mbox td{border:1px solid var(--brd);padding:5px 9px;vertical-align:top}
+.mbox td:first-child{white-space:nowrap;color:var(--acc)}
+.mbox .dim{color:var(--dim)}
+.mbox p{margin:6px 0;color:var(--txt)}
+kbd{border:1px solid var(--brd2);padding:0 5px;font-size:10px;color:var(--acc)}
+#toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);z-index:480;background:var(--panel);
+  border:1px solid var(--acc);color:var(--acc);padding:7px 18px;font-size:11px;letter-spacing:.12em;opacity:0;
+  transition:opacity .25s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1}
+#scan{position:fixed;inset:0;z-index:900;pointer-events:none;opacity:var(--scan);
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.55) 0 1px,transparent 1px 3px)}
+#vig{position:fixed;inset:0;z-index:890;pointer-events:none;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+@media (max-width:1180px){
+  #left,#right{transform:translateX(-110%);transition:transform .25s}
+  #right{transform:translateX(110%)}
+  #left.open,#right.open{transform:none}
+  #console{width:calc(100vw - 24px)}
+  #hudline{display:none}
+}
+</style>
+</head>
+<body data-style="normal">
+
+<header id="top">
+  <div class="brand"><span class="pulse"></span>MOTHERLODE<span class="sub">MINERAL SURVEY CONSOLE</span></div>
+  <div id="hudline"></div>
+  <span id="clock"></span>
+  <span class="chip on" id="chip-key">KEYLESS · LOCAL</span>
+  <div class="btns">
+    <button id="btn-panels-l" title="Layers">▤</button>
+    <button id="btn-panels-r" title="Contacts">▥</button>
+    <button id="btn-power" class="acc">POWER UP</button>
+    <button id="btn-share">SHARE</button>
+  </div>
+</header>
+
+<canvas id="globe"></canvas>
+<div id="hudcenter"></div>
+
+<aside id="left" class="panel">
+  <div class="ph">SENSORS &amp; LAYERS</div>
+  <div class="pc" id="layers-pc"></div>
+</aside>
+
+<aside id="right" class="panel">
+  <div class="tabs">
+    <button class="tabbtn on" data-tab="contacts">CONTACTS</button>
+    <button class="tabbtn" data-tab="wire">WIRE</button>
+  </div>
+  <div class="pc" id="tab-contacts">
+    <div id="roster-sub"></div>
+    <div id="roster"></div>
+  </div>
+  <div class="pc" id="tab-wire" style="display:none">
+    <div id="roster-sub">INCIDENT &amp; WIRE FEED · SIMULATED</div>
+    <div id="wire"></div>
+  </div>
+  <div id="trackcard">
+    <div id="tk-head"><span id="tk-name"></span><span id="tk-status"></span></div>
+    <div class="tk-meta" id="tk-meta"></div>
+    <div id="tk-note"></div>
+    <div id="tk-live"></div>
+    <div id="tk-btns">
+      <button id="btn-pit" class="acc">PIT MODE</button>
+      <button id="btn-ntsf">NEAREST TSF</button>
+      <button id="btn-nplant">NEAREST PLANT</button>
+      <button id="tk-close">✕</button>
+    </div>
+  </div>
+</aside>
+
+<div id="stylebar"></div>
+
+<div id="console">
+  <div id="chead"><b>ML CONSOLE</b><span>LOCAL PARSER · NO KEY REQUIRED · TRY "HELP"</span></div>
+  <div id="clog"></div>
+  <form id="cform"><span class="pfx">ML▸</span><input id="cin" autocomplete="off" spellcheck="false" placeholder="track grasberg · show lithium · nvg · tour copper · pit"></form>
+</div>
+
+<div id="pit">
+  <canvas id="pitc"></canvas>
+  <div class="pit-top">
+    <button id="pit-exit">◀ EXIT PIT</button>
+    <span id="pit-title"></span>
+  </div>
+  <div class="pit-hud" id="pit-hud"></div>
+  <div class="pit-warn">GEOMETRY MODELED FOR ILLUSTRATION · SITE POSITIONS &amp; ASSAY DATA FROM PUBLIC SOURCES</div>
+</div>
+
+<div id="tourbar"><div class="tt" id="tour-tt"></div><div id="tour-tx"></div></div>
+<div id="toast"></div>
+
+<div id="ticker"><div id="tk-inner"></div></div>
+
+<div id="modal">
+  <div class="mbox">
+    <h2><span>POWER UP · DATA SOURCES &amp; HONESTY</span><button id="modal-close">✕</button></h2>
+    <div class="mbody" id="mbody"></div>
+  </div>
+</div>
+
+<div id="splash">
+  <button id="btn-skip">SKIP BOOT ▸</button>
+  <div class="box">
+    <div class="brandline">MOTHERLODE</div>
+    <div class="tagline">A MINERAL RECONNAISSANCE SATELLITE IN YOUR BROWSER — THE DEPOSITS ARE REAL, THE DATA IS PUBLIC.</div>
+    <div id="bootlog"></div>
+    <div id="missions"></div>
+  </div>
+</div>
+
+<div id="scan"></div><div id="vig"></div>
+
+<script>
+'use strict';
+/* ================================================================
+   MOTHERLODE — Mineral Survey Console (single file, keyless, local)
+   ================================================================ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const D2R=Math.PI/180, TAU=Math.PI*2;
+const clamp=(v,a,b)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
+const easeIO=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const normAng=a=>{while(a>Math.PI)a-=TAU;while(a<-Math.PI)a+=TAU;return a};
+const fmtN=n=>Number(n).toLocaleString('en-US');
+const hash=s=>{let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h)};
+function haversine(a,b){const dLa=(b.lat-a.lat)*D2R,dLo=(b.lng-a.lng)*D2R;
+  const x=Math.sin(dLa/2)**2+Math.cos(a.lat*D2R)*Math.cos(b.lat*D2R)*Math.sin(dLo/2)**2;
+  return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function mix(h1,h2,t){const p=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+  const a=p(h1),b=p(h2);return '#'+a.map((v,i)=>Math.round(lerp(v,b[i],t)).toString(16).padStart(2,'0')).join('');}
+function hexA(h,a){const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+  return 'rgba('+r+','+g+','+b+','+a+')';}
+
+/* surface any runtime error into the console panel — never die silently */
+addEventListener('error',e=>{try{
+  const c=$('#clog');if(c)logErr('RUNTIME ERROR: '+(e.message||'unknown'));
+}catch(_){}});
+function logErr(msg){const c=$('#clog');if(!c)return;
+  const d=document.createElement('div');d.className='c-err';d.textContent=msg;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;}
+
+/* ============ COMMODITIES ============ */
+const COMMS={
+  CU:{n:'Copper',col:'#ff9d45'}, FE:{n:'Iron Ore',col:'#c7cfd9'}, ZN:{n:'Zinc-Lead',col:'#9be37a'},
+  C:{n:'Coal',col:'#8b93a1'}, BX:{n:'Bauxite',col:'#e0a878'},
+  AU:{n:'Gold',col:'#ffd76a'}, AG:{n:'Silver',col:'#dfe7f2'}, PG:{n:'PGM',col:'#f2a6c0'},
+  LI:{n:'Lithium',col:'#7de8dc'}, NI:{n:'Nickel',col:'#a8d05a'}, CO:{n:'Cobalt',col:'#6fa8ff'},
+  REE:{n:'Rare Earths',col:'#e79ad2'}, U:{n:'Uranium',col:'#7ee787'},
+  MO:{n:'Molybdenum',col:'#77c9d4'}, SN:{n:'Tin',col:'#bfc9d9'},
+  K:{n:'Potash',col:'#c9a7ff'}, P:{n:'Phosphate',col:'#8fd5a0'}, DIA:{n:'Diamonds',col:'#9fe8ff'}
+};
+const CGROUPS=[
+  ['BULK & BASE',['CU','FE','ZN','C','BX']],
+  ['PRECIOUS',['AU','AG','PG']],
+  ['ENERGY TRANSITION',['LI','NI','CO','REE','U']],
+  ['SPECIALTY & FERTILIZER',['MO','SN','K','P','DIA']]
+];
+
+/* ============ MINE DATASET (public, approximate) ============ */
+function mk(id,name,cc,op,comms,type,lat,lng,prod,grade,note,t1,status){
+  return {id,name,cc,op,comms,type,lat,lng,prod,grade,note,t1:!!t1,status:status||'A',tsf:false,pl:false};
+}
+const MINES=[
+mk('escondida','Escondida','Chile','BHP',['CU'],'OP',-24.27,-69.07,'≈1,150 kt Cu/y','≈0.95% Cu',"Largest copper operation on Earth. Concentrators + oxide leach, Norte Antofagasta belt.",1),
+mk('collahuasi','Collahuasi','Chile','Anglo American / Glencore',['CU'],'OP',-20.97,-68.48,'≈560 kt Cu','≈0.8% Cu',"High-altitude Cu-Mo porphyry complex above 4,400 m.",1),
+mk('chuqui','Chuquicamata','Chile','Codelco',['CU'],'OP',-22.31,-68.93,'≈440 kt Cu','≈0.7% Cu',"The classic open pit — 4.3 km long, ~1 km deep, now transitioning underground.",1),
+mk('teniente','El Teniente','Chile','Codelco',['CU'],'UG',-34.95,-70.49,'≈460 kt Cu','≈1.2% Cu',"Largest underground copper mine on Earth; 2,400+ m of vertical development.",1),
+mk('pelambres','Los Pelambres','Chile','Antofagasta plc',['CU'],'OP',-31.43,-70.89,'≈360 kt Cu','≈0.55% Cu',"Belt flagship; its El Mauro tailings dam draws hazard scrutiny.",2),
+mk('antamina','Antamina','Peru','Glencore / BHP / Teck',['CU','ZN'],'OP',-8.65,-77.44,'≈420 kt Cu','≈1.0% Cu eq',"Polymetallic Andean skarn — Cu, Zn, Mo, Ag, Bi.",1),
+mk('cerro-verde','Cerro Verde','Peru','Freeport-McMoRan',['CU'],'OP',-8.42,-79.87,'≈480 kt Cu','≈0.5% Cu',"Gig concentrator near Arequipa; mill + SX/EW lines.",2),
+mk('grasberg','Grasberg Block Cave','Indonesia','PT Freeport (FCX)',['CU','AU'],'UG',-4.05,137.0,'≈800 kt Cu · 1.8 Moz Au','≈1.0% Cu',"Now the world's largest underground block-caving complex, under the old pit.",1),
+mk('morenci','Morenci','USA (AZ)','Freeport-McMoRan',['CU'],'OP',33.08,-109.02,'≈460 kt Cu','≈0.28% Cu',"Zero-grade-threshold leach empire — the case study for SX/EW.",2),
+mk('bingham','Bingham Canyon','USA (UT)','Rio Tinto Kennecott',['CU','AU','MO'],'OP',40.49,-112.15,'≈200 kt Cu','≈0.45% Cu',"Deepest open pit on Earth (~1.2 km). A century of copper, still going.",1),
+mk('oyu','Oyu Tolgoi','Mongolia','Rio Tinto / Govisg Mongolia',['CU'],'UG',43.03,106.87,'≈560 kt Cu ramp','≈1.2% Cu',"Gobi-desert block caves — Hugo North lifts Mongolia into the copper majors.",1),
+mk('kansanshi','Kansanshi','Zambia','First Quantum',['CU'],'OP',-12.05,26.43,'≈260 kt Cu','≈0.8% Cu',"Smelter on site; Zambia's largest taxpayer.",2),
+mk('sentinel','Sentinel','Zambia','First Quantum',['CU'],'OP',-12.19,25.36,'≈260 kt Cu','≈0.5% Cu',"Kalumbila greenfield SAG mills in the Zambian northwest.",2),
+mk('kamoto','Kamoto / KOV','DR Congo','Glencore',['CU','CO'],'OP',-10.65,25.50,'≈250 kt Cu','≈2.8% Cu',"Kamoto underground + KOV pit, Lualaba province.",2),
+mk('tenke','Tenke Fungurume','DR Congo','CMOC',['CU','CO'],'OP',-10.62,26.02,'≈250 kt Cu','≈2.2% Cu',"Huge oxide resources; expansions doubled throughput.",2),
+mk('mutanda','Mutanda','DR Congo','Glencore',['CU','CO'],'OP',-10.27,25.50,'≈200 kt Cu','≈1.9% Cu',"Was the world's largest cobalt producer before 2019 care-and-maintenance.",1),
+mk('kakula','Kamoá-Kakula','DR Congo','Ivanhoe Mines',['CU'],'UG',-10.75,25.22,'≈450 kt Cu ramp','5%+ Cu feed',"Highest-grade major copper development on the planet.",1),
+mk('cananea','Buenavista del Cobre','Mexico','Grupo México',['CU'],'OP',30.98,-109.99,'≈360 kt Cu','≈0.55% Cu',"Cananea — one of the oldest continuously worked copper camps.",2),
+mk('olympic','Olympic Dam','Australia','BHP',['CU','AU','U'],'UG',-30.42,136.75,'≈200 kt Cu','≈1.1% Cu eq',"Iron-oxide Cu-Au-U breccia — one orebody, three metals, entirely underground.",1),
+mk('batu','Batu Hijau','Indonesia','Amman Mineral',['CU','AU'],'OP',-8.87,116.79,'≈260 kt Cu','≈0.5% Cu',"Sumbawa porphyry; valley-fill leach after the pit phases.",2),
+mk('norilsk','Norilsk-Talnakh','Russia','Nornickel',['NI','CU','PG'],'UG',69.33,87.95,'≈450 kt Ni-Cu','≈3% Ni+Cu',"Nickel-copper-PGE camp without equal; Arctic permafrost operations.",1),
+mk('sudbury','Sudbury Complex','Canada','Vale / Glencore et al.',['NI','CU'],'UG',46.62,-81.0,'≈200 kt Ni','1.5–3% Ni',"1.8-Ga impact crater turned world-class Ni-Cu camp; 15+ operations.",1),
+mk('voisey',"Voisey's Bay",'Canada','Vale',['NI','CU'],'OP',58.33,-62.0,'≈45 kt Ni','≈1.6% Ni',"Labrador massive sulphides; Reid Brook underground ramping.",2),
+mk('muruntau','Muruntau','Uzbekistan','Navoi Mining & Metallurgy',['AU'],'OP',41.56,64.49,'≈2.0 Moz Au','≈1 g/t Au',"Commonly cited as the largest gold mine on Earth — one enormous pit.",1),
+mk('nevada','Nevada Gold Mines','USA (NV)','Barrick 61.5% / Newmont 38.5%',['AU'],'OP',40.05,-116.40,'≈3.0 Moz Au','Carlin-type refractory',"Carlin + Cortez + Turquoise Ridge — the largest gold complex on Earth.",1),
+mk('pueblo','Pueblo Viejo','Dominican Republic','Barrick / Newmont',['AU','AG'],'OP',18.95,-70.40,'≈600 koz Au','≈3.5 g/t Au',"Refractory autoclaves on a colonial-era tailings rework.",2),
+mk('lihir','Lihir','Papua New Guinea','Newmont (Newcrest)',['AU'],'OP',-3.13,152.78,'≈900 koz Au','≈2 g/t Au',"Geothermal steam heats the autoclaves; a volcano hosts the ore.",1),
+mk('superpit','Fimiston Super Pit','Australia','Northern Star (KCGM)',['AU'],'OP',-35.75,121.49,'≈600 koz Au','≈1.5 g/t Au',"A 3.5 km golden hole beside Kalgoorlie-Boulder.",1),
+mk('yanacocha','Yanacocha','Peru','Newmont',['AU'],'OP',-6.83,-77.59,'≈300 koz Au','≈0.8 g/t Au',"Latin America's largest gold mine; heap leach in the high Andes.",2),
+mk('olimpiada','Olimpiada','Russia','Polyus',['AU'],'OP',58.45,94.52,'≈1.2 Moz Au','≈4.5 g/t Au',"Siberian giant among the largest gold operations.",2),
+mk('sukari','Sukari','Egypt','Centamin',['AU'],'OP',24.89,34.70,'≈450 koz Au','≈1.3 g/t Au',"First modern large-scale Egyptian gold mine, Eastern Desert.",2),
+mk('tarkwa','Tarkwa','Ghana','Gold Fields',['AU'],'OP',5.27,-1.99,'≈500 koz Au','≈1.2 g/t Au',"Ghana gold belt; hybrid CIL and heap leach.",2),
+mk('obuasi','Obuasi','Ghana','AngloGold Ashanti',['AU'],'UG',6.20,-1.66,'≈300 koz Au','≈7 g/t Au',"A century-old deep-level Ashanti lode, reborn mechanized.",2),
+mk('kibali','Kibali','DR Congo','Barrick / AngloGold',['AU'],'OP',3.62,27.58,'≈800 koz Au','≈2.2 g/t Au',"River diversion and hydropower in the northeast DRC.",2),
+mk('loulo','Loulo-Gounkoto','Mali','Barrick',['AU'],'OP',12.50,-8.30,'≈700 koz Au','≈3.5 g/t Au',"Two complexes feeding one of Africa's biggest gold mills.",2),
+mk('porgera','Porgera','Papua New Guinea','Barrick / Zijin',['AU'],'OP',-5.29,143.09,'≈500 koz Au','≈4 g/t Au',"Highland epithermal; restarted after shutdown and reset.",2),
+mk('boddington','Boddington','Australia','Newmont',['AU','CU'],'OP',-33.12,116.49,'≈700 koz Au','≈0.8 g/t Au',"Australia's largest gold producer, with copper credits.",2),
+mk('cadia','Cadia','Australia','Newmont (Newcrest)',['AU','CU'],'UG',-33.44,148.98,'≈700 koz Au','≈1.0 g/t eq',"Block caves beneath a working open-pit district.",2),
+mk('mponeng','Mponeng','South Africa','Harmony Gold',['AU'],'UG',-26.39,27.41,'≈250 koz Au','≈7.5 g/t Au',"The deepest mine on Earth — rock at 4,000 m runs 60 °C.",1),
+mk('carajas','Carajás S11D','Brazil','Vale',['FE'],'OP',-6.06,-50.24,'≈150 Mt/y','66.7% Fe',"Largest iron ore mine on Earth; truckless conveying in the rainforest.",1),
+mk('whaleback','Mount Whaleback','Australia','BHP',['FE'],'OP',-23.25,124.54,'≈70 Mt/y','≈61% Fe',"5.5 km of hematite ridge in the Pilbara.",1),
+mk('tomprice','Mount Tom Price','Australia','Rio Tinto',['FE'],'OP',-22.65,117.67,'≈60 Mt/y','62–63% Fe',"The Pilbara's founding mine; autonomous haul fleet standard.",2),
+mk('kiruna','Kiruna','Sweden','LKAB',['FE'],'UG',67.85,20.22,'≈24 Mt/y','high-grade magnetite',"The city moved for the mine; the orebody dives beneath the town.",1),
+mk('malmberget','Malmberget / Gällivare','Sweden','LKAB',['FE'],'UG',67.17,20.60,'≈14 Mt/y','magnetite',"LKAB's second hub; ground-deformation management in town.",2),
+mk('kryvyi','Kryvyi Rih','Ukraine','Metinvest / ArcelorMittal',['FE'],'OP',47.92,33.37,'≈40 Mt/y','30–55% Fe',"Cossack-era iron basin — 130 km of pits and plants.",2),
+mk('simandou','Simandou','Guinea','Rio Tinto / Simfer + WCS',['FE'],'OP',8.60,-9.10,'120 Mt/y at ramp','≈65% Fe',"The elephant: world-class hematite — with 600 km of railway to build first.",1,'D'),
+mk('sishen','Sishen','South Africa','Kumba (Anglo)',['FE'],'OP',-27.68,22.98,'≈30 Mt/y','58–64% Fe',"Kalahari hematite; legacy of South African steel.",2),
+mk('mary-river','Mary River','Canada','Baffinland (ArcelorMittal)',['FE'],'OP',71.40,-78.70,'≈6 Mt/y','65–68% Fe',"High Arctic direct-shipping ore — ice-strengthened capesize season.",2),
+mk('greenbushes','Greenbushes','Australia','Tianqi / IGO (51%)',['LI'],'OP',-33.85,116.06,'≈1.3 Mt spodumene','≈1.4% Li2O',"The hard-rock lithium benchmark every pegmatite is compared to.",1),
+mk('pilgangoora','Pilgangoora','Australia','Pilbara Minerals',['LI'],'OP',-21.45,120.55,'≈800 kt spodumene','≈1.2% Li2O',"Pilbara pegmatites; the spodumene spot auction started here.",2),
+mk('wodgina','Wodgina','Australia','Albemarle / MinRes JV',['LI'],'OP',-21.28,118.96,'≈750 kt capacity','≈1.2% Li2O',"Cassiterite history and spodumene future on one tenement.",2),
+mk('atacama','Salar de Atacama','Chile','SQM / Albemarle',['LI'],'BR',-23.40,-68.30,'≈180 kt LCE/y','brine ≈1,600 ppm Li',"Highest-grade lithium brine on Earth, in the driest desert on Earth.",1),
+mk('hombre','Salar del Hombre Muerto','Argentina','Arcadium (Livent)',['LI'],'BR',-25.50,-67.0,'≈40 kt LCE/y','brine ≈700–900 ppm',"Lithium Triangle pioneer; carbonate from Andean salt.",2),
+mk('olaroz','Salar de Olaroz','Argentina','Arcadium (Allkem)',['LI'],'BR',-23.90,-66.60,'≈20 kt LCE/y','brine ≈700 ppm',"Puna brine and pond chemistry at 4,000 m.",2),
+mk('thacker','Thacker Pass','USA (NV)','Lithium Americas + GM',['LI'],'OP',41.65,-118.0,'≈40 kt LCE phase 1','claystone ≈3,000 ppm Li',"McDermitt caldera clay — the U.S. lithium-sediment flagship.",2,'D'),
+mk('jadar','Jadar','Serbia','Rio Tinto',['LI'],'UG',44.50,19.50,'≈58 kt LCE plan','jadarite borate-Li',"Europe's would-be lithium — paused, lobbied, watched.",2,'D'),
+mk('manono','Manono','DR Congo','AVZ / state JV (contested)',['LI','SN'],'OP',-10.40,26.60,'≈700 kt potential','≈1.6% Li2O',"An old tin hill sitting on one of the biggest hard-rock lithium resources found.",2,'D'),
+mk('goulamina','Goulamina','Mali','Ganfeng (Leo Lithium)',['LI'],'OP',15.0,-1.50,'≈500 kt plan','≈1.1% Li2O',"Mali joins the spodumene map; first concentrates staged.",2,'D'),
+mk('arcadia','Arcadia','Zimbabwe','Huayou / Prospect',['LI'],'OP',-17.25,31.30,'≈450 kt plan','≈1.4% Li2O',"Zimbabwe's pegmatite wave after a 2022 export-licensing reset.",2),
+mk('bikita','Bikita','Zimbabwe','Sinomine',['LI'],'OP',-20.10,31.0,'≈300 kt','petalite + spodumene',"A century of petalite ceramics now feeding lithium too.",2),
+mk('ramu','Ramu','Papua New Guinea','Metallurgical Corp of China',['NI','CO'],'OP',-5.22,145.75,'≈30 kt Ni','≈1.0% Ni',"Laterite DSO to Basamuk refining — deep-sea tailings placement.",2),
+mk('sorowako','Sorowako','Indonesia','Vale Indonesia',['NI'],'OP',-2.53,121.31,'≈70 kt Ni','≈1.8% Ni',"Matte from Sulawesi laterite — the original Indonesian nickel.",2),
+mk('weda','Weda Bay','Indonesia','Eramet / Tsingshan',['NI'],'OP',0.60,128.0,'≈80 kt Ni','laterite ≈1.2% Ni',"Halmahera laterite feeding the HPAL / ferronickel era.",2),
+mk('koniambo','Koniambo','New Caledonia (FR)','Glencore (KNS)',['NI'],'OP',-20.97,164.87,'≈40 kt Ni','saprolite ≈2.4% Ni',"Pyrometallurgy on a Pacific ridge; furnace campaigns watched closely.",2),
+mk('kambalda','Kambalda','Australia','BHP / IGO et al.',['NI'],'UG',-31.20,121.60,'≈30 kt Ni','≈3% Ni',"Sulphide nickel capital of Australia — a district, not a mine.",2),
+mk('mtkeith','Mount Keith / Leinster','Australia','BHP Nickel West',['NI'],'OP',-27.60,120.60,'≈90 kt Ni','≈0.5% Ni',"Low-grade disseminated sulphide at desert scale.",2),
+mk('ambatovy','Ambatovy','Madagascar','Sherritt / Sumitomo',['NI','CO'],'OP',-18.90,48.30,'≈40 kt Ni','≈1.0% Ni',"HPAL on laterite plus a 220 km slurry pipeline to the coast.",2),
+mk('matoso','Cerro Matoso','Colombia','South32',['NI'],'OP',7.55,-75.30,'≈40 kt FeNi','≈1.5% Ni',"Montelíbano ferronickel smelter on Córdoba laterite.",2),
+mk('bayan-obo','Bayan Obo','China','Baogang Group',['REE','FE'],'OP',41.78,109.97,'dominant REO output','Fe-REE-Nb ore',"Inner Mongolia deposit that historically supplied most of the world's REO.",1),
+mk('mountain-pass','Mountain Pass','USA (CA)','MP Materials',['REE'],'OP',35.50,-115.54,'≈40 kt REO','≈8% REO ore',"The American bastnäsite answer to the magnet supply chain.",1),
+mk('mtweld','Mount Weld','Australia','Lynas Rare Earths',['REE'],'OP',-28.88,121.98,'≈14 kt REO conc','high-grade carbonatite',"Carbonatite in WA; separation at Kuantan, Malaysia.",1),
+mk('nechalacho','Nechalacho','Canada','Vital Metals',['REE'],'UG',62.08,-113.06,'pilot heavy-REE','heavy-REE enriched',"Canada's first hard-rock heavy rare earths producer (NWT).",2),
+mk('kvanefjeld','Kvanefjeld','Greenland (DK)','Greenland Minerals',['REE'],'UG',60.10,-45.50,'large potential','eudialyte-hosted',"Greenland's southern complex — uranium byproduct politics in the way.",2,'D'),
+mk('cigar','Cigar Lake','Canada','Orano / Cameco',['U'],'UG',58.06,-104.86,'≈15 Mlb U3O8','very high-grade U',"Jet-boring into frozen, high-grade Athabasca sandstone.",2),
+mk('mcarthur','McArthur River','Canada','Cameco / Orano',['U'],'UG',57.98,-103.78,'≈20 Mlb U3O8','very high-grade U',"Highest-grade uranium mine on Earth; idled 2018–24, now restarted.",2),
+mk('rossing','Rössing','Namibia','CNNC (69%)',['U'],'OP',-22.48,15.14,'≈4 Mlb U3O8','≈0.03% U3O8',"Granite-hosted uranium in the Namib since 1976.",2),
+mk('ranger','Ranger','Australia','ERA (Rio Tinto closure)',['U'],'OP',-12.87,132.91,'legacy output','low-grade U3O8',"Mined 1981–2021; now a landmark rehabilitation project.",2,'C'),
+mk('inkai','Inkai (ISL)','Kazakhstan','Kazatomprom / Orano',['U'],'OP',44.75,66.05,'≈7 Mlb U3O8','in-situ recovery',"Acid in-situ leaching in the Chu-Sarysu basin — no shaft, no pit.",2),
+mk('north-antelope','North Antelope Rochelle','USA (WY)','Peabody',['C'],'OP',43.52,-105.59,'≈65 Mt/y','PRB sub-bituminous',"America's biggest coal mine; ~22% of U.S. production at peak.",2),
+mk('black-thunder','Black Thunder','USA (WY)','Arch Resources',['C'],'OP',43.67,-105.27,'≈55 Mt/y','PRB sub-bituminous',"First mine to ship a billion tons cumulatively.",2),
+mk('haerwusu','Haerwusu','China','CHN Energy (Shenhua)',['C'],'OP',39.60,111.20,'≈30 Mt/y','thermal',"Among the largest coal mines in the world by output.",2),
+mk('turow','Turów','Poland','PGE GiEK',['C'],'OP',50.93,14.92,'≈7 Mt/y','lignite',"Bogatynia lignite basin; EU court drama over pit expansion.",2),
+mk('hambach','Hambach','Germany','RWE',['C'],'OP',50.90,6.46,'≈15 Mt/y','lignite',"Hambach Forest standoff made this Germany's most famous mine.",2),
+mk('hazelwood','Hazelwood','Australia','ENGIE (closed)',['C'],'OP',-38.37,146.42,'legacy ≈18 Mt/y','brown coal',"Latrobe Valley brown coal; closed 2017 — pit now a lake project.",2,'C'),
+mk('cerrejon','Cerrejón','Colombia','Glencore (100%)',['C'],'OP',11.10,-72.72,'≈22 Mt/y','thermal bituminous',"La Guajira desert complex: mine + 150 km railway + port.",2),
+mk('singrauli','Singrauli (NCL)','India','Northern Coalfields (CIL)',['C'],'OP',24.10,82.70,'≈90 Mt district','thermal',"India's coal engine — a district of mega-pits feeding pithead power.",2),
+mk('ekibastuz','Ekibastuz Bogatyr','Kazakhstan','Bogatyr Komir',['C'],'OP',51.80,75.55,'≈35 Mt/y','high-ash bituminous',"Once the largest open-pit coal mine on Earth (Soviet era).",2),
+mk('emalahleni','eMalahleni (Witbank)','South Africa','Exxaro / Seriti et al.',['C'],'OP',-25.88,29.10,'≈80 Mt district','bituminous thermal',"Mpumalanga coalfield — pits, power stations and dust in one airshed.",2),
+mk('mirny','Mir','Russia','ALROSA',['DIA'],'OP',62.53,113.99,'legacy kimberlite','kimberlite pipe',"The 575 m Mir hole: open pit closed 2001, underground until 2017.",1,'C'),
+mk('orapa','Orapa','Botswana','Debswana',['DIA'],'OP',-21.24,25.36,'≈11 M ct','two kimberlite pipes',"Botswana's flagship kimberlite cluster.",2),
+mk('jwaneng','Jwaneng','Botswana','Debswana',['DIA'],'OP',-25.42,24.80,'≈14 M ct','high-value pipes',"'A place of small stones' — the richest diamond mine by value.",1),
+mk('argyle','Argyle','Australia','Rio Tinto (closed)',['DIA'],'OP',-16.45,128.41,'legacy ≈865 M ct','lamproite',"Source of most of the world's pink diamonds. Closed 2020.",2,'C'),
+mk('diavik','Diavik','Canada','Rio Tinto (100%)',['DIA'],'OP',64.50,-110.28,'≈6 M ct','kimberlite pipes',"Diamonds under Lac de Gras — dike-isolated mining, wind-powered.",2),
+mk('catoca','Catoca','Angola','Catoca Mining Soc. (Endiama/ALROSA)',['DIA'],'OP',-9.44,20.07,'≈6 M ct','kimberlite',"Angola's largest diamond operation, Lunda Sul.",2),
+mk('esterhazy','Esterhazy K1–K3','Canada','Mosaic',['K'],'UG',50.16,-102.07,'≈2.5 Mt/y','≈25% K2O',"K3 shafts hoist the deepest potash in Canada.",2),
+mk('soligorsk','Soligorsk Complex','Belarus','Belaruskali',['K'],'UG',52.79,27.33,'≈11 Mt/y','sylvinite',"One-fifth of the world's potash moves through Soligorsk shafts.",2),
+mk('berezniki','Berezniki','Russia','Uralkali',['K'],'UG',59.41,56.78,'≈7 Mt/y','sylvinite',"Mine 1 flooded in 2006 — the city still watches the voids.",2),
+mk('bou-craa','Bou Craa','W. Sahara (MA)','OCP Group',['P'],'OP',26.33,-12.92,'≈2.5 Mt rock','phosphorite',"The world's longest conveyor belt (98 km) crosses the desert to port.",1),
+mk('bone-valley','Bone Valley','USA (FL)','Mosaic',['P'],'OP',27.40,-81.80,'≈4 Mt rock','phosphate matrix',"Florida dragline district over Miocene bone beds.",2),
+mk('khouribga','Khouribga','Morocco','OCP Group',['P'],'OP',32.90,-6.92,'≈12 Mt rock','phosphorite',"Hub of OCP's phosphate universe; slurry pipeline to Jorf Lasfar.",2),
+mk('weipa','Weipa / Amrun','Australia','Rio Tinto',['BX'],'OP',-12.66,141.87,'≈30 Mt/y','≈50% Al2O3',"Western Cape York bauxite; Amrun stretches south.",2),
+mk('gove','Gove (Nhulunbuy)','Australia','Rio Tinto',['BX'],'OP',-12.20,136.80,'≈10 Mt/y','≈50% Al2O3',"Bauxite since 1971; the refinery closed, the mine sails on.",2),
+mk('boke','Boké / Sangarédi','Guinea','CBG (Halco JV)',['BX'],'OP',10.85,-13.55,'≈25 Mt/y','≈50% Al2O3',"Guinean laterite — the fastest-growing bauxite source on Earth.",2),
+mk('huntly','Huntly / Willowdale','Australia','Alcoa',['BX'],'OP',-32.70,116.10,'≈28 Mt/y','≈40% Al2O3',"Jarrah forest bauxite feeding Pinjarra and Wagerup refineries.",2),
+mk('panchpatmali','Panchpatmali','India','NALCO',['BX'],'OP',18.88,82.54,'≈6 Mt/y','≈40% Al2O3',"Odisha plateau bauxite with the Damanjodi refinery.",2),
+mk('trombetas','Trombetas (MRN)','Brazil','Mineração Rio do Norte',['BX'],'OP',-1.70,-56.50,'≈10 Mt/y','≈50% Al2O3',"Amazon bauxite port at Porto Trombetas.",2),
+mk('red-dog','Red Dog','USA (AK)','Teck (NANA JV)',['ZN'],'OP',68.07,-162.89,'≈550 kt Zn','15–17% Zn',"World's largest zinc mine — shipped only when the Chukchi ice quits.",1),
+mk('rampura','Rampura Agucha','India','Vedanta (HZL)',['ZN'],'OP',25.10,74.50,'≈350 kt Zn','≈10% Zn',"Open pit done, underground ramping — India's zinc backbone.",2),
+mk('cerro-pasco','Cerro de Pasco','Peru','Volcan',['ZN','AG'],'OP',-10.68,-76.26,'≈120 kt Zn','polymetallic',"A city ringed by one giant crater of ore and historic tailings.",2),
+mk('sullivan','Sullivan','Canada','Teck (closed 2001)',['ZN'],'OP',49.69,-115.98,'legacy 17 Mt Zn-Pb','sedex',"Kimberley, BC — the textbook Sullivan sedex body, now reclaimed.",2,'C'),
+mk('mt-isa','Mount Isa','Australia','Glencore',['ZN','CU'],'UG',-20.72,139.49,'≈150 kt Zn','7–11% Zn',"A century of copper and zinc-lead-silver underground.",2),
+mk('penasquito','Peñasquito','Mexico','Newmont',['AG','ZN','AU'],'OP',24.80,-101.42,'≈25 Moz Ag','polymetallic',"Mexico's biggest gold-silver-zinc-lead line item.",2),
+mk('fresnillo','Fresnillo','Mexico','Fresnillo plc',['AG'],'UG',22.95,-102.87,'≈13 Moz Ag','high-grade silver',"Zacatecas silver veins paying out since 1554.",2),
+mk('potosi','Cerro Rico de Potosí','Bolivia','cooperatives (COMIBOL)',['AG','ZN'],'UG',-19.63,-65.75,'artisanal output','Ag-Pb-Zn veins',"The mountain that bankrolled empires; still worked by cooperatives.",1),
+mk('cannington','Cannington','Australia','South32',['AG','ZN'],'UG',-22.05,140.80,'≈10 Moz Ag','Ag-Pb-Zn',"One of the world's largest silver producers, hidden in the outback.",2),
+mk('mogalakwena','Mogalakwena','South Africa','Anglo American Platinum',['PG'],'OP',-24.20,28.84,'≈400 koz PGM','Bushveld reefs',"The biggest open-pit PGM operation, on the Bushveld northern limb.",2),
+mk('rustenburg','Rustenburg Operations','South Africa','Impala Platinum',['PG'],'UG',25.50,27.20,'≈600 koz 4E','Merensky reef',"Shaft-sinking country: the western Bushveld reef corridors.",2),
+mk('stillwater','Stillwater / East Boulder','USA (MT)','Sibanye-Stillwater',['PG'],'UG',45.38,-109.52,'≈350 koz','J-M Reef ≈11 g/t',"America's primary palladium corridor in the Beartooths.",2),
+mk('climax','Climax','USA (CO)','Freeport (Climax Moly)',['MO'],'OP',39.36,-106.19,'≈20 kt Mo','≈0.2% Mo',"The Climax molybdenum porphyry — the biggest Mo orebody known.",2),
+mk('san-rafael','San Rafael','Peru','Minsur',['SN'],'UG',-14.36,-70.60,'≈18 kt Sn','high-grade cassiterite',"World's richest hard-rock tin mine, high in the Puno Andes.",2),
+mk('renison','Renison Bell','Australia','Metals X / Bluestone',['SN'],'UG',-41.81,145.47,'≈6 kt Sn','≈1.2% Sn',"Tasmania's long-running tin engine.",2)
+];
+
+/* ============ TAILINGS FACILITIES ============ */
+function tsf(id,name,cc,op,lat,lng,haz,vol,status,note,t1){
+  return {id,name,cc,op,lat,lng,haz,vol,status,note,t1:!!t1,tsf:true,pl:false,comms:[],type:'OP',prod:vol,grade:'—'};
+}
+const TSFS=[
+tsf('feijao','Córrego do Feijão Dam I','Brazil','Vale',-20.05,-44.12,'FAILED','11.7 Mm³','CLOSED',"Brumadinho, 25 Jan 2019 — 270 fatalities. Triggered Brazil's dam-decommissioning law.",1),
+tsf('fundao','Fundão (Samarco)','Brazil','Samarco JV',-20.39,-43.44,'FAILED','55.8 Mm³','CLOSED',"Mariana, 5 Nov 2015 — tailings wave along ~600 km of the Doce river; 19 lives lost.",1),
+tsf('polley','Mount Polley TSF','Canada','Imperial Metals',52.53,-121.44,'FAILED','7.3 Mm³','CLOSED',"Perimeter Embankment breach into Quesnel Lake, 2014 — foundation failure mode.",1),
+tsf('frailes','Los Frailes (Aznalcóllar)','Spain','Boliden-Apirsa',37.52,-6.23,'FAILED','—','CLOSED',"Tailings release to the Guadiamar, 1998 — Spain's worst mining spill.",2),
+tsf('stava','Stava Valley','Italy','Prealpi Mineraia',46.18,11.32,'FAILED','≈0.3 Mm³','CLOSED',"Two dams failed in cascade, 1985 — 268 lives. Rewrote European tailings codes.",2),
+tsf('ajka','Ajka Red-Mud Reservoir','Hungary','MAL Magyar Alumínium',47.08,17.07,'FAILED','≈1.0 Mm³ alkaline','CLOSED',"Red mud flood through Kolontár/Devecser, 2010 — 10 lives, chemical burns.",1),
+tsf('merriespruit','Merriespruit No.4','South Africa','Harmony (then Argo)',-28.83,26.86,'FAILED','≈0.6 Mm³','CLOSED',"Free State failure at night after rain, 1994 — 17 lives.",2),
+tsf('talvivaara','Talvivaara Gypsum Pond','Finland','Terrafame',63.96,27.52,'LEAK','—','ACTIVE',"Uranium-bearing process water escape, 2012; operator reborn as Terrafame.",2),
+tsf('cadia-ntsf','Cadia NTSF','Australia','Newmont (Newcrest)',-33.44,148.98,'EXTREME','—','ACTIVE',"2018 embankment slump; engineered rebuild plus public inquiry.",2),
+tsf('el-mauro','El Mauro','Chile','Antofagasta (Los Pelambres)',-31.55,-70.85,'HIGH','—','ACTIVE',"Among the largest TSFs in Latin America — in earthquake country.",2),
+tsf('ok-tedi','Ok Tedi Riverine','Papua New Guinea','Ok Tedi Mining (state)',-5.05,141.18,'DISCHARGE','—','ONGOING',"Riverine tailing disposal since the 1980s — an accepted, monitored harm.",1)
+];
+
+/* ============ PROCESSING SITES ============ */
+function plant(id,name,cc,out,lat,lng,closed){
+  return {id,name,cc,op:'—',out,lat,lng,pl:true,tsf:false,comms:[],type:'OP',prod:'—',grade:'—',status:closed?'C':'A',note:'Processing / refining node: '+out};
+}
+const PLANTS=[
+plant('copper-cliff','Copper Cliff Complex','Canada','Cu-Ni matte → refined metal',46.62,-80.99),
+plant('nadezhda','Nadezhda Plant','Russia','Ni-Cu concentrate smelting',69.35,88.05),
+plant('monchegorsk','Monchegorsk','Russia','Ni refining & PGM recovery',67.93,33.01),
+plant('gove-ref','Gove Alumina Refinery','Australia','Bayer-process alumina (closed)',-12.18,136.84,true),
+plant('kwinana','Kwinana Nickel Refinery','Australia','Ni metal (mothballed)',-32.23,115.75),
+plant('aughinish','Aughinish Alumina','Ireland',"EU's largest Bayer refinery",52.64,-9.06),
+plant('jorf','Jorf Lasfar Platform','Morocco','phosphoric acid & fertilizer',33.11,-8.62)
+];
+
+/* ============ REGIONS ============ */
+const REGIONS=[
+['world',0,0,1,'the full globe'],['chile',-30,-71,2.2,'Chile — the copper kingdom'],
+['belt',-23.5,-68.8,3.2,'Antofagasta porphyry belt'],['peru',-10.5,-76,2.4,'Peru — Andean polymetals'],
+['katanga',-10.8,25.6,3.0,'Central African Copperbelt'],['zambia',-12.8,27.6,3.0,'Zambian Copperbelt'],
+['pilbara',-22.6,117.6,2.8,'Pilbara — iron ore country'],['kalgoorlie',-30.9,121.4,3.0,'Eastern Goldfields'],
+['atacama',-23.5,-68.4,3.6,'Salar de Atacama'],['triangle',-24.8,-66.8,2.6,'Lithium Triangle'],
+['nevada',40.3,-116.8,2.8,'Nevada — Carlin gold'],['sudbury',46.6,-81.2,3.2,'Sudbury impact basin'],
+['athabasca',58.1,-104.3,3.4,'Athabasca uranium basin'],['kiruna',67.6,20.4,2.8,'Fennoscandian iron'],
+['norilsk',69.3,88.1,2.6,'Norilsk industrial region'],['carajas',-6.3,-50.5,2.6,'Carajás mineral province'],
+['guinea',10.6,-13.2,2.6,'Boké bauxite district'],['simandou',8.6,-9.2,3.4,'Simandou ridge'],
+['gobi',43.0,106.8,3.0,'South Gobi copper'],['indonesia-ni',0.5,123.0,2.4,'Indonesian nickel islands'],
+['png',-4.5,144.0,2.2,'Papua New Guinea mining arc'],['wits',-26.2,27.4,3.0,'Witwatersrand goldfields'],
+['bushveld',-24.8,28.0,2.8,'Bushveld PGM complex'],['zimbabwe',-18.6,31.1,3.0,'Zimbabwe lithium belt'],
+['jadar',44.5,19.5,4.0,'Jadar valley'],['mali',12.0,-8.2,2.8,'Mali gold belt'],
+['ghana',6.0,-1.6,3.0,'Ashanti gold belt'],['boucraa',26.3,-12.9,4.0,'Bou Craa phosphate'],
+['morocco-p',32.6,-6.8,3.0,'OCP phosphate plateaus'],['powder-river',43.6,-105.4,3.2,'Powder River coal'],
+['gras',64.6,-110.2,3.6,'Lac de Gras diamonds'],['botswana',-24.0,25.0,2.6,'Botswana diamond corridor'],
+['ural-k',59.3,56.8,3.4,'Verkhnekamskoye potash'],['sask',50.6,-102.0,3.2,'Saskatchewan potash belt'],
+['aznalcollar',37.5,-6.2,4.2,'Aznalcóllar'],['caledonia',-20.9,164.9,3.4,'New Caledonia nickel'],
+['mirny',62.5,113.9,3.4,'Mirny — the diamond crater'],['kryvyi',47.9,33.3,3.2,'Kryvyi Rih basin'],
+['reddog',68.0,-162.8,3.2,'Brooks Range zinc'],['quadrangle',-20.3,-43.5,3.0,'Iron Quadrangle'],
+['wa-lithium',-28.0,118.5,2.4,'Western Australia lithium'],['latrobe',-38.4,146.4,3.4,'Latrobe Valley brown coal'],
+['bone',27.4,-81.8,3.6,'Bone Valley phosphate'],['cape-york',-12.5,139.5,2.4,'Cape York bauxite']
+];
+
+/* ============ PRICES (simulated walk) ============ */
+const PRICES=[
+['Cu','COPPER','USD/t',9460],['Al','ALUMINIUM','USD/t',2438],['Zn','ZINC','USD/t',2812],
+['Ni','NICKEL','USD/t',16850],['Sn','TIN','USD/t',31240],['Fe62','IRON 62% CFR','USD/t',103],
+['Li','Li2CO3','USD/t',13620],['Co','COBALT','USD/t',27400],['U3O8','URANIUM','USD/lb',85.5],
+['Au','GOLD','USD/oz',2384.5],['Ag','SILVER','USD/oz',30.4],['Pt','PLATINUM','USD/oz',984],
+['NdPr','NdPr OXIDE','USD/t',61200],['HCC','MET COAL','USD/t',232],['NEWC','THERMAL COAL','USD/t',112],
+['MOP','POTASH','USD/t',318]
+].map(p=>({k:p[0],n:p[1],u:p[2],val:p[3],prev:p[3]}));
+
+/* ============ LANDMASS (stylized vector world) ============ */
+const LAND=[
+[-168,66,-166,60,-158,57,-152,60,-146,61,-140,60,-136,58,-131,55,-128,51,-125,48,-124,43,-122,37,-118,33,-114,29,-112,26,-109,23,-106,21,-103,19,-99,17,-95,16,-91,14,-87,13,-84,10,-81,8,-78,8,-78,9,-80,10,-82,11,-84,14,-87,16,-88,18,-87,21,-90,21,-91,19,-95,19,-97,21,-97,26,-93,30,-88,31,-84,30,-81,26,-80,27,-81,30,-79,32,-76,35,-74,40,-70,42,-66,44,-61,46,-57,47,-53,49,-55,52,-60,51,-64,50,-60,54,-64,58,-70,60,-77,62,-82,55,-86,55,-90,57,-94,59,-92,63,-96,64,-102,65,-108,68,-115,69,-123,70,-131,70,-141,70,-150,71,-158,71,-165,69],
+[-77,8,-75,11,-71,12,-64,10,-60,9,-55,6,-51,4,-50,0,-44,-3,-38,-5,-35,-8,-37,-12,-39,-15,-39,-19,-41,-23,-46,-24,-48,-26,-51,-31,-56,-34,-58,-38,-62,-40,-65,-42,-66,-45,-67,-49,-69,-52,-72,-54,-75,-51,-74,-47,-73,-42,-73,-37,-71,-33,-71,-28,-70,-22,-70,-18,-76,-14,-78,-8,-81,-5,-80,-1,-78,1,-77,4],
+[-6,35,3,37,10,37,15,32,22,32,29,31,33,31,34,28,36,22,39,16,43,11,48,11,51,12,49,7,44,2,41,-2,40,-7,39,-11,37,-16,35,-21,33,-26,31,-29,28,-32,25,-34,19,-34,17,-32,15,-27,12,-18,12,-13,11,-6,9,0,9,4,6,4,3,6,-2,5,-8,4,-13,8,-17,12,-17,15,-16,20,-13,25,-10,30],
+[-9,43,-9,38,-7,37,-6,36,-2,37,0,39,3,42,6,43,9,44,13,44,15,42,17,40,16,38,17,39,16,42,14,44,15,43,17,43,19,42,20,40,21,39,22,38,23,37,24,37,23,36,24,38,25,38,26,38,26,39,28,36,30,36,33,36,36,36,35,33,34,30,35,28,37,24,39,21,41,17,43,12,45,12,48,14,52,17,55,17,57,19,59,22,58,24,56,26,52,27,50,28,48,29,51,30,57,27,61,25,65,25,68,23,72,20,72,21,73,18,76,10,77,8,79,10,80,13,82,17,86,20,89,22,91,22,94,18,96,16,98,13,100,10,101,7,103,1,104,2,105,8,107,11,109,13,108,16,106,20,108,21,112,22,116,23,119,26,121,29,122,32,120,34,122,37,121,39,124,39,126,37,129,35,129,38,131,42,135,44,137,46,140,49,141,52,138,54,143,55,150,59,155,57,157,52,160,54,163,58,167,60,172,61,178,64,179,67,176,70,170,71,160,71,150,72,140,72,130,72,120,73,110,74,100,76,90,75,80,73,70,72,60,70,52,68,44,67,40,66,33,67,30,70,26,71,20,70,15,68,12,66,5,63,5,61,6,59,6,58,8,58,10,59,11,58,11,57,12,56,13,56,14,55,15,56,16,58,18,59,17,61,18,63,21,65,23,66,25,65,23,63,21,62,21,60,24,60,28,60,30,60,27,60,24,59,21,57,19,54,14,54,9,54,4,52,0,50,-2,49,-2,47],
+[-5,50,1,51,0,53,-1,55,-3,56,-5,58,-6,57,-5,55,-4,53],
+[-10,52,-6,52,-6,54,-8,55,-10,54],
+[-24,64,-20,63,-14,64,-13,65,-16,66,-22,66],
+[130,31,132,34,136,35,140,36,141,40,143,42,145,44,141,45,139,41,137,37,133,34],
+[120,22,121,25,122,25,121,22],
+[120,18,122,16,121,13,120,14,119,16],
+[122,6,126,6,126,9,122,8],
+[95,5.5,99,3,103,-1,106,-5.5,104,-5,100,0,96,3],
+[105,-6,110,-7,114,-8.5,112,-8,107,-7],
+[109,1,110,-3,114,-3.5,116,-1,119,2,117,5,112,3],
+[118,1,120,-2,121,-5,124,-6,124,-2,121,0],
+[131,-1,134,-2,138,-3,143,-4,147,-6,150,-9,148,-10,143,-8,138,-7,133,-6,132,-3],
+[173,-35,176,-37,178,-38,176,-40,174,-40],
+[172,-40,174,-42,172,-44,168,-46,166,-46,170,-43],
+[43.5,-25,47.5,-25,50,-16,49,-12,47,-14,44,-19],
+[-45,60,-53,66,-55,70,-60,76,-50,82,-30,83,-22,74,-20,70,-28,68,-40,63],
+[-84,22,-78,22,-74,20,-75,19,-80,21],
+[-80,73,-70,71,-62,66,-70,63,-78,62,-84,68],
+[53,70,58,73,64,76,60,75,54,71],
+[80,6,81,7,82,9,80,9],
+[113,-22,114,-26,115,-32,117,-35,120,-34,129,-32,135,-35,138,-35,140,-38,146,-39,150,-37,153,-28,153,-25,148,-20,146,-19,142,-11,140,-17,136,-12,131,-12,126,-14,122,-17],
+[145,-41,148,-41,147,-43,145,-43],
+[-180,-71,-160,-75,-140,-74,-120,-73,-100,-72,-80,-70,-70,-68,-60,-63,-57,-62,-60,-67,-40,-73,-20,-71,0,-69,20,-70,40,-67,60,-66,80,-66,100,-66,120,-66,140,-66,160,-70,180,-71,180,-85,-180,-85]
+];
+const SEAS=[[48,37,54,37,54,41,52,45,48,46,47,42],[28,41,34,41,40,41,40,43,33,43,28,43]];
+const LCOL=LAND.map((_,i)=>'hsl('+((i*53)%360)+' 38% 26%)');
+
+/* ============ STYLES ============ */
+const STYLES={
+  normal:{name:'TACTICAL',bg:'#030608',star:'#20415c',ocean:'#062031',land:'#0e3428',coast:'#2c7f5e',grid:'#0c2e40',text:'#cfe6d8',accent:'#ffb454',glow:'#39d98a',mode:'color'},
+  crt:{name:'CRT',bg:'#020802',star:'#0a2a0a',ocean:'#041406',land:'#0e3312',coast:'#3fae4a',grid:'#0b2a10',text:'#7dffa0',accent:'#39ff88',glow:'#39ff88',mode:'mono',mono:'#39ff88'},
+  nvg:{name:'NVG',bg:'#010a01',star:'#0f3d0f',ocean:'#083407',land:'#2f8f3f',coast:'#66ff77',grid:'#1c5a24',text:'#b6ffc2',accent:'#d6ffe0',glow:'#8dff9e',mode:'mono',mono:'#e0ffe6'},
+  ironbow:{name:'FLIR IRONBOW',bg:'#050000',star:'#2a0800',ocean:'#0a0100',land:'#6b1600',coast:'#ff8c1a',grid:'#3f0c00',text:'#ffd9a0',accent:'#ffc55c',glow:'#ff7a00',mode:'heat'},
+  whitehot:{name:'FLIR WHITE-HOT',bg:'#000000',star:'#1a1a1a',ocean:'#0a0a0a',land:'#5c5c5c',coast:'#ffffff',grid:'#2a2a2a',text:'#f0f0f0',accent:'#ffffff',glow:'#cfcfcf',mode:'heat2'},
+  noir:{name:'NOIR',bg:'#020202',star:'#222222',ocean:'#0d0d0d',land:'#262626',coast:'#e8e8e8',grid:'#191919',text:'#ffffff',accent:'#ffffff',glow:'#9a9a9a',mode:'mono',mono:'#ffffff'},
+  spectral:{name:'SPECTRAL',bg:'#030308',star:'#221f3d',ocean:'#090918',land:'dyn',coast:'#e6d6ff',grid:'#1a1a3a',text:'#e0d6ff',accent:'#b18cff',glow:'#8f7bff',mode:'color'}
+};
+const STYLE_KEYS=Object.keys(STYLES);
+const TSTYLE={normal:'TACT',crt:'CRT',nvg:'NVG',ironbow:'IRON',whitehot:'WHITE',noir:'NOIR',spectral:'SPEC'};
+
+/* ============ STATE ============ */
+const L={comm:{},tsf:true,plant:false};
+Object.keys(COMMS).forEach(k=>L.comm[k]=true);
+const S={style:'normal',detect:false,labels:false,grid:true,spin:true,hud:true,
+  incidents:true,seis:true,track:null,tour:null,mode:'globe',contactCount:0,
+  rosterList:[],rosterIdx:0,ore:0,energy:0,fleet:0};
+const cam={yaw:0.6,tilt:0.32,zoom:1,zoomT:1,anim:null,vyaw:0,vtilt:0};
+let W=innerWidth,H=innerHeight,dpr=Math.min(devicePixelRatio||1,2);
+const globeC=$('#globe'),ctx=globeC.getContext('2d');
+const pitC=$('#pitc'),pctx=pitC.getContext('2d');
+
+/* build site registry */
+const SITES=[...MINES,...TSFS,...PLANTS];
+{let ci={};MINES.forEach(m=>{const c=m.comms[0];ci[c]=(ci[c]||0)+1;m.code=c+'-'+String(ci[c]).padStart(3,'0');});
+TSFS.forEach((f,i)=>f.code='TSF-'+String(i+1).padStart(2,'0'));
+PLANTS.forEach((p,i)=>p.code='PL-'+String(i+1).padStart(2,'0'));}
+function siteOn(s){if(s.tsf)return L.tsf;if(s.pl)return L.plant;return s.comms.some(c=>L.comm[c]);}
+const kindOf=s=>s.tsf?'TSF':s.pl?'PL':s.status==='C'?'CL':s.status==='D'?'DV':s.type;
+const GLY={OP:'▲',UG:'●',BR:'◆',AL:'◆',DV:'△',CL:'×',TSF:'■',PL:'◎'};
+const METHOD={OP:'Open pit',UG:'Underground',BR:'Brine / evaporation',AL:'Alluvial',TSF:'Tailings facility',PL:'Processing plant'};
+const HAZCOL={FAILED:'#ff5f56',EXTREME:'#ff8a3c',HIGH:'#ffb454',LEAK:'#ffd24a',DISCHARGE:'#5bd6dd'};
+
+const QUAKES=[],BLIPS=[];
+function spawnQuake(){
+  const pool=MINES.filter(m=>m.status==='A'&&['mponeng','teniente','norilsk','sudbury','chuqui','kakula','oyu'].includes(m.id));
+  const m=pool[Math.floor(Math.random()*pool.length)]||MINES[0];
+  QUAKES.push({lat:m.lat+(Math.random()-.5)*1.2,lng:m.lng+(Math.random()-.5)*1.2,t0:performance.now(),mag:(1.5+Math.random()*1.9).toFixed(1),ref:m});
+  if(QUAKES.length>7)QUAKES.shift();
+}
+
+/* ============ ALERTS / WIRE ============ */
+const WIRE=[];
+function utc(){const d=new Date();return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0');}
+function pushAlert(sev,text,ref){
+  WIRE.unshift({sev,text,ref,time:utc()});
+  if(WIRE.length>40)WIRE.pop();
+  renderWire();
+  if(ref&&S.incidents)BLIPS.push({s:ref,t0:performance.now(),sev});
+  if(BLIPS.length>10)BLIPS.shift();
+}
+function renderWire(){
+  $('#wire').innerHTML=WIRE.map(w=>'<div class="wi sev-'+w.sev+'"><span class="wt">'+w.time+'</span><div class="wtxt">'+w.text+'</div></div>').join('');
+}
+const pickMine=()=>MINES[Math.floor(Math.random()*MINES.length)];
+function genAlert(){
+  const r=Math.random(),m=pickMine();
+  if(r<.2)pushAlert('info','BLAST FIRED — '+m.name+': '+(20+Math.floor(Math.random()*140))+' holes, '+(40+Math.random()*300|0)+' t agent. <span class="c-dim">(SIM)</span>',m);
+  else if(r<.38)pushAlert('warn','SEISMIC ML '+(1.8+Math.random()*1.4).toFixed(1)+' — within 3 km of '+m.name+' workings. Modeled event. <span class="c-dim">(SIM)</span>',m);
+  else if(r<.52){const f=TSFS[Math.floor(Math.random()*TSFS.length)];pushAlert('warn','TSF ADVISORY — piezometers trending high at '+f.name+' ('+f.haz+'). <span class="c-dim">(SIM)</span>',f);}
+  else if(r<.66){const p=PRICES[Math.floor(Math.random()*PRICES.length)];const d=p.val>=p.prev;
+    pushAlert('info','WIRE: '+p.n+' '+(d?'▲':'▼')+' '+Math.abs((p.val-p.prev)/p.prev*100).toFixed(2)+'% — '+fmtN(p.val)+' '+p.u+'. <span class="c-dim">(SIM)</span>');}
+  else if(r<.8)pushAlert('info','PRODUCTION — '+m.name+': quarterly report reconciled '+(Math.random()<.5?'above':'below')+' guidance. Public filings.',m);
+  else if(r<.9)pushAlert('alert','SAFETY DRILL — '+m.name+': emergency exercise, hoist rope inspection. Zero-harm protocol. <span class="c-dim">(SIM)</span>',m);
+  else pushAlert('info','PERMIT — '+m.name+': compliance register updated. Public record.');
+}
+pushAlert('info','BOOT — wire feed armed. All indicators SIMULATED locally.');
+pushAlert('info','WIRE: NdPr oxide +1.8% — magnet chain tightness persists. (SIM)');
+pushAlert('warn','TSF WATCH — Córrego do Feijão Dam I: anniversary inspections logged. Public disclosure.',TSFS[0]);
+pushAlert('info','BLAST FIRED — Chuquicamata: 96 holes, 212 t. (SIM)',SITES.find(s=>s.id==='chuqui'));
+
+/* ============ CAMERA / PROJECTION ============ */
+const globeR=()=>Math.min(W,H)*0.42*cam.zoom;
+function project(lat,lng){
+  const la=lat*D2R,lo=lng*D2R+cam.yaw;
+  const x=Math.cos(la)*Math.sin(lo),z=Math.cos(la)*Math.cos(lo),y=Math.sin(la);
+  const ct=Math.cos(cam.tilt),st=Math.sin(cam.tilt);
+  const y2=y*ct-z*st,z2=y*st+z*ct;
+  if(z2<=0.015)return null;
+  const R=globeR();
+  return [W/2+x*R,H/2-y2*R,z2];
+}
+function rawDir(lat,lng){
+  const la=lat*D2R,lo=lng*D2R+cam.yaw;
+  const x=Math.cos(la)*Math.sin(lo),z=Math.cos(la)*Math.cos(lo),y=Math.sin(la);
+  const ct=Math.cos(cam.tilt),st=Math.sin(cam.tilt);
+  return [x,y*ct-z*st];
+}
+function flyTo(lat,lng,zoom,dur){
+  dur=dur||2400;
+  const to={yaw:cam.yaw+normAng(-lng*D2R-cam.yaw),tilt:clamp(lat*D2R,-1.22,1.22),zoom:zoom||cam.zoomT};
+  cam.anim={from:{yaw:cam.yaw,tilt:cam.tilt,zoom:cam.zoom},to,t0:performance.now(),dur};
+  cam.zoomT=to.zoom;
+}
+function stepCam(dt){
+  if(cam.anim){
+    const a=cam.anim,p=clamp((performance.now()-a.t0)/a.dur,0,1),e=easeIO(p);
+    cam.yaw=lerp(a.from.yaw,a.to.yaw,e);cam.tilt=lerp(a.from.tilt,a.to.tilt,e);cam.zoom=lerp(a.from.zoom,a.to.zoom,e);
+    if(p>=1)cam.anim=null;
+  }else{
+    cam.yaw+=cam.vyaw;cam.tilt+=cam.vtilt;cam.vyaw*=.93;cam.vtilt*=.93;
+    cam.zoom+=(cam.zoomT-cam.zoom)*.14;
+    if(S.spin&&S.mode==='globe'&&performance.now()-lastPointer>4000&&!S.tour)cam.yaw+=0.00028*dt;
+  }
+}
+function centerLatLon(){return[cam.tilt/D2R,normAng(-cam.yaw)/D2R];}
+
+/* ============ GLOBE DRAW ============ */
+const STARS=Array.from({length:230},()=>[Math.random(),Math.random(),Math.random()*6]);
+let lastFpsT=performance.now(),frames=0,fps=60;
+function markerColor(s,P){
+  if(P.mode==='mono')return P.mono||'#fff';
+  if(P.mode==='heat')return s.t1?'#ffd28a':'#b8491f';
+  if(P.mode==='heat2')return s.t1?'#ffffff':'#8a8a8a';
+  if(s.tsf)return HAZCOL[s.haz]||P.accent;
+  if(s.pl)return P.cy||'#5bd6dd';
+  return COMMS[s.comms[0]].col;
+}
+function drawGlyph(x,y,sz,col,kind,fill){
+  ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=1.4;
+  switch(kind){
+    case 'OP':ctx.beginPath();ctx.moveTo(x,y-sz);ctx.lineTo(x-sz*.9,y+sz*.75);ctx.lineTo(x+sz*.9,y+sz*.75);ctx.closePath();
+      fill?ctx.fill():ctx.stroke();break;
+    case 'UG':ctx.beginPath();ctx.arc(x,y,sz*.85,0,TAU);ctx.stroke();ctx.beginPath();ctx.arc(x,y,sz*.28,0,TAU);ctx.fill();break;
+    case 'BR':ctx.beginPath();ctx.moveTo(x,y-sz);ctx.lineTo(x+sz*.8,y);ctx.lineTo(x,y+sz);ctx.lineTo(x-sz*.8,y);ctx.closePath();
+      fill?ctx.fill():ctx.stroke();break;
+    case 'DV':ctx.beginPath();ctx.moveTo(x,y-sz);ctx.lineTo(x-sz*.9,y+sz*.75);ctx.lineTo(x+sz*.9,y+sz*.75);ctx.closePath();ctx.stroke();
+      ctx.beginPath();ctx.arc(x,y,sz*.26,0,TAU);ctx.fill();break;
+    case 'CL':ctx.beginPath();ctx.moveTo(x-sz*.8,y-sz*.8);ctx.lineTo(x+sz*.8,y+sz*.8);ctx.moveTo(x+sz*.8,y-sz*.8);ctx.lineTo(x-sz*.8,y+sz*.8);ctx.stroke();break;
+    case 'TSF':ctx.beginPath();ctx.moveTo(x,y-sz);ctx.lineTo(x+sz*.85,y);ctx.lineTo(x,y+sz);ctx.lineTo(x-sz*.85,y);ctx.closePath();ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x-sz*.4,y);ctx.lineTo(x+sz*.4,y);ctx.stroke();break;
+    case 'PL':ctx.strokeRect(x-sz*.75,y-sz*.75,sz*1.5,sz*1.5);ctx.beginPath();ctx.arc(x,y,sz*.2,0,TAU);ctx.fill();break;
+  }
+}
+function drawGlobe(t){
+  const P=STYLES[S.style];
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle=P.bg;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle=P.star;
+  STARS.forEach(st=>{ctx.globalAlpha=(.25+.75*Math.abs(Math.sin(t*.0004+st[2])))*.8;
+    ctx.fillRect(st[0]*W,st[1]*H,1.6,1.6);});
+  ctx.globalAlpha=1;
+  const R=globeR(),cx=W/2,cy=H/2;
+  const g=ctx.createRadialGradient(cx,cy,R*.94,cx,cy,R*1.13);
+  g.addColorStop(0,hexA(P.glow,.25));g.addColorStop(1,hexA(P.glow,0));
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R*1.13,0,TAU);ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.fillStyle=P.ocean;ctx.fill();
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.clip();
+  if(S.grid)drawGraticule(P);
+  drawLand(P);
+  drawHazRings(P,t);
+  ctx.restore();
+  ctx.save();ctx.shadowColor=P.glow;ctx.shadowBlur=16;
+  ctx.strokeStyle=hexA(P.glow,.8);ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.arc(cx,cy,R,0,TAU);ctx.stroke();ctx.restore();
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,R+16,0,TAU);ctx.clip();
+  drawSites(P,t);
+  drawQuakes(t);
+  drawBlips(t);
+  drawLabels(P);
+  drawDetections(P);
+  ctx.restore();
+  drawTrackedReticle(P,t);
+}
+function drawGraticule(P){
+  ctx.strokeStyle=P.grid;ctx.lineWidth=1;ctx.globalAlpha=.5;ctx.beginPath();
+  for(let lng=-180;lng<180;lng+=15){let pen=false;
+    for(let lat=-88;lat<=88;lat+=4){const p=project(lat,lng);
+      if(p){pen?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);pen=true;}else pen=false;}}
+  for(let lat=-75;lat<=75;lat+=15){let pen=false;
+    for(let lng=-180;lng<=180;lng+=4){const p=project(lat,lng);
+      if(p){pen?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);pen=true;}else pen=false;}}
+  ctx.stroke();ctx.globalAlpha=1;
+}
+function drawLand(P){
+  LAND.forEach((a,i)=>{
+    ctx.beginPath();let any=false;
+    for(let k=0;k<a.length;k+=2){
+      const p=project(a[k+1],a[k]);
+      if(p){any?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);any=true;}else any=false;
+    }
+    ctx.closePath();
+    ctx.fillStyle=P.land==='dyn'?LCOL[i%LCOL.length]:P.land;
+    ctx.fill();
+    ctx.strokeStyle=P.coast;ctx.lineWidth=1;ctx.globalAlpha=.9;ctx.stroke();ctx.globalAlpha=1;
+  });
+  SEAS.forEach(a=>{
+    ctx.beginPath();let any=false;
+    for(let k=0;k<a.length;k+=2){const p=project(a[k+1],a[k]);
+      if(p){any?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]);any=true;}else any=false;}
+    ctx.closePath();ctx.fillStyle=P.ocean;ctx.fill();
+  });
+}
+function drawSites(P,t){
+  const zoom=cam.zoom;let vis=0;
+  for(const s of SITES){
+    s.vis=false;
+    if(!siteOn(s))continue;
+    if(!s.tsf&&!s.pl&&!s.t1&&zoom<1.7)continue;
+    const p=project(s.lat,s.lng);if(!p)continue;
+    s.sx=p[0];s.sy=p[1];s.vis=true;vis++;
+    const sz=(s.t1?5.5:4.2)*(1+Math.min(1.1,(zoom-1)*.3));
+    const col=markerColor(s,P),kind=kindOf(s);
+    if(s.t1){ctx.save();ctx.shadowColor=col;ctx.shadowBlur=7;}
+    drawGlyph(s.sx,s.sy,sz,col,kind,s.t1&&kind==='BR');
+    if(s.t1)ctx.restore();
+    if(s.tsf&&(s.haz==='FAILED'||s.haz==='EXTREME')){
+      const a=.35+.3*Math.sin(t*.004+hash(s.id));
+      ctx.strokeStyle=hexA(HAZCOL[s.haz],a);ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(s.sx,s.sy,sz*2.1,0,TAU);ctx.stroke();
+    }
+  }
+  S.contactCount=vis;
+}
+function drawHazRings(P,t){
+  if(!S.track||S.track.tsf||S.track.pl)return;
+  if(cam.zoom<2.5)return;
+  const s=S.track,p=project(s.lat,s.lng);if(!p)return;
+  const kmPx=globeR()/6371;
+  [40,80,160].forEach(km=>{
+    ctx.strokeStyle=hexA(P.accent,.28);ctx.setLineDash([3,5]);ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(p[0],p[1],km*kmPx,0,TAU);ctx.stroke();
+  });
+  ctx.setLineDash([]);
+  ctx.fillStyle=hexA(P.accent,.7);ctx.font='9px "IBM Plex Mono",monospace';
+  ctx.fillText('160 KM',p[0]+160*kmPx+3,p[1]-3);
+}
+function drawQuakes(t){
+  const now=performance.now();
+  for(let i=QUAKES.length-1;i>=0;i--){const q=QUAKES[i];const age=now-q.t0;
+    if(age>5200){QUAKES.splice(i,1);continue;}
+    const p=project(q.lat,q.lng);if(!p)continue;
+    const pr=age/5200;
+    ctx.strokeStyle=hexA('#5bd6dd',1-pr);ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(p[0],p[1],4+pr*44,0,TAU);ctx.stroke();
+    ctx.strokeStyle=hexA('#5bd6dd',(1-pr)*.5);
+    ctx.beginPath();ctx.arc(p[0],p[1],4+pr*26,0,TAU);ctx.stroke();
+    ctx.fillStyle=hexA('#5bd6dd',.9);ctx.font='9px "IBM Plex Mono",monospace';
+    ctx.fillText('ML '+q.mag,p[0]+8,p[1]-8);
+  }
+}
+function drawBlips(t){
+  const now=performance.now();
+  for(let i=BLIPS.length-1;i>=0;i--){const b=BLIPS[i];const age=now-b.t0;
+    if(age>8000){BLIPS.splice(i,1);continue;}
+    if(!b.s)continue;
+    const p=project(b.s.lat,b.s.lng);if(!p)continue;
+    const pr=age/8000,col=b.sev==='alert'?'#ff5f56':b.sev==='warn'?'#ffb454':'#5bd6dd';
+    ctx.strokeStyle=hexA(col,1-pr);ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(p[0],p[1],5+pr*36,0,TAU);ctx.stroke();
+  }
+}
+function drawLabels(P){
+  const zoom=cam.zoom;let count=0;
+  const sorted=SITES.filter(s=>s.vis).sort((a,b)=>(b.t1?1:0)-(a.t1?1:0));
+  ctx.font='10px "IBM Plex Mono",monospace';
+  for(const s of sorted){
+    if(count>72)break;
+    const want=s===S.track||S.labels||(s.t1&&zoom>=2.0)||(!s.t1&&zoom>=2.8);
+    if(!want)continue;
+    const label=s.name.toUpperCase();
+    const w=ctx.measureText(label).width;
+    ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(s.sx+9,s.sy-7,w+6,13);
+    ctx.fillStyle=s.tsf?HAZCOL[s.haz]:P.text;ctx.globalAlpha=.9;
+    ctx.fillText(label,s.sx+12,s.sy+3);ctx.globalAlpha=1;count++;
+  }
+}
+function drawDetections(P){
+  if(!S.detect)return;
+  const list=SITES.filter(s=>s.vis)
+    .map(s=>[s,(s.sx-W/2)**2+(s.sy-H/2)**2]).sort((a,b)=>a[1]-b[1]).slice(0,36);
+  ctx.font='9px "IBM Plex Mono",monospace';
+  for(const[s]of list){
+    const label=s.name.toUpperCase();
+    const bw=Math.max(30,label.length*6.4+22),bh=24;
+    const x=s.sx-bw/2-6,y=s.sy-bh/2-2;
+    ctx.strokeStyle=hexA(P.accent,.9);ctx.lineWidth=1.2;
+    const c=7;
+    ctx.beginPath();
+    ctx.moveTo(x,y+c);ctx.lineTo(x,y);ctx.lineTo(x+c,y);
+    ctx.moveTo(x+bw-c,y);ctx.lineTo(x+bw,y);ctx.lineTo(x+bw,y+c);
+    ctx.moveTo(x+bw,y+bh-c);ctx.lineTo(x+bw,y+bh);ctx.lineTo(x+bw-c,y+bh);
+    ctx.moveTo(x+c,y+bh);ctx.lineTo(x,y+bh);ctx.lineTo(x,y+bh-c);
+    ctx.stroke();
+    ctx.fillStyle=hexA(P.accent,.95);
+    ctx.fillText(s.code+' ▓ '+(92+hash(s.id)%8)+'%',x,y-4);
+  }
+}
+function drawTrackedReticle(P,t){
+  const s=S.track;if(!s)return;
+  const p=project(s.lat,s.lng);
+  if(!p){
+    const d=rawDir(s.lat,s.lng),ang=Math.atan2(-d[1],d[0]);
+    const R=globeR(),x=W/2+Math.cos(ang)*(R+6),y=H/2+Math.sin(ang)*(R+6);
+    ctx.save();ctx.translate(x,y);ctx.rotate(ang);
+    ctx.strokeStyle=P.accent;ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(-12,-7);ctx.lineTo(-12,7);ctx.closePath();ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle=P.accent;ctx.font='9px "IBM Plex Mono",monospace';
+    ctx.fillText(s.name.toUpperCase(),x-30,y+18);
+    return;
+  }
+  const r=15+3*Math.sin(t*.003);
+  ctx.save();
+  ctx.strokeStyle=P.accent;ctx.lineWidth=1.4;
+  ctx.setLineDash([7,6]);ctx.lineDashOffset=-t*.02;
+  ctx.beginPath();ctx.arc(p[0],p[1],r+5,0,TAU);ctx.stroke();ctx.setLineDash([]);
+  const B=r+14,c=6;
+  ctx.beginPath();
+  [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(pair=>{
+    const ux=pair[0],uy=pair[1];
+    ctx.moveTo(p[0]+ux*B-ux*c,p[1]+uy*B);ctx.lineTo(p[0]+ux*B,p[1]+uy*B);ctx.lineTo(p[0]+ux*B,p[1]+uy*B-uy*c);
+  });
+  ctx.stroke();
+  ctx.strokeStyle=hexA(P.accent,.16);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,p[1]);ctx.lineTo(p[0]-B,p[1]);ctx.moveTo(p[0]+B,p[1]);ctx.lineTo(W,p[1]);
+  ctx.moveTo(p[0],0);ctx.lineTo(p[0],p[1]-B);ctx.moveTo(p[0],p[1]+B);ctx.lineTo(p[0],H);ctx.stroke();
+  ctx.font='10px "IBM Plex Mono",monospace';
+  const tag='◤ '+s.name.toUpperCase()+' '+s.code;
+  const wtag=ctx.measureText(tag).width;
+  ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(p[0]+B+4,p[1]-9,wtag+8,14);
+  ctx.fillStyle=P.accent;ctx.fillText(tag,p[0]+B+8,p[1]+2);
+  ctx.restore();
+}
+
+/* ============ PIT MODE ============ */
+let pitMouse=[0,0];
+function openPit(){
+  if(!S.track){toast('TRACK A SITE FIRST');return;}
+  S.mode='pit';$('#pit').classList.add('show');
+  sizePit();
+  const m=S.track;
+  $('#pit-title').textContent='PIT VIEW — '+m.name.toUpperCase()+' · '+
+    (m.tsf?'TAILINGS FACILITY':m.pl?'PROCESSING SITE':COMMS[m.comms[0]].n.toUpperCase())+' · MODELED GEOMETRY';
+}
+function closePit(){S.mode='globe';$('#pit').classList.remove('show');}
+function sizePit(){pitC.width=W*dpr;pitC.height=H*dpr;pctx.setTransform(dpr,0,0,dpr,0,0);}
+ $('#pit-exit').onclick=closePit;
+ $('#btn-pit').onclick=openPit;
+const POND_COLS=['#a8e0ef','#8ecde0','#f2d9a0','#e8b075','#d97f5a'];
+function drawPit(t){
+  const m=S.track,P=STYLES[S.style];
+  if(!m){closePit();return;}
+  const w=W,h=H;
+  pctx.setTransform(dpr,0,0,dpr,0,0);
+  const sky=pctx.createLinearGradient(0,0,0,h*.6);
+  sky.addColorStop(0,P.bg);
+  sky.addColorStop(1,S.style==='ironbow'?'#3a0c00':(S.style==='noir'||S.style==='whitehot')?'#1a1a1a':(S.style==='crt'||S.style==='nvg')?'#041a08':'#08131c');
+  pctx.fillStyle=sky;pctx.fillRect(0,0,w,h);
+  pctx.fillStyle=P.star;
+  STARS.slice(0,120).forEach(st=>{pctx.globalAlpha=.5;pctx.fillRect(st[0]*w,st[1]*h*.5,1.5,1.5);});
+  pctx.globalAlpha=1;
+  const cx=w/2+pitMouse[0]*.03,cy=h*.46+pitMouse[1]*.015;
+  const R=Math.min(w,h)*.34;
+  if(m.tsf)drawTSFPit(cx,cy,R,m,P,t);
+  else if(m.pl||m.status==='D')drawSitePlan(cx,cy,R,m,P,t);
+  else if(m.type==='UG')drawUnderground(cx,cy,R,m,P,t);
+  else if(m.type==='BR')drawBrinePonds(cx,cy,R,m,P,t);
+  else{
+    const commCol=COMMS[m.comms[0]].col,closed=m.status==='C';
+    const base=mix(commCol,closed?'#5c5148':'#6b4a2f',closed ? .75 : .55);
+    drawOpenPit(cx,cy,R,m,P,t,base,closed);
+  }
+  const hz=pctx.createRadialGradient(cx,cy,R*.7,cx,cy,R*2.1);
+  hz.addColorStop(0,'rgba(0,0,0,0)');hz.addColorStop(1,'rgba(0,0,0,.5)');
+  pctx.fillStyle=hz;pctx.fillRect(0,0,w,h);
+}
+function ridgeLine(cx,cy,R,seed){
+  pctx.beginPath();
+  const y0=cy-R*.55;
+  pctx.moveTo(cx-R*1.9,cy-R*.6);
+  for(let i=0;i<=24;i++){const x=cx-R*1.9+i/24*R*3.8;
+    pctx.lineTo(x,y0-Math.abs(Math.sin(i*1.7+seed)*R*.07));}
+  pctx.lineTo(cx+R*1.9,cy);pctx.lineTo(cx-R*1.9,cy);pctx.closePath();
+  pctx.fillStyle='rgba(6,12,16,.9)';pctx.fill();
+  pctx.strokeStyle='rgba(80,120,110,.25)';pctx.stroke();
+}
+function drawOpenPit(cx,cy,R,m,P,t,base,closed){
+  ridgeLine(cx,cy,R,hash(m.id)%10);
+  const N=9,sq=.42,dstep=R*.052;
+  for(let k=0;k<N;k++){
+    const rOut=R*(1-.85*k/N),rIn=R*(1-.85*(k+1)/N),yc=cy+k*dstep;
+    pctx.beginPath();
+    pctx.ellipse(cx,yc,rOut,rOut*sq,0,0,TAU);
+    pctx.ellipse(cx,yc,rIn,rIn*sq,0,0,TAU,true);
+    pctx.fillStyle=k%2?mix(base,'#000000',.18):base;
+    pctx.fill('evenodd');
+    pctx.strokeStyle='rgba(255,255,255,.14)';pctx.lineWidth=1;
+    pctx.beginPath();pctx.ellipse(cx,yc,rOut,rOut*sq,0,Math.PI,TAU);pctx.stroke();
+  }
+  pctx.beginPath();pctx.ellipse(cx,cy+(N-1)*dstep,R*.15,R*.15*sq,0,0,TAU);
+  pctx.fillStyle=mix(base,'#000000',.5);pctx.fill();
+  if(closed){
+    pctx.beginPath();pctx.ellipse(cx,cy+(N-1)*dstep,R*.11,R*.09,0,0,TAU);
+    pctx.fillStyle='rgba(60,110,140,.7)';pctx.fill();
+  }else{
+    pctx.fillStyle='#0c0f12';
+    pctx.fillRect(cx-R*.05,cy+(N-1)*dstep,7,4);
+    pctx.fillRect(cx+R*.07,cy+(N-1)*dstep+2,7,4);
+  }
+  const pts=[];const steps=140,turns=2.3;
+  for(let i=0;i<=steps;i++){const p=i/steps;
+    const r=R*(1.0-p*.86),th=-.6+p*turns*TAU,dep=p*(N-1)*dstep;
+    pts.push([cx+r*Math.cos(th),cy+dep+r*Math.sin(th)*sq]);}
+  pctx.beginPath();pts.forEach((pt,i)=>i?pctx.lineTo(pt[0],pt[1]):pctx.moveTo(pt[0],pt[1]));
+  pctx.strokeStyle=closed?'rgba(120,110,100,.5)':'rgba(200,190,170,.65)';pctx.lineWidth=3;pctx.stroke();
+  if(!closed){pctx.fillStyle=P.accent;
+    for(let i=0;i<3;i++){const ph=(t*.00006+i/3)%1,idx=Math.floor(ph*steps);
+      const p=pts[idx],q=pts[Math.min(idx+1,steps)];
+      const ang=Math.atan2(q[1]-p[1],q[0]-p[0]);
+      pctx.save();pctx.translate(p[0],p[1]);pctx.rotate(ang);pctx.fillRect(-3,-2,6,4);pctx.restore();}}
+  pctx.fillStyle=hexA(P.text,.55);pctx.font='10px "IBM Plex Mono",monospace';
+  const dep=m.id==='bingham'?1200:m.id==='chuqui'?1050:m.id==='superpit'?700:m.id==='mirny'?575:500;
+  for(let k=0;k<N;k+=2){pctx.fillText('-'+Math.round(dep*k/(N-1))+' m',cx+R*1.02,cy+k*dstep+3);}
+  if(closed){pctx.fillStyle='#ff5f56';pctx.font='11px "IBM Plex Mono",monospace';
+    pctx.fillText('◆ CARE & MAINTENANCE — REHABILITATION REGIME',cx-R,cy-R*.8);}
+}
+function drawUnderground(cx,cy,R,m,P,t){
+  ridgeLine(cx,cy,R,hash(m.id)%10);
+  const ground=cy-R*.42,depth=cy+R*.75;
+  pctx.strokeStyle=P.text;pctx.lineWidth=1.5;
+  pctx.beginPath();pctx.moveTo(cx-R*1.5,ground);pctx.lineTo(cx+R*1.5,ground);pctx.stroke();
+  pctx.strokeStyle=P.accent;pctx.lineWidth=2;
+  pctx.beginPath();pctx.moveTo(cx-26,ground);pctx.lineTo(cx,ground-R*.22);pctx.lineTo(cx+26,ground);
+  pctx.moveTo(cx-14,ground);pctx.lineTo(cx+14,ground);pctx.stroke();
+  pctx.beginPath();pctx.arc(cx,ground-R*.22,7,0,TAU);pctx.stroke();
+  pctx.strokeStyle=P.text;pctx.lineWidth=2;
+  pctx.beginPath();pctx.moveTo(cx,ground);pctx.lineTo(cx,depth);pctx.stroke();
+  const cyg=lerp(ground,depth,(Math.sin(t*.0012)+1)/2);
+  pctx.fillStyle=P.accent;pctx.fillRect(cx-5,cyg-4,10,8);
+  const maxD=m.id==='mponeng'?4000:2400;
+  const nLv=6;
+  pctx.font='9px "IBM Plex Mono",monospace';
+  for(let i=1;i<=nLv;i++){
+    const y=lerp(ground,depth,i/nLv),Lw=R*(.45+((i*7+hash(m.id))%40)/100);
+    pctx.strokeStyle=P.text;pctx.lineWidth=1.2;
+    pctx.beginPath();pctx.moveTo(cx-Lw,y);pctx.lineTo(cx+Lw,y);pctx.stroke();
+    const a=.15+.3*Math.abs(Math.sin(t*.001+i));
+    pctx.fillStyle=hexA(COMMS[m.comms[0]]?COMMS[m.comms[0]].col:'#ffd76a',a);
+    [-Lw*.6,-Lw*.2,Lw*.4].forEach(ox=>pctx.fillRect(cx+ox,y-8,14,7));
+    pctx.fillStyle=hexA(P.text,.5);
+    pctx.fillText('-'+Math.round(maxD*i/nLv)+' m',cx-Lw-52,y+3);
+    if(i%2===0){pctx.strokeStyle=hexA(P.text,.3);
+      pctx.beginPath();pctx.moveTo(cx+Lw,y);pctx.lineTo(cx+Lw,ground);pctx.stroke();}
+  }
+  pctx.fillStyle=P.accent;pctx.fillRect(cx-8,depth-6,16,10);
+  pctx.fillStyle=hexA(P.text,.7);pctx.font='10px "IBM Plex Mono",monospace';
+  pctx.fillText('SHAFT ▼ '+m.name.toUpperCase()+(m.id==='mponeng'?' — DEEPEST MINE ON EARTH':''),cx-R,ground-14);
+}
+function drawBrinePonds(cx,cy,R,m,P,t){
+  ridgeLine(cx,cy,R,hash(m.id)%10);
+  const cols=7,rows=4,pw=R*.24,ph=R*.1,gap=6;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const stage=(r+c)%5;
+    const x=cx-cols*pw/2+c*(pw+gap),y=cy-rows*(ph+gap)/2+r*(ph+gap)+R*.25;
+    const a=.75+.2*Math.sin(t*.0015+c+r);
+    pctx.fillStyle=hexA(POND_COLS[stage],(S.style==='noir'||S.style==='whitehot') ? .4 : a);
+    pctx.fillRect(x,y,pw,ph);
+    pctx.strokeStyle='rgba(0,0,0,.4)';pctx.strokeRect(x,y,pw,ph);
+    if(stage>=3&&S.style!=='noir'){
+      pctx.fillStyle='rgba(255,255,255,.5)';
+      pctx.beginPath();pctx.moveTo(x+pw*.2,y+ph);pctx.lineTo(x+pw*.5,y+ph*.3);pctx.lineTo(x+pw*.8,y+ph);pctx.closePath();pctx.fill();
+    }
+  }
+  pctx.fillStyle=P.accent;pctx.fillRect(cx-cols*pw/2-24,cy+R*.25,10,10);
+  pctx.strokeStyle=P.accent;pctx.lineWidth=2;pctx.setLineDash([4,4]);
+  pctx.beginPath();pctx.moveTo(cx-cols*pw/2-14,cy+R*.25+5);
+  pctx.lineTo(cx+cols*(pw+gap)/2,cy+R*.25+5);pctx.stroke();pctx.setLineDash([]);
+  pctx.fillStyle=hexA(P.text,.75);pctx.font='10px "IBM Plex Mono",monospace';
+  pctx.fillText('BRINE STAGING 1→5 · Li CONC RISES WITH STAGE',cx-R,cy-R*.5);
+  pctx.fillText('SOLAR EVAPORATION — '+m.name.toUpperCase(),cx-R,cy+R*.55);
+}
+function drawTSFPit(cx,cy,R,m,P,t){
+  ridgeLine(cx,cy,R,hash(m.id)%10);
+  const ground=cy-R*.3;
+  const col=HAZCOL[m.haz]||'#5bd6dd';
+  for(let i=0;i<4;i++){
+    const y=ground+i*R*.1;
+    pctx.fillStyle=mix(i%2?'#7a6a52':'#5c5040','#000000',.1);
+    pctx.beginPath();
+    pctx.moveTo(cx-R*.9-i*R*.05,y);
+    pctx.lineTo(cx-R*.55-i*R*.03,y+R*.02);
+    pctx.lineTo(cx-R*.55-i*R*.03,y+R*.1);
+    pctx.lineTo(cx-R*.9-i*R*.05,y+R*.1);
+    pctx.closePath();pctx.fill();
+    pctx.beginPath();
+    pctx.moveTo(cx+R*.9+i*R*.05,y);
+    pctx.lineTo(cx+R*.55+i*R*.03,y+R*.02);
+    pctx.lineTo(cx+R*.55+i*R*.03,y+R*.1);
+    pctx.lineTo(cx+R*.9+i*R*.05,y+R*.1);
+    pctx.closePath();pctx.fill();
+  }
+  const py=ground+R*.06;
+  const fail=m.haz==='FAILED';
+  pctx.beginPath();pctx.ellipse(cx,py,R*.5,R*.14,0,0,TAU);
+  pctx.fillStyle=fail?'rgba(90,70,40,.8)':'rgba(70,130,160,.6)';pctx.fill();
+  if(!fail){
+    pctx.strokeStyle=hexA(col,.5);pctx.lineWidth=1;
+    pctx.beginPath();pctx.ellipse(cx,py,R*.5*(1-.06*Math.sin(t*.001)),R*.14,0,0,TAU);pctx.stroke();
+  }
+  pctx.strokeStyle=col;pctx.lineWidth=2;
+  pctx.beginPath();pctx.moveTo(cx+R*.2,py);pctx.lineTo(cx+R*.2,py-R*.34);pctx.stroke();
+  pctx.strokeRect(cx+R*.2-6,py-R*.4,12,12);
+  const a=.4+.4*Math.sin(t*.004);
+  pctx.fillStyle=hexA(col,a);pctx.beginPath();pctx.arc(cx-R*.35,py,4,0,TAU);pctx.fill();
+  pctx.fillStyle=hexA(P.text,.8);pctx.font='10px "IBM Plex Mono",monospace';
+  pctx.fillText((fail?'◆ STATUS: FAILED — CASE FILE':'▲ STATUS: '+m.status+' · CONSEQUENCE '+m.haz)+' · '+m.name.toUpperCase(),cx-R,ground-R*.15);
+  if(fail){pctx.fillStyle=hexA('#ff5f56',.9);
+    pctx.fillText('RELEASE FOOTPRINT — SEE WIRE ENTRY / PUBLIC INQUIRY',cx-R,py+R*.25);}
+}
+function drawSitePlan(cx,cy,R,m,P,t){
+  ridgeLine(cx,cy,R,hash(m.id)%10);
+  const gy=cy+R*.3;
+  pctx.setLineDash([6,5]);pctx.strokeStyle=P.cy;pctx.lineWidth=2;
+  pctx.beginPath();pctx.ellipse(cx-R*.3,gy,R*.3,R*.12,0,0,TAU);pctx.stroke();pctx.setLineDash([]);
+  pctx.fillStyle=hexA(P.cy,.08);pctx.fill();
+  pctx.fillStyle='#141c22';pctx.strokeStyle=P.text;pctx.lineWidth=1;
+  [[R*.25,-R*.22,.18,.08],[R*.25,-R*.06,.18,.06],[R*.55,-R*.16,.12,.1],[R*.4,.1,.16,.06]].forEach(b=>{
+    pctx.fillRect(cx+b[0],gy+b[1]-(R*b[3]),R*b[2],R*b[3]);
+    pctx.strokeRect(cx+b[0],gy+b[1]-(R*b[3]),R*b[2],R*b[3]);});
+  [[cx+R*.28,gy-R*.28],[cx+R*.33,gy-R*.28]].forEach(pair=>{
+    pctx.strokeStyle=P.text;pctx.beginPath();pctx.moveTo(pair[0],pair[1]+R*.1);pctx.lineTo(pair[0],pair[1]-R*.12);pctx.stroke();
+    const a=.3+.5*Math.sin(t*.003+pair[0]);
+    pctx.fillStyle=hexA('#ff5f56',a);pctx.beginPath();pctx.arc(pair[0],pair[1]-R*.13,3,0,TAU);pctx.fill();});
+  pctx.strokeStyle='rgba(200,190,170,.5)';pctx.lineWidth=3;
+  pctx.beginPath();pctx.moveTo(cx-R*.55,gy+R*.16);pctx.quadraticCurveTo(cx,gy+R*.3,cx+R*.75,gy+R*.05);pctx.stroke();
+  for(let i=0;i<9;i++){const a=.3+.5*Math.sin(t*.002+i);
+    const x=cx-R*.3+((hash(m.id)+i*37)%100)/100*R*.6-R*.3,y=gy-R*.12+((hash(m.id)+i*53)%60)/100*R*.12;
+    pctx.fillStyle=hexA(P.accent,a);pctx.fillRect(x,y,3,3);}
+  pctx.fillStyle=hexA(P.text,.8);pctx.font='10px "IBM Plex Mono",monospace';
+  pctx.fillText((m.pl?'PROCESSING SITE PLAN — ':'DEVELOPMENT SITE PLAN — ')+m.name.toUpperCase(),cx-R,gy-R*.35);
+}
+
+/* ============ UI: LAYERS PANEL ============ */
+let tourIdx=0;
+function buildLayers(){
+  const pc=$('#layers-pc');let html='';
+  html+='<div class="sect">DISPLAY</div>'
+  +'<div class="lrow" id="tg-det"><span class="tgl"></span><span class="ln">Detection Mesh</span><span class="cnt">D</span></div>'
+  +'<div class="lrow" id="tg-lab"><span class="tgl"></span><span class="ln">Force Labels</span><span class="cnt">L</span></div>'
+  +'<div class="lrow" id="tg-grid"><span class="tgl"></span><span class="ln">Graticule</span><span class="cnt"></span></div>'
+  +'<div class="lrow" id="tg-spin"><span class="tgl"></span><span class="ln">Auto-Spin</span><span class="cnt"></span></div>'
+  +'<div class="lrow" id="tg-hud"><span class="tgl"></span><span class="ln">HUD Readout</span><span class="cnt">H</span></div>';
+  html+='<div class="sect">COMMODITY LAYERS</div>'
+  +'<div class="opbtns"><button id="all-on">ALL ON</button><button id="all-off">ALL OFF</button></div>';
+  const counts={};MINES.forEach(m=>m.comms.forEach(c=>counts[c]=(counts[c]||0)+1));
+  CGROUPS.forEach(group=>{
+    html+='<div class="sect">'+group[0]+'</div>';
+    group[1].forEach(k=>{
+      html+='<div class="lrow" data-comm="'+k+'"><span class="tgl"></span><span class="sw" style="background:'+COMMS[k].col+'"></span><span class="ln">'+COMMS[k].n+'</span><span class="cnt">'+(counts[k]||0)+'</span></div>';
+    });
+  });
+  html+='<div class="sect">HAZARDS &amp; INFRASTRUCTURE</div>'
+  +'<div class="lrow" id="tg-tsf"><span class="tgl"></span><span class="sw" style="background:#ff8a3c"></span><span class="ln">Tailings Facilities</span><span class="cnt">'+TSFS.length+'</span></div>'
+  +'<div class="legend"><span><i style="background:#ff5f56"></i>FAILED</span><span><i style="background:#ff8a3c"></i>EXTREME</span><span><i style="background:#ffb454"></i>HIGH</span><span><i style="background:#5bd6dd"></i>RIVERINE</span></div>'
+  +'<div class="lrow" id="tg-inc"><span class="tgl"></span><span class="ln">Incident Blips</span><span class="cnt">WIRE</span></div>'
+  +'<div class="lrow" id="tg-seis"><span class="tgl"></span><span class="ln">Seismicity (SIM)</span><span class="cnt"></span></div>'
+  +'<div class="lrow" id="tg-plant"><span class="tgl"></span><span class="ln">Processing Plants</span><span class="cnt">'+PLANTS.length+'</span></div>';
+  html+='<div class="sect">OPERATIONS</div>'
+  +'<div class="opbtns"><button id="btn-reset">RESET GLOBE</button><button id="btn-tour" class="acc">TOUR ▸</button></div>'
+  +'<div class="mini">BASEMAP: STYLIZED VECTOR GLOBE (LOCAL)<br>DEPOSIT DATA: PUBLIC SOURCES · APPROX.<br>WIRE / PRICES / SEISMIC: SIMULATED<br><b style="color:var(--grn)">NO DEPOSIT LEFT BEHIND.</b></div>';
+  pc.innerHTML=html;
+  pc.addEventListener('click',e=>{
+    const row=e.target.closest('.lrow');if(!row)return;
+    if(row.dataset.comm){L.comm[row.dataset.comm]=!L.comm[row.dataset.comm];}
+    else{
+      const map={'tg-tsf':()=>L.tsf=!L.tsf,'tg-plant':()=>L.plant=!L.plant,'tg-det':()=>S.detect=!S.detect,
+        'tg-lab':()=>S.labels=!S.labels,'tg-grid':()=>S.grid=!S.grid,'tg-spin':()=>S.spin=!S.spin,
+        'tg-hud':()=>{S.hud=!S.hud;$('#hudcenter').style.display=S.hud?'':'none';},
+        'tg-inc':()=>S.incidents=!S.incidents,'tg-seis':()=>S.seis=!S.seis};
+      if(map[row.id])map[row.id]();
+    }
+    rosterDirty=true;refreshLayerUI();
+  });
+  $('#all-on').onclick=()=>{Object.keys(L.comm).forEach(k=>L.comm[k]=true);rosterDirty=true;refreshLayerUI();};
+  $('#all-off').onclick=()=>{Object.keys(L.comm).forEach(k=>L.comm[k]=false);rosterDirty=true;refreshLayerUI();};
+  $('#btn-reset').onclick=resetGlobe;
+  $('#btn-tour').onclick=()=>startTour(Object.keys(TOURS)[tourIdx++%Object.keys(TOURS).length]);
+  refreshLayerUI();
+}
+function refreshLayerUI(){
+  $$('.lrow[data-comm]').forEach(r=>r.classList.toggle('off',!L.comm[r.dataset.comm]));
+  $('#tg-tsf').classList.toggle('off',!L.tsf);$('#tg-plant').classList.toggle('off',!L.plant);
+  $('#tg-det').classList.toggle('off',!S.detect);$('#tg-lab').classList.toggle('off',!S.labels);
+  $('#tg-grid').classList.toggle('off',!S.grid);$('#tg-spin').classList.toggle('off',!S.spin);
+  $('#tg-hud').classList.toggle('off',!S.hud);$('#tg-inc').classList.toggle('off',!S.incidents);
+  $('#tg-seis').classList.toggle('off',!S.seis);
+}
+
+/* ============ STYLEBAR ============ */
+function buildStylebar(){
+  const sb=$('#stylebar');
+  sb.innerHTML=STYLE_KEYS.map((k,i)=>'<button data-style="'+k+'" class="'+(k==='normal'?'on':'')+'">'+(i+1)+' '+TSTYLE[k]+'</button>').join('');
+  sb.addEventListener('click',e=>{const b=e.target.closest('button');if(b)setStyle(b.dataset.style);});
+}
+function setStyle(k){
+  if(!STYLES[k])return;
+  S.style=k;document.body.dataset.style=k;
+  $$('#stylebar button').forEach(b=>b.classList.toggle('on',b.dataset.style===k));
+  toast('SENSOR ▸ '+STYLES[k].name);
+}
+
+/* ============ ROSTER / TRACK CARD ============ */
+let rosterDirty=true,lastRosterCam=[0,0,0],lastRosterT=0;
+function renderRoster(){
+  const refPt=(S.track&&cam.zoom>2)?S.track:null;
+  let list;
+  if(refPt){list=SITES.filter(s=>siteOn(s)&&haversine(s,refPt)<500);}
+  else{list=SITES.filter(s=>s.vis);}
+  const ref=refPt||{lat:cam.tilt/D2R,lng:normAng(-cam.yaw)/D2R};
+  list.sort((a,b)=>haversine(a,ref)-haversine(b,ref));
+  list=list.slice(0,30);
+  S.rosterList=list;
+  $('#roster-sub').textContent=refPt?('≤ 500 KM OF '+S.track.name.toUpperCase()):('IN VIEW · '+S.contactCount+' CONTACTS');
+  $('#roster').innerHTML=list.map(s=>{
+    const col=s.tsf?HAZCOL[s.haz]:s.pl?'#5bd6dd':COMMS[s.comms[0]].col;
+    const d=haversine(s,ref);
+    return '<div class="rrow '+(s===S.track?'trk':'')+'" data-id="'+s.id+'">'
+      +'<span class="rg" style="color:'+col+'">'+GLY[kindOf(s)]+'</span>'
+      +'<span class="rn">'+s.name.toUpperCase()+'</span>'
+      +'<span class="rc">'+(s.tsf?'TSF':s.pl?'PL':s.comms.join('·'))+'</span>'
+      +'<span class="rd">'+(d<10?'—':Math.round(d)+' km')+'</span></div>';
+  }).join('')||'<div class="c-dim" style="padding:6px 0">NO CONTACTS — ZOOM IN OR ENABLE LAYERS</div>';
+}
+ $('#roster').addEventListener('click',e=>{
+  const row=e.target.closest('.rrow');if(!row)return;
+  const s=SITES.find(x=>x.id===row.dataset.id);if(s)trackSite(s);
+});
+function trackSite(s,opts){
+  opts=opts||{};
+  S.track=s;S.ore=Math.round(20000+Math.random()*180000);S.energy=Math.round(80+Math.random()*300);S.fleet=4+Math.floor(Math.random()*18);
+  buildTrackCard();
+  if(opts.fly!==false){flyTo(s.lat,s.lng,Math.max(cam.zoomT,3.4));}
+  S.spin=false;rosterDirty=true;
+}
+function buildTrackCard(){
+  const s=S.track;if(!s){$('#trackcard').classList.remove('show');return;}
+  $('#trackcard').classList.add('show');
+  $('#tk-name').textContent=s.name;
+  const st=s.tsf?(s.haz==='FAILED'?'FAILED':s.status):s.status;
+  const stEl=$('#tk-status');stEl.textContent=st;
+  stEl.className='st-'+((s.status==='C'||s.haz==='FAILED')?'C':s.status==='D'?'D':'A');
+  const chips=(s.comms||[]).map(c=>'<span class="cc" style="color:'+COMMS[c].col+';border-color:'+COMMS[c].col+'">'+COMMS[c].n+'</span>').join('')
+    ||(s.tsf?'<span class="cc" style="color:'+(HAZCOL[s.haz]||'#5bd6dd')+';border-color:'+(HAZCOL[s.haz]||'#5bd6dd')+'">'+s.haz+' CONSEQUENCE</span>'
+      :'<span class="cc" style="color:#5bd6dd;border-color:#5bd6dd">'+s.out+'</span>');
+  $('#tk-meta').innerHTML=
+    '<div class="r"><span class="k">SITE ID</span><span class="v">'+s.code+' · '+GLY[kindOf(s)]+' '+METHOD[kindOf(s)]+'</span></div>'
+   +'<div class="r"><span class="k">COUNTRY</span><span class="v">'+s.cc+'</span></div>'
+   +'<div class="r"><span class="k">OPERATOR</span><span class="v">'+s.op+'</span></div>'
+   +'<div class="chips">'+chips+'</div>'
+   +'<div class="r"><span class="k">'+(s.tsf?'CAPACITY':'PRODUCTION')+'</span><span class="v">'+s.prod+'</span></div>'
+   +'<div class="r"><span class="k">'+(s.tsf?'STATUS':'ASSAY')+'</span><span class="v">'+(s.tsf?(s.status+' · '+s.haz):s.grade)+'</span></div>';
+  $('#tk-note').textContent=s.note||'';
+  updateLive();
+}
+function updateLive(){
+  if(!S.track)return;
+  $('#tk-live').innerHTML='<span>ORE TODAY<b>'+fmtN(S.ore)+' t</b></span>'
+    +'<span>ENERGY<b>'+S.energy.toFixed(1)+' MWh</b></span><span>FLEET<b>'+S.fleet+' ACTIVE</b></span>'
+    +'<span style="margin-left:auto;color:var(--dim)">LIVE TELEMETRY · SIM</span>';
+}
+setInterval(()=>{if(!S.track)return;
+  S.ore+=Math.round(60+Math.random()*240);S.energy+=Math.random()*.8;
+  if(Math.random()<.06)S.fleet=clamp(S.fleet+(Math.random()<.5?-1:1),2,24);
+  updateLive();},1000);
+ $('#tk-close').onclick=()=>{S.track=null;buildTrackCard();rosterDirty=true;};
+function nearestOf(pred){
+  if(!S.track)return toast('TRACK A SITE FIRST');
+  let best=null,bd=1e9;
+  SITES.forEach(s=>{if(pred(s)&&s!==S.track){const d=haversine(s,S.track);if(d<bd){bd=d;best=s;}}});
+  if(!best)return toast('NONE IN DATASET');
+  toast('NEAREST ▸ '+best.name.toUpperCase()+' · '+Math.round(bd)+' KM');
+  trackSite(best);
+}
+ $('#btn-ntsf').onclick=()=>{L.tsf=true;refreshLayerUI();nearestOf(s=>s.tsf);};
+ $('#btn-nplant').onclick=()=>{L.plant=true;refreshLayerUI();nearestOf(s=>s.pl);};
+ $$('.tabbtn').forEach(b=>b.onclick=()=>{
+  $$('.tabbtn').forEach(x=>x.classList.toggle('on',x===b));
+  $('#tab-contacts').style.display=b.dataset.tab==='contacts'?'':'none';
+  $('#tab-wire').style.display=b.dataset.tab==='wire'?'':'none';
+});
+ $('#wire').addEventListener('click',e=>{
+  const wi=e.target.closest('.wi');if(!wi)return;
+  const idx=[...$('#wire').children].indexOf(wi);const a=WIRE[idx];
+  if(a&&a.ref){trackSite(a.ref);$$('.tabbtn').forEach(x=>{if(x.dataset.tab==='contacts')x.click();});}
+});
+
+/* ============ TICKER ============ */
+function buildTicker(){
+  const items=PRICES.map(p=>'<span class="titem" data-pk="'+p.k+'"><b>'+p.k+'</b> <span class="tk-val">—</span> <i class="chg"></i> <span class="c-dim" style="font-size:9px">'+p.u+'</span></span>').join('');
+  const tags='<span class="ttag">MOTHERLODE — NO DEPOSIT LEFT BEHIND</span><span class="ttag">◈ KEYLESS · 100% LOCAL</span><span class="ttag">◈ POSITIONS PUBLIC &amp; APPROX · PRICES SIMULATED · NOT INVESTMENT ADVICE</span>';
+  const track=items+tags;
+  $('#tk-inner').innerHTML='<div class="ttrack">'+track+'</div><div class="ttrack">'+track+'</div>';
+  updateTickerVals();
+}
+function updateTickerVals(flashKey){
+  $$('#tk-inner .titem').forEach(el=>{
+    const p=PRICES.find(x=>x.k===el.dataset.pk);if(!p)return;
+    const chg=(p.val-p.prev)/p.prev*100;
+    el.querySelector('.tk-val').textContent=fmtN(p.val.toFixed(p.val>500?0:2));
+    const i=el.querySelector('.chg');
+    i.textContent=(chg>=0?'+':'')+chg.toFixed(2)+'%';
+    i.className='chg '+(chg>=0?'up':'down');
+    if(flashKey===p.k){el.style.color=chg>=0?'var(--grn)':'var(--red)';setTimeout(()=>el.style.color='',900);}
+  });
+}
+setInterval(()=>{
+  PRICES.forEach(p=>{p.prev=p.val;p.val*=1+(Math.random()-.5)*.007;});
+  updateTickerVals(PRICES[Math.floor(Math.random()*PRICES.length)].k);
+},2600);
+
+/* ============ CONSOLE ============ */
+const clog=$('#clog'),cin=$('#cin');
+function log(html,cls){const d=document.createElement('div');d.className=cls||'c-txt';d.innerHTML=html;
+  clog.appendChild(d);while(clog.children.length>60)clog.firstChild.remove();
+  clog.scrollTop=clog.scrollHeight;}
+const history=[];let hIdx=-1;
+ $('#cform').addEventListener('submit',e=>{
+  e.preventDefault();const raw=cin.value.trim();if(!raw)return;
+  history.unshift(raw);hIdx=-1;cin.value='';
+  log('<span class="c-warn">ML▸</span> '+raw,'c-dim');
+  parseCmd(raw);
+});
+cin.addEventListener('keydown',e=>{
+  if(e.key==='ArrowUp'){hIdx=Math.min(hIdx+1,history.length-1);if(history[hIdx]!==undefined)cin.value=history[hIdx];e.preventDefault();}
+  if(e.key==='ArrowDown'){hIdx=Math.max(hIdx-1,-1);cin.value=hIdx<0?'':history[hIdx];e.preventDefault();}
+});
+function norm(q){return q.toLowerCase().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim();}
+function findSites(q){
+  q=norm(q);if(!q)return[];
+  let r=SITES.filter(s=>s.id===q.replace(/\s+/g,'-')||norm(s.name)===q);
+  if(!r.length)r=SITES.filter(s=>norm(s.name).startsWith(q));
+  if(!r.length)r=SITES.filter(s=>norm(s.name).includes(q)||norm(s.cc).includes(q));
+  return r.slice(0,6);
+}
+function commFromWord(w){
+  w=norm(w);
+  const words={copper:'CU',cu:'CU',gold:'AU',au:'AU',iron:'FE',fe:'FE',lithium:'LI',li:'LI',nickel:'NI',ni:'NI',
+    cobalt:'CO',co:'CO','rare earths':'REE','rare earth':'REE',ree:'REE',uranium:'U',coal:'C',zinc:'ZN',lead:'ZN',
+    silver:'AG',pgm:'PG',platinum:'PG',bauxite:'BX',potash:'K',phosphate:'P',molybdenum:'MO',tin:'SN',diamond:'DIA',diamonds:'DIA'};
+  if(words[w])return words[w];
+  for(const k in words)if(w.length>2&&k.startsWith(w))return words[k];
+  return null;
+}
+const styleWords={nvg:'nvg','night vision':'nvg',crt:'crt',flir:'ironbow',ironbow:'ironbow',iron:'ironbow',
+  thermal:'ironbow',white:'whitehot','white hot':'whitehot','white-hot':'whitehot',noir:'noir',spectral:'spectral',
+  normal:'normal',tactical:'normal'};
+function parseCmd(raw){
+  let q=norm(raw);
+  q=q.replace(/^(take me|fly|go|goto|show me|turn on|switch to)\s*/,'').replace(/^to\s*/,'');
+  const words=q.split(' ');
+  const w0=words[0];
+  for(const k in styleWords)if(q===k||q===k+' mode'){setStyle(styleWords[k]);return log('Sensor stack ▸ '+STYLES[S.style].name,'c-ok');}
+  if(/^[1-7]$/.test(q)){setStyle(STYLE_KEYS[+q-1]);return log('Sensor stack ▸ '+STYLES[S.style].name,'c-ok');}
+  if(/zoom out|globe view|reset|home|come home/.test(q)){resetGlobe();return log('Camera reset — full Earth.','c-ok');}
+  if(['help','?','commands'].includes(q))return helpText();
+  if(['clear','cls'].includes(q))return clog.innerHTML='';
+  if(w0==='fly'||w0==='track'||w0==='lock'||raw.toLowerCase().startsWith('take me')){
+    const rest=q.replace(/^(fly|track|lock|to)\s*/,'').trim();
+    if(!rest)return log('Track what? Try: track grasberg','c-warn');
+    const r=findSites(rest);
+    if(r.length===1){trackSite(r[0]);return log('TRACKING ▸ '+r[0].name.toUpperCase()+' ['+r[0].code+'] — camera locked, telemetry card up.','c-ok');}
+    if(r.length>1){listMatches(r);return;}
+    const reg=REGIONS.find(x=>norm(x[4]).includes(rest)||x[0]===rest.replace(/\s+/g,'-'));
+    if(reg){flyTo(reg[1],reg[2],reg[3]);return log('FLYING ▸ '+reg[4].toUpperCase(),'c-ok');}
+    return log('No contact or region matched "'+rest+'".','c-err');
+  }
+  if(w0==='untrack'||q==='clear track'){S.track=null;buildTrackCard();rosterDirty=true;return log('Track cleared.','c-ok');}
+  if(w0==='show'||w0==='hide'||w0==='enable'||w0==='disable'){
+    const on=(w0==='show'||w0==='enable');
+    const rest=q.replace(/^(show|hide|enable|disable)\s*/,'').trim();
+    if(rest==='all'){
+      Object.keys(L.comm).forEach(k=>L.comm[k]=on);L.tsf=on;L.plant=on;rosterDirty=true;refreshLayerUI();
+      return log(on?'ALL LAYERS ON':'ALL LAYERS OFF','c-ok');}
+    const c=commFromWord(rest);
+    if(c){L.comm[c]=on;rosterDirty=true;refreshLayerUI();
+      return log(COMMS[c].n.toUpperCase()+' '+(on?'ON':'OFF')+' — '+MINES.filter(x=>x.comms.includes(c)).length+' sites.','c-ok');}
+    if(/tsf|tailings/.test(rest)){L.tsf=on;rosterDirty=true;refreshLayerUI();
+      return log('TAILINGS FACILITIES '+(on?'ON':'OFF')+' — '+TSFS.length+' records.','c-ok');}
+    if(/plant|smelter|processing/.test(rest)){L.plant=on;rosterDirty=true;refreshLayerUI();
+      return log('PROCESSING SITES '+(on?'ON':'OFF'),'c-ok');}
+    return log('Unknown layer "'+rest+'".','c-err');
+  }
+  if(w0==='style'||w0==='sensor'){
+    const rest=words.slice(1).join(' ');
+    if(STYLES[rest]){setStyle(rest);return log('Sensor stack ▸ '+STYLES[rest].name,'c-ok');}
+    if(styleWords[rest]){setStyle(styleWords[rest]);return log('Sensor ▸ '+STYLES[S.style].name,'c-ok');}
+    return log('Styles: '+STYLE_KEYS.map((k,i)=>(i+1)+' '+TSTYLE[k]).join(' · '),'c-warn');}
+  if(w0==='detect'){S.detect=words[1]!=='off';refreshLayerUI();return log('DETECTION MESH '+(S.detect?'ON':'OFF'),'c-ok');}
+  if(w0==='labels'||w0==='label'){S.labels=words[1]!=='off';refreshLayerUI();return log('LABELS '+(S.labels?'FORCED':'AUTO'),'c-ok');}
+  if(w0==='spin'){S.spin=words[1]!=='off';refreshLayerUI();return log('AUTO-SPIN '+(S.spin?'ON':'OFF'),'c-ok');}
+  if(w0==='hud'){S.hud=words[1]!=='off';$('#hudcenter').style.display=S.hud?'':'none';return log('HUD '+(S.hud?'ON':'OFF'),'c-ok');}
+  if(w0==='pit'||q==='cockpit'||q==='enter pit'||q==='pit mode'){
+    if(S.track){openPit();return log('PIT MODE ▸ '+S.track.name.toUpperCase()+' — modeled geometry, public assay data.','c-ok');}
+    return log('Track a site first — then PIT.','c-warn');}
+  if(w0==='tour'){
+    const t=words[1];
+    if(t&&TOURS[t]){startTour(t);return log('TOUR ▸ '+t.toUpperCase(),'c-ok');}
+    return log('Tours: '+Object.keys(TOURS).join(' · '),'c-warn');}
+  if(w0==='assay'){
+    const r=findSites(words.slice(1).join(' '));
+    if(!r.length)return log('No site matched.','c-err');
+    const s=r[0];return log('ASSAY ▸ '+s.name.toUpperCase()+' ['+s.code+'] — '+s.grade+' · '+s.prod+' · '+s.status+'. '+s.note,'c-ok');}
+  if(w0==='price'||w0==='quote'){
+    const rest=norm(words.slice(1).join(' '));
+    const c=commFromWord(rest);
+    const p=PRICES.find(x=>norm(x.k)===rest||norm(x.n).includes(rest)||(c&&norm(x.n).includes(norm(COMMS[c].n))));
+    if(p){const chg=(p.val-p.prev)/p.prev*100;
+      return log('WIRE ▸ '+p.n+' '+fmtN(p.val)+' '+p.u+' ('+(chg>=0?'+':'')+chg.toFixed(2)+'%) — SIMULATED.','c-ok');}
+    return log('Metals: '+PRICES.map(x=>x.k).join(' · '),'c-warn');}
+  if(w0==='stats'||q.startsWith('how many')){
+    const m=q.match(/how many\s+([a-z ]+)\s*(mines|sites)?/);
+    if(m){const c=commFromWord(m[1]);
+      if(c)return log(MINES.filter(x=>x.comms.includes(c)).length+' '+COMMS[c].n.toUpperCase()+' sites in dataset — '+MINES.filter(x=>x.comms.includes(c)&&x.status==='A').length+' active.','c-ok');}
+    return log('DATASET ▸ '+MINES.length+' mines · '+TSFS.length+' tailings records · '+PLANTS.length+' plants · '+SITES.length+' total contacts. '+S.contactCount+' in view.','c-ok');}
+  if(q==="whats this"||q==='what is this'){
+    if(!S.track)return log('Nothing tracked. Click a contact, or "track <name>".','c-warn');
+    const s=S.track;return log('THIS ▸ '+s.name+' ['+s.code+'] — '+METHOD[kindOf(s)]+', '+s.cc+', operator '+s.op+'. '+s.note,'c-ok');}
+  if(w0==='contacts'||w0==='roster'){
+    $$('.tabbtn').forEach(x=>{if(x.dataset.tab==='contacts')x.click();});
+    return log('CONTACTS panel up — nearest sites listed.','c-ok');}
+  if(w0==='zoom'){
+    if(words[1]==='out'){cam.zoomT=Math.max(.9,cam.zoomT/1.8);return log('ZOOM ▸ OUT','c-ok');}
+    if(words[1]==='in'){cam.zoomT=Math.min(12,cam.zoomT*1.8);return log('ZOOM ▸ IN','c-ok');}
+    const z=parseFloat(words[1]);if(z){cam.zoomT=clamp(z,.9,12);return log('ZOOM ▸ '+z,'c-ok');}}
+  if(w0==='next'||w0==='n')return stepContact(1);
+  if(w0==='prev')return stepContact(-1);
+  if(w0==='sources'||w0==='about'||w0==='power')return openModal();
+  if(w0==='share')return shareLink();
+  if(w0==='seismic'||w0==='blast'){spawnQuake();return log('Seismic event seeded near a monitored mine (SIM).','c-ok');}
+  const c=commFromWord(q);
+  if(c){L.comm[c]=true;refreshLayerUI();rosterDirty=true;
+    const fly=SITES.filter(s=>!s.tsf&&!s.pl&&s.comms.includes(c)&&s.t1)[0];
+    if(fly)trackSite(fly);
+    return log(COMMS[c].n.toUpperCase()+' LAYER ON — '+MINES.filter(x=>x.comms.includes(c)).length+' sites lit. Tracking '+(fly?fly.name:'—')+'.','c-ok');}
+  const r=findSites(q);
+  if(r.length===1){trackSite(r[0]);return log('TRACKING ▸ '+r[0].name.toUpperCase()+' ['+r[0].code+']','c-ok');}
+  if(r.length>1)return listMatches(r);
+  if(q)log('Unknown command. Try "help".','c-err');
+}
+function listMatches(r){
+  log('MULTIPLE CONTACTS:<br>'+r.map(s=>'&nbsp;&nbsp;<span class="c-warn">'+GLY[kindOf(s)]+'</span> '+s.name+' ['+s.code+']').join('<br>'),'c-txt');
+}
+function stepContact(d){
+  const list=S.rosterList;if(!list.length)return log('Roster empty.','c-warn');
+  S.rosterIdx=(S.rosterIdx+d+list.length)%list.length;
+  trackSite(list[S.rosterIdx]);log('CONTACT '+(S.rosterIdx+1)+'/'+list.length+' ▸ '+S.track.name.toUpperCase(),'c-ok');
+}
+function helpText(){
+  log('DIRECT — <span class="c-warn">fly &lt;target&gt;</span> · <span class="c-warn">track &lt;target&gt;</span> · <span class="c-warn">zoom out</span> · <span class="c-warn">reset</span> · <span class="c-warn">tour copper|battery|iron|precious|hazards</span> · <span class="c-warn">pit</span>','c-txt');
+  log('QUERY — <span class="c-warn">assay &lt;site&gt;</span> · <span class="c-warn">price copper</span> · <span class="c-warn">how many lithium mines</span> · <span class="c-warn">what&#39;s this</span> · <span class="c-warn">stats</span>','c-txt');
+  log('OPERATE — <span class="c-warn">show|hide copper / tailings / all</span> · <span class="c-warn">nvg · crt · flir · noir · spectral</span> · <span class="c-warn">detect on</span> · <span class="c-warn">labels</span> · <span class="c-warn">spin</span> · <span class="c-warn">next</span> · <span class="c-warn">clear</span>','c-txt');
+}
+
+/* ============ TOURS ============ */
+const TOURS={
+  copper:[['escondida',3.6],['chuqui',3.6],['collahuasi',3.4],['antamina',3.2],['grasberg',3.6],['morenci',3.2],['bingham',3.8],['oyu',3.2],['kakula',3.2]],
+  battery:[['atacama',3.8],['hombre',3.6],['greenbushes',3.6],['pilgangoora',3.2],['thacker',3.4],['mutanda',3.2],['norilsk',3.0]],
+  iron:[['carajas',3.4],['whaleback',3.6],['tomprice',3.2],['kiruna',3.6],['simandou',3.4]],
+  precious:[['muruntau',3.6],['nevada',3.0],['superpit',3.6],['mponeng',3.2],['potosi',3.6]],
+  hazards:[['feijao',4.0],['fundao',4.0],['polley',3.8],['frailes',4.2],['cadia-ntsf',3.2],['el-mauro',3.2],['ok-tedi',3.6]]
+};
+function startTour(name){
+  if(S.mode==='pit')closePit();
+  if(!L.tsf&&name==='hazards'){L.tsf=true;refreshLayerUI();}
+  const steps=TOURS[name].map(pair=>({site:SITES.find(s=>s.id===pair[0]),zoom:pair[1]})).filter(s=>s.site);
+  S.tour={name,steps,i:0,timer:null};
+  $('#tourbar').classList.add('show');
+  $('#tour-tt').textContent='DISTRICT TOUR · '+name.toUpperCase()+' · ESC TO EXIT';
+  nextTourStep();
+  log('TOUR STARTED ▸ '+name.toUpperCase()+' — '+steps.length+' stops. ESC exits.','c-ok');
+}
+function nextTourStep(){
+  const T=S.tour;if(!T)return;
+  const st=T.steps[T.i];
+  if(!st){endTour();toast('TOUR COMPLETE');return;}
+  trackSite(st.site,{fly:false});
+  flyTo(st.site.lat,st.site.lng,st.zoom,2600);
+  $('#tour-tx').textContent=(T.i+1)+'/'+T.steps.length+' — '+st.site.name.toUpperCase()+' · '+st.site.cc+' — '+(st.site.note||'');
+  T.timer=setTimeout(()=>{if(S.tour){S.tour.i++;nextTourStep();}},4600);
+}
+function endTour(){
+  if(S.tour&&S.tour.timer)clearTimeout(S.tour.timer);
+  S.tour=null;$('#tourbar').classList.remove('show');
+}
+
+/* ============ RESET / SHARE / MODAL ============ */
+function resetGlobe(){
+  endTour();flyTo(15,0,1,1600);S.spin=true;
+  toast('RESET ▸ FULL GLOBE');
+}
+function shareLink(){
+  const p=new URLSearchParams();
+  p.set('s',S.style);
+  p.set('c',Object.keys(L.comm).filter(k=>L.comm[k]).join(','));
+  if(L.tsf)p.set('h','1');if(L.plant)p.set('p','1');
+  p.set('y',(cam.yaw/D2R).toFixed(1));p.set('t',(cam.tilt/D2R).toFixed(1));p.set('z',cam.zoom.toFixed(2));
+  if(S.track)p.set('tr',S.track.id);
+  const url=location.origin+location.pathname+'#'+p.toString();
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).catch(()=>{});
+  toast('LINK COPIED — CAMERA · STYLE · LAYERS · TARGET');
+  log('SHARE LINK serialized to clipboard. A tracked target is a handoff, not a bookmark.','c-ok');
+}
+ $('#btn-share').onclick=shareLink;
+function openModal(){$('#modal').classList.add('show');}
+ $('#btn-power').onclick=openModal;
+ $('#modal-close').onclick=()=>$('#modal').classList.remove('show');
+ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')$('#modal').classList.remove('show');});
+ $('#mbody').innerHTML=
+'<p><b>KEYLESS BOOT.</b> This build runs entirely in one file, offline. No accounts, no keys, no network. In a full deployment you would bolt on live feeds — USGS MRDS, Mindat, the Global Tailings Portal, broker wires. Every layer here is a pattern you point at your own data.</p>'
++'<h3>LAYERS &amp; SOURCES</h3>'
++'<table><tr><td>Mines &amp; commodities</td><td>'+MINES.length+' static sites, compiled from public disclosures (USGS MRDS, Mindat, company reports)</td><td>🟢 LOCAL</td></tr>'
++'<tr><td>Tailings facilities</td><td>'+TSFS.length+' records in the style of Global Tailings Portal disclosures</td><td>🟢 LOCAL</td></tr>'
++'<tr><td>Processing plants</td><td>'+PLANTS.length+' public-register nodes</td><td>🟢 LOCAL</td></tr>'
++'<tr><td>Commodity wire / prices</td><td>Random-walk simulation around plausible levels</td><td>🟡 SIM</td></tr>'
++'<tr><td>Incidents &amp; seismicity</td><td>Synthesized locally for demonstration</td><td>🟡 SIM</td></tr>'
++'<tr><td>Basemap</td><td>Stylized vector globe — deliberately not survey-grade</td><td>🟢 LOCAL</td></tr></table>'
++'<h3>THE BASEMAP LADDER</h3>'
++'<table><tr><td>🟢 You have nothing</td><td>This vector globe — works offline, zero cost</td></tr>'
++'<tr><td>🟡 Cesium ion token</td><td>Photorealistic 3D tiles + world terrain (not wired in this single-file build)</td></tr></table>'
++'<h3>WHAT IT ACTUALLY COSTS</h3><p>$0. It is one file. Prices, telemetry and alerts are simulated so it stays that way.</p>'
++'<h3>THE LINE</h3><p>This console models sites, infrastructure, and public data. It does not build features for named-person search or tracking individuals — <b>people are not a query type here.</b></p>'
++'<h3>IMPORTANT</h3><p class="dim">MOTHERLODE is an exploratory visualization of public and third-party data. Positions are approximate, figures may be dated, and simulated feeds are labeled as such. Do not use it for investment decisions, operational planning, or safety-critical purposes. Verify with authoritative sources. Static datasets carry their own terms; code MIT.</p>'
++'<h3>KEYBOARD</h3><p><kbd>1–7</kbd> sensors · <kbd>D</kbd> detection · <kbd>L</kbd> labels · <kbd>H</kbd> HUD · <kbd>T</kbd> next contact · <kbd>P</kbd> pit mode · <kbd>/</kbd> console · <kbd>Esc</kbd> exit · <kbd>G</kbd> reset</p>';
+
+/* ============ POINTER / INPUT ============ */
+let dragging=false,dragMoved=false,lastPointer=0;
+const pointers=new Map();let pinchD=0;
+globeC.addEventListener('pointerdown',e=>{
+  pointers.set(e.pointerId,[e.clientX,e.clientY]);
+  lastPointer=performance.now();
+  if(pointers.size===2){const a=[...pointers.values()];pinchD=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);}
+  dragging=true;dragMoved=false;cam.anim=null;cam.vyaw=0;cam.vtilt=0;
+  globeC.classList.add('grab');
+  try{globeC.setPointerCapture(e.pointerId);}catch(_){}
+});
+globeC.addEventListener('pointermove',e=>{
+  lastPointer=performance.now();
+  if(pointers.has(e.pointerId))pointers.set(e.pointerId,[e.clientX,e.clientY]);
+  if(pointers.size===2){
+    const a=[...pointers.values()];const d=Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1]);
+    if(pinchD>0)cam.zoomT=clamp(cam.zoomT*d/pinchD,.9,12);
+    pinchD=d;dragMoved=true;return;
+  }
+  if(!dragging)return;
+  const mx=e.movementX||0,my=e.movementY||0;
+  if(Math.abs(mx)+Math.abs(my)>0){
+    if(Math.abs(mx)+Math.abs(my)>3)dragMoved=true;
+    const k=.16/Math.max(1,cam.zoom);
+    cam.yaw+=mx*k;cam.tilt=clamp(cam.tilt-my*k,-1.25,1.25);
+    cam.vyaw=mx*k*.4;cam.vtilt=-my*k*.4;
+    if(S.tour&&(Math.abs(mx*k)+Math.abs(my*k)>.01))endTour();
+  }
+});
+function endPointer(e){
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinchD=0;
+  if(!dragging)return;
+  dragging=false;globeC.classList.remove('grab');
+  if(!dragMoved){
+    let best=null,bd=18;
+    for(const s of SITES){
+      if(!s.vis||!siteOn(s))continue;
+      const d=Math.hypot(s.sx-e.clientX,s.sy-e.clientY);
+      if(d<bd){bd=d;best=s;}
+    }
+    if(best){trackSite(best);log('TRACKING ▸ '+best.name.toUpperCase()+' ['+best.code+'] — '+best.note,'c-ok');}
+    else if(S.track){S.track=null;buildTrackCard();rosterDirty=true;}
+  }
+}
+globeC.addEventListener('pointerup',endPointer);
+globeC.addEventListener('pointercancel',endPointer);
+globeC.addEventListener('wheel',e=>{
+  e.preventDefault();lastPointer=performance.now();
+  cam.zoomT=clamp(cam.zoomT*Math.exp(-e.deltaY*.0011),.9,12);
+  cam.anim=null;
+},{passive:false});
+ $('#pit').addEventListener('pointermove',e=>{pitMouse=[e.clientX-W/2,e.clientY-H/2];});
+addEventListener('keydown',e=>{
+  if(e.target===cin)return;
+  const k=e.key.toLowerCase();
+  if(k>='1'&&k<='7')setStyle(STYLE_KEYS[+k-1]);
+  else if(k==='d'){S.detect=!S.detect;refreshLayerUI();toast('DETECTION '+(S.detect?'ON':'OFF'));}
+  else if(k==='l'){S.labels=!S.labels;refreshLayerUI();toast('LABELS '+(S.labels?'FORCED':'AUTO'));}
+  else if(k==='h'){S.hud=!S.hud;$('#hudcenter').style.display=S.hud?'':'none';}
+  else if(k==='t')stepContact(1);
+  else if(k==='p'){if(S.mode==='pit')closePit();else openPit();}
+  else if(k==='g')resetGlobe();
+  else if(k==='/'){e.preventDefault();cin.focus();}
+  else if(k==='escape'){
+    if(S.mode==='pit')closePit();
+    else if($('#modal').classList.contains('show'))$('#modal').classList.remove('show');
+    else if(S.tour)endTour();
+    else if(S.track){S.track=null;buildTrackCard();rosterDirty=true;}
+  }
+});
+ $('#btn-panels-l').onclick=()=>$('#left').classList.toggle('open');
+ $('#btn-panels-r').onclick=()=>$('#right').classList.toggle('open');
+
+/* ============ TOAST / HUD ============ */
+let toastT=null;
+function toast(msg){
+  const el=$('#toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2400);
+}
+let lastDom=0;
+function updateDom(t){
+  if(t-lastDom<250)return;lastDom=t;
+  const d=new Date();
+  $('#clock').textContent=d.toISOString().slice(11,19)+' UTC';
+  const cl=centerLatLon();
+  const latS=(cl[0]>=0?'':'−')+Math.abs(cl[0]).toFixed(1)+'°'+(cl[0]>=0?'N':'S');
+  const lonS=(cl[1]>=0?'':'−')+Math.abs(cl[1]).toFixed(1)+'°'+(cl[1]>=0?'E':'W');
+  const alt=Math.round(19000/Math.pow(cam.zoom,1.1));
+  $('#hudcenter').innerHTML='VIEW <b>'+latS+' '+lonS+'</b> · ALT <b>'+fmtN(alt)+' KM</b> · CONTACTS <b>'+S.contactCount+'</b> · STYLE <b>'+STYLES[S.style].name+'</b>'+(S.track?(' · TRACK <b>'+S.track.name.toUpperCase()+'</b>'):'');
+  $('#hudline').innerHTML='MRDS '+MINES.length+' <b>✓</b> · GTP '+TSFS.length+' <b>✓</b> · PLANTS '+PLANTS.length+' <b>✓</b> · WIRE <b>SIM</b> · '+(fps|0)+' FPS';
+  const cc=[cam.yaw,cam.tilt,cam.zoom];
+  if(rosterDirty||Math.abs(cc[0]-lastRosterCam[0])>.02||Math.abs(cc[1]-lastRosterCam[1])>.02||Math.abs(cc[2]-lastRosterCam[2])>.15||t-lastRosterT>1500){
+    lastRosterCam=cc;lastRosterT=t;rosterDirty=false;
+    if(S.mode==='globe')renderRoster();
+  }
+}
+
+/* ============ MAIN LOOP ============ */
+function resize(){
+  W=innerWidth;H=innerHeight;
+  globeC.width=W*dpr;globeC.height=H*dpr;
+  globeC.style.width=W+'px';globeC.style.height=H+'px';
+  pitC.style.width=W+'px';pitC.style.height=H+'px';
+  if(S.mode==='pit')sizePit();
+}
+addEventListener('resize',resize);
+let lastT=performance.now();
+function frame(t){
+  requestAnimationFrame(frame); /* schedule first: one bad frame never kills the loop */
+  const dt=Math.min(64,t-lastT);lastT=t;
+  frames++;if(t-lastFpsT>1000){fps=frames*1000/(t-lastFpsT);frames=0;lastFpsT=t;}
+  try{
+    stepCam(dt);
+    if(S.mode==='pit')drawPit(t);else drawGlobe(t);
+    updateDom(t);
+  }catch(err){logErr('FRAME ERROR: '+(err&&err.message?err.message:err));}
+}
+
+/* ============ BOOT / SPLASH ============ */
+const BOOT_LINES=[
+ ['MOTHERLODE SURVEY TERMINAL v0.1.0 — "KEYLESS BOOT"',''],
+ ['> mounting local data stores …','dim'],
+ ['  USGS/MRDS register … '+MINES.length+' SITES OK','dim'],
+ ['  GLOBAL TAILINGS PORTAL … '+TSFS.length+' RECORDS OK','dim'],
+ ['  PROCESSING REGISTER … '+PLANTS.length+' NODES OK','dim'],
+ ['  COMMODITY WIRE … SIMULATED FEED ARMED','dim'],
+ ['> renderer: CANVAS / ORTHOGRAPHIC … OK','dim'],
+ ['> sensor stack: TACTICAL CRT NVG IRONBOW WHITE-HOT NOIR SPECTRAL … 7/7','dim'],
+ ['> console agent: LOCAL PARSER — NO KEY REQUIRED … OK','dim'],
+ ['> NOTICE: positions approximate · prices simulated · not for navigation','dim'],
+ ['BOOT COMPLETE — 0 keys · 0 accounts · 100% local.','ok']
+];
+const MISSIONS=[
+ {t:'LIGHT UP THE BELT',d:'Every major copper producer on Earth. Fly the Antofagasta belt and track the biggest hole in it.',
+  f(){Object.keys(L.comm).forEach(k=>L.comm[k]=false);L.comm.CU=true;L.plant=true;trackSite(SITES.find(s=>s.id==='escondida'));}},
+ {t:'BATTERY CHAIN',d:'Lithium, nickel, cobalt, rare earths — the electrification supply chain from Andean brine to Arctic block cave.',
+  f(){Object.keys(L.comm).forEach(k=>L.comm[k]=false);['LI','NI','CO','REE'].forEach(k=>L.comm[k]=true);trackSite(SITES.find(s=>s.id==='atacama'));}},
+ {t:'HAZARD WATCH',d:'Tailings facilities with consequence ratings, failure case files, incident wire live. Watch the dams.',
+  f(){Object.keys(L.comm).forEach(k=>L.comm[k]=false);L.tsf=true;trackSite(SITES.find(s=>s.id==='feijao'));}},
+ {t:'IRON GIANTS',d:"Carajás to the Pilbara to Kiruna — the mega pits that feed half the world's steel.",
+  f(){Object.keys(L.comm).forEach(k=>L.comm[k]=false);L.comm.FE=true;trackSite(SITES.find(s=>s.id==='carajas'));}},
+ {t:'EXPLORE MANUALLY',d:'Everything on, no autopilot. Click anything. Type anything. Break it.',
+  f(){Object.keys(L.comm).forEach(k=>L.comm[k]=true);L.tsf=true;}}
+];
+let bootStage='typing',bootTimer=null;
+function buildMissions(){
+  const el=$('#missions');
+  el.innerHTML=MISSIONS.map((m,i)=>
+    '<div class="mi" data-mi="'+i+'"><div class="mt">'+m.t+'</div><div class="md">'+m.d+'</div><div class="go">▸ LAUNCH MISSION</div></div>').join('');
+  el.classList.add('show');
+  $$('#missions .mi').forEach(elm=>elm.onclick=()=>{
+    MISSIONS[+elm.dataset.mi].f();refreshLayerUI();rosterDirty=true;endSplash();
+  });
+}
+function showMissions(){
+  bootStage='missions';
+  clearTimeout(bootTimer);
+  $('#bootlog').innerHTML=BOOT_LINES.map(l=>'<span class="'+l[1]+'">'+l[0]+'</span>').join('\n');
+  buildMissions();
+  $('#btn-skip').textContent='ENTER NOW ▸';
+}
+function endSplash(){
+  clearTimeout(bootTimer);
+  $('#splash').style.display='none';
+  log('MOTHERLODE online. Keyless boot — '+MINES.length+' mines, '+TSFS.length+' tailings records, '+PLANTS.length+' plants. Try "help", or just click a contact.','c-ok');
+  log('Console: "track grasberg", "show lithium", "nvg", "tour copper", "pit", "fly to chile". Keyboard: 1-7 sensors · D detection · P pit · T next contact · / console.','c-dim');
+}
+function runBoot(){
+  const el=$('#bootlog');
+  let li=0,ci=0,cur='';
+  function render(){
+    el.innerHTML=BOOT_LINES.slice(0,li).map(l=>'<span class="'+l[1]+'">'+l[0]+'</span>').join('\n')
+      +(li<BOOT_LINES.length?('\n<span class="'+BOOT_LINES[li][1]+'">'+cur+'</span>'):'');
+  }
+  function tick(){
+    if(bootStage!=='typing')return;
+    if(li>=BOOT_LINES.length){showMissions();return;}
+    const line=BOOT_LINES[li][0];
+    cur=line.slice(0,++ci);
+    render();
+    if(ci>=line.length){li++;ci=0;bootTimer=setTimeout(tick,140);}
+    else bootTimer=setTimeout(tick,9);
+  }
+  tick();
+  $('#btn-skip').onclick=()=>{
+    if(bootStage==='typing')showMissions(); /* skip boot → mission cards */
+    else endSplash();                        /* from missions → enter now   */
+  };
+}
+/* hash state */
+function applyHash(){
+  if(!location.hash||location.hash.length<3)return false;
+  try{
+    const p=new URLSearchParams(location.hash.slice(1));
+    if(p.get('s')&&STYLES[p.get('s')])setStyle(p.get('s'));
+    const c=p.get('c');
+    if(c!==null){Object.keys(L.comm).forEach(k=>L.comm[k]=c.split(',').includes(k));}
+    L.tsf=p.get('h')==='1';L.plant=p.get('p')==='1';
+    if(p.get('z'))cam.zoom=cam.zoomT=clamp(parseFloat(p.get('z')),.9,12);
+    if(p.get('y'))cam.yaw=parseFloat(p.get('y'))*D2R;
+    if(p.get('t'))cam.tilt=clamp(parseFloat(p.get('t'))*D2R,-1.25,1.25);
+    if(p.get('tr')){const s=SITES.find(x=>x.id===p.get('tr'));if(s)trackSite(s,{fly:false});}
+    refreshLayerUI();
+    return true;
+  }catch(err){logErr('HASH ERROR: '+err.message);return false;}
+}
+
+/* ============ INTERVALS ============ */
+setInterval(genAlert,8000);
+setInterval(()=>{if(S.seis&&Math.random()<.8)spawnQuake();},9000);
+for(let i=0;i<4;i++)setTimeout(spawnQuake,i*700);
+
+/* ============ INIT ============ */
+function init(){
+  resize();
+  buildLayers();buildStylebar();buildTicker();renderWire();
+  const fromHash=applyHash();
+  requestAnimationFrame(frame);
+  if(fromHash){endSplash();toast('STATE RESTORED FROM LINK');}
+  else runBoot();
+}
+try{init();}
+catch(err){
+  const el=$('#bootlog');
+  if(el)el.innerHTML='<span class="err">FATAL INIT ERROR: '+(err&&err.message?err.message:err)+'</span>\n<span class="dim">'+((err&&err.stack)||'')+'</span>';
+  const skip=$('#btn-skip');
+  if(skip){skip.textContent='ENTER ANYWAY ▸';skip.onclick=()=>{$('#splash').style.display='none';};}
+}
+</script>
+</body>
+</html>

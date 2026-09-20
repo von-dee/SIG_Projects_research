@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ore's Eye View — Data Sources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c08; --bg2:#10130d; --panel:#12150f; --line:rgba(198,158,101,0.16); --line-strong:rgba(198,158,101,0.36);
+    --copper:#c1793f; --gold:#e3bd63; --seam:#7c9b72; --ice:#9fc9e8; --rust:#b06a4c;
+    --ink:#efe9db; --ink-dim:#a7ac9c; --ink-faint:#6d7264;
+    --serif:'Fraunces',Georgia,serif; --mono:'JetBrains Mono',Consolas,monospace; --sans:'Inter',-apple-system,sans-serif;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f2eee2; --bg2:#eae4d3; --panel:#faf7ef;
+      --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+      --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+      --link:#8a4d1c; --linkhover:#5c3210;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f2eee2; --bg2:#eae4d3; --panel:#faf7ef;
+    --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+    --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+    --link:#8a4d1c; --linkhover:#5c3210;
+  }
+  :root{ --link:#e3bd63; --linkhover:#f6d98a; }
+  @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){ --link:#8a4d1c; --linkhover:#5c3210; } }
+  :root[data-theme="light"]{ --link:#8a4d1c; --linkhover:#5c3210; }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:66px;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; }
+  ::selection{ background:var(--copper); color:#0d0f0a; }
+  a:focus-visible, button:focus-visible, input:focus-visible{ outline:2px solid var(--gold); outline-offset:2px; }
+
+  header.top{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 84%, transparent); border-bottom:1px solid var(--line);
+    padding:calc(14px + env(safe-area-inset-top,0px)) 22px 14px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .logo{ display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:600; font-size:17px; text-decoration:none; color:var(--ink); }
+  .logo svg{ flex:0 0 auto; }
+  header.top .sub{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:0.06em; margin-left:2px; }
+  .themeToggle{ margin-left:auto; width:32px; height:32px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:var(--ink); cursor:pointer; }
+
+  .layout{ display:grid; grid-template-columns:230px 1fr; gap:0; max-width:1180px; margin:0 auto; }
+  @media (max-width:860px){ .layout{ grid-template-columns:1fr; } .toc{ display:none; } }
+
+  .toc{ position:sticky; top:64px; align-self:start; padding:28px 18px 40px 22px; height:calc(100vh - 64px); overflow-y:auto; }
+  .toc div.tHead{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; color:var(--copper); margin-bottom:12px; }
+  .toc a{ display:block; font-size:12.5px; color:var(--ink-dim); text-decoration:none; padding:5px 0; border-left:2px solid transparent; padding-left:10px; margin-left:-10px; }
+  .toc a:hover{ color:var(--ink); border-left-color:var(--line-strong); }
+  .toc a.idx{ margin-top:10px; color:var(--gold); }
+
+  main{ padding:34px 26px 80px; max-width:900px; min-width:0; }
+  .pageHead{ margin-bottom:38px; }
+  .kicker{ font-family:var(--mono); font-size:11px; letter-spacing:0.12em; color:var(--copper); margin-bottom:14px; }
+  h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px,4vw,40px); margin:0 0 14px; letter-spacing:-0.01em; }
+  .lede{ font-size:15.5px; line-height:1.7; color:var(--ink-dim); max-width:70ch; margin:0; }
+
+  .legend{ display:flex; gap:18px; flex-wrap:wrap; margin-top:20px; font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+
+  section.layer{ padding:34px 0; border-top:1px solid var(--line); }
+  .layerHead{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .layerHead h2{ font-family:var(--serif); font-weight:600; font-size:23px; margin:0; }
+  .authPill{ font-family:var(--mono); font-size:10.5px; padding:2px 9px; border-radius:20px; white-space:nowrap; }
+  .authPill.free{ background:color-mix(in srgb, var(--seam) 22%, transparent); color:var(--seam); }
+  .authPill.freekey{ background:color-mix(in srgb, var(--gold) 20%, transparent); color:var(--gold); }
+  .authPill.metered{ background:color-mix(in srgb, var(--rust) 24%, transparent); color:var(--rust); }
+  .layerDesc{ font-size:14px; color:var(--ink-dim); line-height:1.65; max-width:70ch; margin:0 0 18px; }
+
+  .dTable{ width:100%; border-collapse:collapse; font-size:13px; min-width:720px; }
+  .dTable th{
+    text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:0.07em; color:var(--ink-faint);
+    text-transform:uppercase; padding:0 12px 10px; border-bottom:1px solid var(--line-strong); font-weight:500;
+  }
+  .dTable td{ padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5; }
+  .dTable tr:last-child td{ border-bottom:none; }
+  .dTable td.field{ font-family:var(--mono); font-size:12px; color:var(--ink); white-space:nowrap; font-weight:500; }
+  .dTable td.desc{ color:var(--ink-dim); min-width:170px; }
+  .dTable td.source{ color:var(--ink-dim); font-size:12.5px; min-width:290px; }
+  .tableWrap{ overflow-x:auto; border:1px solid var(--line); border-radius:3px; background:var(--panel); padding:6px 2px; }
+
+  /* Source links */
+  a.s{ display:block; color:var(--link); text-decoration:underline; text-decoration-color:color-mix(in srgb, var(--link) 40%, transparent); text-underline-offset:3px; font-weight:600; line-height:1.35; width:fit-content; max-width:100%; }
+  a.s:hover{ color:var(--linkhover); text-decoration-color:currentColor; }
+  a.s.x{ font-weight:500; }
+  .host{ display:block; font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); margin:1px 0 8px; word-break:break-all; line-height:1.4; }
+  .host:last-child{ margin-bottom:0; }
+  i.alt{ display:block; font-style:normal; font-family:var(--mono); font-size:9.5px; letter-spacing:0.08em; color:var(--copper); text-transform:uppercase; margin:8px 0 6px; padding-top:8px; border-top:1px dashed var(--line); }
+  span.plain{ display:block; margin:0 0 8px; }
+
+  .noteBar{
+    border:1px solid var(--line-strong); border-left:3px solid var(--copper); border-radius:2px; padding:16px 18px;
+    font-size:12.5px; line-height:1.65; color:var(--ink-dim); background:var(--panel); margin-top:40px;
+  }
+  .noteBar b{ color:var(--ink); }
+  .noteBar p{ margin:0 0 10px; } .noteBar p:last-child{ margin:0; }
+
+  /* Source index */
+  .idxTools{ display:flex; gap:12px; align-items:center; margin:0 0 20px; flex-wrap:wrap; }
+  .idxTools input{ flex:1 1 240px; background:var(--panel); border:1px solid var(--line-strong); color:var(--ink); font-family:var(--mono); font-size:12.5px; padding:9px 12px; border-radius:3px; }
+  .idxCount{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+  .idxGroup{ margin-bottom:22px; }
+  .idxGroup h3{ font-family:var(--serif); font-size:17px; margin:0 0 8px; color:var(--copper); font-weight:600; }
+  .idxList{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:0 26px; }
+  .idxList li{ padding:9px 0; border-bottom:1px solid var(--line); font-size:12.5px; min-width:0; }
+  .idxList .layers{ display:block; font-size:11px; color:var(--ink-faint); margin-top:2px; }
+  .idxList li[hidden]{ display:none; }
+
+  footer{ border-top:1px solid var(--line); padding:26px 22px 40px; max-width:1180px; margin:0 auto; }
+  .footNote{ font-size:11.5px; color:var(--ink-faint); max-width:70ch; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="#top" class="logo">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3 21L14 10M14 10L11 4L20 3L19 12L14 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    Ore's Eye View
+  </a>
+  <span class="sub">DATA DICTIONARY</span>
+  <button class="themeToggle" id="themeBtn" aria-label="Toggle theme">◐</button>
+</header>
+
+<div class="layout" id="top">
+  <nav class="toc">
+    <div class="tHead">LAYERS</div>
+    <a href="#mapstack">Map Stack</a>
+    <a href="#mines">Active Mines</a>
+    <a href="#deposits">Deposits &amp; Reserves</a>
+    <a href="#carriers">Bulk Carriers</a>
+    <a href="#refineries">Refineries &amp; Smelters</a>
+    <a href="#ports">Ports &amp; Terminals</a>
+    <a href="#cameras">Site Cameras</a>
+    <a href="#seismic">Induced Seismicity</a>
+    <a href="#tailings">Tailings &amp; Environmental</a>
+    <a href="#prices">Commodity Prices</a>
+    <a href="#rail">Rail &amp; Bulk Routes</a>
+    <a href="#haul">Haul Traffic</a>
+    <a href="#index" class="idx">Source index</a>
+  </nav>
+
+  <main>
+    <div class="pageHead">
+      <div class="kicker">REFERENCE</div>
+      <h1>Data points &amp; sources</h1>
+      <p class="lede">Every field the console displays, layer by layer, and where it comes from. The first link in each source cell is the primary provider; links under “also” are alternates, cross-checks, or fallbacks. Fields marked <em>modeled</em> or <em>simulated</em> are estimates or illustrative reconstructions rather than direct observations — the console labels them as such wherever they appear.</p>
+      <div class="legend">
+        <span><i style="background:var(--seam)"></i>No key required</span>
+        <span><i style="background:var(--gold)"></i>Free key unlocks more</span>
+        <span><i style="background:var(--rust)"></i>Metered / paid provider</span>
+      </div>
+    </div>
+
+    <!-- ============ MAP STACK ============ -->
+    <section class="layer" id="mapstack" data-layer="Map Stack">
+      <div class="layerHead"><h2>Map Stack</h2><span class="authPill free">no key</span><span class="authPill freekey">free key for 3D</span></div>
+      <p class="layerDesc">The base imagery, terrain, and 3D tiles everything else is drawn on top of.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Satellite imagery tiles</td><td class="desc">Base 2D world imagery, keyless tier</td><td class="source">
+            <a class="s" href="https://www.arcgis.com/home/item.html?id=10df2279f9684e4a9f6a7f08febac2a9">Esri World Imagery (ArcGIS Online)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://s2maps.eu/">Sentinel-2 cloudless (EOX)</a>
+            <a class="s x" href="https://www.earthdata.nasa.gov/engage/open-data-services-software/earthdata-developer-portal/gibs-api">NASA GIBS imagery API</a>
+            <a class="s x" href="https://dataspace.copernicus.eu/">Copernicus Data Space Ecosystem</a>
+            <a class="s x" href="https://www.usgs.gov/landsat-missions">USGS Landsat missions</a>
+            <a class="s x" href="https://docs.mapbox.com/data/tilesets/reference/mapbox-satellite/">Mapbox Satellite (keyed)</a>
+          </td></tr>
+          <tr><td class="field">Photorealistic 3D tiles</td><td class="desc">Textured city and terrain mesh</td><td class="source">
+            <a class="s" href="https://developers.google.com/maps/documentation/tile/3d-tiles">Google Photorealistic 3D Tiles (Map Tiles API)</a>
+            <a class="s" href="https://cesium.com/platform/cesium-ion/">Cesium ion</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://cesium.com/learn/cesiumjs-learn/cesiumjs-photorealistic-3d-tiles/">CesiumJS: using Photorealistic 3D Tiles</a>
+            <a class="s x" href="https://www.ogc.org/standards/3DTiles/">OGC 3D Tiles standard</a>
+            <a class="s x" href="https://github.com/CesiumGS/3d-tiles">3D Tiles specification (GitHub)</a>
+          </td></tr>
+          <tr><td class="field">World terrain mesh</td><td class="desc">Elevation data for draping entities on real ground</td><td class="source">
+            <a class="s" href="https://cesium.com/platform/cesium-ion/content/cesium-world-terrain/">Cesium World Terrain (Cesium ion)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model">Copernicus DEM (GLO-30)</a>
+            <a class="s x" href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-shuttle-radar-topography-mission-srtm-1">USGS SRTM 1 Arc-Second</a>
+            <a class="s x" href="https://registry.opendata.aws/terrain-tiles/">Terrain Tiles on AWS Open Data</a>
+            <a class="s x" href="https://opentopography.org/">OpenTopography</a>
+          </td></tr>
+          <tr><td class="field">Vector basemap &amp; place names</td><td class="desc">Fallback basemap, road and place labels</td><td class="source">
+            <a class="s" href="https://www.openstreetmap.org/copyright">OpenStreetMap (OSM Foundation contributors)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://download.geofabrik.de/">Geofabrik OSM extracts</a>
+            <a class="s x" href="https://overpass-api.de/">Overpass API</a>
+            <a class="s x" href="https://openmaptiles.org/">OpenMapTiles</a>
+            <a class="s x" href="https://www.naturalearthdata.com/">Natural Earth</a>
+          </td></tr>
+          <tr><td class="field">Place search / geocoding</td><td class="desc">Search-to-location lookup</td><td class="source">
+            <a class="s" href="https://developers.google.com/maps/documentation/places/web-service/overview">Google Places API (metered)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://nominatim.org/">Nominatim (OSM geocoder)</a>
+            <a class="s x" href="https://www.geonames.org/">GeoNames gazetteer</a>
+            <a class="s x" href="https://docs.mapbox.com/api/search/geocoding/">Mapbox Geocoding API</a>
+          </td></tr>
+          <tr><td class="field">Licensing &amp; attribution</td><td class="desc">Terms the map layers must display or respect</td><td class="source">
+            <a class="s" href="https://opendatacommons.org/licenses/odbl/">Open Database License (OSM data)</a>
+            <a class="s" href="https://cloud.google.com/maps-platform/terms">Google Maps Platform Terms of Service</a>
+            <a class="s x" href="https://cesium.com/legal/terms-of-service/">Cesium terms of service</a>
+            <a class="s x" href="https://www.esri.com/en-us/legal/terms/full-master-agreement">Esri master agreement</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ ACTIVE MINES ============ -->
+    <section class="layer" id="mines" data-layer="Active Mines">
+      <div class="layerHead"><h2>Active Mines</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Open-pit and underground operations currently in production.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Mine name / ID</td><td class="desc">Canonical site name and internal record ID</td><td class="source">
+            <a class="s" href="https://mrdata.usgs.gov/mrds/">USGS Mineral Resources Data System (MRDS)</a>
+            <a class="s" href="https://www.ga.gov.au/">Geoscience Australia</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.mindat.org/">Mindat.org</a>
+            <a class="s x" href="https://portal.ga.gov.au/persona/minesatlas">Australian Mines Atlas</a>
+            <a class="s x" href="https://www.bgs.ac.uk/mineralsuk/">British Geological Survey — MineralsUK</a>
+            <a class="s x" href="https://natural-resources.canada.ca/">Natural Resources Canada</a>
+          </td></tr>
+          <tr><td class="field">Operator / owner</td><td class="desc">Current operating company and parent, where disclosed</td><td class="source">
+            <a class="s" href="https://www.spglobal.com/marketintelligence/en/campaigns/metals-mining">S&amp;P Global Market Intelligence (SNL Metals &amp; Mining)</a>
+            <i class="alt">also — investor disclosures</i>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">SEC EDGAR (US filers, S-K 1300 reports)</a>
+            <a class="s x" href="https://www.sedarplus.ca/">SEDAR+ (Canadian filers)</a>
+            <a class="s x" href="https://www.asx.com.au/">ASX announcements (Australia)</a>
+            <a class="s x" href="https://www.londonstockexchange.com/">London Stock Exchange RNS</a>
+          </td></tr>
+          <tr><td class="field">Primary / secondary commodity</td><td class="desc">Main product and any co-/by-products</td><td class="source">
+            <a class="s" href="https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries">USGS Mineral Commodity Summaries</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.usgs.gov/centers/national-minerals-information-center">USGS National Minerals Information Center</a>
+            <a class="s x" href="https://www.bgs.ac.uk/mineralsuk/statistics/world-mineral-statistics/">BGS World Mineral Statistics</a>
+            <a class="s x" href="https://www.iea.org/topics/critical-minerals">IEA Critical Minerals</a>
+          </td></tr>
+          <tr><td class="field">Mine type</td><td class="desc">Open-pit, underground, placer, or in-situ</td><td class="source">
+            <a class="s" href="https://mrmr.cim.org/">NI 43-101 / CIM reserve &amp; resource standards</a>
+            <a class="s" href="https://www.jorc.org/">JORC Code</a>
+            <a class="s x" href="https://mrdata.usgs.gov/mrds/">USGS MRDS</a>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">SEC EDGAR technical report summaries</a>
+          </td></tr>
+          <tr><td class="field">Operational status</td><td class="desc">Active, care-and-maintenance, or closed</td><td class="source">
+            <a class="s" href="https://www.msha.gov/">US Mine Safety and Health Administration (MSHA)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.ga.gov.au/">Geoscience Australia</a>
+            <a class="s x" href="https://natural-resources.canada.ca/">Natural Resources Canada</a>
+            <a class="s x" href="https://www.icmm.com/">International Council on Mining and Metals (ICMM)</a>
+          </td></tr>
+          <tr><td class="field">Coordinates</td><td class="desc">Site centroid, approximate</td><td class="source">
+            <a class="s" href="https://mrdata.usgs.gov/mrds/">USGS MRDS</a>
+            <a class="s" href="https://www.ga.gov.au/">Geoscience Australia</a>
+            <a class="s" href="https://natural-resources.canada.ca/">Natural Resources Canada</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.openstreetmap.org/">OpenStreetMap (landuse=quarry, man_made=mineshaft)</a>
+            <a class="s x" href="https://www.mindat.org/">Mindat.org</a>
+          </td></tr>
+          <tr><td class="field">Annual production (modeled)</td><td class="desc">Estimated tonnage or ounces produced per year</td><td class="source">
+            <a class="s" href="https://www.usgs.gov/centers/national-minerals-information-center">USGS Minerals Yearbook</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries">USGS Mineral Commodity Summaries</a>
+            <a class="s x" href="https://www.bgs.ac.uk/mineralsuk/statistics/world-mineral-statistics/">BGS World Mineral Statistics</a>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">Company annual reports (SEC EDGAR)</a>
+            <a class="s x" href="https://www.sedarplus.ca/">Company annual reports (SEDAR+)</a>
+          </td></tr>
+          <tr><td class="field">Workforce size</td><td class="desc">Approximate site employment</td><td class="source">
+            <a class="s" href="https://www.msha.gov/">MSHA mine employment data</a>
+            <a class="s x" href="https://www.icmm.com/">ICMM member reporting</a>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">Company sustainability &amp; annual reports</a>
+          </td></tr>
+          <tr><td class="field">Site footprint polygon</td><td class="desc">Mapped extent of the mining area, for context around the site marker</td><td class="source">
+            <a class="s" href="https://doi.org/10.1594/PANGAEA.942325">Global mining area polygons (Maus et al., 2022)</a>
+            <a class="s x" href="https://www.openstreetmap.org/">OpenStreetMap landuse polygons</a>
+            <a class="s x" href="https://www.globalforestwatch.org/">Global Forest Watch</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ DEPOSITS ============ -->
+    <section class="layer" id="deposits" data-layer="Deposits &amp; Reserves">
+      <div class="layerHead"><h2>Deposits &amp; Reserves</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Known mineral occurrences not yet in production, or reserve estimates at active sites.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Resource classification</td><td class="desc">Measured, indicated, or inferred</td><td class="source">
+            <a class="s" href="https://www.jorc.org/">JORC Code</a>
+            <a class="s" href="https://mrmr.cim.org/">NI 43-101 / CIM Definition Standards</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.sec.gov/">SEC Regulation S-K subpart 1300</a>
+            <a class="s x" href="https://www.crirsco.com/">CRIRSCO international reporting template</a>
+          </td></tr>
+          <tr><td class="field">Tonnage &amp; grade</td><td class="desc">Contained metal estimate and ore grade</td><td class="source">
+            <a class="s" href="https://mrdata.usgs.gov/mrds/">USGS MRDS</a>
+            <a class="s" href="https://www.sedarplus.ca/">Company technical reports (SEDAR+)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">SEC EDGAR technical report summaries</a>
+            <a class="s x" href="https://www.asx.com.au/">ASX resource statements</a>
+            <a class="s x" href="https://www.mindat.org/">Mindat.org</a>
+          </td></tr>
+          <tr><td class="field">Deposit type</td><td class="desc">Porphyry, skarn, brine, laterite, VMS, etc.</td><td class="source">
+            <a class="s" href="https://www.usgs.gov/centers/national-minerals-information-center">USGS mineral deposit models</a>
+            <a class="s x" href="https://www.bgs.ac.uk/mineralsuk/">BGS MineralsUK</a>
+            <a class="s x" href="https://www.ga.gov.au/">Geoscience Australia</a>
+            <a class="s x" href="https://natural-resources.canada.ca/">Geological Survey of Canada</a>
+          </td></tr>
+          <tr><td class="field">Development stage</td><td class="desc">Exploration, feasibility, permitting, construction</td><td class="source">
+            <a class="s" href="https://www.sedarplus.ca/">SEDAR+ regulatory filings</a>
+            <a class="s" href="https://www.sec.gov/edgar/search/">SEC EDGAR</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.asx.com.au/">ASX announcements</a>
+            <a class="s x" href="https://www.spglobal.com/marketintelligence/en/campaigns/metals-mining">S&amp;P Global project database</a>
+            <a class="s x" href="https://www.iea.org/topics/critical-minerals">IEA critical minerals project tracking</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ BULK CARRIERS ============ -->
+    <section class="layer" id="carriers" data-layer="Bulk Carriers">
+      <div class="layerHead"><h2>Bulk Carriers</h2><span class="authPill freekey">free key</span></div>
+      <p class="layerDesc">Live ore and mineral cargo vessels, tracked by transponder.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Vessel name / IMO / MMSI</td><td class="desc">Identifiers used to key a vessel across sources</td><td class="source">
+            <a class="s" href="https://aisstream.io/documentation">AISStream API documentation</a>
+            <a class="s" href="https://www.itu.int/rec/R-REC-M.1371">ITU-R M.1371 (AIS technical standard)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://gisis.imo.org/">IMO GISIS ship database</a>
+            <a class="s x" href="https://www.equasis.org/">Equasis</a>
+            <a class="s x" href="https://www.navcen.uscg.gov/ais-frequently-asked-questions">USCG Navigation Center: AIS</a>
+          </td></tr>
+          <tr><td class="field">Position, speed, heading</td><td class="desc">Live navigation state, refreshed every 15–30s</td><td class="source">
+            <a class="s" href="https://aisstream.io/">AISStream</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.marinetraffic.com/">MarineTraffic</a>
+            <a class="s x" href="https://spire.com/maritime/">Spire Maritime</a>
+            <a class="s x" href="https://www.vesselfinder.com/">VesselFinder</a>
+            <a class="s x" href="https://datalastic.com/">Datalastic</a>
+            <a class="s x" href="https://globalfishingwatch.org/our-apis/">Global Fishing Watch APIs</a>
+            <a class="s x" href="https://marinecadastre.gov/ais/">NOAA MarineCadastre AIS archive (historical)</a>
+          </td></tr>
+          <tr><td class="field">Draught</td><td class="desc">Indicates laden vs. ballast condition</td><td class="source">
+            <a class="s" href="https://aisstream.io/documentation">AIS voyage-related data (Message 5)</a>
+            <a class="s x" href="https://www.itu.int/rec/R-REC-M.1371">ITU-R M.1371 message definitions</a>
+            <a class="s x" href="https://www.marinetraffic.com/">MarineTraffic vessel details</a>
+          </td></tr>
+          <tr><td class="field">Destination &amp; ETA</td><td class="desc">Self-reported by the vessel, not always accurate</td><td class="source">
+            <a class="s" href="https://aisstream.io/documentation">AIS voyage-related data (Message 5)</a>
+            <i class="alt">also — cross-check against</i>
+            <a class="s x" href="https://unece.org/trade/uncefact/unlocode">UN/LOCODE port codes</a>
+            <a class="s x" href="https://msi.nga.mil/Publications/WPI">NGA World Port Index</a>
+          </td></tr>
+          <tr><td class="field">Vessel class</td><td class="desc">Bulk carrier, ore carrier, general cargo</td><td class="source">
+            <a class="s" href="https://gisis.imo.org/">IMO vessel registry (via AIS ship-type code)</a>
+            <a class="s x" href="https://www.equasis.org/">Equasis</a>
+            <a class="s x" href="https://www.itu.int/rec/R-REC-M.1371">AIS ship-type code table (ITU-R M.1371)</a>
+          </td></tr>
+          <tr><td class="field">Port-call history</td><td class="desc">Recent arrivals and departures, inferred from position and speed near terminals</td><td class="source">
+            <a class="s" href="https://marinecadastre.gov/ais/">NOAA MarineCadastre AIS archive</a>
+            <a class="s x" href="https://spire.com/maritime/">Spire Maritime vessel history</a>
+            <a class="s x" href="https://www.marinetraffic.com/">MarineTraffic port calls</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ REFINERIES ============ -->
+    <section class="layer" id="refineries" data-layer="Refineries &amp; Smelters">
+      <div class="layerHead"><h2>Refineries &amp; Smelters</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Processing and conversion facilities downstream of the mine.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Facility name / operator</td><td class="desc">Site name and operating company</td><td class="source">
+            <a class="s" href="https://www.sec.gov/edgar/search/">Company facility disclosures (SEC EDGAR)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://globalenergymonitor.org/projects/global-steel-plant-tracker/">Global Energy Monitor — Steel Plant Tracker</a>
+            <a class="s x" href="https://www.benchmarkminerals.com/">Benchmark Mineral Intelligence</a>
+            <a class="s x" href="https://www.spglobal.com/marketintelligence/en/campaigns/metals-mining">S&amp;P Global Market Intelligence</a>
+          </td></tr>
+          <tr><td class="field">Commodity processed</td><td class="desc">Copper, alumina, nickel matte, etc.</td><td class="source">
+            <a class="s" href="https://icsg.org/">International Copper Study Group (ICSG)</a>
+            <a class="s" href="https://international-aluminium.org/">International Aluminium Institute</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://insg.org/">International Nickel Study Group</a>
+            <a class="s x" href="https://ilzsg.org/">International Lead and Zinc Study Group</a>
+            <a class="s x" href="https://worldsteel.org/">World Steel Association</a>
+            <a class="s x" href="https://www.cobaltinstitute.org/">Cobalt Institute</a>
+          </td></tr>
+          <tr><td class="field">Processing capacity</td><td class="desc">Rated annual throughput</td><td class="source">
+            <a class="s" href="https://www.usgs.gov/centers/national-minerals-information-center">USGS Minerals Yearbook</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://icsg.org/">ICSG copper smelter &amp; refinery directory</a>
+            <a class="s x" href="https://international-aluminium.org/">IAI primary aluminium statistics</a>
+            <a class="s x" href="https://www.iea.org/topics/critical-minerals">IEA critical minerals processing analysis</a>
+            <a class="s x" href="https://www.bgs.ac.uk/mineralsuk/statistics/world-mineral-statistics/">BGS World Mineral Statistics</a>
+          </td></tr>
+          <tr><td class="field">Facility type</td><td class="desc">Concentrator, smelter, or refinery stage</td><td class="source">
+            <a class="s" href="https://www.sec.gov/edgar/search/">Company technical disclosures (SEC EDGAR)</a>
+            <a class="s x" href="https://www.sedarplus.ca/">Company technical reports (SEDAR+)</a>
+            <a class="s x" href="https://icsg.org/">ICSG</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ PORTS ============ -->
+    <section class="layer" id="ports" data-layer="Ports &amp; Terminals">
+      <div class="layerHead"><h2>Ports &amp; Terminals</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Bulk export terminals that connect mines to shipping lanes.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Port name / operator</td><td class="desc">Terminal identity and operating authority</td><td class="source">
+            <a class="s" href="https://www.iaphworldports.org/">International Association of Ports and Harbors (IAPH)</a>
+            <i class="alt">also — example port authorities</i>
+            <a class="s x" href="https://www.pilbaraports.com.au/">Pilbara Ports (Port Hedland, Dampier)</a>
+            <a class="s x" href="https://www.portodesantos.com.br/">Porto de Santos</a>
+            <a class="s x" href="https://www.porteconomics.eu/">PortEconomics</a>
+          </td></tr>
+          <tr><td class="field">Annual throughput</td><td class="desc">Bulk tonnage handled per year</td><td class="source">
+            <a class="s" href="https://unctad.org/topic/transport-and-trade-logistics/review-of-maritime-transport">UNCTAD Review of Maritime Transport</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.bts.gov/">US Bureau of Transportation Statistics</a>
+            <a class="s x" href="https://www.iwr.usace.army.mil/About/Technical-Centers/WCSC-Waterborne-Commerce-Statistics-Center/">US Army Corps — Waterborne Commerce Statistics</a>
+            <a class="s x" href="https://ec.europa.eu/eurostat/web/transport/database">Eurostat maritime transport statistics</a>
+          </td></tr>
+          <tr><td class="field">Commodities handled</td><td class="desc">Primary bulk cargo types</td><td class="source">
+            <a class="s" href="https://www.iaphworldports.org/">Port authority disclosures (via IAPH directory)</a>
+            <a class="s x" href="https://www.pilbaraports.com.au/">Pilbara Ports trade statistics</a>
+            <a class="s x" href="https://unctad.org/topic/transport-and-trade-logistics/review-of-maritime-transport">UNCTAD maritime data</a>
+          </td></tr>
+          <tr><td class="field">Berth count &amp; draft limits</td><td class="desc">Physical capacity constraints</td><td class="source">
+            <a class="s" href="https://msi.nga.mil/Publications/WPI">NGA World Port Index</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.iaphworldports.org/">Port authority technical specifications (IAPH)</a>
+            <a class="s x" href="https://www.iwr.usace.army.mil/">US Army Corps Institute for Water Resources</a>
+          </td></tr>
+          <tr><td class="field">Port coordinates &amp; code</td><td class="desc">Terminal location and UN/LOCODE identifier used to match AIS destinations</td><td class="source">
+            <a class="s" href="https://unece.org/trade/uncefact/unlocode">UN/LOCODE (UNECE)</a>
+            <a class="s" href="https://msi.nga.mil/Publications/WPI">NGA World Port Index</a>
+            <a class="s x" href="https://www.openstreetmap.org/">OpenStreetMap harbour &amp; quay features</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ CAMERAS ============ -->
+    <section class="layer" id="cameras" data-layer="Site Cameras">
+      <div class="layerHead"><h2>Site Cameras</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Public traffic and port cameras near mining regions, projected into the 3D scene.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Camera ID &amp; coordinates</td><td class="desc">Published mounting location</td><td class="source">
+            <a class="s" href="https://opendata.transport.nsw.gov.au/">Transport for NSW Open Data</a>
+            <a class="s" href="https://cwwp2.dot.ca.gov/">Caltrans CCTV / Commercial Wholesale Web Portal</a>
+            <a class="s" href="https://www.drivebc.ca/">DriveBC (British Columbia)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.digitraffic.fi/en/">Digitraffic (Finland road cameras)</a>
+            <a class="s x" href="https://api.windy.com/webcams">Windy Webcams API</a>
+            <a class="s x" href="https://www.mainroads.wa.gov.au/">Main Roads Western Australia</a>
+            <a class="s x" href="https://data.gov/">Data.gov (US open data catalog)</a>
+          </td></tr>
+          <tr><td class="field">Orientation (modeled)</td><td class="desc">Estimated bearing and field of view, calibrated by dragging a gizmo</td><td class="source">
+            <span class="plain">Estimated prior, refined by user calibration — not published by the operator. Terrain and 3D-tile geometry from:</span>
+            <a class="s x" href="https://cesium.com/platform/cesium-ion/content/cesium-world-terrain/">Cesium World Terrain</a>
+            <a class="s x" href="https://developers.google.com/maps/documentation/tile/3d-tiles">Google Photorealistic 3D Tiles</a>
+          </td></tr>
+          <tr><td class="field">Live feed URL</td><td class="desc">Streamed image or video snapshot</td><td class="source">
+            <a class="s" href="https://opendata.transport.nsw.gov.au/">Transport for NSW Live Traffic cameras</a>
+            <a class="s" href="https://www.drivebc.ca/">DriveBC highway cameras</a>
+            <a class="s x" href="https://cwwp2.dot.ca.gov/">Caltrans CCTV feeds</a>
+            <a class="s x" href="https://www.digitraffic.fi/en/">Digitraffic road weather cameras</a>
+            <a class="s x" href="https://api.windy.com/webcams">Windy Webcams</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ SEISMIC ============ -->
+    <section class="layer" id="seismic" data-layer="Induced Seismicity">
+      <div class="layerHead"><h2>Induced Seismicity</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Seismic events located near mining and processing regions.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Event magnitude &amp; depth</td><td class="desc">Standard seismological reporting fields</td><td class="source">
+            <a class="s" href="https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php">USGS Earthquake Hazards Program real-time feeds</a>
+            <a class="s" href="https://earthquake.usgs.gov/fdsnws/event/1/">USGS FDSN Event web service</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.emsc-csem.org/">EMSC (Euro-Mediterranean Seismological Centre)</a>
+            <a class="s x" href="https://www.isc.ac.uk/">International Seismological Centre</a>
+            <a class="s x" href="https://geofon.gfz-potsdam.de/">GEOFON (GFZ Potsdam)</a>
+          </td></tr>
+          <tr><td class="field">Epicenter coordinates &amp; time</td><td class="desc">Location and origin time of the event</td><td class="source">
+            <a class="s" href="https://earthquake.usgs.gov/fdsnws/event/1/">USGS FDSN Event web service</a>
+            <a class="s" href="https://earthquakes.ga.gov.au/">Geoscience Australia earthquakes</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.earthquakescanada.nrcan.gc.ca/">Earthquakes Canada (NRCan)</a>
+            <a class="s x" href="https://www.earthscope.org/">EarthScope Consortium (formerly IRIS)</a>
+          </td></tr>
+          <tr><td class="field">Distance to nearest operation</td><td class="desc">Computed client-side against the Active Mines layer</td><td class="source">
+            <span class="plain">Derived — not sourced directly. Mine locations from:</span>
+            <a class="s x" href="https://mrdata.usgs.gov/mrds/">USGS MRDS</a>
+          </td></tr>
+          <tr><td class="field">Induced-event context</td><td class="desc">Reference catalog of human-induced earthquakes, for comparing a nearby event against known cases</td><td class="source">
+            <a class="s" href="https://inducedearthquakes.org/">Human-Induced Earthquake Database (HiQuake)</a>
+            <a class="s x" href="https://www.usgs.gov/programs/earthquake-hazards/induced-earthquakes">USGS: Induced earthquakes</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ TAILINGS ============ -->
+    <section class="layer" id="tailings" data-layer="Tailings &amp; Environmental">
+      <div class="layerHead"><h2>Tailings &amp; Environmental</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Tailings storage facilities and known disturbance footprints.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Facility name &amp; operator</td><td class="desc">Dam or storage facility identity</td><td class="source">
+            <a class="s" href="https://tailing.grida.no/">Global Tailings Portal (GRID-Arendal / Church of England Pensions Board)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.wise-uranium.org/mdaf.html">WISE Uranium — chronology of major tailings dam failures</a>
+            <a class="s x" href="https://www.icold-cigb.org/">ICOLD (International Commission on Large Dams)</a>
+          </td></tr>
+          <tr><td class="field">Dam type &amp; height</td><td class="desc">Upstream, downstream, or centerline construction; crest height</td><td class="source">
+            <a class="s" href="https://tailing.grida.no/">Global Tailings Portal</a>
+            <a class="s" href="https://globaltailingsreview.org/global-industry-standard/">Global Industry Standard on Tailings Management</a>
+            <a class="s x" href="https://www.icmm.com/">ICMM tailings governance</a>
+            <a class="s x" href="https://www.icold-cigb.org/">ICOLD tailings dam bulletins</a>
+          </td></tr>
+          <tr><td class="field">Hazard classification</td><td class="desc">Consequence-of-failure rating</td><td class="source">
+            <a class="s" href="https://www.gov.br/anm/">ANM — Agência Nacional de Mineração (Brazil)</a>
+            <a class="s" href="https://www.msha.gov/">MSHA (United States)</a>
+            <a class="s x" href="https://tailing.grida.no/">Global Tailings Portal</a>
+            <a class="s x" href="https://globaltailingsreview.org/global-industry-standard/">GISTM consequence classification</a>
+          </td></tr>
+          <tr><td class="field">Disturbance footprint (modeled)</td><td class="desc">Approximate cleared-area extent around large sites</td><td class="source">
+            <span class="plain">Derived from imagery interpretation — illustrative, not a survey product. Reference data:</span>
+            <a class="s" href="https://doi.org/10.1594/PANGAEA.942325">Global mining area polygons (Maus et al., 2022)</a>
+            <a class="s x" href="https://www.globalforestwatch.org/">Global Forest Watch</a>
+            <a class="s x" href="https://dataspace.copernicus.eu/">Copernicus Sentinel-2 imagery</a>
+            <a class="s x" href="https://www.usgs.gov/landsat-missions">USGS Landsat archive</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ PRICES ============ -->
+    <section class="layer" id="prices" data-layer="Commodity Prices">
+      <div class="layerHead"><h2>Commodity Prices</h2><span class="authPill freekey">free key for live</span></div>
+      <p class="layerDesc">Ticker pricing for major metals and minerals.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Base metals spot price</td><td class="desc">Copper, nickel, zinc, aluminum</td><td class="source">
+            <a class="s" href="https://www.lme.com/">London Metal Exchange (LME)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://tradingeconomics.com/commodities">Trading Economics — commodities</a>
+            <a class="s x" href="https://www.alphavantage.co/documentation/#commodities">Alpha Vantage commodities API</a>
+            <a class="s x" href="https://www.metal.com/">Shanghai Metals Market</a>
+            <a class="s x" href="https://data.nasdaq.com/">Nasdaq Data Link</a>
+          </td></tr>
+          <tr><td class="field">Precious metals spot price</td><td class="desc">Gold, silver, platinum, palladium</td><td class="source">
+            <a class="s" href="https://www.cmegroup.com/markets/metals.html">CME Group / COMEX metals</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.lbma.org.uk/prices-and-data/precious-metal-prices">LBMA precious metal prices</a>
+            <a class="s x" href="https://www.kitco.com/">Kitco</a>
+            <a class="s x" href="https://metals-api.com/">Metals-API</a>
+          </td></tr>
+          <tr><td class="field">Bulk commodity reference price</td><td class="desc">Iron ore, bauxite, coal benchmark prices</td><td class="source">
+            <a class="s" href="https://www.worldbank.org/en/research/commodity-markets">World Bank Commodity Markets (“Pink Sheet”)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.imf.org/en/Research/commodity-prices">IMF Primary Commodity Prices</a>
+            <a class="s x" href="https://fred.stlouisfed.org/">FRED (St. Louis Fed) commodity series</a>
+            <a class="s x" href="https://www.sgx.com/">Singapore Exchange iron ore futures</a>
+            <a class="s x" href="https://www.argusmedia.com/">Argus Media</a>
+          </td></tr>
+          <tr><td class="field">Battery metals reference price</td><td class="desc">Lithium carbonate, cobalt</td><td class="source">
+            <a class="s" href="https://www.fastmarkets.com/">Fastmarkets price indices (free-tier delayed quotes)</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.benchmarkminerals.com/">Benchmark Mineral Intelligence</a>
+            <a class="s x" href="https://www.metal.com/">Shanghai Metals Market (SMM)</a>
+            <a class="s x" href="https://www.cobaltinstitute.org/">Cobalt Institute market reports</a>
+            <a class="s x" href="https://www.cmegroup.com/markets/metals.html">CME lithium &amp; cobalt futures</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ RAIL ============ -->
+    <section class="layer" id="rail" data-layer="Rail &amp; Bulk Routes">
+      <div class="layerHead"><h2>Rail &amp; Bulk Routes</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Ore rail corridors connecting mines to processing and export points.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Rail line geometry</td><td class="desc">Track path used to draw the corridor</td><td class="source">
+            <a class="s" href="https://wiki.openstreetmap.org/wiki/Key:railway">OpenStreetMap railway tagging</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://www.openrailwaymap.org/">OpenRailwayMap</a>
+            <a class="s x" href="https://overpass-turbo.eu/">Overpass Turbo (query tool)</a>
+            <a class="s x" href="https://www.naturalearthdata.com/downloads/10m-cultural-vectors/railroads/">Natural Earth railroads</a>
+            <a class="s x" href="https://www.bts.gov/">US BTS North American Rail Network</a>
+          </td></tr>
+          <tr><td class="field">Operator &amp; gauge</td><td class="desc">Owning railway and track gauge</td><td class="source">
+            <a class="s" href="https://wiki.openstreetmap.org/wiki/Key:gauge">OSM gauge &amp; operator tags</a>
+            <i class="alt">also — national and operator sources</i>
+            <a class="s x" href="https://www.artc.com.au/">Australian Rail Track Corporation</a>
+            <a class="s x" href="https://www.transnetfreightrail-tfr.net/">Transnet Freight Rail (South Africa)</a>
+            <a class="s x" href="https://www.bnsf.com/">BNSF Railway</a>
+            <a class="s x" href="https://www.vale.com/">Vale (Brazilian iron ore railways)</a>
+            <a class="s x" href="https://www.riotinto.com/">Rio Tinto (Pilbara rail network)</a>
+          </td></tr>
+          <tr><td class="field">Primary cargo</td><td class="desc">Commodity the line is best known for carrying</td><td class="source">
+            <span class="plain">Cross-referenced against nearby Active Mines / Ports entries, with operator reporting from:</span>
+            <a class="s x" href="https://www.sec.gov/edgar/search/">SEC EDGAR filings</a>
+            <a class="s x" href="https://www.riotinto.com/">Rio Tinto</a>
+            <a class="s x" href="https://www.vale.com/">Vale</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ HAUL ============ -->
+    <section class="layer" id="haul" data-layer="Haul Traffic">
+      <div class="layerHead"><h2>Haul Traffic</h2><span class="authPill free">simulated</span></div>
+      <p class="layerDesc">Vehicle movement on mapped mine-site haul roads.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Haul road network</td><td class="desc">Road geometry inside the mine footprint</td><td class="source">
+            <a class="s" href="https://wiki.openstreetmap.org/wiki/Tag:highway%3Dtrack">OpenStreetMap highway=track</a>
+            <a class="s x" href="https://wiki.openstreetmap.org/wiki/Tag:landuse%3Dquarry">OpenStreetMap landuse=quarry</a>
+            <i class="alt">also</i>
+            <a class="s x" href="https://overpass-api.de/">Overpass API</a>
+            <a class="s x" href="https://dataspace.copernicus.eu/">Sentinel-2 imagery (road tracing)</a>
+            <span class="plain" style="margin-top:6px">Site layout where the operator has published it.</span>
+          </td></tr>
+          <tr><td class="field">Vehicle positions</td><td class="desc">Simulated haul-truck movement along the network</td><td class="source">
+            <span class="plain">Simulated client-side — not a live observation of any real vehicle. Real fleet-management systems, for reference on how such telemetry works:</span>
+            <a class="s x" href="https://www.cat.com/">Caterpillar MineStar</a>
+            <a class="s x" href="https://www.komatsu.com/">Komatsu FrontRunner</a>
+            <a class="s x" href="https://www.wencomining.com/">Wenco (Hitachi)</a>
+            <a class="s x" href="https://hexagon.com/">Hexagon Mining</a>
+          </td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <!-- ============ SOURCE INDEX (built by script) ============ -->
+    <section class="layer" id="index">
+      <div class="layerHead"><h2>Source index</h2><span class="idxCount" id="idxCount"></span></div>
+      <p class="layerDesc">Every linked source on this page, alphabetically, with the layers that use it. Built automatically from the tables above.</p>
+      <div class="idxTools"><input type="search" id="idxFilter" placeholder="Filter sources…" aria-label="Filter sources"></div>
+      <div id="idxBody"></div>
+    </section>
+
+    <div class="noteBar">
+      <p><b>On accuracy.</b> Coordinates, tonnages, and classifications above are approximate and change as operations open, close, or are re-estimated. Several fields — camera orientation, disturbance footprints, and all haul traffic — are explicitly modeled or simulated rather than observed, and the console labels them as such wherever they're shown. This page describes the kind of source each field would draw from; it is not a live feed of any of these providers.</p>
+      <p><b>On links.</b> All links open third-party sites. Providers move, rename, and restructure pages, so a deep link can go stale; the domain shown under each link is the stable part. Check each provider's license and terms before redistributing data — OSM is ODbL, USGS products are generally public domain, and commercial feeds (AIS, Google, exchange prices, S&amp;P, Fastmarkets) carry their own restrictions.</p>
+    </div>
+  </main>
+</div>
+
+<footer>
+  <p class="footNote">Ore's Eye View — data dictionary. Part of the same reference set as the project README and Quick Start guide.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* Theme toggle */
+  var btn = document.getElementById('themeBtn');
+  try{
+    var saved = localStorage.getItem('oev_data_theme');
+    if(saved) document.documentElement.setAttribute('data-theme', saved);
+  }catch(e){}
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('oev_data_theme', next); }catch(e){}
+  });
+
+  /* Source links: open in new tab, show the URL beneath each */
+  var links = Array.prototype.slice.call(document.querySelectorAll('a.s'));
+  links.forEach(function(a){
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    var u = a.getAttribute('href').replace(/^https?:\/\//,'').replace(/\/$/,'');
+    var h = document.createElement('span');
+    h.className = 'host';
+    h.textContent = u;
+    a.parentNode.insertBefore(h, a.nextSibling);
+  });
+
+  /* Source index */
+  var map = {};
+  links.forEach(function(a){
+    var href = a.getAttribute('href');
+    var layer = a.closest('section.layer');
+    var lname = layer ? layer.getAttribute('data-layer') : '';
+    if(!map[href]) map[href] = { href:href, name:a.textContent.trim(), layers:[] };
+    if(lname && map[href].layers.indexOf(lname) === -1) map[href].layers.push(lname);
+  });
+  var items = Object.keys(map).map(function(k){ return map[k]; });
+  items.sort(function(a,b){ return a.name.toLowerCase().localeCompare(b.name.toLowerCase()); });
+
+  var body = document.getElementById('idxBody');
+  var count = document.getElementById('idxCount');
+  count.textContent = items.length + ' unique links';
+  var groups = {};
+  items.forEach(function(it){
+    var ch = it.name.charAt(0).toUpperCase();
+    if(!/[A-Z]/.test(ch)) ch = '#';
+    (groups[ch] = groups[ch] || []).push(it);
+  });
+  Object.keys(groups).sort().forEach(function(ch){
+    var g = document.createElement('div'); g.className = 'idxGroup';
+    var h = document.createElement('h3'); h.textContent = ch; g.appendChild(h);
+    var ul = document.createElement('ul'); ul.className = 'idxList';
+    groups[ch].forEach(function(it){
+      var li = document.createElement('li');
+      li.setAttribute('data-q', (it.name + ' ' + it.href + ' ' + it.layers.join(' ')).toLowerCase());
+      var a = document.createElement('a');
+      a.className = 's'; a.href = it.href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = it.name;
+      var host = document.createElement('span'); host.className = 'host';
+      host.textContent = it.href.replace(/^https?:\/\//,'').replace(/\/$/,'');
+      var ly = document.createElement('span'); ly.className = 'layers'; ly.textContent = 'Used in: ' + it.layers.join(', ');
+      li.appendChild(a); li.appendChild(host); li.appendChild(ly);
+      ul.appendChild(li);
+    });
+    g.appendChild(ul); body.appendChild(g);
+  });
+
+  document.getElementById('idxFilter').addEventListener('input', function(e){
+    var q = e.target.value.trim().toLowerCase(), shown = 0;
+    Array.prototype.forEach.call(body.querySelectorAll('li'), function(li){
+      var hit = !q || li.getAttribute('data-q').indexOf(q) !== -1;
+      li.hidden = !hit; if(hit) shown++;
+    });
+    Array.prototype.forEach.call(body.querySelectorAll('.idxGroup'), function(g){
+      g.hidden = !g.querySelector('li:not([hidden])');
+    });
+    count.textContent = q ? (shown + ' of ' + items.length + ' links') : (items.length + ' unique links');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ore's Eye View — Data Sources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c08; --bg2:#10130d; --panel:#12150f; --line:rgba(198,158,101,0.16); --line-strong:rgba(198,158,101,0.36);
+    --copper:#c1793f; --gold:#e3bd63; --seam:#7c9b72; --ice:#9fc9e8; --rust:#b06a4c;
+    --ink:#efe9db; --ink-dim:#a7ac9c; --ink-faint:#6d7264;
+    --serif:'Fraunces',Georgia,serif; --mono:'JetBrains Mono',Consolas,monospace; --sans:'Inter',-apple-system,sans-serif;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f2eee2; --bg2:#eae4d3; --panel:#faf7ef;
+      --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+      --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f2eee2; --bg2:#eae4d3; --panel:#faf7ef;
+    --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+    --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:66px;}
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; }
+  ::selection{ background:var(--copper); color:#0d0f0a; }
+
+  header.top{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 84%, transparent); border-bottom:1px solid var(--line);
+    padding:calc(14px + env(safe-area-inset-top,0px)) 22px 14px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .logo{ display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:600; font-size:17px; text-decoration:none; color:var(--ink); }
+  .logo svg{ flex:0 0 auto; }
+  header.top .sub{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); letter-spacing:0.06em; margin-left:2px; }
+  .themeToggle{ margin-left:auto; width:32px; height:32px; border-radius:50%; border:1px solid var(--line-strong); background:transparent; color:var(--ink); cursor:pointer; }
+
+  .layout{ display:grid; grid-template-columns:230px 1fr; gap:0; max-width:1180px; margin:0 auto; }
+  @media (max-width:860px){ .layout{ grid-template-columns:1fr; } .toc{ display:none; } }
+
+  .toc{ position:sticky; top:64px; align-self:start; padding:28px 18px 40px 22px; height:calc(100vh - 64px); overflow-y:auto; }
+  .toc div.tHead{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.1em; color:var(--copper); margin-bottom:12px; }
+  .toc a{ display:block; font-size:12.5px; color:var(--ink-dim); text-decoration:none; padding:5px 0; border-left:2px solid transparent; padding-left:10px; margin-left:-10px; }
+  .toc a:hover{ color:var(--ink); border-left-color:var(--line-strong); }
+
+  main{ padding:34px 26px 80px; max-width:900px; }
+  .pageHead{ margin-bottom:38px; }
+  .kicker{ font-family:var(--mono); font-size:11px; letter-spacing:0.12em; color:var(--copper); margin-bottom:14px; }
+  h1{ font-family:var(--serif); font-weight:600; font-size:clamp(28px,4vw,40px); margin:0 0 14px; letter-spacing:-0.01em; }
+  .lede{ font-size:15.5px; line-height:1.7; color:var(--ink-dim); max-width:70ch; margin:0; }
+
+  .legend{ display:flex; gap:18px; flex-wrap:wrap; margin-top:20px; font-family:var(--mono); font-size:11px; color:var(--ink-faint); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+
+  section.layer{ padding:34px 0; border-top:1px solid var(--line); }
+  section.layer:first-of-type{ border-top:1px solid var(--line); }
+  .layerHead{ display:flex; align-items:baseline; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  .layerHead h2{ font-family:var(--serif); font-weight:600; font-size:23px; margin:0; }
+  .authPill{ font-family:var(--mono); font-size:10.5px; padding:2px 9px; border-radius:20px; white-space:nowrap; }
+  .authPill.free{ background:color-mix(in srgb, var(--seam) 22%, transparent); color:var(--seam); }
+  .authPill.freekey{ background:color-mix(in srgb, var(--gold) 20%, transparent); color:var(--gold); }
+  .authPill.metered{ background:color-mix(in srgb, var(--rust) 24%, transparent); color:var(--rust); }
+  .layerDesc{ font-size:14px; color:var(--ink-dim); line-height:1.65; max-width:70ch; margin:0 0 18px; }
+
+  .dTable{ width:100%; border-collapse:collapse; font-size:13px; }
+  .dTable th{
+    text-align:left; font-family:var(--mono); font-size:10px; letter-spacing:0.07em; color:var(--ink-faint);
+    text-transform:uppercase; padding:0 12px 10px; border-bottom:1px solid var(--line-strong); font-weight:500;
+  }
+  .dTable td{ padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.5; }
+  .dTable tr:last-child td{ border-bottom:none; }
+  .dTable td.field{ font-family:var(--mono); font-size:12px; color:var(--ink); white-space:nowrap; font-weight:500; }
+  .dTable td.desc{ color:var(--ink-dim); }
+  .dTable td.source{ color:var(--ink-dim); font-size:12.5px; }
+  .dTable td.source b{ color:var(--ink); font-weight:600; }
+  .tableWrap{ overflow-x:auto; border:1px solid var(--line); border-radius:3px; background:var(--panel); padding:6px 2px; }
+
+  .noteBar{
+    border:1px solid var(--line-strong); border-left:3px solid var(--copper); border-radius:2px; padding:16px 18px;
+    font-size:12.5px; line-height:1.65; color:var(--ink-dim); background:var(--panel); margin-top:40px;
+  }
+  .noteBar b{ color:var(--ink); }
+
+  footer{ border-top:1px solid var(--line); padding:26px 22px 40px; max-width:1180px; margin:0 auto; }
+  .footNote{ font-size:11.5px; color:var(--ink-faint); max-width:70ch; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="#top" class="logo">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3 21L14 10M14 10L11 4L20 3L19 12L14 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    Ore's Eye View
+  </a>
+  <span class="sub">DATA DICTIONARY</span>
+  <button class="themeToggle" id="themeBtn" aria-label="Toggle theme">◐</button>
+</header>
+
+<div class="layout" id="top">
+  <nav class="toc">
+    <div class="tHead">LAYERS</div>
+    <a href="#mapstack">Map Stack</a>
+    <a href="#mines">Active Mines</a>
+    <a href="#deposits">Deposits &amp; Reserves</a>
+    <a href="#carriers">Bulk Carriers</a>
+    <a href="#refineries">Refineries &amp; Smelters</a>
+    <a href="#ports">Ports &amp; Terminals</a>
+    <a href="#cameras">Site Cameras</a>
+    <a href="#seismic">Induced Seismicity</a>
+    <a href="#tailings">Tailings &amp; Environmental</a>
+    <a href="#prices">Commodity Prices</a>
+    <a href="#rail">Rail &amp; Bulk Routes</a>
+    <a href="#haul">Haul Traffic</a>
+  </nav>
+
+  <main>
+    <div class="pageHead">
+      <div class="kicker">REFERENCE</div>
+      <h1>Data points &amp; sources</h1>
+      <p class="lede">Every field the console displays, layer by layer, and where it comes from. Fields marked <em>modeled</em> or <em>simulated</em> are estimates or illustrative reconstructions rather than direct observations — the console labels them as such wherever they appear.</p>
+      <div class="legend">
+        <span><i style="background:var(--seam)"></i>No key required</span>
+        <span><i style="background:var(--gold)"></i>Free key unlocks more</span>
+        <span><i style="background:var(--rust)"></i>Metered / paid provider</span>
+      </div>
+    </div>
+
+    <section class="layer" id="mapstack">
+      <div class="layerHead"><h2>Map Stack</h2><span class="authPill free">no key</span><span class="authPill freekey">free key for 3D</span></div>
+      <p class="layerDesc">The base imagery, terrain, and 3D tiles everything else is drawn on top of.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Satellite imagery tiles</td><td class="desc">Base 2D world imagery, keyless tier</td><td class="source"><b>Esri World Imagery</b> (Esri ArcGIS Online)</td></tr>
+          <tr><td class="field">Photorealistic 3D tiles</td><td class="desc">Textured city and terrain mesh</td><td class="source"><b>Google Photorealistic 3D Tiles</b>, served via Cesium ion or direct Google Map Tiles API</td></tr>
+          <tr><td class="field">World terrain mesh</td><td class="desc">Elevation data for draping entities on real ground</td><td class="source"><b>Cesium World Terrain</b> (Cesium ion)</td></tr>
+          <tr><td class="field">Vector basemap &amp; place names</td><td class="desc">Fallback basemap, road and place labels</td><td class="source"><b>OpenStreetMap</b> (OSM Foundation contributors)</td></tr>
+          <tr><td class="field">Place search / geocoding</td><td class="desc">Search-to-location lookup</td><td class="source"><b>Google Places API</b> (Map Tiles API, metered)</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="mines">
+      <div class="layerHead"><h2>Active Mines</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Open-pit and underground operations currently in production.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Mine name / ID</td><td class="desc">Canonical site name and internal record ID</td><td class="source"><b>USGS Mineral Resources Data System (MRDS)</b>; national geological surveys</td></tr>
+          <tr><td class="field">Operator / owner</td><td class="desc">Current operating company and parent, where disclosed</td><td class="source">Company investor disclosures; <b>S&amp;P Global Market Intelligence</b> (SNL Metals &amp; Mining)</td></tr>
+          <tr><td class="field">Primary / secondary commodity</td><td class="desc">Main product and any co-/by-products</td><td class="source"><b>USGS National Minerals Information Center</b> commodity summaries</td></tr>
+          <tr><td class="field">Mine type</td><td class="desc">Open-pit, underground, placer, or in-situ</td><td class="source">NI 43-101 / JORC technical reports; MRDS</td></tr>
+          <tr><td class="field">Operational status</td><td class="desc">Active, care-and-maintenance, or closed</td><td class="source">Company reporting; national mines inspectorate registers</td></tr>
+          <tr><td class="field">Coordinates</td><td class="desc">Site centroid, approximate</td><td class="source">MRDS; Geoscience Australia; Natural Resources Canada</td></tr>
+          <tr><td class="field">Annual production (modeled)</td><td class="desc">Estimated tonnage or ounces produced per year</td><td class="source"><b>USGS Minerals Yearbook</b>; company annual reports</td></tr>
+          <tr><td class="field">Workforce size</td><td class="desc">Approximate site employment</td><td class="source">Company disclosures, where public</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="deposits">
+      <div class="layerHead"><h2>Deposits &amp; Reserves</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Known mineral occurrences not yet in production, or reserve estimates at active sites.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Resource classification</td><td class="desc">Measured, indicated, or inferred</td><td class="source">JORC Code / NI 43-101 disclosure standards</td></tr>
+          <tr><td class="field">Tonnage &amp; grade</td><td class="desc">Contained metal estimate and ore grade</td><td class="source">Company technical reports; <b>USGS MRDS</b></td></tr>
+          <tr><td class="field">Deposit type</td><td class="desc">Porphyry, skarn, brine, laterite, VMS, etc.</td><td class="source">National geological survey deposit models</td></tr>
+          <tr><td class="field">Development stage</td><td class="desc">Exploration, feasibility, permitting, construction</td><td class="source">Company disclosures; regulatory filings</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="carriers">
+      <div class="layerHead"><h2>Bulk Carriers</h2><span class="authPill freekey">free key</span></div>
+      <p class="layerDesc">Live ore and mineral cargo vessels, tracked by transponder.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Vessel name / IMO / MMSI</td><td class="desc">Identifiers used to key a vessel across sources</td><td class="source"><b>AIS</b> (Automatic Identification System) transponder broadcasts</td></tr>
+          <tr><td class="field">Position, speed, heading</td><td class="desc">Live navigation state, refreshed every 15–30s</td><td class="source"><b>AISStream</b>; comparable feeds include MarineTraffic and Spire Maritime</td></tr>
+          <tr><td class="field">Draught</td><td class="desc">Indicates laden vs. ballast condition</td><td class="source">AIS voyage-related data</td></tr>
+          <tr><td class="field">Destination &amp; ETA</td><td class="desc">Self-reported by the vessel, not always accurate</td><td class="source">AIS voyage-related data</td></tr>
+          <tr><td class="field">Vessel class</td><td class="desc">Bulk carrier, ore carrier, general cargo</td><td class="source">IMO vessel registry (via AIS ship-type code)</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="refineries">
+      <div class="layerHead"><h2>Refineries &amp; Smelters</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Processing and conversion facilities downstream of the mine.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Facility name / operator</td><td class="desc">Site name and operating company</td><td class="source">Company facility disclosures</td></tr>
+          <tr><td class="field">Commodity processed</td><td class="desc">Copper, alumina, nickel matte, etc.</td><td class="source"><b>International Copper Study Group</b>; <b>International Aluminium Institute</b></td></tr>
+          <tr><td class="field">Processing capacity</td><td class="desc">Rated annual throughput</td><td class="source"><b>USGS Minerals Yearbook</b>; industry association statistics</td></tr>
+          <tr><td class="field">Facility type</td><td class="desc">Concentrator, smelter, or refinery stage</td><td class="source">Company technical disclosures</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="ports">
+      <div class="layerHead"><h2>Ports &amp; Terminals</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Bulk export terminals that connect mines to shipping lanes.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Port name / operator</td><td class="desc">Terminal identity and operating authority</td><td class="source">Port authority public data</td></tr>
+          <tr><td class="field">Annual throughput</td><td class="desc">Bulk tonnage handled per year</td><td class="source"><b>UNCTAD Review of Maritime Transport</b>; national transport ministries</td></tr>
+          <tr><td class="field">Commodities handled</td><td class="desc">Primary bulk cargo types</td><td class="source">Port authority disclosures</td></tr>
+          <tr><td class="field">Berth count &amp; draft limits</td><td class="desc">Physical capacity constraints</td><td class="source">Port authority technical specifications</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="cameras">
+      <div class="layerHead"><h2>Site Cameras</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Public traffic and port cameras near mining regions, projected into the 3D scene.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Camera ID &amp; coordinates</td><td class="desc">Published mounting location</td><td class="source">Municipal / regional transport department open-data portals</td></tr>
+          <tr><td class="field">Orientation (modeled)</td><td class="desc">Estimated bearing and field of view, calibrated by dragging a gizmo</td><td class="source">Estimated prior, refined by user calibration — not published by the operator</td></tr>
+          <tr><td class="field">Live feed URL</td><td class="desc">Streamed image or video snapshot</td><td class="source">Same city / port traffic-camera APIs</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="seismic">
+      <div class="layerHead"><h2>Induced Seismicity</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Seismic events located near mining and processing regions.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Event magnitude &amp; depth</td><td class="desc">Standard seismological reporting fields</td><td class="source"><b>USGS Earthquake Hazards Program</b> real-time feed</td></tr>
+          <tr><td class="field">Epicenter coordinates &amp; time</td><td class="desc">Location and origin time of the event</td><td class="source">USGS; regional networks such as Geoscience Australia</td></tr>
+          <tr><td class="field">Distance to nearest operation</td><td class="desc">Computed client-side against the Active Mines layer</td><td class="source">Derived — not sourced directly</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="tailings">
+      <div class="layerHead"><h2>Tailings &amp; Environmental</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Tailings storage facilities and known disturbance footprints.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Facility name &amp; operator</td><td class="desc">Dam or storage facility identity</td><td class="source"><b>Global Tailings Portal</b> (GRID-Arendal / Church of England Pensions Board)</td></tr>
+          <tr><td class="field">Dam type &amp; height</td><td class="desc">Upstream, downstream, or centerline construction; crest height</td><td class="source">Global Tailings Portal; company disclosure per the Global Industry Standard on Tailings Management</td></tr>
+          <tr><td class="field">Hazard classification</td><td class="desc">Consequence-of-failure rating</td><td class="source">National mine safety regulators (e.g., ANM Brazil, MSHA)</td></tr>
+          <tr><td class="field">Disturbance footprint (modeled)</td><td class="desc">Approximate cleared-area extent around large sites</td><td class="source">Derived from imagery interpretation — illustrative, not a survey product</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="prices">
+      <div class="layerHead"><h2>Commodity Prices</h2><span class="authPill freekey">free key for live</span></div>
+      <p class="layerDesc">Ticker pricing for major metals and minerals.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Base metals spot price</td><td class="desc">Copper, nickel, zinc, aluminum</td><td class="source"><b>London Metal Exchange (LME)</b></td></tr>
+          <tr><td class="field">Precious metals spot price</td><td class="desc">Gold, silver, platinum, palladium</td><td class="source"><b>CME Group / COMEX</b></td></tr>
+          <tr><td class="field">Bulk commodity reference price</td><td class="desc">Iron ore, bauxite, coal benchmark prices</td><td class="source"><b>World Bank Commodity Markets ("Pink Sheet")</b></td></tr>
+          <tr><td class="field">Battery metals reference price</td><td class="desc">Lithium carbonate, cobalt</td><td class="source">Market data provider (e.g., Fastmarkets-style indices), free-tier delayed quotes</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="rail">
+      <div class="layerHead"><h2>Rail &amp; Bulk Routes</h2><span class="authPill free">no key</span></div>
+      <p class="layerDesc">Ore rail corridors connecting mines to processing and export points.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Rail line geometry</td><td class="desc">Track path used to draw the corridor</td><td class="source"><b>OpenStreetMap</b> rail tagging</td></tr>
+          <tr><td class="field">Operator &amp; gauge</td><td class="desc">Owning railway and track gauge</td><td class="source">National rail infrastructure agencies; OSM tags</td></tr>
+          <tr><td class="field">Primary cargo</td><td class="desc">Commodity the line is best known for carrying</td><td class="source">Cross-referenced against nearby Active Mines / Ports entries</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="layer" id="haul">
+      <div class="layerHead"><h2>Haul Traffic</h2><span class="authPill free">simulated</span></div>
+      <p class="layerDesc">Vehicle movement on mapped mine-site haul roads.</p>
+      <div class="tableWrap"><table class="dTable">
+        <thead><tr><th>Data point</th><th>Description</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="field">Haul road network</td><td class="desc">Road geometry inside the mine footprint</td><td class="source"><b>OpenStreetMap</b>; site layout where published</td></tr>
+          <tr><td class="field">Vehicle positions</td><td class="desc">Simulated haul-truck movement along the network</td><td class="source">Simulated client-side — not a live observation of any real vehicle</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <div class="noteBar">
+      <b>On accuracy.</b> Coordinates, tonnages, and classifications above are approximate and change as operations open, close, or are re-estimated. Several fields — camera orientation, disturbance footprints, and all haul traffic — are explicitly modeled or simulated rather than observed, and the console labels them as such wherever they're shown. This page describes the kind of source each field would draw from; it is not a live feed of any of these providers.
+    </div>
+  </main>
+</div>
+
+<footer>
+  <p class="footNote">Ore's Eye View — data dictionary. Part of the same reference set as the project README and Quick Start guide.</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var btn = document.getElementById('themeBtn');
+  try{
+    var saved = localStorage.getItem('oev_data_theme');
+    if(saved) document.documentElement.setAttribute('data-theme', saved);
+  }catch(e){}
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('oev_data_theme', next); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

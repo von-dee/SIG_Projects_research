@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ore's Eye View — Mining &amp; Minerals Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380..700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c08; --bg2:#10130d; --bg3:#161a12;
+    --panel:#12150f; --line:rgba(198,158,101,0.16); --line-strong:rgba(198,158,101,0.36);
+    --copper:#c1793f; --gold:#e3bd63; --seam:#7c9b72; --ice:#9fc9e8;
+    --ink:#efe9db; --ink-dim:#a7ac9c; --ink-faint:#6d7264;
+    --serif:'Fraunces',Georgia,serif; --mono:'JetBrains Mono',Consolas,monospace; --sans:'Inter',-apple-system,sans-serif;
+    box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f2eee2; --bg2:#eae4d3; --bg3:#e1d9c4; --panel:#faf7ef;
+      --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+      --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f2eee2; --bg2:#eae4d3; --bg3:#e1d9c4; --panel:#faf7ef;
+    --line:rgba(120,84,30,0.2); --line-strong:rgba(120,84,30,0.42);
+    --ink:#211f14; --ink-dim:#5b5744; --ink-faint:#8a8468;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:70px;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--copper); color:#0d0f0a; }
+  a{ color:inherit; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+  section{ position:relative; }
+
+  /* ---------- background texture: contour lines ---------- */
+  .contours{
+    position:fixed; inset:0; z-index:-1; opacity:0.5; pointer-events:none;
+    background-image:
+      repeating-radial-gradient(circle at 18% 22%, transparent 0, transparent 38px, var(--line) 39px, transparent 40px),
+      repeating-radial-gradient(circle at 86% 68%, transparent 0, transparent 52px, var(--line) 53px, transparent 54px);
+  }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom:1px solid var(--line);
+    padding:calc(14px + env(safe-area-inset-top,0px)) 0 14px;
+  }
+  .navRow{ display:flex; align-items:center; gap:28px; }
+  .logo{ display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:600; font-size:19px; letter-spacing:0.01em; text-decoration:none; color:var(--ink); }
+  .logo svg{ flex:0 0 auto; }
+  .navLinks{ display:flex; gap:24px; margin-left:8px; flex:1; }
+  .navLinks a{ font-size:13.5px; text-decoration:none; color:var(--ink-dim); }
+  .navLinks a:hover{ color:var(--ink); }
+  .navCta{ display:flex; gap:10px; align-items:center; }
+  .btn{
+    font-family:var(--mono); font-size:12.5px; letter-spacing:0.02em; text-decoration:none;
+    padding:9px 16px; border-radius:2px; border:1px solid var(--line-strong); color:var(--ink);
+    display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+  }
+  .btn.primary{ background:var(--copper); color:#181206; border-color:var(--copper); font-weight:600; }
+  .btn.primary:hover{ background:var(--gold); border-color:var(--gold); }
+  .btn.ghost:hover{ border-color:var(--copper); color:var(--copper); }
+  .themeToggle{
+    width:32px; height:32px; border-radius:50%; border:1px solid var(--line-strong); background:transparent;
+    color:var(--ink); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  @media (max-width:760px){ .navLinks{ display:none; } }
+
+  /* ---------- hero ---------- */
+  .hero{ padding:76px 0 60px; overflow:hidden; }
+  .heroGrid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:48px; align-items:center; }
+  @media (max-width:880px){ .heroGrid{ grid-template-columns:1fr; } }
+  .kicker{
+    font-family:var(--mono); font-size:11.5px; letter-spacing:0.14em; color:var(--copper);
+    display:flex; align-items:center; gap:9px; margin-bottom:18px;
+  }
+  .kicker .dot{ width:6px; height:6px; border-radius:50%; background:var(--seam); box-shadow:0 0 0 3px color-mix(in srgb, var(--seam) 30%, transparent); animation:blink 2.4s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  h1{
+    font-family:var(--serif); font-weight:600; font-size:clamp(38px,6vw,64px); line-height:1.02; margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{ font-style:italic; color:var(--copper); }
+  .heroLede{ font-size:17px; line-height:1.65; color:var(--ink-dim); max-width:54ch; margin:0 0 30px; }
+  .heroBtns{ display:flex; gap:12px; flex-wrap:wrap; margin-bottom:36px; }
+  .heroBtns .btn{ padding:12px 20px; font-size:13px; }
+  .heroMeta{ display:flex; gap:26px; flex-wrap:wrap; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); }
+  .heroMeta b{ color:var(--ink); font-weight:600; }
+
+  /* hero visual: dot map */
+  .heroVisual{ position:relative; aspect-ratio:1/1; border:1px solid var(--line); border-radius:4px; overflow:hidden; background:var(--bg2); }
+  #heroCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .heroVisual .crosshair{ position:absolute; inset:0; pointer-events:none; }
+  .heroVisual .crosshair::before, .heroVisual .crosshair::after{
+    content:""; position:absolute; background:var(--line-strong);
+  }
+  .heroVisual .crosshair::before{ left:50%; top:0; bottom:0; width:1px; }
+  .heroVisual .crosshair::after{ top:50%; left:0; right:0; height:1px; }
+  .heroTag{
+    position:absolute; bottom:10px; left:10px; right:10px; display:flex; justify-content:space-between;
+    font-family:var(--mono); font-size:10px; color:var(--copper); letter-spacing:0.06em;
+  }
+
+  /* ---------- section headers ---------- */
+  .sectionHead{ margin-bottom:34px; max-width:60ch; }
+  .sectionNum{ font-family:var(--mono); font-size:11px; color:var(--copper); letter-spacing:0.1em; margin-bottom:10px; }
+  h2{ font-family:var(--serif); font-weight:600; font-size:clamp(26px,3.4vw,36px); margin:0 0 10px; letter-spacing:-0.01em; }
+  .sectionLede{ color:var(--ink-dim); font-size:15px; line-height:1.6; margin:0; }
+  section{ padding:64px 0; border-top:1px solid var(--line); }
+
+  /* ---------- capabilities (asymmetric) ---------- */
+  .capGrid{ display:grid; grid-template-columns:1.3fr 1fr 1fr; grid-template-rows:auto auto; gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (max-width:820px){ .capGrid{ grid-template-columns:1fr; } }
+  .cap{ background:var(--panel); padding:26px 24px; }
+  .cap.big{ grid-row:span 2; display:flex; flex-direction:column; justify-content:space-between; min-height:340px; }
+  .capLabel{ font-family:var(--mono); font-size:10.5px; color:var(--copper); letter-spacing:0.08em; margin-bottom:10px; }
+  .capTitle{ font-family:var(--serif); font-size:21px; margin:0 0 8px; }
+  .cap p{ color:var(--ink-dim); font-size:13.5px; line-height:1.6; margin:0; }
+  .capBig h3{ font-family:var(--serif); font-size:26px; margin:0 0 10px; line-height:1.15; }
+  .capBig p{ color:var(--ink-dim); font-size:14.5px; line-height:1.7; max-width:42ch; }
+  .stratum{ display:flex; height:10px; border-radius:1px; overflow:hidden; margin-top:20px; }
+  .stratum span{ flex:1; }
+
+  /* ---------- layers table ---------- */
+  .layerTable{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  .layerTable th{
+    text-align:left; font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em; color:var(--ink-faint);
+    text-transform:uppercase; padding:0 14px 12px; border-bottom:1px solid var(--line-strong); font-weight:500;
+  }
+  .layerTable td{ padding:14px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .layerTable tr:last-child td{ border-bottom:none; }
+  .layerName{ display:flex; align-items:center; gap:9px; font-weight:600; white-space:nowrap; }
+  .swatch{ width:9px; height:9px; border-radius:2px; flex:0 0 auto; }
+  .authPill{ font-family:var(--mono); font-size:11px; padding:2px 8px; border-radius:20px; white-space:nowrap; display:inline-block; }
+  .authPill.free{ background:color-mix(in srgb, var(--seam) 22%, transparent); color:var(--seam); }
+  .authPill.freekey{ background:color-mix(in srgb, var(--gold) 20%, transparent); color:var(--gold); }
+  .tableScroll{ overflow-x:auto; border:1px solid var(--line); border-radius:3px; padding:10px 4px; background:var(--panel); }
+
+  /* ---------- quick start ---------- */
+  .qsGrid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; }
+  @media (max-width:760px){ .qsGrid{ grid-template-columns:1fr; } }
+  .qsCard{ border:1px solid var(--line); border-radius:3px; padding:24px; background:var(--panel); }
+  .qsCard h3{ font-family:var(--serif); font-size:19px; margin:0 0 4px; }
+  .qsCard .qsSub{ font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-bottom:18px; }
+  .steps{ margin:0; padding:0; list-style:none; counter-reset:step; }
+  .steps li{ counter-increment:step; display:flex; gap:12px; padding:10px 0; border-top:1px solid var(--line); font-size:13.5px; }
+  .steps li:first-child{ border-top:none; }
+  .steps li::before{
+    content:counter(step); font-family:var(--mono); font-size:11px; color:var(--copper); flex:0 0 auto;
+    width:20px; height:20px; border:1px solid var(--line-strong); border-radius:50%; display:flex; align-items:center; justify-content:center;
+  }
+  pre{
+    background:var(--bg2); border:1px solid var(--line); border-radius:3px; padding:14px 16px; overflow-x:auto;
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; color:var(--ink-dim); margin:16px 0 0;
+  }
+  pre b{ color:var(--gold); font-weight:500; }
+
+  /* ---------- voice ---------- */
+  .voiceGrid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (max-width:760px){ .voiceGrid{ grid-template-columns:1fr; } }
+  .voiceCard{ background:var(--panel); padding:22px 24px; }
+  .voiceCard .vLabel{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em; color:var(--copper); margin-bottom:12px; }
+  .voiceCard blockquote{ margin:0 0 10px; font-family:var(--serif); font-size:16px; font-style:italic; line-height:1.5; color:var(--ink); padding-left:14px; border-left:2px solid var(--line-strong); }
+  .voiceCard blockquote:last-of-type{ margin-bottom:0; }
+
+  /* ---------- missions ---------- */
+  .missions{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); }
+  .mission{ background:var(--panel); padding:20px 22px; }
+  .mission .mLabel{ font-family:var(--mono); font-size:10px; color:var(--ink-faint); letter-spacing:0.08em; margin-bottom:8px; }
+  .mission h4{ font-family:var(--serif); font-size:16px; margin:0 0 6px; }
+  .mission p{ font-size:12.5px; color:var(--ink-dim); line-height:1.55; margin:0; }
+
+  /* ---------- disclaimer / footer ---------- */
+  .noteBar{
+    border:1px solid var(--line-strong); border-left:3px solid var(--copper); border-radius:2px; padding:18px 20px;
+    font-size:13px; line-height:1.65; color:var(--ink-dim); background:var(--panel);
+  }
+  .noteBar b{ color:var(--ink); }
+  footer{ border-top:1px solid var(--line); padding:34px 0 48px; }
+  .footRow{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .footRow .logo{ font-size:15px; }
+  .footLinks{ display:flex; gap:20px; font-family:var(--mono); font-size:11.5px; color:var(--ink-faint); }
+  .footLinks a{ text-decoration:none; }
+  .footLinks a:hover{ color:var(--copper); }
+  .footNote{ font-size:11.5px; color:var(--ink-faint); margin-top:18px; max-width:70ch; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="contours" aria-hidden="true"></div>
+
+<nav>
+  <div class="wrap navRow">
+    <a href="#top" class="logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 21L14 10M14 10L11 4L20 3L19 12L14 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      Ore's Eye View
+    </a>
+    <div class="navLinks">
+      <a href="#capabilities">Console</a>
+      <a href="#layers">Layers</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#voice">Voice</a>
+      <a href="#missions">Missions</a>
+    </div>
+    <div class="navCta">
+      <button class="themeToggle" id="themeBtn" aria-label="Toggle theme">◐</button>
+      <a class="btn ghost" href="#quickstart">Docs</a>
+      <a class="btn primary" href="#quickstart">Get started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap heroGrid">
+    <div>
+      <div class="kicker"><span class="dot"></span>OPEN SOURCE · MINING &amp; MINERALS INTELLIGENCE</div>
+      <h1>Every ore body,<br>tracked in <em>real&nbsp;time</em>.</h1>
+      <p class="heroLede">A console for the world's minerals supply chain — live bulk carriers, active mines, mineral deposits, refineries and public site cameras, staged on one photorealistic globe. Local-first. Built on public data.</p>
+      <div class="heroBtns">
+        <a class="btn primary" href="#quickstart">Start without keys →</a>
+        <a class="btn ghost" href="#capabilities">See what it does</a>
+      </div>
+      <div class="heroMeta">
+        <span><b>12</b> commodities</span>
+        <span><b>13</b> live &amp; reference layers</span>
+        <span><b>0</b> keys required to start</span>
+      </div>
+    </div>
+    <div class="heroVisual">
+      <canvas id="heroCanvas" width="600" height="600"></canvas>
+      <div class="crosshair"></div>
+      <div class="heroTag"><span>24.27°S 69.07°W</span><span>LIVE · ORE-GRADE THERMAL</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="capabilities">
+  <div class="wrap">
+    <div class="sectionHead">
+      <div class="sectionNum">console</div>
+      <h2>Ride the supply chain, not a spreadsheet.</h2>
+      <p class="sectionLede">Every layer here is something you can click into, follow, and ask questions of — not a static report.</p>
+    </div>
+    <div class="capGrid">
+      <div class="cap big">
+        <div>
+          <div class="capLabel">Featured mode</div>
+          <h3 class="capBig">Pit Cab</h3>
+          <p class="capBig">Drop into a tracked haul truck and ride it down the bench, real terrain holding underneath the whole way. Switch sensors mid-descent — Satellite into Ore-Grade Thermal — and jump straight to the next truck without leaving the cab.</p>
+        </div>
+        <div class="stratum" aria-hidden="true">
+          <span style="background:var(--copper)"></span><span style="background:var(--gold)"></span><span style="background:var(--seam)"></span><span style="background:var(--ice)"></span><span style="background:var(--copper)"></span>
+        </div>
+      </div>
+      <div class="cap">
+        <div class="capLabel">Tracking</div>
+        <p class="capTitle">Click-to-track anything</p>
+        <p>Lock onto a bulk carrier, a mine, or a haul truck. The camera follows, a trail draws behind it, and full metadata surfaces — one click hands you off to the nearest site camera.</p>
+      </div>
+      <div class="cap">
+        <div class="capLabel">Optics</div>
+        <p class="capTitle">Reskin reality</p>
+        <p>Five sensor looks over the same live globe: Satellite, Geological, Ore-Grade Thermal, Night, Seismic. The whole planet re-renders through a different lens.</p>
+      </div>
+      <div class="cap">
+        <div class="capLabel">Voice</div>
+        <p class="capTitle">Talk to the deposit map</p>
+        <p>"Which mines are producing cobalt today?" A realtime agent pulls live scene context and answers from what's actually on screen.</p>
+      </div>
+      <div class="cap">
+        <div class="capLabel">Annotation</div>
+        <p class="capTitle">Draw on the real world</p>
+        <p>Outline a tenement, measure pit to port, sketch a haul route — by voice or by hand. Everything persists until you clear the map.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="layers">
+  <div class="wrap">
+    <div class="sectionHead">
+      <div class="sectionNum">layers</div>
+      <h2>What's on the map</h2>
+      <p class="sectionLede">Thirteen layers, most with a keyless path. Add a provider key from inside the app to unlock live tracking and higher-resolution imagery.</p>
+    </div>
+    <div class="tableScroll">
+      <table class="layerTable">
+        <thead>
+          <tr><th>Layer</th><th>What you get</th><th>Source</th><th>Auth</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="layerName"><span class="swatch" style="background:var(--copper)"></span>Active Mines</span></td><td>Open-pit &amp; underground operations, commodity, status, operator</td><td>Public mining registries</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:var(--gold)"></span>Deposits &amp; Reserves</span></td><td>Known undeveloped resources with grade and tonnage estimates</td><td>Geological surveys</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:var(--ice)"></span>Bulk Carriers</span></td><td>Live ore and mineral cargo vessels worldwide</td><td>AIS feeds</td><td><span class="authPill freekey">free key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:#b06a4c"></span>Refineries &amp; Smelters</span></td><td>Processing and conversion facilities, by commodity</td><td>Public facility data</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:var(--seam)"></span>Ports &amp; Terminals</span></td><td>Bulk export terminals, throughput context</td><td>Port authority data</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:#9aa5b1"></span>Site Cameras</span></td><td>Public traffic &amp; port cameras near mining regions</td><td>City / port APIs</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:#e07a6a"></span>Induced Seismicity</span></td><td>Seismic events near mining regions, last 24h</td><td>USGS</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:#c9915a"></span>Tailings &amp; Environmental</span></td><td>Tailings facilities and disturbance footprints</td><td>Public environmental data</td><td><span class="authPill free">no key</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:var(--gold)"></span>Commodity Prices</span></td><td>Ticker for major metals &amp; minerals</td><td>Market data provider</td><td><span class="authPill freekey">free key for live</span></td></tr>
+          <tr><td><span class="layerName"><span class="swatch" style="background:#8f7bd0"></span>Rail &amp; Bulk Routes</span></td><td>Ore rail corridors connecting mines to ports</td><td>Public rail data</td><td><span class="authPill free">no key</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <div class="wrap">
+    <div class="sectionHead">
+      <div class="sectionNum">quick start</div>
+      <h2>Start without an account or API keys</h2>
+      <p class="sectionLede">Both paths open the same app with keyless satellite imagery and terrain. Mines, deposits, bulk carriers, seismic activity and commodity prices all work with nothing configured.</p>
+    </div>
+    <div class="qsGrid">
+      <div class="qsCard">
+        <h3>One click, no terminal</h3>
+        <p class="qsSub">Windows · macOS · Linux, via Pinokio</p>
+        <ol class="steps">
+          <li>Install or update Pinokio to 8.2 or later.</li>
+          <li>Open Ore's Eye View in Pinokio.</li>
+          <li>Click Install, then Start.</li>
+        </ol>
+      </div>
+      <div class="qsCard">
+        <h3>Terminal / coding agent</h3>
+        <p class="qsSub">Node.js 24.x (24.14.0+) or 26.x</p>
+        <pre>git clone https://github.com/example/ores-eye-view.git
+cd ores-eye-view
+<b>npm ci</b>
+<b>npm run dev</b></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="voice">
+  <div class="wrap">
+    <div class="sectionHead">
+      <div class="sectionNum">voice</div>
+      <h2>Talk to it</h2>
+      <p class="sectionLede">Needs an OpenAI key — without one the console still runs, the mic just goes quiet. The agent pulls live scene context before it answers.</p>
+    </div>
+    <div class="voiceGrid">
+      <div class="voiceCard">
+        <div class="vLabel">Direct it</div>
+        <blockquote>"Take me to the Atacama."</blockquote>
+        <blockquote>"Draw the haul route from the crusher to the stockpile — now fly it."</blockquote>
+      </div>
+      <div class="voiceCard">
+        <div class="vLabel">Interrogate it</div>
+        <blockquote>"How many bulk carriers are headed to Rotterdam right now?"</blockquote>
+        <blockquote>"Which mines are producing cobalt today?"</blockquote>
+      </div>
+      <div class="voiceCard">
+        <div class="vLabel">Annotate it</div>
+        <blockquote>"Outline this tenement."</blockquote>
+        <blockquote>"How far is the mine from the nearest port?"</blockquote>
+      </div>
+      <div class="voiceCard">
+        <div class="vLabel">Operate it</div>
+        <blockquote>"Switch to ore-grade thermal and turn on the deposits layer."</blockquote>
+        <blockquote>"Track that carrier." → "Enter Pit Cab."</blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="missions">
+  <div class="wrap">
+    <div class="sectionHead">
+      <div class="sectionNum">field missions</div>
+      <h2>Once the basics click, run these</h2>
+    </div>
+    <div class="missions">
+      <div class="mission"><div class="mLabel">SHIPMENT</div><h4>Follow the ore</h4><p>Track a laden bulk carrier out of a copper port across open ocean to the destination smelter.</p></div>
+      <div class="mission"><div class="mLabel">PIT</div><h4>Bench by bench</h4><p>Track a haul truck loading at the face, hop into the cab, ride it up to the crusher.</p></div>
+      <div class="mission"><div class="mLabel">MARKET</div><h4>Price the move</h4><p>Watch copper or lithium move on the ticker, then jump to the mines producing it today.</p></div>
+      <div class="mission"><div class="mLabel">GROUND</div><h4>Ask the ground</h4><p>Check whether a Copperbelt cluster has registered a seismic event this week.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="responsible">
+  <div class="wrap">
+    <div class="noteBar">
+      <b>Responsible &amp; open.</b> Ore's Eye View runs on public data, clear sources, and local-first execution — anything involving a private key is brokered server-side. Data may be delayed, incomplete, modeled, or wrong; this is an exploratory visualization, not a tool for investment, operational, safety-critical, or navigational decisions. Verify anything that matters against authoritative sources.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footRow">
+      <a href="#top" class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 21L14 10M14 10L11 4L20 3L19 12L14 10Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        Ore's Eye View
+      </a>
+      <div class="footLinks">
+        <a href="#capabilities">Console</a>
+        <a href="#layers">Layers</a>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#voice">Voice</a>
+      </div>
+    </div>
+    <p class="footNote">An evolving open-source client for exploration and learning — a fast, hackable foundation, not a hardened production service. No deposit left uncharted.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var themeBtn = document.getElementById('themeBtn');
+  try{
+    var saved = localStorage.getItem('oev_landing_theme');
+    if(saved) document.documentElement.setAttribute('data-theme', saved);
+  }catch(e){}
+  themeBtn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('oev_landing_theme', next); }catch(e){}
+  });
+
+  /* Hero visual: rotating dotted globe, land points only, amber on dark */
+  var CONTINENTS = [
+    [[-168,66],[-140,60],[-125,49],[-117,32],[-97,16],[-85,9],[-80,8],[-77,9],[-75,35],[-60,47],[-65,58],[-95,70],[-130,70],[-165,68]],
+    [[-77,9],[-80,0],[-80,-18],[-70,-18],[-71,-30],[-75,-50],[-65,-55],[-58,-38],[-48,-25],[-38,0],[-60,10]],
+    [[-17,15],[-10,27],[10,32],[32,31],[43,12],[51,2],[40,-15],[33,-30],[18,-34],[12,-17],[4,6],[-10,10]],
+    [[-10,44],[0,38],[20,40],[30,45],[40,55],[25,65],[5,62],[-10,50]],
+    [[27,40],[40,55],[60,70],[90,73],[130,73],[142,55],[122,30],[95,15],[68,24],[48,30]],
+    [[95,5],[115,-9],[135,-3],[141,-9],[110,-7],[97,1]],
+    [[113,-22],[130,-12],[145,-16],[153,-28],[135,-35],[115,-34]]
+  ];
+  function pip(lon,lat,poly){
+    var inside=false;
+    for(var i=0,j=poly.length-1;i<poly.length;j=i++){
+      var xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];
+      var hit=((yi>lat)!==(yj>lat)) && (lon < (xj-xi)*(lat-yi)/((yj-yi)||1e-9)+xi);
+      if(hit) inside=!inside;
+    }
+    return inside;
+  }
+  function isLand(lon,lat){ for(var i=0;i<CONTINENTS.length;i++){ if(pip(lon,lat,CONTINENTS[i])) return true; } return false; }
+
+  var pts = [];
+  for(var lat=-80; lat<=80; lat+=6){
+    for(var lon=-180; lon<180; lon+=6){
+      pts.push([lon,lat,isLand(lon,lat)]);
+    }
+  }
+  var canvas = document.getElementById('heroCanvas');
+  var ctx = canvas.getContext('2d');
+  var rot = 0;
+  var cssCopper = getComputedStyle(document.documentElement);
+  function draw(){
+    var w = canvas.width, h = canvas.height, cx=w/2, cy=h/2, R=w/2-30;
+    ctx.clearRect(0,0,w,h);
+    var style = getComputedStyle(document.documentElement);
+    var copper = style.getPropertyValue('--copper').trim() || '#c1793f';
+    var seam = style.getPropertyValue('--seam').trim() || '#7c9b72';
+    ctx.strokeStyle = 'rgba(198,158,101,0.15)';
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+    rot += 0.0022;
+    var proj = [];
+    pts.forEach(function(p){
+      var lon=p[0]*Math.PI/180+rot, lat=p[1]*Math.PI/180;
+      var x=Math.cos(lat)*Math.sin(lon), y=Math.sin(lat), z=Math.cos(lat)*Math.cos(lon);
+      proj.push([x,y,z,p[2]]);
+    });
+    proj.sort(function(a,b){return a[2]-b[2];});
+    proj.forEach(function(p){
+      if(p[2] < -0.1) return;
+      var sx=cx+p[0]*R, sy=cy-p[1]*R;
+      var alpha = 0.2 + 0.75*((p[2]+1)/2);
+      ctx.fillStyle = p[3] ? hexA(copper,alpha) : hexA(seam, alpha*0.22);
+      var r = p[3] ? 2.6 : 1.4;
+      ctx.beginPath(); ctx.arc(sx,sy,r,0,Math.PI*2); ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  function hexA(hex, a){
+    hex = hex.replace('#','');
+    if(hex.length===3){ hex = hex.split('').map(function(c){return c+c;}).join(''); }
+    var r=parseInt(hex.substring(0,2),16), g=parseInt(hex.substring(2,4),16), b=parseInt(hex.substring(4,6),16);
+    return 'rgba('+r+','+g+','+b+','+a+')';
+  }
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

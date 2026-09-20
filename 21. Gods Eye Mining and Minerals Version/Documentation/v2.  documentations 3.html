@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTHERLODE — Field Manual (ML-DOC-001)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04080c;--bg2:#060d13;--panel:#0a1319;--brd:#183242;--brd2:#234a5e;
+  --acc:#ffb454;--grn:#39d98a;--red:#ff5f56;--cy:#5bd6dd;--dim:#5f7268;
+  --txt:#cfe0d6;--txt2:#9fb2a8;--mono:'IBM Plex Mono',monospace;--head:'Chakra Petch',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:13.5px/1.75 var(--mono);overflow-x:hidden}
+::selection{background:rgba(255,180,84,.3)}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--brd2)}
+::-webkit-scrollbar-track{background:var(--bg)}
+a{color:var(--cy);text-decoration:none}
+a:hover{color:var(--acc)}
+
+/* ---- layout ---- */
+.doc{display:flex;min-height:100vh}
+#side{position:sticky;top:0;width:272px;height:100vh;overflow-y:auto;flex:none;
+  background:var(--bg2);border-right:1px solid var(--brd);padding:18px 0 40px;z-index:20}
+#side .sbrand{padding:10px 20px 14px;border-bottom:1px solid var(--brd);margin-bottom:10px}
+#side .sbrand b{font-family:var(--head);letter-spacing:.2em;font-size:15px;color:#fff;display:block}
+#side .sbrand span{font-size:9px;letter-spacing:.24em;color:var(--dim)}
+#side .sgroup{font-size:9px;letter-spacing:.26em;color:var(--dim);padding:16px 20px 5px}
+#side a{display:flex;gap:9px;padding:4px 20px;font-size:11.5px;color:var(--txt2);border-left:2px solid transparent}
+#side a .n{color:var(--dim);font-size:9.5px;min-width:20px;padding-top:1px}
+#side a:hover{color:var(--txt);background:rgba(255,180,84,.04)}
+#side a.on{color:var(--acc);border-left-color:var(--acc);background:rgba(255,180,84,.06)}
+main{flex:1;min-width:0;max-width:960px;margin:0 auto;padding:0 34px 120px}
+section{padding-top:54px;scroll-margin-top:8px}
+h2{font-family:var(--head);font-size:21px;letter-spacing:.12em;color:#fff;margin-bottom:4px}
+h2 .sn{color:var(--acc);margin-right:12px;font-size:15px;letter-spacing:.2em}
+h2+p.lead{color:var(--txt2);margin-bottom:18px;font-size:12.5px}
+h3{font-family:var(--head);font-size:13px;letter-spacing:.18em;color:var(--acc);margin:28px 0 8px}
+h4{font-size:11px;letter-spacing:.16em;color:var(--txt);margin:18px 0 6px}
+p{margin:8px 0}
+b{color:var(--txt)} .dim{color:var(--dim)} .grn{color:var(--grn)} .rd{color:var(--red)} .amb{color:var(--acc)} .cyn{color:var(--cy)}
+code{background:rgba(0,0,0,.4);border:1px solid var(--brd);padding:0 5px;font-size:11.5px;color:var(--acc)}
+pre{background:#02060a;border:1px solid var(--brd);padding:12px 16px;overflow-x:auto;font-size:11.5px;line-height:1.65;margin:10px 0;color:var(--txt)}
+pre b{color:var(--grn)} pre i{color:var(--dim);font-style:normal} pre em{color:var(--acc);font-style:normal}
+table{width:100%;border-collapse:collapse;font-size:11.5px;margin:12px 0}
+th{font-family:var(--head);font-size:10px;letter-spacing:.16em;color:var(--dim);text-align:left;
+  border-bottom:1px solid var(--brd2);padding:6px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--brd);padding:6px 9px;vertical-align:top}
+tr:hover td{background:rgba(255,180,84,.03)}
+.note{border:1px solid var(--brd2);border-left:3px solid var(--acc);background:rgba(255,180,84,.04);
+  padding:10px 16px;margin:14px 0;font-size:12px}
+.note.red{border-left-color:var(--red);background:rgba(255,95,86,.04)}
+.note.grn{border-left-color:var(--grn);background:rgba(57,217,138,.04)}
+.note .nt{font-family:var(--head);font-size:10px;letter-spacing:.2em;color:var(--acc);display:block;margin-bottom:3px}
+kbd{border:1px solid var(--brd2);background:#02060a;padding:1px 7px;font-size:11px;color:var(--acc);white-space:nowrap}
+.cmd{display:inline-block;background:#02060a;border:1px solid var(--brd2);color:var(--grn);
+  padding:1px 8px;font-size:11.5px;cursor:pointer;white-space:nowrap}
+.cmd:hover{border-color:var(--grn)}
+ul.tick{list-style:none;margin:8px 0}
+ul.tick li{padding:2px 0 2px 22px;position:relative}
+ul.tick li::before{content:'▸';position:absolute;left:4px;color:var(--acc)}
+
+/* ---- hero ---- */
+.hero{padding:64px 0 10px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+.hero .doccode{font-size:10px;letter-spacing:.3em;color:var(--dim)}
+.hero h1{font-family:var(--head);font-size:44px;letter-spacing:.14em;color:#fff;margin:6px 0}
+.hero .tag{color:var(--txt2);font-size:13px;max-width:640px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 8px}
+.chip{font-size:9px;letter-spacing:.16em;border:1px solid var(--brd2);padding:3px 9px;color:var(--txt2)}
+.chip.on{color:var(--grn);border-color:var(--grn)}
+.chip.amb{color:var(--acc);border-color:var(--acc)}
+
+/* ---- interface map ---- */
+.ui-map{border:1px solid var(--brd2);background:var(--bg2);margin:14px 0;font-size:9px;letter-spacing:.1em}
+.um-top{border-bottom:1px solid var(--brd);padding:7px 10px;color:var(--dim);display:flex;justify-content:space-between}
+.um-mid{display:grid;grid-template-columns:120px 1fr 130px;min-height:150px}
+.um-left{border-right:1px solid var(--brd);padding:7px 10px;color:var(--dim)}
+.um-right{border-left:1px solid var(--brd);padding:7px 10px;color:var(--dim)}
+.um-canvas{position:relative;background:radial-gradient(circle at 50% 55%,#071c2c 0%,#04080c 70%);color:var(--dim);padding:7px 10px}
+.um-canvas .ball{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;
+  border:1px solid rgba(57,217,138,.5);background:radial-gradient(circle at 40% 40%,#0a2c3e,#05141f 75%)}
+.um-hud{position:absolute;top:4px;left:50%;transform:translateX(-50%);border:1px solid var(--brd);padding:1px 8px;background:rgba(0,0,0,.4)}
+.um-style{border-top:1px solid var(--brd);padding:5px 10px;color:var(--dim);text-align:center}
+.um-bottom{display:grid;grid-template-columns:1.6fr 1fr;border-top:1px solid var(--brd)}
+.um-console{border-right:1px solid var(--brd);padding:7px 10px;color:var(--dim)}
+.um-ticker{padding:7px 10px;color:var(--dim)}
+.b{display:inline-block;background:var(--acc);color:#04080c;font-weight:700;padding:0 5px;margin-left:6px;font-size:9px}
+.ul-list li{padding:5px 0;border-bottom:1px dashed var(--brd);display:flex;gap:10px;align-items:baseline}
+
+/* ---- sensor cards ---- */
+.sen{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px;margin:14px 0}
+.senc{border:1px solid var(--brd);background:var(--panel);padding:12px}
+.senc .st{font-family:var(--head);letter-spacing:.14em;font-size:12px;color:#fff;display:flex;justify-content:space-between}
+.senc .st span{color:var(--dim);font-size:10px}
+.sw{display:flex;height:26px;margin:9px 0 6px;border:1px solid var(--brd)}
+.sw i{flex:1}
+.senc p{font-size:10.5px;color:var(--txt2);margin:4px 0 0}
+
+/* ---- glyph legend ---- */
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin:12px 0}
+.glc{border:1px solid var(--brd);background:var(--panel);padding:9px 12px;font-size:11px}
+.glc .g{font-size:17px;margin-right:9px;color:var(--acc)}
+.glc b{display:block;font-size:10px;letter-spacing:.12em;color:#fff}
+.glc span{color:var(--dim);font-size:10px}
+
+/* ---- directory ---- */
+#dtools{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}
+#dsearch{flex:1;min-width:200px;background:#02060a;border:1px solid var(--brd2);color:var(--txt);
+  font:12px var(--mono);padding:6px 10px;outline:none}
+#dsearch:focus{border-color:var(--acc)}
+.fchips{display:flex;gap:5px;flex-wrap:wrap}
+.fc{font:10px var(--mono);letter-spacing:.08em;border:1px solid var(--brd2);color:var(--txt2);
+  padding:3px 9px;cursor:pointer;background:transparent}
+.fc.on{border-color:var(--acc);color:var(--acc)}
+#dcount{font-size:10px;color:var(--dim);letter-spacing:.14em;margin:6px 0}
+#dt thead th{position:sticky;top:0;background:var(--bg2)}
+#dt td{font-size:11px}
+tr.det{display:none}
+tr.det.show{display:table-row}
+tr.det td{background:#02060a;border-bottom:1px solid var(--brd);color:var(--txt2);font-size:11px}
+tr.main{cursor:pointer}
+.glyph{display:inline-block;width:16px;font-size:12px}
+.coms i{display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:middle}
+.stA{color:var(--grn)} .stD{color:var(--cy)} .stC{color:var(--dim)}
+.hz{padding:1px 5px;border:1px solid;font-size:9px;letter-spacing:.08em}
+
+/* ---- misc ---- */
+.tourbox{border:1px solid var(--brd);background:var(--panel);margin:10px 0;padding:10px 14px}
+.tourbox .tt{font-family:var(--head);font-size:11px;letter-spacing:.2em;color:var(--acc)}
+.tourbox ol{margin:6px 0 2px 22px;font-size:11.5px;color:var(--txt2)}
+svg.pitfig{border:1px solid var(--brd);background:#02060a;display:block;width:100%;max-width:340px;margin:8px 0}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--panel);
+  border:1px solid var(--acc);color:var(--acc);padding:6px 16px;font-size:11px;letter-spacing:.12em;
+  opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
+#toast.show{opacity:1}
+#top-btn{position:fixed;right:22px;bottom:22px;z-index:50;background:var(--panel);border:1px solid var(--brd2);
+  color:var(--txt2);padding:6px 11px;cursor:pointer;font:10px var(--mono);letter-spacing:.2em}
+#top-btn:hover{border-color:var(--acc);color:var(--acc)}
+.pitgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+@media(max-width:900px){
+  .doc{display:block}
+  #side{position:relative;width:100%;height:auto;display:flex;flex-wrap:wrap;padding:8px}
+  #side .sbrand,#side .sgroup{display:none}
+  #side a{padding:4px 10px;border:1px solid var(--brd);margin:2px}
+  #side a.on{border-color:var(--acc)}
+  main{padding:0 16px 80px}
+  .hero h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<!-- ============ SIDEBAR ============ -->
+<nav id="side">
+  <div class="sbrand"><b>MOTHERLODE</b><span>FIELD MANUAL · ML-DOC-001</span></div>
+  <div class="sgroup">GETTING STARTED</div>
+  <a href="#overview"><span class="n">01</span>OVERVIEW</a>
+  <a href="#quickstart"><span class="n">02</span>QUICK START</a>
+  <a href="#firstfive"><span class="n">03</span>FIRST FIVE MINUTES</a>
+  <div class="sgroup">INTERFACE</div>
+  <a href="#interface"><span class="n">04</span>SCREEN ANATOMY</a>
+  <a href="#globe"><span class="n">05</span>THE GLOBE</a>
+  <a href="#layers"><span class="n">06</span>SENSORS &amp; LAYERS</a>
+  <a href="#commodities"><span class="n">07</span>COMMODITY REFERENCE</a>
+  <a href="#glyphs"><span class="n">08</span>CONTACT GLYPHS</a>
+  <a href="#tracking"><span class="n">09</span>TRACKING &amp; TELEMETRY</a>
+  <a href="#pit"><span class="n">10</span>PIT MODE</a>
+  <a href="#sensors"><span class="n">11</span>SENSOR STACK</a>
+  <a href="#detection"><span class="n">12</span>DETECTION MESH</a>
+  <div class="sgroup">OPERATIONS</div>
+  <a href="#console"><span class="n">13</span>THE CONSOLE</a>
+  <a href="#tours"><span class="n">14</span>MISSIONS &amp; TOURS</a>
+  <a href="#wire"><span class="n">15</span>THE WIRE</a>
+  <a href="#ticker"><span class="n">16</span>COMMODITY TICKER</a>
+  <a href="#seismic"><span class="n">17</span>SEISMICITY</a>
+  <a href="#share"><span class="n">18</span>SHARE LINKS</a>
+  <div class="sgroup">DATA</div>
+  <a href="#directory"><span class="n">19</span>SITE DIRECTORY</a>
+  <a href="#sources"><span class="n">20</span>SOURCES &amp; HONESTY</a>
+  <div class="sgroup">REFERENCE</div>
+  <a href="#hood"><span class="n">21</span>UNDER THE HOOD</a>
+  <a href="#keyboard"><span class="n">22</span>KEYBOARD MAP</a>
+  <a href="#troubleshooting"><span class="n">23</span>TROUBLESHOOTING</a>
+  <a href="#extending"><span class="n">24</span>EXTENDING IT</a>
+  <a href="#appendix"><span class="n">25</span>APPENDIX</a>
+</nav>
+
+<!-- ============ MAIN ============ -->
+<main>
+
+<header class="hero">
+  <div class="doccode">ML-DOC-001 · FIELD MANUAL · REVISION B</div>
+  <h1>MOTHERLODE</h1>
+  <div class="tag">A mineral reconnaissance satellite in your browser — the deposits are real, the data is public. This manual documents every panel, layer, command, tour and record in the console. Keyless. Offline. One file.</div>
+  <div class="chips">
+    <span class="chip on">KEYLESS · LOCAL</span>
+    <span class="chip">SINGLE HTML FILE</span>
+    <span class="chip">v0.1.1</span>
+    <span class="chip">MIT</span>
+    <span class="chip amb">140 SITES · 18 COMMODITIES · 7 SENSORS</span>
+  </div>
+  <div class="note red" style="margin-top:16px"><span class="nt">READ FIRST — DATA HONESTY</span>
+  Deposit positions and assay figures are compiled from public sources and are approximate. Prices, telemetry, incidents and seismicity are simulated locally and labeled as such. This console is for exploration and learning — not for investment decisions, operational planning, or anything safety-critical. Verify with authoritative sources.</div>
+</header>
+
+<!-- 01 -->
+<section id="overview">
+  <h2><span class="sn">ML-01</span>OVERVIEW</h2>
+  <p class="lead">What MOTHERLODE is, and the philosophy behind it.</p>
+  <p>MOTHERLODE puts the world's mineral intelligence into one explorable console: <b>122 real mines</b> across 18 commodities, <b>11 tailings facility records</b> with consequence ratings, <b>7 processing plants</b>, a simulated commodity wire, incident feed and seismicity monitor — all rendered on a stylized vector globe you can spin, zoom and interrogate.</p>
+  <p>It borrows the visual grammar of a classified ops room and builds it entirely from open, public signals. No accounts, no API keys, no network calls. Everything runs inside one HTML file on your machine.</p>
+  <h3>THE FOUR THINGS IT DOES</h3>
+  <ul class="tick">
+    <li><b>Survey</b> — light up commodity layers on the globe, from copper kingdoms to the Lithium Triangle, and see production, operator and assay data for each contact.</li>
+    <li><b>Track</b> — click any mine, dam or smelter. The camera locks on, draws assay rings, and raises a live telemetry card.</li>
+    <li><b>Dive</b> — enter <b>Pit Mode</b>: modeled open pits with haul ramps and trucks, underground shaft sections, brine pond grids, tailings cross-sections.</li>
+    <li><b>Command</b> — a local console parser: type <i>"track grasberg"</i>, <i>"show lithium"</i>, <i>"nvg"</i>, <i>"tour copper"</i>. No microphone, no key, no cloud.</li>
+  </ul>
+  <div class="note"><span class="nt">THE LINE</span>
+  MOTHERLODE models sites, infrastructure and public data. It does not build features for named-person search or tracking individuals. <b>People are not a query type here.</b></div>
+</section>
+
+<!-- 02 -->
+<section id="quickstart">
+  <h2><span class="sn">ML-02</span>QUICK START</h2>
+  <p class="lead">From zero to a live globe in one step.</p>
+  <ol style="margin:10px 0 10px 22px">
+    <li>Open <code>index.html</code> in any modern browser (Chrome, Edge, Firefox, Safari). No server, no build step, no install.</li>
+    <li>Watch the boot sequence (~4 seconds) — it mounts the local data stores and arms the simulated feeds.</li>
+    <li>Pick a first-run mission from the cards, or press <b>ENTER NOW</b> to go straight in with everything on.</li>
+  </ol>
+  <div class="note grn"><span class="nt">KEYLESS BOOT</span>
+  0 keys · 0 accounts · 100% local. The <b>POWER UP</b> button opens the sources panel out of tradition — in this build there is nothing to power up. In a full deployment, live feeds (USGS MRDS, Mindat, Global Tailings Portal, broker wires) would bolt onto the same layer pattern.</div>
+  <h3>REQUIREMENTS</h3>
+  <table>
+    <tr><th>Requirement</th><th>Detail</th></tr>
+    <tr><td>Browser</td><td>Any browser with Canvas 2D, Pointer Events, <code>URLSearchParams</code>, template literals — effectively everything since ~2019.</td></tr>
+    <tr><td>Network</td><td>Optional. Google Fonts loads if online and falls back to system monospace if not. The app itself makes zero requests.</td></tr>
+    <tr><td>Screen</td><td>Desktop first. Below 1180&nbsp;px wide, the side panels collapse — toggle them with the <b>▤ / ▥</b> header buttons.</td></tr>
+  </table>
+</section>
+
+<!-- 03 -->
+<section id="firstfive">
+  <h2><span class="sn">ML-03</span>FIRST FIVE MINUTES</h2>
+  <p class="lead">Five moves, in order, that show you the whole machine.</p>
+  <table>
+    <tr><th>#</th><th>Do this</th><th>What happens</th></tr>
+    <tr><td>1</td><td><span class="cmd" data-cmd="track escondida">track escondida</span></td><td>The camera flies to Chile's Antofagasta belt and locks onto the largest copper mine on Earth. Reticle up, telemetry card open, assay rings drawn.</td></tr>
+    <tr><td>2</td><td>Press <kbd>P</kbd></td><td>Pit Mode: a modeled open pit — terraced benches, spiral haul ramp, animated haul trucks, depth labels.</td></tr>
+    <tr><td>3</td><td>Press <kbd>Esc</kbd>, then <span class="cmd" data-cmd="show lithium">show lithium</span></td><td>The globe re-lights with only lithium: Greenbushes, Atacama brine, the Triangle. Then <span class="cmd" data-cmd="pit">pit</span> on Atacama shows solar evaporation ponds.</td></tr>
+    <tr><td>4</td><td>Press <kbd>3</kbd></td><td>The whole planet re-renders through night-vision green. Try 4 (Ironbow FLIR) and 7 (Spectral false-color).</td></tr>
+    <tr><td>5</td><td><span class="cmd" data-cmd="tour hazards">tour hazards</span></td><td>A guided flight over tailings case files: Brumadinho, Fundão, Mount Polley, Aznalcóllar, Cadia, El Mauro, Ok Tedi.</td></tr>
+  </table>
+  <p class="dim">Come home any time with <span class="cmd" data-cmd="reset">reset</span> or <kbd>G</kbd>.</p>
+</section>
+
+<!-- 04 -->
+<section id="interface">
+  <h2><span class="sn">ML-04</span>SCREEN ANATOMY</h2>
+  <p class="lead">Every element of the console, mapped.</p>
+  <div class="ui-map">
+    <div class="um-top">01 · HEADER — brand · data-store status · UTC clock · keyless chip · POWER UP · SHARE<span class="b">01</span></div>
+    <div class="um-mid">
+      <div class="um-left">02 · SENSORS &amp; LAYERS panel<span class="b">02</span></div>
+      <div class="um-canvas">05 · GLOBE CANVAS<span class="b">05</span><span class="um-hud">03 · HUD CENTER<span class="b">03</span></span><span class="ball"></span></div>
+      <div class="um-right">04 · CONTACTS / WIRE tabs<span class="b">04</span> … 06 · TRACK CARD<span class="b">06</span></div>
+    </div>
+    <div class="um-style">07 · SENSOR STYLEBAR 1–7<span class="b">07</span></div>
+    <div class="um-bottom">
+      <div class="um-console">08 · ML CONSOLE — log + input<span class="b">08</span></div>
+      <div class="um-ticker">09 · COMMODITY WIRE TICKER<span class="b">09</span></div>
+    </div>
+  </div>
+  <ul class="ul-list tick">
+    <li><span class="b">01</span> <b>Header</b> — live FPS, data-store check marks (MRDS / GTP / plants), the UTC clock, and the keyless status chip. SHARE serializes your session; POWER UP opens the sources &amp; honesty panel.</li>
+    <li><span class="b">02</span> <b>Sensors &amp; Layers panel</b> — display toggles, 18 commodity layer rows with live counts, hazard and infrastructure layers, reset and tour buttons. Full detail in ML-06.</li>
+    <li><span class="b">03</span> <b>HUD center</b> — view coordinates, derived altitude, contact count, active sensor, tracked target. Toggle with <kbd>H</kbd>.</li>
+    <li><span class="b">04</span> <b>Contacts / Wire tabs</b> — the roster of sites in view (or within 500 km of your target), and the incident feed. Click any row to fly and track.</li>
+    <li><span class="b">05</span> <b>Globe canvas</b> — drag to rotate, wheel/pinch to zoom, click to track. Star field, atmosphere limb, graticule, stylized vector continents.</li>
+    <li><span class="b">06</span> <b>Track card</b> — the telemetry dossier for your tracked contact: operator, method, assay, production, live SIM counters, and the PIT MODE / NEAREST handoff buttons.</li>
+    <li><span class="b">07</span> <b>Sensor stylebar</b> — the seven optics presets, keys <kbd>1</kbd>–<kbd>7</kbd>.</li>
+    <li><span class="b">08</span> <b>ML Console</b> — the local command parser. Arrow keys replay history. Full reference in ML-13.</li>
+    <li><span class="b">09</span> <b>Commodity ticker</b> — 16 simulated instruments scrolling continuously. Hover to freeze.</li>
+  </ul>
+</section>
+
+<!-- 05 -->
+<section id="globe">
+  <h2><span class="sn">ML-05</span>THE GLOBE</h2>
+  <p class="lead">Camera behavior and what the clicks do.</p>
+  <table>
+    <tr><th>Input</th><th>Effect</th></tr>
+    <tr><td><b>Drag</b></td><td>Rotate — yaw and tilt. Rotation sensitivity scales down as you zoom in. Release mid-motion for inertia glide.</td></tr>
+    <tr><td><b>Wheel / pinch</b></td><td>Zoom 0.9×–12×. Effective altitude is displayed in the HUD (≈19,000 km at 1× down to ≈2,000 km at 12×).</td></tr>
+    <tr><td><b>Click a contact</b></td><td>Track it: camera flies in, reticle locks, telemetry card opens, roster switches to "≤ 500 KM OF TARGET" mode.</td></tr>
+    <tr><td><b>Click empty space</b></td><td>Clears the current track and closes the card.</td></tr>
+    <tr><td><b>Auto-spin</b></td><td>After ~4 s of inactivity the globe drifts slowly westward. Toggle in the layers panel or <span class="cmd" data-cmd="spin on">spin on|off</span>.</td></tr>
+  </table>
+  <h4>ORIENTATION CUES</h4>
+  <ul class="tick">
+    <li>The <b>HUD center</b> readout gives the lat/lon under the crosshair of your view.</li>
+    <li>Graticule lines every 15° (toggle <b>GRID</b>).</li>
+    <li>When your tracked target rotates onto the far hemisphere, an <b>edge arrow</b> appears at the limb pointing toward it, with the name label.</li>
+    <li>A tracking circle plus corner brackets rides the target; faint lines run from it to all four screen edges.</li>
+  </ul>
+  <div class="note"><span class="nt">LOD — WHY MARKERS APPEAR AS YOU ZOOM</span>
+  Tier-1 sites (the majors — Escondida, Grasberg, Carajás, Muruntau…) always render. Tier-2 sites appear once zoom passes ≈1.7×. Labels follow the same ladder: tier-1 names at ≥2.0×, all names at ≥2.8×, or force everything with <kbd>L</kbd>.</div>
+</section>
+
+<!-- 06 -->
+<section id="layers">
+  <h2><span class="sn">ML-06</span>SENSORS &amp; LAYERS PANEL</h2>
+  <p class="lead">The left panel — everything you can switch on.</p>
+  <h3>DISPLAY</h3>
+  <table>
+    <tr><th>Toggle</th><th>Key</th><th>What it does</th></tr>
+    <tr><td>Detection Mesh</td><td><kbd>D</kbd></td><td>Screen-space bracket boxes with site IDs and confidence % on visible contacts (ML-12).</td></tr>
+    <tr><td>Force Labels</td><td><kbd>L</kbd></td><td>Draw every contact's name regardless of zoom.</td></tr>
+    <tr><td>Graticule</td><td>—</td><td>15° lat/lon grid over the globe.</td></tr>
+    <tr><td>Auto-Spin</td><td>—</td><td>Idle rotation. Off automatically while a target is tracked.</td></tr>
+    <tr><td>HUD Readout</td><td><kbd>H</kbd></td><td>The top-center coordinate/status strip.</td></tr>
+  </table>
+  <h3>COMMODITY LAYERS</h3>
+  <p>Eighteen commodity rows, grouped and color-coded, each showing a live site count. Click a row to toggle; <b>ALL ON / ALL OFF</b> for the master switch. Full reference in ML-07.</p>
+  <h3>HAZARDS &amp; INFRASTRUCTURE</h3>
+  <table>
+    <tr><th>Layer</th><th>Records</th><th>Detail</th></tr>
+    <tr><td>Tailings Facilities</td><td>11</td><td>Consequence-rated records; failed dams pulse red and carry an internal X. Legend: <span class="rd">FAILED</span> · <span class="amb">EXTREME</span> · HIGH · <span class="cyn">RIVERINE</span>. See ML-19.</td></tr>
+    <tr><td>Incident Blips</td><td>feed</td><td>Wire events with a site reference paint expanding rings on the globe for 8 s.</td></tr>
+    <tr><td>Seismicity (SIM)</td><td>rolling</td><td>Mining-region seismic events as expanding cyan rings (ML-17).</td></tr>
+    <tr><td>Processing Plants</td><td>7</td><td>Smelters and refineries — square glyphs with center dot.</td></tr>
+  </table>
+  <h3>OPERATIONS</h3>
+  <p><b>RESET GLOBE</b> returns to the full Earth (<kbd>G</kbd>). <b>TOUR ▸</b> cycles the five district tours (ML-14).</p>
+</section>
+
+<!-- 07 -->
+<section id="commodities">
+  <h2><span class="sn">ML-07</span>COMMODITY REFERENCE</h2>
+  <p class="lead">The 18 layers — colors, groups, counts and key sites. Generated live from the dataset.</p>
+  <div id="commtable"></div>
+  <div class="note"><span class="nt">MULTI-COMMODITY SITES</span>
+  A contact appears under every commodity it produces — Grasberg lights up under both Copper and Gold, Olympic Dam under Copper, Gold and Uranium, Antamina under Copper and Zinc-Lead. Toggling any one of its commodities on makes the site visible.</div>
+</section>
+
+<!-- 08 -->
+<section id="glyphs">
+  <h2><span class="sn">ML-08</span>CONTACT GLYPHS</h2>
+  <p class="lead">What each marker shape means, on the globe and in the roster.</p>
+  <div class="gl">
+    <div class="glc"><span class="g">▲</span><b>OPEN PIT</b><span>Surface mining — benches, ramps, haul fleet. e.g. Escondida, Bingham Canyon</span></div>
+    <div class="glc"><span class="g">●</span><b>UNDERGROUND</b><span>Shaft / decline / block cave. e.g. El Teniente, Mponeng, Oyu Tolgoi</span></div>
+    <div class="glc"><span class="g">◆</span><b>BRINE</b><span>Solar evaporation operations in salars. e.g. Atacama, Hombre Muerto</span></div>
+    <div class="glc"><span class="g">△</span><b>DEVELOPMENT</b><span>Not yet in production — studies, permitting, construction. e.g. Simandou, Thacker Pass</span></div>
+    <div class="glc"><span class="g">×</span><b>CLOSED / LEGACY</b><span>Mothballed or reclaimed. e.g. Ranger, Argyle, Hazelwood</span></div>
+    <div class="glc"><span class="g" style="color:#ff8a3c">■</span><b>TAILINGS FACILITY</b><span>Colored by consequence rating; failed dams pulse (ML-19)</span></div>
+    <div class="glc"><span class="g" style="color:#5bd6dd">◎</span><b>PROCESSING PLANT</b><span>Smelter / refinery node. e.g. Copper Cliff, Aughinish</span></div>
+  </div>
+  <p>Marker color follows the commodity's layer color in <b>TACTICAL</b> and <b>SPECTRAL</b> modes; CRT/NVG/NOIR render monochrome; the two FLIR modes render tier-1 sites hot and tier-2 sites cool.</p>
+</section>
+
+<!-- 09 -->
+<section id="tracking">
+  <h2><span class="sn">ML-09</span>TRACKING &amp; TELEMETRY</h2>
+  <p class="lead">Click-to-track, the card, and the handoff buttons.</p>
+  <h3>THE RETICLE</h3>
+  <ul class="tick">
+    <li>Rotating dashed ring + four corner brackets on the target.</li>
+    <li>Faint edge lines — a targeting computer feel.</li>
+    <li><b>Assay rings</b> at 40 / 80 / 160 km appear when zoomed past 2.5× — a sense of spatial context around the deposit.</li>
+    <li>Target ID tag: name + site code, offset from the reticle.</li>
+  </ul>
+  <h3>THE TRACK CARD</h3>
+  <table>
+    <tr><th>Field</th><th>Source</th></tr>
+    <tr><td>Site ID + method glyph</td><td>Generated code (e.g. <code>CU-001</code>) + mining method</td></tr>
+    <tr><td>Country / Operator</td><td>Public disclosures, approximate</td></tr>
+    <tr><td>Commodity chips</td><td>Colored per layer; TSFs show consequence rating instead</td></tr>
+    <tr><td>Production / Assay</td><td>Reported figures, approximate; TSFs show capacity &amp; status</td></tr>
+    <tr><td>Live strip</td><td>ORE TODAY / ENERGY / FLEET — random-walk simulators, labeled SIM</td></tr>
+  </table>
+  <h3>HANDOFFS</h3>
+  <ul class="tick">
+    <li><b>PIT MODE</b> — dive into the site's modeled geometry (ML-10).</li>
+    <li><b>NEAREST TSF</b> — flies to the closest tailings record and auto-enables the TSF layer if it was off.</li>
+    <li><b>NEAREST PLANT</b> — same, for smelters and refineries.</li>
+    <li><kbd>T</kbd> / <span class="cmd" data-cmd="next">next</span> — step through the roster in distance order, contact to contact.</li>
+  </ul>
+</section>
+
+<!-- 10 -->
+<section id="pit">
+  <h2><span class="sn">ML-10</span>PIT MODE</h2>
+  <p class="lead">The cockpit view of the mining world — five modeled scene types, one per contact kind. Enter with <kbd>P</kbd>, the card button, or <span class="cmd" data-cmd="pit">pit</span>. Exit with <kbd>Esc</kbd>.</p>
+  <div class="pitgrid">
+    <div>
+      <h4>OPEN PIT (▲)</h4>
+      <svg class="pitfig" viewBox="0 0 160 90">
+        <rect width="160" height="90" fill="#04101a"/>
+        <ellipse cx="80" cy="46" rx="62" ry="24" fill="#3a2c1c" stroke="#6b4a2f"/>
+        <ellipse cx="80" cy="50" rx="48" ry="19" fill="#33261a" stroke="#6b4a2f"/>
+        <ellipse cx="80" cy="55" rx="35" ry="14" fill="#2c2118" stroke="#6b4a2f"/>
+        <ellipse cx="80" cy="60" rx="22" ry="9" fill="#241a12" stroke="#6b4a2f"/>
+        <ellipse cx="80" cy="64" rx="10" ry="4" fill="#ffb454" opacity=".5"/>
+        <path d="M138,42 C120,50 100,58 88,64" fill="none" stroke="rgba(200,190,170,.8)" stroke-width="2.5"/>
+        <circle cx="110" cy="57" r="2.4" fill="#ffb454"/>
+      </svg>
+      <p class="dim">Nine terraced benches tinted by commodity, a spiral haul ramp, three animated trucks cycling rim-to-floor, bench depth labels (site-specific: Bingham −1,200 m, Chuquicamata −1,050 m…), equipment on the pit floor. Closed sites render rust-toned with a water pool and a CARE &amp; MAINTENANCE banner.</p>
+    </div>
+    <div>
+      <h4>UNDERGROUND (●)</h4>
+      <svg class="pitfig" viewBox="0 0 160 90">
+        <rect width="160" height="90" fill="#04101a"/>
+        <line x1="10" y1="18" x2="150" y2="18" stroke="#cfe0d6" stroke-width="1.5"/>
+        <path d="M70,18 L80,4 L90,18" fill="none" stroke="#ffb454" stroke-width="2"/>
+        <circle cx="80" cy="7" r="4" fill="none" stroke="#ffb454" stroke-width="1.5"/>
+        <line x1="80" y1="18" x2="80" y2="82" stroke="#cfe0d6" stroke-width="2"/>
+        <rect x="75" y="46" width="10" height="8" fill="#ffb454"/>
+        <g stroke="#cfe0d6" stroke-width="1">
+          <line x1="45" y1="32" x2="115" y2="32"/><line x1="38" y1="46" x2="122" y2="46"/>
+          <line x1="45" y1="60" x2="115" y2="60"/><line x1="38" y1="74" x2="122" y2="74"/>
+        </g>
+        <g fill="#ffd76a" opacity=".55">
+          <rect x="52" y="28" width="12" height="6"/><rect x="95" y="42" width="12" height="6"/><rect x="60" y="56" width="12" height="6"/>
+        </g>
+        <rect x="72" y="76" width="16" height="7" fill="#ffb454"/>
+      </svg>
+      <p class="dim">Headframe with sheave wheel, animated cage in the shaft, six levels with drifts and blinking stopes, vent raises, orepass to a bottom crusher. Depth labels are site-specific — Mponeng runs to −4,000 m, "deepest mine on Earth."</p>
+    </div>
+    <div>
+      <h4>BRINE PONDS (◆)</h4>
+      <svg class="pitfig" viewBox="0 0 160 90">
+        <rect width="160" height="90" fill="#04101a"/>
+        <g>
+          <rect x="18" y="22" width="18" height="12" fill="#a8e0ef"/><rect x="40" y="22" width="18" height="12" fill="#8ecde0"/>
+          <rect x="62" y="22" width="18" height="12" fill="#f2d9a0"/><rect x="84" y="22" width="18" height="12" fill="#e8b075"/>
+          <rect x="18" y="38" width="18" height="12" fill="#8ecde0"/><rect x="40" y="38" width="18" height="12" fill="#f2d9a0"/>
+          <rect x="62" y="38" width="18" height="12" fill="#e8b075"/><rect x="84" y="38" width="18" height="12" fill="#d97f5a"/>
+          <rect x="18" y="54" width="18" height="12" fill="#e8b075"/><rect x="40" y="54" width="18" height="12" fill="#d97f5a"/>
+        </g>
+        <path d="M120,60 C120,30 40,30 20,28" fill="none" stroke="#ffb454" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <rect x="118" y="58" width="8" height="8" fill="#ffb454"/>
+      </svg>
+      <p class="dim">A staged evaporation pond grid — five colors from dilute feed to concentrated brine, shimmering water, salt crusts on late stages, pump station and pipeline. Rendered for Atacama, Hombre Muerto, Olaroz.</p>
+    </div>
+    <div>
+      <h4>TAILINGS CROSS-SECTION (■)</h4>
+      <svg class="pitfig" viewBox="0 0 160 90">
+        <rect width="160" height="90" fill="#04101a"/>
+        <path d="M14,30 L40,34 L40,42 L14,42 Z" fill="#5c5040" stroke="#7a6a52"/>
+        <path d="M146,30 L120,34 L120,42 L146,42 Z" fill="#5c5040" stroke="#7a6a52"/>
+        <path d="M18,40 L46,44 L46,52 L18,52 Z" fill="#7a6a52" stroke="#7a6a52"/>
+        <path d="M142,40 L114,44 L114,52 L142,52 Z" fill="#7a6a52" stroke="#7a6a52"/>
+        <ellipse cx="80" cy="45" rx="36" ry="10" fill="rgba(70,130,160,.7)"/>
+        <line x1="96" y1="45" x2="96" y2="14" stroke="#ff8a3c" stroke-width="2"/>
+        <rect x="91" y="8" width="10" height="8" fill="none" stroke="#ff8a3c" stroke-width="1.5"/>
+        <circle cx="58" cy="45" r="2.5" fill="#ff5f56"/>
+      </svg>
+      <p class="dim">Staged embankment raises, the pond, a decant tower, and a blinking piezometer. Status banner per record — failed dams show a release-footprint note instead of water. For the 11 TSF records (ML-19).</p>
+    </div>
+    <div>
+      <h4>SITE PLAN (◎ / △ DEV)</h4>
+      <svg class="pitfig" viewBox="0 0 160 90">
+        <rect width="160" height="90" fill="#04101a"/>
+        <ellipse cx="46" cy="62" rx="30" ry="12" fill="none" stroke="#5bd6dd" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <rect x="90" y="34" width="22" height="12" fill="#141c22" stroke="#cfe0d6"/>
+        <rect x="90" y="52" width="22" height="8" fill="#141c22" stroke="#cfe0d6"/>
+        <rect x="122" y="42" width="14" height="12" fill="#141c22" stroke="#cfe0d6"/>
+        <line x1="100" y1="34" x2="100" y2="18" stroke="#cfe0d6"/><circle cx="100" cy="17" r="2.5" fill="#ff5f56"/>
+        <line x1="106" y1="34" x2="106" y2="18" stroke="#cfe0d6"/><circle cx="106" cy="17" r="2.5" fill="#ff5f56"/>
+        <path d="M16,74 Q80,90 142,60" fill="none" stroke="rgba(200,190,170,.6)" stroke-width="3"/>
+        <g fill="#ffb454"><rect x="40" y="52" width="3" height="3"/><rect x="58" y="56" width="3" height="3"/><rect x="72" y="54" width="3" height="3"/></g>
+      </svg>
+      <p class="dim">For plants and developments: process buildings with beacon-lit stacks, conveyors, stockpiles, haul road, a dashed future-pit outline, and blinking survey markers. Banners read PROCESSING / DEVELOPMENT SITE PLAN.</p>
+    </div>
+  </div>
+  <div class="note red"><span class="nt">ALWAYS LABELED</span>
+  Every pit scene carries the strip: <i>GEOMETRY MODELED FOR ILLUSTRATION — SITE POSITIONS &amp; ASSAY DATA FROM PUBLIC SOURCES.</i> The pit views are drawings, not surveys. Mouse movement adds gentle parallax; the scene re-skins with the active sensor style.</div>
+</section>
+
+<!-- 11 -->
+<section id="sensors">
+  <h2><span class="sn">ML-11</span>SENSOR STACK</h2>
+  <p class="lead">Seven optics presets — keys <kbd>1</kbd>–<kbd>7</kbd>. Each recolors the globe, the markers <i>and</i> the whole UI chrome via CSS variables.</p>
+  <div class="sen">
+    <div class="senc"><div class="st">TACTICAL <span>KEY 1</span></div>
+      <div class="sw"><i style="background:#030608"></i><i style="background:#062031"></i><i style="background:#0e3428"></i><i style="background:#2c7f5e"></i><i style="background:#ffb454"></i><i style="background:#39d98a"></i></div>
+      <p>The default. Dark ops-room palette, full commodity colors, green atmosphere limb.</p></div>
+    <div class="senc"><div class="st">CRT <span>KEY 2</span></div>
+      <div class="sw"><i style="background:#020802"></i><i style="background:#041406"></i><i style="background:#0e3312"></i><i style="background:#3fae4a"></i><i style="background:#39ff88"></i></div>
+      <p>Green phosphor monochrome with heavy scanlines. Every marker renders in one green.</p></div>
+    <div class="senc"><div class="st">NVG <span>KEY 3</span></div>
+      <div class="sw"><i style="background:#010a01"></i><i style="background:#083407"></i><i style="background:#2f8f3f"></i><i style="background:#66ff77"></i><i style="background:#e0ffe6"></i></div>
+      <p>Night vision gain — bright land masses, glowing coastlines, lighter scanlines.</p></div>
+    <div class="senc"><div class="st">FLIR IRONBOW <span>KEY 4</span></div>
+      <div class="sw"><i style="background:#050000"></i><i style="background:#3f0c00"></i><i style="background:#6b1600"></i><i style="background:#ff8c1a"></i><i style="background:#ffc55c"></i></div>
+      <p>Thermal palette. Tier-1 sites render hot white-yellow, tier-2 cool red — the majors glow.</p></div>
+    <div class="senc"><div class="st">FLIR WHITE-HOT <span>KEY 5</span></div>
+      <div class="sw"><i style="background:#000"></i><i style="background:#0a0a0a"></i><i style="background:#5c5c5c"></i><i style="background:#cfcfcf"></i><i style="background:#fff"></i></div>
+      <p>Grayscale thermal. Land bright, ocean black, high-contrast limb.</p></div>
+    <div class="senc"><div class="st">NOIR <span>KEY 6</span></div>
+      <div class="sw"><i style="background:#020202"></i><i style="background:#0d0d0d"></i><i style="background:#262626"></i><i style="background:#e8e8e8"></i><i style="background:#fff"></i></div>
+      <p>Hard monochrome, white markers, near-invisible scanlines.</p></div>
+    <div class="senc"><div class="st">SPECTRAL <span>KEY 7</span></div>
+      <div class="sw"><i style="background:#030308"></i><i style="background:#090918"></i><i style="background:#5b2f7a"></i><i style="background:#b18cff"></i><i style="background:#e6d6ff"></i></div>
+      <p>False-color "geology" mode — every landmass polygon gets its own hue, as if classified by hyperspectral band.</p></div>
+  </div>
+  <p class="dim">Console: <span class="cmd" data-cmd="nvg">nvg</span>, <span class="cmd" data-cmd="crt">crt</span>, <span class="cmd" data-cmd="flir">flir</span>, <span class="cmd" data-cmd="noir">noir</span>, <span class="cmd" data-cmd="spectral">spectral</span>, <span class="cmd" data-cmd="style spectral">style spectral</span>, or a bare digit <span class="cmd" data-cmd="4">4</span>.</p>
+</section>
+
+<!-- 12 -->
+<section id="detection">
+  <h2><span class="sn">ML-12</span>DETECTION MESH</h2>
+  <p class="lead">The object-detection overlay — <kbd>D</kbd> or <span class="cmd" data-cmd="detect on">detect on</span>.</p>
+  <p>Every visible contact gets screen-space corner brackets and a tag: <code>CU-001 ▓ 95%</code> — site code plus a stable pseudo-confidence derived from the site ID hash (92–99%, deterministic so it doesn't flicker).</p>
+  <ul class="tick">
+    <li>Capped at the 36 contacts nearest your view center — the "mesh" reads clean at any zoom.</li>
+    <li>Boxes and tags render in the active palette's accent color.</li>
+    <li>Combine with zoom + labels off for a pure machine-vision look; combine with NVG for night-watch operations.</li>
+  </ul>
+</section>
+
+<!-- 13 -->
+<section id="console">
+  <h2><span class="sn">ML-13</span>THE CONSOLE</h2>
+  <p class="lead">The local command parser — 28+ commands across three jobs. Click any green chip to copy it. Focus the input with <kbd>/</kbd>; ↑/↓ replays history.</p>
+
+  <h3>DIRECT — CAMERA &amp; TARGETING</h3>
+  <table>
+    <tr><th>Command</th><th>Example</th><th>What it does</th></tr>
+    <tr><td>fly / go / take me to &lt;target&gt;</td><td><span class="cmd" data-cmd="fly to chile">fly to chile</span></td><td>Flies to any site, or any of the 44 named regions (ML-25).</td></tr>
+    <tr><td>track / lock &lt;target&gt;</td><td><span class="cmd" data-cmd="track grasberg">track grasberg</span></td><td>Fly + lock + telemetry card. Fuzzy match on name, country, id; multiple hits list candidates.</td></tr>
+    <tr><td>untrack / clear track</td><td><span class="cmd" data-cmd="untrack">untrack</span></td><td>Drops the target.</td></tr>
+    <tr><td>zoom in|out|&lt;n&gt;</td><td><span class="cmd" data-cmd="zoom 4">zoom 4</span></td><td>Direct zoom control (0.9–12).</td></tr>
+    <tr><td>reset / home / "zoom out to a globe view"</td><td><span class="cmd" data-cmd="reset">reset</span></td><td>Full Earth, spin on.</td></tr>
+    <tr><td>tour &lt;name&gt;</td><td><span class="cmd" data-cmd="tour copper">tour copper</span></td><td>Starts a district tour (ML-14). Bare <code>tour</code> lists options.</td></tr>
+    <tr><td>pit / cockpit</td><td><span class="cmd" data-cmd="pit">pit</span></td><td>Enters Pit Mode on the tracked site.</td></tr>
+    <tr><td>next / n · prev</td><td><span class="cmd" data-cmd="next">next</span></td><td>Steps the roster in distance order.</td></tr>
+    <tr><td>contacts / roster</td><td><span class="cmd" data-cmd="contacts">contacts</span></td><td>Raises the Contacts panel.</td></tr>
+  </table>
+
+  <h3>QUERY — INTERROGATE THE DATA</h3>
+  <table>
+    <tr><th>Command</th><th>Example</th><th>What it does</th></tr>
+    <tr><td>assay &lt;site&gt;</td><td><span class="cmd" data-cmd="assay escondida">assay escondida</span></td><td>Prints grade, production, status and note to the log.</td></tr>
+    <tr><td>price &lt;metal&gt;</td><td><span class="cmd" data-cmd="price copper">price copper</span></td><td>Current wire quote + change, flagged SIMULATED.</td></tr>
+    <tr><td>stats</td><td><span class="cmd" data-cmd="stats">stats</span></td><td>Dataset totals and in-view count.</td></tr>
+    <tr><td>how many &lt;metal&gt; mines</td><td><span class="cmd" data-cmd="how many lithium mines">how many lithium mines</span></td><td>Per-commodity count, active vs total.</td></tr>
+    <tr><td>what's this</td><td><span class="cmd" data-cmd="whats this">whats this</span></td><td>Full dossier on the tracked contact.</td></tr>
+    <tr><td>seismic / blast</td><td><span class="cmd" data-cmd="seismic">seismic</span></td><td>Seeds a mining-region seismic event (SIM).</td></tr>
+  </table>
+
+  <h3>OPERATE — LAYERS, SENSORS, FEEDS</h3>
+  <table>
+    <tr><th>Command</th><th>Example</th><th>What it does</th></tr>
+    <tr><td>show / hide / enable / disable &lt;layer&gt;</td><td><span class="cmd" data-cmd="show lithium">show lithium</span></td><td>Commodity, <code>tailings</code>, <code>plants</code>, or <code>all</code>.</td></tr>
+    <tr><td>style / sensor &lt;name&gt;</td><td><span class="cmd" data-cmd="style ironbow">style ironbow</span></td><td>Or bare words: <code>nvg crt flir white noir spectral normal tactical</code>.</td></tr>
+    <tr><td>detect on|off</td><td><span class="cmd" data-cmd="detect on">detect on</span></td><td>Detection mesh.</td></tr>
+    <tr><td>labels on|off</td><td><span class="cmd" data-cmd="labels on">labels on</span></td><td>Force label rendering.</td></tr>
+    <tr><td>spin on|off</td><td><span class="cmd" data-cmd="spin off">spin off</span></td><td>Idle rotation.</td></tr>
+    <tr><td>hud on|off</td><td><span class="cmd" data-cmd="hud off">hud off</span></td><td>HUD strip.</td></tr>
+    <tr><td>sources / about / power</td><td><span class="cmd" data-cmd="sources">sources</span></td><td>Opens the data-sources &amp; honesty modal.</td></tr>
+    <tr><td>share</td><td><span class="cmd" data-cmd="share">share</span></td><td>Serializes state into a URL, copies to clipboard (ML-18).</td></tr>
+    <tr><td>clear / cls</td><td><span class="cmd" data-cmd="clear">clear</span></td><td>Wipes the console log.</td></tr>
+    <tr><td>help / ?</td><td><span class="cmd" data-cmd="help">help</span></td><td>Prints the three job categories.</td></tr>
+  </table>
+
+  <h4>NATURAL-LANGUAGE ALIASES</h4>
+  <ul class="tick">
+    <li><i>"take me to Tokyo"</i> style phrasing works — <i>"take me to the pilbara"</i>, <i>"fly to norilsk"</i>.</li>
+    <li><i>"switch to night vision"</i>, <i>"turn on thermal"</i> — style detection strips filler words.</li>
+    <li><i>"show me lithium"</i>, <i>"turn on cobalt"</i> — layer verbs.</li>
+    <li><i>"zoom out to a globe view"</i> / <i>"come home"</i> — reset.</li>
+    <li>A <b>bare commodity</b> (<code>lithium</code>) toggles the layer on and flies to its flagship tier-1 site.</li>
+    <li>A <b>bare site name</b> (<code>muruntau</code>) tracks it directly.</li>
+  </ul>
+  <h4>SAMPLE SESSION</h4>
+  <pre><i>ML▸</i> track bingham
+<b>TRACKING ▸ BINGHAM CANYON [CU-009] — camera locked, telemetry card up.</b>
+<i>ML▸</i> pit
+<b>PIT MODE ▸ BINGHAM CANYON — modeled geometry, public assay data.</b>
+<i>ML▸</i> <i>(exit pit, then:)</i> how many gold mines
+<b>16 GOLD sites in dataset — 16 active.</b>
+<i>ML▸</i> show tailings
+<b>TAILINGS FACILITIES ON — 11 records.</b></pre>
+  <p class="dim">Errors are honest: <span class="rd">No contact or region matched "x"</span> · <span class="rd">Track a site first — then PIT</span> · <span class="rd">Unknown layer "x"</span> · <span class="rd">Unknown command. Try "help".</span></p>
+</section>
+
+<!-- 14 -->
+<section id="tours">
+  <h2><span class="sn">ML-14</span>MISSIONS &amp; TOURS</h2>
+  <p class="lead">First-run missions configure the console; district tours fly it. <kbd>Esc</kbd> or any drag cancels a tour.</p>
+  <h3>FIRST-RUN MISSIONS</h3>
+  <table>
+    <tr><th>Mission</th><th>What it stages</th></tr>
+    <tr><td>LIGHT UP THE BELT</td><td>Copper layer + plants only, then flies to and tracks <b>Escondida</b>.</td></tr>
+    <tr><td>BATTERY CHAIN</td><td>Lithium, nickel, cobalt, rare earths on; tracks <b>Salar de Atacama</b>.</td></tr>
+    <tr><td>HAZARD WATCH</td><td>Mines dimmed, tailings layer on; tracks the <b>Córrego do Feijão</b> case file.</td></tr>
+    <tr><td>IRON GIANTS</td><td>Iron ore only; tracks <b>Carajás S11D</b>.</td></tr>
+    <tr><td>EXPLORE MANUALLY</td><td>Everything on, no autopilot.</td></tr>
+  </table>
+  <h3>DISTRICT TOURS</h3>
+  <div id="tourlist"></div>
+  <p class="dim">Each stop: camera eases in (~2.6 s), target locks, caption bar types the site note, hold ~4.6 s, next. Console: <span class="cmd" data-cmd="tour iron">tour iron</span> etc.</p>
+</section>
+
+<!-- 15 -->
+<section id="wire">
+  <h2><span class="sn">ML-15</span>THE WIRE</h2>
+  <p class="lead">The incident &amp; intelligence feed — right panel, WIRE tab.</p>
+  <p>Every ~8 s a new entry is synthesized locally from seven templates, each stamped with UTC time and a severity color. Entries referencing a site paint a blip ring on the globe (8 s) and are <b>clickable</b> — one click flies to and tracks the referenced contact.</p>
+  <table>
+    <tr><th>Severity</th><th>Template</th><th>Example</th></tr>
+    <tr><td class="cyn">INFO</td><td>Blast report · wire quote · production reconciliation · permit register</td><td>BLAST FIRED — Chuquicamata: 96 holes, 212 t. (SIM)</td></tr>
+    <tr><td class="amb">WARN</td><td>Mining-region seismic · TSF piezometer advisory</td><td>TSF ADVISORY — piezometers trending high at El Mauro (HIGH). (SIM)</td></tr>
+    <tr><td class="rd">ALERT</td><td>Safety drill</td><td>SAFETY DRILL — Mponeng: emergency exercise, hoist rope inspection. (SIM)</td></tr>
+  </table>
+  <div class="note"><span class="nt">SIM LABELING</span>
+  Every synthesized entry is tagged <b>(SIM)</b> inline. Entries describing public-record behavior (production vs guidance, permits) are phrased as filings. Safety entries are always drills — the feed never fabricates casualties.</div>
+</section>
+
+<!-- 16 -->
+<section id="ticker">
+  <h2><span class="sn">ML-16</span>COMMODITY TICKER</h2>
+  <p class="lead">Sixteen instruments, bottom strip, scrolling continuously. Hover to freeze.</p>
+  <div id="pricetable"></div>
+  <p>Each instrument random-walks ±0.35% every 2.6 s around a plausible base level; change % flashes green/red on update. Values appear in the console via <span class="cmd" data-cmd="price gold">price gold</span>. <b>Indicative and simulated — never a quote.</b></p>
+</section>
+
+<!-- 17 -->
+<section id="seismic">
+  <h2><span class="sn">ML-17</span>SEISMICITY</h2>
+  <p class="lead">Modeled mining-induced events — cyan expanding rings, ML 1.5–3.4.</p>
+  <ul class="tick">
+    <li>Events spawn every ~9–15 s (80% probability while the layer is on), positioned within ~±0.6° of monitored deep mines: Mponeng, El Teniente, Norilsk, Sudbury, Chuquicamata, Kamoá-Kakula, Oyu Tolgoi.</li>
+    <li>Each event renders as two expanding rings over ~5 s with an <code>ML 2.3</code> tag, then expires. A rolling window of ~7 events.</li>
+    <li>Seed four events at boot so the globe is alive immediately.</li>
+    <li>Console: <span class="cmd" data-cmd="seismic">seismic</span> forces one. Toggle the layer in the panel or console.</li>
+  </ul>
+  <p class="dim">Clearly labeled SIM — these are demonstrations of event visualization, not real networks.</p>
+</section>
+
+<!-- 18 -->
+<section id="share">
+  <h2><span class="sn">ML-18</span>SHARE LINKS</h2>
+  <p class="lead">Camera, style, layers and your tracked target serialize into the URL hash. A live target is a handoff, not a bookmark.</p>
+  <pre>index.html<b>#</b><em>s</em>=nvg<em>&amp;c</em>=cu,li,fe<em>&amp;h</em>=1<em>&amp;p</em>=1<em>&amp;y</em>=-69.0<em>&amp;t</em>=-24.3<em>&amp;z</em>=3.4<em>&amp;tr</em>=escondida</pre>
+  <table>
+    <tr><th>Param</th><th>Meaning</th></tr>
+    <tr><td><code>s</code></td><td>Sensor style key (nvg, crt, ironbow…)</td></tr>
+    <tr><td><code>c</code></td><td>Comma list of active commodity codes; absent codes are off</td></tr>
+    <tr><td><code>h</code> / <code>p</code></td><td>Tailings / plants layers on (=1)</td></tr>
+    <tr><td><code>y</code> / <code>t</code> / <code>z</code></td><td>Camera yaw°, tilt°, zoom at hand-off</td></tr>
+    <tr><td><code>tr</code></td><td>Tracked site id — restored with telemetry card</td></tr>
+  </table>
+  <p>SHARE copies to the clipboard and confirms with a toast. Opening a hash URL skips the splash, restores state instantly, and toasts STATE RESTORED FROM LINK.</p>
+</section>
+
+<!-- 19 -->
+<section id="directory">
+  <h2><span class="sn">ML-19</span>SITE DIRECTORY</h2>
+  <p class="lead">The complete dataset — every mine, tailings record and plant. Search, filter, click a row for the dossier.</p>
+  <div id="dtools">
+    <input id="dsearch" placeholder="search name · country · operator · commodity …">
+    <div class="fchips">
+      <button class="fc on" data-k="all">ALL</button>
+      <button class="fc" data-k="mine">MINES</button>
+      <button class="fc" data-k="tsf">TAILINGS</button>
+      <button class="fc" data-k="plant">PLANTS</button>
+    </div>
+    <div class="fchips">
+      <button class="fc on" data-g="all">ANY GROUP</button>
+      <button class="fc" data-g="bulk">BULK &amp; BASE</button>
+      <button class="fc" data-g="prec">PRECIOUS</button>
+      <button class="fc" data-g="ener">ENERGY TRANS.</button>
+      <button class="fc" data-g="spec">SPECIALTY</button>
+    </div>
+    <div class="fchips">
+      <button class="fc on" data-s="all">ANY STATUS</button>
+      <button class="fc" data-s="A">ACTIVE</button>
+      <button class="fc" data-s="D">DEV</button>
+      <button class="fc" data-s="C">CLOSED</button>
+    </div>
+  </div>
+  <div id="dcount"></div>
+  <table id="dt">
+    <thead><tr><th></th><th>CODE</th><th>NAME</th><th>COUNTRY</th><th>OPERATOR</th><th>COMM.</th><th>TYPE</th><th>STATUS</th><th>PRODUCTION / CAPACITY</th></tr></thead>
+    <tbody id="dtb"></tbody>
+  </table>
+</section>
+
+<!-- 20 -->
+<section id="sources">
+  <h2><span class="sn">ML-20</span>SOURCES &amp; HONESTY</h2>
+  <p class="lead">Where every layer comes from, and what it costs.</p>
+  <table>
+    <tr><th>Layer</th><th>Source</th><th>Path</th></tr>
+    <tr><td>Mines &amp; commodities (122)</td><td>Compiled from public disclosures — USGS MRDS, Mindat, company annual reports, press</td><td><span class="grn">🟢 LOCAL</span></td></tr>
+    <tr><td>Tailings records (11)</td><td>In the style of Global Tailings Portal disclosures — real facilities, real failure histories</td><td><span class="grn">🟢 LOCAL</span></td></tr>
+    <tr><td>Processing plants (7)</td><td>Public registers</td><td><span class="grn">🟢 LOCAL</span></td></tr>
+    <tr><td>Commodity wire (16)</td><td>Random-walk simulation</td><td><span class="amb">🟡 SIM</span></td></tr>
+    <tr><td>Incidents &amp; wire</td><td>Synthesized locally</td><td><span class="amb">🟡 SIM</span></td></tr>
+    <tr><td>Seismicity</td><td>Modeled events</td><td><span class="amb">🟡 SIM</span></td></tr>
+    <tr><td>Basemap</td><td>Stylized vector globe — hand-simplified coastlines, deliberately not survey-grade</td><td><span class="grn">🟢 LOCAL</span></td></tr>
+  </table>
+  <h3>THE BASEMAP LADDER</h3>
+  <table>
+    <tr><th>You have</th><th>The globe you get</th></tr>
+    <tr><td>🟢 Nothing</td><td>This vector globe — works offline, zero cost</td></tr>
+    <tr><td>🟡 Cesium ion token</td><td>Photorealistic 3D tiles + world terrain (not wired in this single-file build — the extension point is documented in ML-24)</td></tr>
+  </table>
+  <h3>WHAT IT ACTUALLY COSTS</h3>
+  <p><b>$0.</b> One file. No keys, no metering, no accounts. Prices, telemetry and alerts are simulated precisely so it stays that way.</p>
+  <div class="note red"><span class="nt">DISCLAIMER</span>
+  MOTHERLODE is an exploratory visualization of public and third-party data. Positions are approximate; figures may be dated; simulated feeds are labeled as such. Do not use it for investment decisions, operational planning, or safety-critical purposes. Static datasets carry their own publisher terms; code is MIT.</div>
+</section>
+
+<!-- 21 -->
+<section id="hood">
+  <h2><span class="sn">ML-21</span>UNDER THE HOOD</h2>
+  <p class="lead">How a 3,000-line single file does all of this. No framework, no build step, no dependencies.</p>
+  <h3>THE GLOBE MATH</h3>
+  <p>An orthographic projection with two camera angles — yaw (spin) and tilt — plus zoom. Every frame, each lat/lng becomes a 3D unit vector, rotates through the camera, and projects to screen:</p>
+  <pre><i>// spherical → rotated → screen (behind-globe returns null)</i>
+la = lat·D2R; lo = lng·D2R + cam.yaw
+x = cos(la)·sin(lo)   y = sin(la)   z = cos(la)·cos(lo)
+y' = y·cos(tilt) − z·sin(tilt)      z' = y·sin(tilt) + z·cos(tilt)
+<em>if</em> z' ≤ 0.015 → null
+screen = (W/2 + x·R,  H/2 − y'·R)          <i>// R = globe radius = min(W,H)·0.42·zoom</i></pre>
+  <p>Land masses are hand-simplified coastline polygons filled inside a canvas clip of the globe disc; the graticule is 15° meridians/parallels drawn as segmented polylines that break at the horizon.</p>
+  <h3>CAMERA &amp; MOTION</h3>
+  <ul class="tick">
+    <li><b>Fly-to tweens</b> — every jump is a cubic ease-in-out over yaw (shortest angular path), tilt and zoom simultaneously; tours chain them.</li>
+    <li><b>Inertia</b> — drag velocity decays ×0.93 per frame after release.</li>
+    <li><b>Auto-spin</b> engages after 4 s idle, suppressed while tracking or touring.</li>
+  </ul>
+  <h3>PERFORMANCE &amp; ROBUSTNESS</h3>
+  <ul class="tick">
+    <li>One <code>requestAnimationFrame</code> loop that <b>reschedules itself before drawing</b> — a single throwing frame can never freeze the console.</li>
+    <li>DOM updates throttled to 4 Hz; the roster rebuilds only when the camera moves meaningfully.</li>
+    <li>Marker LOD by tier (ML-05); label ceiling of 72; detection ceiling of 36.</li>
+    <li><code>shadowBlur</code> reserved for tier-1 markers, the limb and the reticle — the expensive canvas effects stay scarce on purpose.</li>
+    <li>Global <code>window.onerror</code> trap prints any runtime error into the console panel — failures are never silent.</li>
+  </ul>
+  <h3>THE SIMULATORS</h3>
+  <ul class="tick">
+    <li><b>Prices</b> — per-instrument multiplicative random walk every 2.6 s.</li>
+    <li><b>Wire</b> — seven template families drawing from the site registry every 8 s.</li>
+    <li><b>Seismicity</b> — proximity-weighted spawns near deep mines.</li>
+    <li><b>Telemetry</b> — ore tonnage, energy and fleet counters random-walk per second on the tracked card.</li>
+  </ul>
+</section>
+
+<!-- 22 -->
+<section id="keyboard">
+  <h2><span class="sn">ML-22</span>KEYBOARD MAP</h2>
+  <p class="lead">Everything bound to a key.</p>
+  <table>
+    <tr><th>Key</th><th>Action</th><th>Note</th></tr>
+    <tr><td><kbd>1</kbd>–<kbd>7</kbd></td><td>Sensor styles</td><td>TACTICAL · CRT · NVG · IRONBOW · WHITE-HOT · NOIR · SPECTRAL</td></tr>
+    <tr><td><kbd>D</kbd></td><td>Detection mesh</td><td>Toggle</td></tr>
+    <tr><td><kbd>L</kbd></td><td>Force labels</td><td>Toggle</td></tr>
+    <tr><td><kbd>H</kbd></td><td>HUD readout</td><td>Toggle</td></tr>
+    <tr><td><kbd>T</kbd></td><td>Next contact</td><td>Steps the roster in distance order</td></tr>
+    <tr><td><kbd>P</kbd></td><td>Pit mode</td><td>On tracked site; exits if already inside</td></tr>
+    <tr><td><kbd>G</kbd></td><td>Reset globe</td><td>Full Earth + spin</td></tr>
+    <tr><td><kbd>/</kbd></td><td>Focus console</td><td>Prevents the keypress reaching the page</td></tr>
+    <tr><td><kbd>Esc</kbd></td><td>Exit — context aware</td><td>Pit → tour → modal → untrack, in that order</td></tr>
+  </table>
+  <p class="dim">While typing in the console input, all global shortcuts are suppressed. ↑/↓ browse command history.</p>
+</section>
+
+<!-- 23 -->
+<section id="troubleshooting">
+  <h2><span class="sn">ML-23</span>TROUBLESHOOTING</h2>
+  <p class="lead">Known conditions and their answers.</p>
+  <table>
+    <tr><th>Symptom</th><th>Cause &amp; fix</th></tr>
+    <tr><td>Splash sits dead — no boot typing, SKIP inert, nothing clickable</td><td>The script failed to parse (a single mismatched quote anywhere is fatal — this was v0.1.0's bug). v0.1.1 traps init errors and prints them into the boot log with an <b>ENTER ANYWAY</b> escape. If you see this, check the boot log red line — it names the error.</td></tr>
+    <tr><td>"RUNTIME ERROR: …" appears in the console log</td><td>Working as designed — the trap caught something without killing the loop. The message names it; the globe keeps rendering.</td></tr>
+    <tr><td>Side panels missing on a laptop</td><td>Below 1180 px they auto-collapse. Use the <b>▤ / ▥</b> buttons in the header.</td></tr>
+    <tr><td>Fonts look generic</td><td>Offline — the Google Fonts CDN is unreachable; the console falls back to system monospace by design.</td></tr>
+    <tr><td>Globe stops spinning</td><td>Tracking a target disables auto-spin on purpose. <span class="cmd" data-cmd="reset">reset</span> or <span class="cmd" data-cmd="spin on">spin on</span>.</td></tr>
+    <tr><td>Roster shows few/no contacts</td><td>Either layers are off (<span class="cmd" data-cmd="show all">show all</span>) or you're zoomed out below tier-2 LOD (zoom in past ~1.7×).</td></tr>
+    <tr><td>Console says "No contact or region matched"</td><td>Try fewer words — the matcher scores name → country → id. <code>stats</code> lists totals; the directory (ML-19) is the full index.</td></tr>
+    <tr><td>Ticker values never change</td><td>They walk every 2.6 s — hover freezes them on purpose.</td></tr>
+  </table>
+</section>
+
+<!-- 24 -->
+<section id="extending">
+  <h2><span class="sn">ML-24</span>EXTENDING IT</h2>
+  <p class="lead">Every layer in MOTHERLODE is a pattern you point at your own data. Four one-line extensions, roughly in order of effort.</p>
+  <h4>ADD A MINE — one line</h4>
+  <pre>mk(<em>'cobre-panama'</em>,<em>'Cobre Panamá'</em>,<em>'Panama'</em>,<em>'First Quantum'</em>,[<em>'CU'</em>],<em>'OP'</em>,8.78,-80.64,
+   <em>'≈330 kt Cu'</em>,<em>'≈0.35% Cu'</em>,<i>"First shipment 2019; concentrator halted by decree, 2023."</i>,2,<em>'C'</em>);</pre>
+  <h4>ADD A COMMODITY — three edits</h4>
+  <pre><i>// 1) declare it (code, name, color)</i>
+<b>TA</b>:{n:<i>'Tantalum'</i>,col:<i>'#ff7ab8'</i>},
+<i>// 2) slot it into a group</i>
+[<i>'ENERGY TRANSITION'</i>,[<i>'LI'</i>,<i>'NI'</i>,<i>'CO'</i>,<b><i>'TA'</i></b>,…]],
+<i>// 3) reference it in one or more mk() comms arrays</i></pre>
+  <h4>ADD A TOUR — one entry</h4>
+  <pre><b>TOURS</b>.gold=[ [<em>'nevada'</em>,3.0], [<em>'superpit'</em>,3.6], [<em>'muruntau'</em>,3.6] ];  <i>// site ids + zoom</i></pre>
+  <h4>ADD A SENSOR STYLE — one palette</h4>
+  <pre><b>ultraviolet</b>:{name:<i>'UV'</i>,bg:<i>'#050014'</i>,ocean:<i>'#0d0033'</i>,land:<i>'#2a0066'</i>,coast:<i>'#9a5cff'</i>,
+  grid:<i>'#170040'</i>,text:<i>'#e6d6ff'</i>,accent:<i>'#c08cff'</i>,glow:<i>'#8a4dff'</i>,mode:<i>'color'</i>}</pre>
+  <h4>GO FURTHER</h4>
+  <ul class="tick">
+    <li><b>Live feeds</b> — the layer panel toggles and the draw loop are the integration surface for USGS MRDS queries, Mindat lookups, or a broker wire. Each layer is an independent module.</li>
+    <li><b>Real 3D</b> — swap the canvas globe for CesiumJS with an ion token; every site already carries lat/lng/height-ready fields.</li>
+    <li><b>More pit variants</b> — <code>drawOpenPit / drawUnderground / drawBrinePonds / drawTSFPit / drawSitePlan</code> are self-contained scene painters keyed off <code>site.type</code>.</li>
+    <li><b>Alert templates</b> — add branches to <code>genAlert()</code>; anything with a site reference becomes clickable-to-fly automatically.</li>
+  </ul>
+</section>
+
+<!-- 25 -->
+<section id="appendix">
+  <h2><span class="sn">ML-25</span>APPENDIX</h2>
+  <p class="lead">Regions, the changelog, and the license.</p>
+  <h3>A · FLY-TO REGION REGISTER (44)</h3>
+  <div id="regtable"></div>
+  <h3>B · CHANGELOG</h3>
+  <table>
+    <tr><th>Version</th><th>Notes</th></tr>
+    <tr><td><b>v0.1.1</b></td><td>Fix: a single mismatched quote in the coal register silently killed the entire script (dead splash, inert buttons). All data strings normalized. Boot now traps init errors and prints them; the render loop self-heals; a global runtime-error trap feeds the console panel. SKIP BOOT is now two-stage: skip typing → mission cards → ENTER NOW.</td></tr>
+    <tr><td><b>v0.1.0</b></td><td>Initial keyless release. 122 mines, 11 tailings records, 7 plants, 7 sensors, 5 tours, local console parser, share-link state, pit mode with 5 scene types.</td></tr>
+  </table>
+  <h3>C · LICENSE &amp; CREDITS</h3>
+  <p>Code: <b>MIT</b> — free to inspect, modify, and bolt your own layers onto. Static datasets belong to their publishers and carry their own terms (USGS public domain, Mindat terms, GTP disclosures, company filings). Positions and figures are approximate compilations for education.</p>
+  <p class="dim">MOTHERLODE borrows its ops-room visual grammar from the open geospatial-intelligence tradition and stands on public Earth-science data. It models sites and infrastructure — <b>never people.</b> People are not a query type here.</p>
+  <p class="grn">🌐 MOTHERLODE. No deposit left behind.</p>
+</section>
+
+</main>
+</div>
+<div id="toast">COPIED</div>
+<button id="top-btn">▲ TOP</button>
+
+<script>
+'use strict';
+/* ============ DATA (mirrors the console dataset) ============ */
+const COMMS={
+  CU:{n:'Copper',col:'#ff9d45',g:'bulk'}, FE:{n:'Iron Ore',col:'#c7cfd9',g:'bulk'}, ZN:{n:'Zinc-Lead',col:'#9be37a',g:'bulk'},
+  C:{n:'Coal',col:'#8b93a1',g:'bulk'}, BX:{n:'Bauxite',col:'#e0a878',g:'bulk'},
+  AU:{n:'Gold',col:'#ffd76a',g:'prec'}, AG:{n:'Silver',col:'#dfe7f2',g:'prec'}, PG:{n:'PGM',col:'#f2a6c0',g:'prec'},
+  LI:{n:'Lithium',col:'#7de8dc',g:'ener'}, NI:{n:'Nickel',col:'#a8d05a',g:'ener'}, CO:{n:'Cobalt',col:'#6fa8ff',g:'ener'},
+  REE:{n:'Rare Earths',col:'#e79ad2',g:'ener'}, U:{n:'Uranium',col:'#7ee787',g:'ener'},
+  MO:{n:'Molybdenum',col:'#77c9d4',g:'spec'}, SN:{n:'Tin',col:'#bfc9d9',g:'spec'},
+  K:{n:'Potash',col:'#c9a7ff',g:'spec'}, P:{n:'Phosphate',col:'#8fd5a0',g:'spec'}, DIA:{n:'Diamonds',col:'#9fe8ff',g:'spec'}
+};
+const GNAME={bulk:'BULK & BASE',prec:'PRECIOUS',ener:'ENERGY TRANSITION',spec:'SPECIALTY & FERTILIZER'};
+const GLY={OP:'▲',UG:'●',BR:'◆',AL:'◆',DV:'△',CL:'×',TSF:'■',PL:'◎'};
+const HAZCOL={FAILED:'#ff5f56',EXTREME:'#ff8a3c',HIGH:'#ffb454',LEAK:'#ffd24a',DISCHARGE:'#5bd6dd'};
+
+/* [id,name,cc,op,comms,type,lat,lng,prod,grade,status,note,tier] */
+const MINES=[
+["escondida","Escondida","Chile","BHP","CU","OP",-24.27,-69.07,"≈1,150 kt Cu/y","≈0.95% Cu","A","Largest copper operation on Earth. Concentrators + oxide leach, Norte Antofagasta belt.",1],
+["collahuasi","Collahuasi","Chile","Anglo American / Glencore","CU","OP",-20.97,-68.48,"≈560 kt Cu","≈0.8% Cu","A","High-altitude Cu-Mo porphyry complex above 4,400 m.",1],
+["chuqui","Chuquicamata","Chile","Codelco","CU","OP",-22.31,-68.93,"≈440 kt Cu","≈0.7% Cu","A","The classic open pit — 4.3 km long, ~1 km deep, now transitioning underground.",1],
+["teniente","El Teniente","Chile","Codelco","CU","UG",-34.95,-70.49,"≈460 kt Cu","≈1.2% Cu","A","Largest underground copper mine on Earth; 2,400+ m of vertical development.",1],
+["pelambres","Los Pelambres","Chile","Antofagasta plc","CU","OP",-31.43,-70.89,"≈360 kt Cu","≈0.55% Cu","A","Belt flagship; its El Mauro tailings dam draws hazard scrutiny.",2],
+["antamina","Antamina","Peru","Glencore / BHP / Teck","CU,ZN","OP",-8.65,-77.44,"≈420 kt Cu","≈1.0% Cu eq","A","Polymetallic Andean skarn — Cu, Zn, Mo, Ag, Bi.",1],
+["cerro-verde","Cerro Verde","Peru","Freeport-McMoRan","CU","OP",-8.42,-79.87,"≈480 kt Cu","≈0.5% Cu","A","Gig concentrator near Arequipa; mill + SX/EW lines.",2],
+["grasberg","Grasberg Block Cave","Indonesia","PT Freeport (FCX)","CU,AU","UG",-4.05,137.0,"≈800 kt Cu · 1.8 Moz Au","≈1.0% Cu","A","World's largest underground block-caving complex, under the old pit.",1],
+["morenci","Morenci","USA (AZ)","Freeport-McMoRan","CU","OP",33.08,-109.02,"≈460 kt Cu","≈0.28% Cu","A","Zero-grade-threshold leach empire — the case study for SX/EW.",2],
+["bingham","Bingham Canyon","USA (UT)","Rio Tinto Kennecott","CU,AU,MO","OP",40.49,-112.15,"≈200 kt Cu","≈0.45% Cu","A","Deepest open pit on Earth (~1.2 km). A century of copper, still going.",1],
+["oyu","Oyu Tolgoi","Mongolia","Rio Tinto / Govisg Mongolia","CU","UG",43.03,106.87,"≈560 kt Cu ramp","≈1.2% Cu","A","Gobi-desert block caves — Hugo North lifts Mongolia into the copper majors.",1],
+["kansanshi","Kansanshi","Zambia","First Quantum","CU","OP",-12.05,26.43,"≈260 kt Cu","≈0.8% Cu","A","Smelter on site; Zambia's largest taxpayer.",2],
+["sentinel","Sentinel","Zambia","First Quantum","CU","OP",-12.19,25.36,"≈260 kt Cu","≈0.5% Cu","A","Kalumbila greenfield SAG mills in the Zambian northwest.",2],
+["kamoto","Kamoto / KOV","DR Congo","Glencore","CU,CO","OP",-10.65,25.50,"≈250 kt Cu","≈2.8% Cu","A","Kamoto underground + KOV pit, Lualaba province.",2],
+["tenke","Tenke Fungurume","DR Congo","CMOC","CU,CO","OP",-10.62,26.02,"≈250 kt Cu","≈2.2% Cu","A","Huge oxide resources; expansions doubled throughput.",2],
+["mutanda","Mutanda","DR Congo","Glencore","CU,CO","OP",-10.27,25.50,"≈200 kt Cu","≈1.9% Cu","A","Was the world's largest cobalt producer before 2019 care-and-maintenance.",1],
+["kakula","Kamoá-Kakula","DR Congo","Ivanhoe Mines","CU","UG",-10.75,25.22,"≈450 kt Cu ramp","5%+ Cu feed","A","Highest-grade major copper development on the planet.",1],
+["cananea","Buenavista del Cobre","Mexico","Grupo México","CU","OP",30.98,-109.99,"≈360 kt Cu","≈0.55% Cu","A","Cananea — one of the oldest continuously worked copper camps.",2],
+["olympic","Olympic Dam","Australia","BHP","CU,AU,U","UG",-30.42,136.75,"≈200 kt Cu","≈1.1% Cu eq","A","Iron-oxide Cu-Au-U breccia — one orebody, three metals, entirely underground.",1],
+["batu","Batu Hijau","Indonesia","Amman Mineral","CU,AU","OP",-8.87,116.79,"≈260 kt Cu","≈0.5% Cu","A","Sumbawa porphyry; valley-fill leach after the pit phases.",2],
+["norilsk","Norilsk-Talnakh","Russia","Nornickel","NI,CU,PG","UG",69.33,87.95,"≈450 kt Ni-Cu","≈3% Ni+Cu","A","Nickel-copper-PGE camp without equal; Arctic permafrost operations.",1],
+["sudbury","Sudbury Complex","Canada","Vale / Glencore et al.","NI,CU","UG",46.62,-81.0,"≈200 kt Ni","1.5–3% Ni","A","1.8-Ga impact crater turned world-class Ni-Cu camp; 15+ operations.",1],
+["voisey","Voisey's Bay","Canada","Vale","NI,CU","OP",58.33,-62.0,"≈45 kt Ni","≈1.6% Ni","A","Labrador massive sulphides; Reid Brook underground ramping.",2],
+["muruntau","Muruntau","Uzbekistan","Navoi Mining & Metallurgy","AU","OP",41.56,64.49,"≈2.0 Moz Au","≈1 g/t Au","A","Commonly cited as the largest gold mine on Earth — one enormous pit.",1],
+["nevada","Nevada Gold Mines","USA (NV)","Barrick 61.5% / Newmont 38.5%","AU","OP",40.05,-116.40,"≈3.0 Moz Au","Carlin-type refractory","A","Carlin + Cortez + Turquoise Ridge — the largest gold complex on Earth.",1],
+["pueblo","Pueblo Viejo","Dominican Republic","Barrick / Newmont","AU,AG","OP",18.95,-70.40,"≈600 koz Au","≈3.5 g/t Au","A","Refractory autoclaves on a colonial-era tailings rework.",2],
+["lihir","Lihir","Papua New Guinea","Newmont (Newcrest)","AU","OP",-3.13,152.78,"≈900 koz Au","≈2 g/t Au","A","Geothermal steam heats the autoclaves; a volcano hosts the ore.",1],
+["superpit","Fimiston Super Pit","Australia","Northern Star (KCGM)","AU","OP",-35.75,121.49,"≈600 koz Au","≈1.5 g/t Au","A","A 3.5 km golden hole beside Kalgoorlie-Boulder.",1],
+["yanacocha","Yanacocha","Peru","Newmont","AU","OP",-6.83,-77.59,"≈300 koz Au","≈0.8 g/t Au","A","Latin America's largest gold mine; heap leach in the high Andes.",2],
+["olimpiada","Olimpiada","Russia","Polyus","AU","OP",58.45,94.52,"≈1.2 Moz Au","≈4.5 g/t Au","A","Siberian giant among the largest gold operations.",2],
+["sukari","Sukari","Egypt","Centamin","AU","OP",24.89,34.70,"≈450 koz Au","≈1.3 g/t Au","A","First modern large-scale Egyptian gold mine, Eastern Desert.",2],
+["tarkwa","Tarkwa","Ghana","Gold Fields","AU","OP",5.27,-1.99,"≈500 koz Au","≈1.2 g/t Au","A","Ghana gold belt; hybrid CIL and heap leach.",2],
+["obuasi","Obuasi","Ghana","AngloGold Ashanti","AU","UG",6.20,-1.66,"≈300 koz Au","≈7 g/t Au","A","A century-old deep-level Ashanti lode, reborn mechanized.",2],
+["kibali","Kibali","DR Congo","Barrick / AngloGold","AU","OP",3.62,27.58,"≈800 koz Au","≈2.2 g/t Au","A","River diversion and hydropower in the northeast DRC.",2],
+["loulo","Loulo-Gounkoto","Mali","Barrick","AU","OP",12.50,-8.30,"≈700 koz Au","≈3.5 g/t Au","A","Two complexes feeding one of Africa's biggest gold mills.",2],
+["porgera","Porgera","Papua New Guinea","Barrick / Zijin","AU","OP",-5.29,143.09,"≈500 koz Au","≈4 g/t Au","A","Highland epithermal; restarted after shutdown and reset.",2],
+["boddington","Boddington","Australia","Newmont","AU,CU","OP",-33.12,116.49,"≈700 koz Au","≈0.8 g/t Au","A","Australia's largest gold producer, with copper credits.",2],
+["cadia","Cadia","Australia","Newmont (Newcrest)","AU,CU","UG",-33.44,148.98,"≈700 koz Au","≈1.0 g/t eq","A","Block caves beneath a working open-pit district.",2],
+["mponeng","Mponeng","South Africa","Harmony Gold","AU","UG",-26.39,27.41,"≈250 koz Au","≈7.5 g/t Au","A","The deepest mine on Earth — rock at 4,000 m runs 60 °C.",1],
+["carajas","Carajás S11D","Brazil","Vale","FE","OP",-6.06,-50.24,"≈150 Mt/y","66.7% Fe","A","Largest iron ore mine on Earth; truckless conveying in the rainforest.",1],
+["whaleback","Mount Whaleback","Australia","BHP","FE","OP",-23.25,124.54,"≈70 Mt/y","≈61% Fe","A","5.5 km of hematite ridge in the Pilbara.",1],
+["tomprice","Mount Tom Price","Australia","Rio Tinto","FE","OP",-22.65,117.67,"≈60 Mt/y","62–63% Fe","A","The Pilbara's founding mine; autonomous haul fleet standard.",2],
+["kiruna","Kiruna","Sweden","LKAB","FE","UG",67.85,20.22,"≈24 Mt/y","high-grade magnetite","A","The city moved for the mine; the orebody dives beneath the town.",1],
+["malmberget","Malmberget / Gällivare","Sweden","LKAB","FE","UG",67.17,20.60,"≈14 Mt/y","magnetite","A","LKAB's second hub; ground-deformation management in town.",2],
+["kryvyi","Kryvyi Rih","Ukraine","Metinvest / ArcelorMittal","FE","OP",47.92,33.37,"≈40 Mt/y","30–55% Fe","A","Cossack-era iron basin — 130 km of pits and plants.",2],
+["simandou","Simandou","Guinea","Rio Tinto / Simfer + WCS","FE","OP",8.60,-9.10,"120 Mt/y at ramp","≈65% Fe","D","The elephant: world-class hematite — with 600 km of railway to build first.",1],
+["sishen","Sishen","South Africa","Kumba (Anglo)","FE","OP",-27.68,22.98,"≈30 Mt/y","58–64% Fe","A","Kalahari hematite; legacy of South African steel.",2],
+["mary-river","Mary River","Canada","Baffinland (ArcelorMittal)","FE","OP",71.40,-78.70,"≈6 Mt/y","65–68% Fe","A","High Arctic direct-shipping ore — ice-strengthened capesize season.",2],
+["greenbushes","Greenbushes","Australia","Tianqi / IGO (51%)","LI","OP",-33.85,116.06,"≈1.3 Mt spodumene","≈1.4% Li2O","A","The hard-rock lithium benchmark every pegmatite is compared to.",1],
+["pilgangoora","Pilgangoora","Australia","Pilbara Minerals","LI","OP",-21.45,120.55,"≈800 kt spodumene","≈1.2% Li2O","A","Pilbara pegmatites; the spodumene spot auction started here.",2],
+["wodgina","Wodgina","Australia","Albemarle / MinRes JV","LI","OP",-21.28,118.96,"≈750 kt capacity","≈1.2% Li2O","A","Cassiterite history and spodumene future on one tenement.",2],
+["atacama","Salar de Atacama","Chile","SQM / Albemarle","LI","BR",-23.40,-68.30,"≈180 kt LCE/y","brine ≈1,600 ppm Li","A","Highest-grade lithium brine on Earth, in the driest desert on Earth.",1],
+["hombre","Salar del Hombre Muerto","Argentina","Arcadium (Livent)","LI","BR",-25.50,-67.0,"≈40 kt LCE/y","brine ≈700–900 ppm","A","Lithium Triangle pioneer; carbonate from Andean salt.",2],
+["olaroz","Salar de Olaroz","Argentina","Arcadium (Allkem)","LI","BR",-23.90,-66.60,"≈20 kt LCE/y","brine ≈700 ppm","A","Puna brine and pond chemistry at 4,000 m.",2],
+["thacker","Thacker Pass","USA (NV)","Lithium Americas + GM","LI","OP",41.65,-118.0,"≈40 kt LCE phase 1","claystone ≈3,000 ppm Li","D","McDermitt caldera clay — the U.S. lithium-sediment flagship.",2],
+["jadar","Jadar","Serbia","Rio Tinto","LI","UG",44.50,19.50,"≈58 kt LCE plan","jadarite borate-Li","D","Europe's would-be lithium — paused, lobbied, watched.",2],
+["manono","Manono","DR Congo","AVZ / state JV (contested)","LI,SN","OP",-10.40,26.60,"≈700 kt potential","≈1.6% Li2O","D","An old tin hill sitting on one of the biggest hard-rock lithium resources found.",2],
+["goulamina","Goulamina","Mali","Ganfeng (Leo Lithium)","LI","OP",15.0,-1.50,"≈500 kt plan","≈1.1% Li2O","D","Mali joins the spodumene map; first concentrates staged.",2],
+["arcadia","Arcadia","Zimbabwe","Huayou / Prospect","LI","OP",-17.25,31.30,"≈450 kt plan","≈1.4% Li2O","A","Zimbabwe's pegmatite wave after a 2022 export-licensing reset.",2],
+["bikita","Bikita","Zimbabwe","Sinomine","LI","OP",-20.10,31.0,"≈300 kt","petalite + spodumene","A","A century of petalite ceramics now feeding lithium too.",2],
+["ramu","Ramu","Papua New Guinea","Metallurgical Corp of China","NI,CO","OP",-5.22,145.75,"≈30 kt Ni","≈1.0% Ni","A","Laterite DSO to Basamuk refining — deep-sea tailings placement.",2],
+["sorowako","Sorowako","Indonesia","Vale Indonesia","NI","OP",-2.53,121.31,"≈70 kt Ni","≈1.8% Ni","A","Matte from Sulawesi laterite — the original Indonesian nickel.",2],
+["weda","Weda Bay","Indonesia","Eramet / Tsingshan","NI","OP",0.60,128.0,"≈80 kt Ni","laterite ≈1.2% Ni","A","Halmahera laterite feeding the HPAL / ferronickel era.",2],
+["koniambo","Koniambo","New Caledonia (FR)","Glencore (KNS)","NI","OP",-20.97,164.87,"≈40 kt Ni","saprolite ≈2.4% Ni","A","Pyrometallurgy on a Pacific ridge; furnace campaigns watched closely.",2],
+["kambalda","Kambalda","Australia","BHP / IGO et al.","NI","UG",-31.20,121.60,"≈30 kt Ni","≈3% Ni","A","Sulphide nickel capital of Australia — a district, not a mine.",2],
+["mtkeith","Mount Keith / Leinster","Australia","BHP Nickel West","NI","OP",-27.60,120.60,"≈90 kt Ni","≈0.5% Ni","A","Low-grade disseminated sulphide at desert scale.",2],
+["ambatovy","Ambatovy","Madagascar","Sherritt / Sumitomo","NI,CO","OP",-18.90,48.30,"≈40 kt Ni","≈1.0% Ni","A","HPAL on laterite plus a 220 km slurry pipeline to the coast.",2],
+["matoso","Cerro Matoso","Colombia","South32","NI","OP",7.55,-75.30,"≈40 kt FeNi","≈1.5% Ni","A","Montelíbano ferronickel smelter on Córdoba laterite.",2],
+["bayan-obo","Bayan Obo","China","Baogang Group","REE,FE","OP",41.78,109.97,"dominant REO output","Fe-REE-Nb ore","A","Inner Mongolia deposit that historically supplied most of the world's REO.",1],
+["mountain-pass","Mountain Pass","USA (CA)","MP Materials","REE","OP",35.50,-115.54,"≈40 kt REO","≈8% REO ore","A","The American bastnäsite answer to the magnet supply chain.",1],
+["mtweld","Mount Weld","Australia","Lynas Rare Earths","REE","OP",-28.88,121.98,"≈14 kt REO conc","high-grade carbonatite","A","Carbonatite in WA; separation at Kuantan, Malaysia.",1],
+["nechalacho","Nechalacho","Canada","Vital Metals","REE","UG",62.08,-113.06,"pilot heavy-REE","heavy-REE enriched","A","Canada's first hard-rock heavy rare earths producer (NWT).",2],
+["kvanefjeld","Kvanefjeld","Greenland (DK)","Greenland Minerals","REE","UG",60.10,-45.50,"large potential","eudialyte-hosted","D","Greenland's southern complex — uranium byproduct politics in the way.",2],
+["cigar","Cigar Lake","Canada","Orano / Cameco","U","UG",58.06,-104.86,"≈15 Mlb U3O8","very high-grade U","A","Jet-boring into frozen, high-grade Athabasca sandstone.",2],
+["mcarthur","McArthur River","Canada","Cameco / Orano","U","UG",57.98,-103.78,"≈20 Mlb U3O8","very high-grade U","A","Highest-grade uranium mine on Earth; idled 2018–24, now restarted.",2],
+["rossing","Rössing","Namibia","CNNC (69%)","U","OP",-22.48,15.14,"≈4 Mlb U3O8","≈0.03% U3O8","A","Granite-hosted uranium in the Namib since 1976.",2],
+["ranger","Ranger","Australia","ERA (Rio Tinto closure)","U","OP",-12.87,132.91,"legacy output","low-grade U3O8","C","Mined 1981–2021; now a landmark rehabilitation project.",2],
+["inkai","Inkai (ISL)","Kazakhstan","Kazatomprom / Orano","U","OP",44.75,66.05,"≈7 Mlb U3O8","in-situ recovery","A","Acid in-situ leaching in the Chu-Sarysu basin — no shaft, no pit.",2],
+["north-antelope","North Antelope Rochelle","USA (WY)","Peabody","C","OP",43.52,-105.59,"≈65 Mt/y","PRB sub-bituminous","A","America's biggest coal mine; ~22% of U.S. production at peak.",2],
+["black-thunder","Black Thunder","USA (WY)","Arch Resources","C","OP",43.67,-105.27,"≈55 Mt/y","PRB sub-bituminous","A","First mine to ship a billion tons cumulatively.",2],
+["haerwusu","Haerwusu","China","CHN Energy (Shenhua)","C","OP",39.60,111.20,"≈30 Mt/y","thermal","A","Among the largest coal mines in the world by output.",2],
+["turow","Turów","Poland","PGE GiEK","C","OP",50.93,14.92,"≈7 Mt/y","lignite","A","Bogatynia lignite basin; EU court drama over pit expansion.",2],
+["hambach","Hambach","Germany","RWE","C","OP",50.90,6.46,"≈15 Mt/y","lignite","A","Hambach Forest standoff made this Germany's most famous mine.",2],
+["hazelwood","Hazelwood","Australia","ENGIE (closed)","C","OP",-38.37,146.42,"legacy ≈18 Mt/y","brown coal","C","Latrobe Valley brown coal; closed 2017 — pit now a lake project.",2],
+["cerrejon","Cerrejón","Colombia","Glencore (100%)","C","OP",11.10,-72.72,"≈22 Mt/y","thermal bituminous","A","La Guajira desert complex: mine + 150 km railway + port.",2],
+["singrauli","Singrauli (NCL)","India","Northern Coalfields (CIL)","C","OP",24.10,82.70,"≈90 Mt district","thermal","A","India's coal engine — a district of mega-pits feeding pithead power.",2],
+["ekibastuz","Ekibastuz Bogatyr","Kazakhstan","Bogatyr Komir","C","OP",51.80,75.55,"≈35 Mt/y","high-ash bituminous","A","Once the largest open-pit coal mine on Earth (Soviet era).",2],
+["emalahleni","eMalahleni (Witbank)","South Africa","Exxaro / Seriti et al.","C","OP",-25.88,29.10,"≈80 Mt district","bituminous thermal","A","Mpumalanga coalfield — pits, power stations and dust in one airshed.",2],
+["mirny","Mir","Russia","ALROSA","DIA","OP",62.53,113.99,"legacy kimberlite","kimberlite pipe","C","The 575 m Mir hole: open pit closed 2001, underground until 2017.",1],
+["orapa","Orapa","Botswana","Debswana","DIA","OP",-21.24,25.36,"≈11 M ct","two kimberlite pipes","A","Botswana's flagship kimberlite cluster.",2],
+["jwaneng","Jwaneng","Botswana","Debswana","DIA","OP",-25.42,24.80,"≈14 M ct","high-value pipes","A","'A place of small stones' — the richest diamond mine by value.",1],
+["argyle","Argyle","Australia","Rio Tinto (closed)","DIA","OP",-16.45,128.41,"legacy ≈865 M ct","lamproite","C","Source of most of the world's pink diamonds. Closed 2020.",2],
+["diavik","Diavik","Canada","Rio Tinto (100%)","DIA","OP",64.50,-110.28,"≈6 M ct","kimberlite pipes","A","Diamonds under Lac de Gras — dike-isolated mining, wind-powered.",2],
+["catoca","Catoca","Angola","Catoca Mining Soc. (Endiama/ALROSA)","DIA","OP",-9.44,20.07,"≈6 M ct","kimberlite","A","Angola's largest diamond operation, Lunda Sul.",2],
+["esterhazy","Esterhazy K1–K3","Canada","Mosaic","K","UG",50.16,-102.07,"≈2.5 Mt/y","≈25% K2O","A","K3 shafts hoist the deepest potash in Canada.",2],
+["soligorsk","Soligorsk Complex","Belarus","Belaruskali","K","UG",52.79,27.33,"≈11 Mt/y","sylvinite","A","One-fifth of the world's potash moves through Soligorsk shafts.",2],
+["berezniki","Berezniki","Russia","Uralkali","K","UG",59.41,56.78,"≈7 Mt/y","sylvinite","A","Mine 1 flooded in 2006 — the city still watches the voids.",2],
+["bou-craa","Bou Craa","W. Sahara (MA)","OCP Group","P","OP",26.33,-12.92,"≈2.5 Mt rock","phosphorite","A","The world's longest conveyor belt (98 km) crosses the desert to port.",1],
+["bone-valley","Bone Valley","USA (FL)","Mosaic","P","OP",27.40,-81.80,"≈4 Mt rock","phosphate matrix","A","Florida dragline district over Miocene bone beds.",2],
+["khouribga","Khouribga","Morocco","OCP Group","P","OP",32.90,-6.92,"≈12 Mt rock","phosphorite","A","Hub of OCP's phosphate universe; slurry pipeline to Jorf Lasfar.",2],
+["weipa","Weipa / Amrun","Australia","Rio Tinto","BX","OP",-12.66,141.87,"≈30 Mt/y","≈50% Al2O3","A","Western Cape York bauxite; Amrun stretches south.",2],
+["gove","Gove (Nhulunbuy)","Australia","Rio Tinto","BX","OP",-12.20,136.80,"≈10 Mt/y","≈50% Al2O3","A","Bauxite since 1971; the refinery closed, the mine sails on.",2],
+["boke","Boké / Sangarédi","Guinea","CBG (Halco JV)","BX","OP",10.85,-13.55,"≈25 Mt/y","≈50% Al2O3","A","Guinean laterite — the fastest-growing bauxite source on Earth.",2],
+["huntly","Huntly / Willowdale","Australia","Alcoa","BX","OP",-32.70,116.10,"≈28 Mt/y","≈40% Al2O3","A","Jarrah forest bauxite feeding Pinjarra and Wagerup refineries.",2],
+["panchpatmali","Panchpatmali","India","NALCO","BX","OP",18.88,82.54,"≈6 Mt/y","≈40% Al2O3","A","Odisha plateau bauxite with the Damanjodi refinery.",2],
+["trombetas","Trombetas (MRN)","Brazil","Mineração Rio do Norte","BX","OP",-1.70,-56.50,"≈10 Mt/y","≈50% Al2O3","A","Amazon bauxite port at Porto Trombetas.",2],
+["red-dog","Red Dog","USA (AK)","Teck (NANA JV)","ZN","OP",68.07,-162.89,"≈550 kt Zn","15–17% Zn","A","World's largest zinc mine — shipped only when the Chukchi ice quits.",1],
+["rampura","Rampura Agucha","India","Vedanta (HZL)","ZN","OP",25.10,74.50,"≈350 kt Zn","≈10% Zn","A","Open pit done, underground ramping — India's zinc backbone.",2],
+["cerro-pasco","Cerro de Pasco","Peru","Volcan","ZN,AG","OP",-10.68,-76.26,"≈120 kt Zn","polymetallic","A","A city ringed by one giant crater of ore and historic tailings.",2],
+["sullivan","Sullivan","Canada","Teck (closed 2001)","ZN","OP",49.69,-115.98,"legacy 17 Mt Zn-Pb","sedex","C","Kimberley, BC — the textbook Sullivan sedex body, now reclaimed.",2],
+["mt-isa","Mount Isa","Australia","Glencore","ZN,CU","UG",-20.72,139.49,"≈150 kt Zn","7–11% Zn","A","A century of copper and zinc-lead-silver underground.",2],
+["penasquito","Peñasquito","Mexico","Newmont","AG,ZN,AU","OP",24.80,-101.42,"≈25 Moz Ag","polymetallic","A","Mexico's biggest gold-silver-zinc-lead line item.",2],
+["fresnillo","Fresnillo","Mexico","Fresnillo plc","AG","UG",22.95,-102.87,"≈13 Moz Ag","high-grade silver","A","Zacatecas silver veins paying out since 1554.",2],
+["potosi","Cerro Rico de Potosí","Bolivia","cooperatives (COMIBOL)","AG,ZN","UG",-19.63,-65.75,"artisanal output","Ag-Pb-Zn veins","A","The mountain that bankrolled empires; still worked by cooperatives.",1],
+["cannington","Cannington","Australia","South32","AG,ZN","UG",-22.05,140.80,"≈10 Moz Ag","Ag-Pb-Zn","A","One of the world's largest silver producers, hidden in the outback.",2],
+["mogalakwena","Mogalakwena","South Africa","Anglo American Platinum","PG","OP",-24.20,28.84,"≈400 koz PGM","Bushveld reefs","A","The biggest open-pit PGM operation, on the Bushveld northern limb.",2],
+["rustenburg","Rustenburg Operations","South Africa","Impala Platinum","PG","UG",25.50,27.20,"≈600 koz 4E","Merensky reef","A","Shaft-sinking country: the western Bushveld reef corridors.",2],
+["stillwater","Stillwater / East Boulder","USA (MT)","Sibanye-Stillwater","PG","UG",45.38,-109.52,"≈350 koz","J-M Reef ≈11 g/t","A","America's primary palladium corridor in the Beartooths.",2],
+["climax","Climax","USA (CO)","Freeport (Climax Moly)","MO","OP",39.36,-106.19,"≈20 kt Mo","≈0.2% Mo","A","The Climax molybdenum porphyry — the biggest Mo orebody known.",2],
+["san-rafael","San Rafael","Peru","Minsur","SN","UG",-14.36,-70.60,"≈18 kt Sn","high-grade cassiterite","A","World's richest hard-rock tin mine, high in the Puno Andes.",2],
+["renison","Renison Bell","Australia","Metals X / Bluestone","SN","UG",-41.81,145.47,"≈6 kt Sn","≈1.2% Sn","A","Tasmania's long-running tin engine.",2]
+];
+/* [id,name,cc,op,lat,lng,haz,vol,status,note] */
+const TSFS=[
+["feijao","Córrego do Feijão Dam I","Brazil","Vale",-20.05,-44.12,"FAILED","11.7 Mm³","CLOSED","Brumadinho, 25 Jan 2019 — 270 fatalities. Triggered Brazil's dam-decommissioning law."],
+["fundao","Fundão (Samarco)","Brazil","Samarco JV",-20.39,-43.44,"FAILED","55.8 Mm³","CLOSED","Mariana, 5 Nov 2015 — tailings wave along ~600 km of the Doce river; 19 lives lost."],
+["polley","Mount Polley TSF","Canada","Imperial Metals",52.53,-121.44,"FAILED","7.3 Mm³","CLOSED","Perimeter Embankment breach into Quesnel Lake, 2014 — foundation failure mode."],
+["frailes","Los Frailes (Aznalcóllar)","Spain","Boliden-Apirsa",37.52,-6.23,"FAILED","—","CLOSED","Tailings release to the Guadiamar, 1998 — Spain's worst mining spill."],
+["stava","Stava Valley","Italy","Prealpi Mineraia",46.18,11.32,"FAILED","≈0.3 Mm³","CLOSED","Two dams failed in cascade, 1985 — 268 lives. Rewrote European tailings codes."],
+["ajka","Ajka Red-Mud Reservoir","Hungary","MAL Magyar Alumínium",47.08,17.07,"FAILED","≈1.0 Mm³ alkaline","CLOSED","Red mud flood through Kolontár/Devecser, 2010 — 10 lives, chemical burns."],
+["merriespruit","Merriespruit No.4","South Africa","Harmony (then Argo)",-28.83,26.86,"FAILED","≈0.6 Mm³","CLOSED","Free State failure at night after rain, 1994 — 17 lives."],
+["talvivaara","Talvivaara Gypsum Pond","Finland","Terrafame",63.96,27.52,"LEAK","—","ACTIVE","Uranium-bearing process water escape, 2012; operator reborn as Terrafame."],
+["cadia-ntsf","Cadia NTSF","Australia","Newmont (Newcrest)",-33.44,148.98,"EXTREME","—","ACTIVE","2018 embankment slump; engineered rebuild plus public inquiry."],
+["el-mauro","El Mauro","Chile","Antofagasta (Los Pelambres)",-31.55,-70.85,"HIGH","—","ACTIVE","Among the largest TSFs in Latin America — in earthquake country."],
+["ok-tedi","Ok Tedi Riverine","Papua New Guinea","Ok Tedi Mining (state)",-5.05,141.18,"DISCHARGE","—","ONGOING","Riverine tailing disposal since the 1980s — an accepted, monitored harm."]
+];
+/* [id,name,cc,out,lat,lng,closed] */
+const PLANTS=[
+["copper-cliff","Copper Cliff Complex","Canada","Cu-Ni matte → refined metal",46.62,-80.99,false],
+["nadezhda","Nadezhda Plant","Russia","Ni-Cu concentrate smelting",69.35,88.05,false],
+["monchegorsk","Monchegorsk","Russia","Ni refining & PGM recovery",67.93,33.01,false],
+["gove-ref","Gove Alumina Refinery","Australia","Bayer-process alumina (closed)",-12.18,136.84,true],
+["kwinana","Kwinana Nickel Refinery","Australia","Ni metal (mothballed)",-32.23,115.75,false],
+["aughinish","Aughinish Alumina","Ireland","EU's largest Bayer refinery",52.64,-9.06,false],
+["jorf","Jorf Lasfar Platform","Morocco","phosphoric acid & fertilizer",33.11,-8.62,false]
+];
+const REGIONS=[
+["world",0,0,"the full globe"],["chile",-30,-71,"Chile — the copper kingdom"],
+["belt",-23.5,-68.8,"Antofagasta porphyry belt"],["peru",-10.5,-76,"Peru — Andean polymetals"],
+["katanga",-10.8,25.6,"Central African Copperbelt"],["zambia",-12.8,27.6,"Zambian Copperbelt"],
+["pilbara",-22.6,117.6,"Pilbara — iron ore country"],["kalgoorlie",-30.9,121.4,"Eastern Goldfields"],
+["atacama",-23.5,-68.4,"Salar de Atacama"],["triangle",-24.8,-66.8,"Lithium Triangle"],
+["nevada",40.3,-116.8,"Nevada — Carlin gold"],["sudbury",46.6,-81.2,"Sudbury impact basin"],
+["athabasca",58.1,-104.3,"Athabasca uranium basin"],["kiruna",67.6,20.4,"Fennoscandian iron"],
+["norilsk",69.3,88.1,"Norilsk industrial region"],["carajas",-6.3,-50.5,"Carajás mineral province"],
+["guinea",10.6,-13.2,"Boké bauxite district"],["simandou",8.6,-9.2,"Simandou ridge"],
+["gobi",43.0,106.8,"South Gobi copper"],["indonesia-ni",0.5,123.0,"Indonesian nickel islands"],
+["png",-4.5,144.0,"Papua New Guinea mining arc"],["wits",-26.2,27.4,"Witwatersrand goldfields"],
+["bushveld",-24.8,28.0,"Bushveld PGM complex"],["zimbabwe",-18.6,31.1,"Zimbabwe lithium belt"],
+["jadar",44.5,19.5,"Jadar valley"],["mali",12.0,-8.2,"Mali gold belt"],
+["ghana",6.0,-1.6,"Ashanti gold belt"],["boucraa",26.3,-12.9,"Bou Craa phosphate"],
+["morocco-p",32.6,-6.8,"OCP phosphate plateaus"],["powder-river",43.6,-105.4,"Powder River coal"],
+["gras",64.6,-110.2,"Lac de Gras diamonds"],["botswana",-24.0,25.0,"Botswana diamond corridor"],
+["ural-k",59.3,56.8,"Verkhnekamskoye potash"],["sask",50.6,-102.0,"Saskatchewan potash belt"],
+["aznalcollar",37.5,-6.2,"Aznalcóllar"],["caledonia",-20.9,164.9,"New Caledonia nickel"],
+["mirny",62.5,113.9,"Mirny — the diamond crater"],["kryvyi",47.9,33.3,"Kryvyi Rih basin"],
+["reddog",68.0,-162.8,"Brooks Range zinc"],["quadrangle",-20.3,-43.5,"Iron Quadrangle"],
+["wa-lithium",-28.0,118.5,"Western Australia lithium"],["latrobe",-38.4,146.4,"Latrobe Valley brown coal"],
+["bone",27.4,-81.8,"Bone Valley phosphate"],["cape-york",-12.5,139.5,"Cape York bauxite"]
+];
+const PRICES=[
+["Cu","COPPER","USD/t",9460],["Al","ALUMINIUM","USD/t",2438],["Zn","ZINC","USD/t",2812],
+["Ni","NICKEL","USD/t",16850],["Sn","TIN","USD/t",31240],["Fe62","IRON 62% CFR","USD/t",103],
+["Li","Li2CO3","USD/t",13620],["Co","COBALT","USD/t",27400],["U3O8","URANIUM","USD/lb",85.5],
+["Au","GOLD","USD/oz",2384.5],["Ag","SILVER","USD/oz",30.4],["Pt","PLATINUM","USD/oz",984],
+["NdPr","NdPr OXIDE","USD/t",61200],["HCC","MET COAL","USD/t",232],["NEWC","THERMAL COAL","USD/t",112],
+["MOP","POTASH","USD/t",318]
+];
+const TOURS={
+  copper:["escondida","chuqui","collahuasi","antamina","grasberg","morenci","bingham","oyu","kakula"],
+  battery:["atacama","hombre","greenbushes","pilgangoora","thacker","mutanda","norilsk"],
+  iron:["carajas","whaleback","tomprice","kiruna","simandou"],
+  precious:["muruntau","nevada","superpit","mponeng","potosi"],
+  hazards:["feijao","fundao","polley","frailes","cadia-ntsf","el-mauro","ok-tedi"]
+};
+
+/* ============ BUILD ============ */
+const idx={};
+[...MINES.map(m=>({id:m[0],name:m[1],kind:'mine'})),
+ ...TSFS.map(t=>({id:t[0],name:t[1],kind:'tsf'})),
+ ...PLANTS.map(p=>({id:p[0],name:p[1],kind:'plant'}))].forEach(x=>idx[x.id]=x);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* commodity table */
+(function(){
+  const counts={},keys={};
+  MINES.forEach(m=>{m[4].split(',').forEach(c=>{counts[c]=(counts[c]||0)+1;(keys[c]=keys[c]||[]).push(m);});});
+  const order=['bulk','prec','ener','spec'];
+  let h='<table><tr><th></th><th>CODE</th><th>COMMODITY</th><th>GROUP</th><th>SITES</th><th>KEY SITES (TIER 1)</th></tr>';
+  order.forEach(g=>{
+    Object.keys(COMMS).filter(c=>COMMS[c].g===g).forEach(c=>{
+      const t1=(keys[c]||[]).filter(m=>m[12]===1).slice(0,3).map(m=>GLY[m[5]]+' '+m[1]).join(' · ');
+      h+='<tr><td><span class="coms"><i style="background:'+COMMS[c].col+'"></i></span></td><td><b>'+c+'</b></td><td>'+COMMS[c].n+'</td><td class="dim">'+GNAME[g]+'</td><td>'+(counts[c]||0)+'</td><td class="dim">'+(t1||'—')+'</td></tr>';
+    });
+  });
+  $('#commtable').innerHTML=h+'</table>';
+})();
+
+/* tours */
+(function(){
+  let h='';
+  Object.keys(TOURS).forEach(name=>{
+    h+='<div class="tourbox"><div class="tt">TOUR · '+name.toUpperCase()+' — '+TOURS[name].length+' STOPS</div><ol>'+
+      TOURS[name].map(id=>{const s=idx[id];return '<li><b>'+s.name+'</b> <span class="dim">['+(s.kind==='mine'?s.kind.toUpperCase():s.kind.toUpperCase())+']</span></li>';}).join('')+
+      '</ol></div>';
+  });
+  $('#tourlist').innerHTML=h;
+})();
+
+/* prices */
+(function(){
+  $('#pricetable').innerHTML='<table><tr><th>KEY</th><th>INSTRUMENT</th><th>UNIT</th><th>BASE LEVEL (SIM)</th></tr>'+
+    PRICES.map(p=>'<tr><td><b>'+p[0]+'</b></td><td>'+p[1]+'</td><td class="dim">'+p[2]+'</td><td>'+p[3].toLocaleString('en-US')+'</td></tr>').join('')+'</table>';
+})();
+
+/* regions */
+(function(){
+  $('#regtable').innerHTML='<table><tr><th>REGION ID</th><th>NAME</th><th>LAT</th><th>LON</th></tr>'+
+    REGIONS.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[3]+'</td><td class="dim">'+r[1]+'°</td><td class="dim">'+r[2]+'°</td></tr>').join('')+'</table>';
+})();
+
+/* directory */
+const DIR=[];
+{let ci={};
+ MINES.forEach(m=>{const c=m[4].split(',')[0];ci[c]=(ci[c]||0)+1;
+   DIR.push({kind:'mine',code:c+'-'+String(ci[c]).padStart(3,'0'),name:m[1],cc:m[2],op:m[3],comms:m[4].split(','),
+     type:m[5]==='OP'&&m[11]==='D'?'DV':m[5]==='OP'&&m[11]==='C'?'CL':m[5],lat:m[6],lng:m[7],prod:m[8],grade:m[9],status:m[11],note:m[10]});});
+ TSFS.forEach((t,i)=>DIR.push({kind:'tsf',code:'TSF-'+String(i+1).padStart(2,'0'),name:t[1],cc:t[2],op:t[3],
+   comms:[],type:'TSF',lat:t[4],lng:t[5],haz:t[6],prod:t[7],grade:'—',status:t[8],note:t[9]}));
+ PLANTS.forEach((p,i)=>DIR.push({kind:'plant',code:'PL-'+String(i+1).padStart(2,'0'),name:p[1],cc:p[2],op:'—',
+   comms:[],type:'PL',lat:p[4],lng:p[5],prod:p[3],grade:'—',status:p[6]?'C':'A',note:'Processing / refining node: '+p[3]}));
+}
+DIR.sort((a,b)=>a.name.localeCompare(b.name));
+let fT='',fK='all',fG='all',fS='all';
+function statusCell(it){
+  if(it.kind==='tsf')return '<span class="hz" style="color:'+HAZCOL[it.haz]+';border-color:'+HAZCOL[it.haz]+'">'+it.haz+'</span>';
+  return it.status==='A'?'<span class="stA">ACTIVE</span>':it.status==='D'?'<span class="stD">DEV</span>':'<span class="stC">CLOSED</span>';
+}
+function typeCell(it){return GLY[it.type]+' '+({OP:'open pit',UG:'underground',BR:'brine',AL:'alluvial',DV:'development',CL:'closed',TSF:'tailings',PL:'plant'})[it.type];}
+function passes(it){
+  if(fK!=='all'&&it.kind!==fK)return false;
+  if(fS!=='all'&&it.status!==fS)return false;
+  if(fG!=='all'&&!(it.comms||[]).some(c=>COMMS[c]&&COMMS[c].g===fG))return false;
+  if(fT){
+    const hay=(it.code+' '+it.name+' '+it.cc+' '+it.op+' '+(it.comms||[]).join(' ')+' '+it.type+' '+(it.prod||'')+' '+(it.note||'')).toLowerCase();
+    if(!hay.includes(fT))return false;
+  }
+  return true;
+}
+function renderDir(){
+  const list=DIR.filter(passes);
+  $('#dcount').textContent=list.length+' / '+DIR.length+' RECORDS';
+  $('#dtb').innerHTML=list.map(it=>{
+    const col=it.kind==='tsf'?(HAZCOL[it.haz]||'#5bd6dd'):it.kind==='plant'?'#5bd6dd':COMMS[it.comms[0]].col;
+    const coms=it.kind==='mine'?it.comms.map(c=>'<span class="coms"><i style="background:'+COMMS[c].col+'"></i>'+c+'</span>').join(' '):'<span class="dim">—</span>';
+    return '<tr class="main" data-id="'+it.code+'"><td><span class="glyph" style="color:'+col+'">'+GLY[it.type]+'</span></td>'+
+      '<td class="dim">'+it.code+'</td><td><b>'+esc(it.name)+'</b></td><td>'+esc(it.cc)+'</td><td class="dim">'+esc(it.op)+'</td>'+
+      '<td>'+coms+'</td><td class="dim">'+typeCell(it)+'</td><td>'+statusCell(it)+'</td><td class="dim">'+esc(it.prod)+'</td></tr>'+
+      '<tr class="det"><td colspan="9"><b style="color:var(--acc)">'+esc(it.name)+'</b> · '+it.lat+'°, '+it.lng+'° · '+(it.kind==='tsf'?'consequence '+it.haz+' · status '+it.status:(it.kind==='plant'?'plant node':'assay '+it.grade))+'<br>'+esc(it.note)+'</td></tr>';
+  }).join('')||'<tr><td colspan="9" class="dim" style="padding:16px">NO MATCHING RECORDS</td></tr>';
+}
+renderDir();
+ $('#dsearch').addEventListener('input',e=>{fT=e.target.value.trim().toLowerCase();renderDir();});
+ $$('.fc').forEach(b=>b.addEventListener('click',()=>{
+  const attr=b.dataset.k!==undefined?'k':b.dataset.g!==undefined?'g':'s';
+  const val=b.dataset[attr];
+  if(attr==='k'){fK=val;$$('.fc[data-k]').forEach(x=>x.classList.toggle('on',x===b));}
+  if(attr==='g'){fG=val;$$('.fc[data-g]').forEach(x=>x.classList.toggle('on',x===b));}
+  if(attr==='s'){fS=val;$$('.fc[data-s]').forEach(x=>x.classList.toggle('on',x===b));}
+  renderDir();
+}));
+ $('#dtb').addEventListener('click',e=>{
+  const tr=e.target.closest('tr.main');if(!tr)return;
+  tr.nextElementSibling.classList.toggle('show');
+});
+
+/* ============ CHROME ============ */
+/* copy chips */
+document.addEventListener('click',e=>{
+  const c=e.target.closest('.cmd');if(!c)return;
+  const txt=c.dataset.cmd||c.textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(()=>{});
+  const t=$('#toast');t.textContent='COPIED ▸ '+txt;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1400);
+});
+/* scrollspy */
+(function(){
+  const links={};
+  $$('#side a').forEach(a=>links[a.getAttribute('href').slice(1)]=a);
+  const io=new IntersectionObserver(es=>{
+    es.forEach(en=>{
+      if(en.isIntersecting){
+        $$('#side a').forEach(a=>a.classList.remove('on'));
+        const l=links[en.target.id];if(l)l.classList.add('on');
+      }
+    });
+  },{rootMargin:'-12% 0px -75% 0px'});
+  document.querySelectorAll('main section[id]').forEach(s=>io.observe(s));
+})();
+/* back to top */
+ $('#top-btn').onclick=()=>scrollTo({top:0,behavior:'smooth'});
+</script>
+</body>
+</html>

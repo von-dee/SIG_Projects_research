@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOTHERLODE — Voice Control Manual (ML-DOC-003)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04080c;--bg2:#060d13;--panel:#0a1319;--brd:#183242;--brd2:#234a5e;
+  --acc:#ffb454;--grn:#39d98a;--red:#ff5f56;--cy:#5bd6dd;--dim:#5f7268;
+  --txt:#cfe0d6;--txt2:#9fb2a8;--mono:'IBM Plex Mono',monospace;--head:'Chakra Petch',sans-serif;
+  --a-VOICE:#39d98a;--a-SYS:#ffb454;--a-ENG:#5bd6dd;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font:13px/1.7 var(--mono);overflow-x:hidden}
+::selection{background:rgba(255,180,84,.3)}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--brd2)}::-webkit-scrollbar-track{background:var(--bg)}
+a{color:var(--cy);text-decoration:none}a:hover{color:var(--acc)}
+.doc{display:flex;min-height:100vh}
+#side{position:sticky;top:0;width:276px;height:100vh;overflow-y:auto;flex:none;background:var(--bg2);
+  border-right:1px solid var(--brd);padding:18px 0 40px;z-index:20}
+#side .sbrand{padding:10px 20px 14px;border-bottom:1px solid var(--brd);margin-bottom:10px}
+#side .sbrand b{font-family:var(--head);letter-spacing:.2em;font-size:15px;color:#fff;display:block}
+#side .sbrand span{font-size:9px;letter-spacing:.24em;color:var(--dim)}
+#side .sgroup{font-size:9px;letter-spacing:.26em;color:var(--dim);padding:15px 20px 4px}
+#side a{display:flex;gap:9px;padding:4px 20px;font-size:11.5px;color:var(--txt2);border-left:2px solid transparent}
+#side a .n{color:var(--dim);font-size:9.5px;min-width:38px;padding-top:1px}
+#side a:hover{color:var(--txt);background:rgba(255,180,84,.04)}
+#side a.on{color:var(--acc);border-left-color:var(--acc);background:rgba(255,180,84,.06)}
+main{flex:1;min-width:0;max-width:980px;margin:0 auto;padding:0 34px 120px}
+section{padding-top:50px;scroll-margin-top:8px}
+h2{font-family:var(--head);font-size:20px;letter-spacing:.1em;color:#fff;margin-bottom:4px}
+h2 .sn{color:var(--acc);margin-right:12px;font-size:14px;letter-spacing:.2em}
+h2 .mlchip{float:right;font-size:9px;letter-spacing:.16em;color:var(--dim);border:1px solid var(--brd);padding:2px 8px;margin-top:6px}
+p.lead{color:var(--txt2);margin-bottom:16px;font-size:12.5px}
+h3{font-family:var(--head);font-size:12px;letter-spacing:.18em;color:var(--acc);margin:26px 0 8px}
+p{margin:8px 0}
+b{color:var(--txt)}.dim{color:var(--dim)}.grn{color:var(--grn)}.rd{color:var(--red)}.amb{color:var(--acc)}.cyn{color:var(--cy)}
+table{width:100%;border-collapse:collapse;font-size:11px;margin:12px 0}
+th{font-family:var(--head);font-size:9.5px;letter-spacing:.16em;color:var(--dim);text-align:left;border-bottom:1px solid var(--brd2);padding:6px 9px;white-space:nowrap}
+td{border-bottom:1px solid var(--brd);padding:6px 9px;vertical-align:top}
+tr:hover td{background:rgba(255,180,84,.03)}
+kbd{border:1px solid var(--brd2);background:#02060a;padding:1px 7px;font-size:11px;color:var(--acc);white-space:nowrap}
+.cmd{display:inline-block;background:#02060a;border:1px solid var(--brd2);color:var(--grn);padding:1px 8px;font-size:11px;cursor:pointer;white-space:nowrap}
+.cmd:hover{border-color:var(--grn)}
+.say{color:var(--acc)}
+.note{border:1px solid var(--brd2);border-left:3px solid var(--acc);background:rgba(255,180,84,.04);padding:10px 16px;margin:14px 0;font-size:12px}
+.note.red{border-left-color:var(--red);background:rgba(255,95,86,.04)}
+.note.grn{border-left-color:var(--grn);background:rgba(57,217,138,.04)}
+.note .nt{font-family:var(--head);font-size:10px;letter-spacing:.2em;color:var(--acc);display:block;margin-bottom:3px}
+.note.red .nt{color:var(--red)}
+.hero{padding:60px 0 10px;border-bottom:1px solid var(--brd);margin-bottom:8px}
+.hero .doccode{font-size:10px;letter-spacing:.3em;color:var(--dim)}
+.hero h1{font-family:var(--head);font-size:40px;letter-spacing:.12em;color:#fff;margin:6px 0}
+.hero .tag{color:var(--txt2);font-size:13px;max-width:660px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 6px}
+.chip{font-size:9px;letter-spacing:.16em;border:1px solid var(--brd2);padding:3px 9px;color:var(--txt2)}
+.chip.on{color:var(--grn);border-color:var(--grn)}
+.chip.amb{color:var(--acc);border-color:var(--acc)}
+/* pipeline */
+.pipe{border:1px solid var(--brd);background:var(--panel);padding:16px;margin:14px 0}
+.pn{border:1px solid var(--brd2);background:var(--bg2);padding:8px 12px;text-align:center;margin:0 12%}
+.pn b{font-family:var(--head);font-size:11px;letter-spacing:.14em;color:#fff;display:block}
+.pn span{font-size:9.5px;color:var(--dim)}
+.pn.hot{border-color:var(--acc)}
+.pn.hot b{color:var(--acc)}
+.pa{text-align:center;color:var(--dim);font-size:10px;line-height:20px}
+/* states */
+.sts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:12px 0}
+.stc{border:1px solid var(--brd);background:var(--panel);padding:8px 12px;font-size:10.5px}
+.stc b{display:block;letter-spacing:.14em;font-family:var(--head);font-size:10px;margin-bottom:2px}
+.stc span{color:var(--dim)}
+/* use-case blocks */
+.uc{border:1px solid var(--brd);background:var(--panel);padding:0;margin:16px 0 0}
+.uc .uch{display:flex;align-items:baseline;gap:12px;padding:10px 16px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.uc .uch .uid{font-family:var(--head);font-size:14px;letter-spacing:.14em;color:var(--acc)}
+.uc .uch .ut{font-family:var(--head);font-size:13px;letter-spacing:.12em;color:#fff;flex:1}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-bottom:1px solid var(--brd)}
+.mcell{padding:8px 16px;border-right:1px solid var(--brd)}
+.mcell:last-child{border-right:none}
+.mcell .mk{font-size:8.5px;letter-spacing:.22em;color:var(--dim);display:block;margin-bottom:2px}
+.mcell .mv{font-size:11px;color:var(--txt)}
+.mcell.post .mv{color:var(--grn)}
+.flow{padding:16px 16px 10px}
+.fnode{border:1px solid var(--brd);border-left:3px solid var(--dim);background:var(--bg2);padding:7px 12px;display:flex;gap:10px;align-items:flex-start}
+.fnode .fn{flex:none;width:22px;height:22px;border:1px solid var(--brd2);color:var(--dim);font-size:10px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.fnode .fa{flex:none;font-size:8.5px;letter-spacing:.14em;border:1px solid;padding:1px 6px;margin-top:3px;min-width:52px;text-align:center}
+.fnode .ft{font-size:11.5px;color:var(--txt);flex:1}
+.farr{text-align:center;color:var(--dim);font-size:11px;line-height:20px}
+.a-VOICE{border-left-color:var(--a-VOICE)}.a-VOICE .fa{color:var(--a-VOICE);border-color:var(--a-VOICE)}
+.a-SYS{border-left-color:var(--a-SYS)}.a-SYS .fa{color:var(--a-SYS);border-color:var(--a-SYS)}
+.a-ENG{border-left-color:var(--a-ENG)}.a-ENG .fa{color:var(--a-ENG);border-color:var(--a-ENG)}
+.fbr{margin:4px 0 4px 44px;border-left:2px dashed var(--acc);padding:4px 10px;font-size:10.5px;color:var(--txt2);background:rgba(255,180,84,.03)}
+.fbr b{color:var(--acc);letter-spacing:.1em;font-size:9px;margin-right:6px}
+.altbox{border-top:1px solid var(--brd);padding:10px 16px 12px}
+.altbox .ah{font-size:9px;letter-spacing:.22em;color:var(--dim);margin-bottom:6px}
+.altrow{display:flex;gap:10px;padding:3px 0;font-size:11px;border-bottom:1px dashed var(--brd)}
+.altrow b{color:var(--red);font-size:9.5px;letter-spacing:.08em;min-width:26px;flex:none;padding-top:1px}
+.altrow .ac{color:var(--txt2);flex:1}
+/* try-it */
+.try{border:1px solid var(--brd2);background:var(--panel);padding:16px;margin:14px 0}
+#vtalk{font:12px var(--mono);letter-spacing:.14em;padding:10px 22px;cursor:pointer;background:#02060a;
+  border:1px solid var(--grn);color:var(--grn);text-transform:uppercase}
+#vtalk:hover{box-shadow:0 0 14px rgba(57,217,138,.3)}
+#vtalk.dead{border-color:var(--red);color:var(--red);cursor:not-allowed}
+.tryrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+#vtype{flex:1;min-width:220px;background:#02060a;border:1px solid var(--brd2);color:var(--txt);font:12px var(--mono);padding:7px 10px;outline:none}
+#vtype:focus{border-color:var(--acc)}
+#vstat{font-size:10px;letter-spacing:.12em;color:var(--dim);min-height:16px;margin-top:8px}
+#vres{margin-top:10px;min-height:10px}
+.vri{border:1px solid var(--brd);border-left:3px solid var(--cy);background:var(--bg2);padding:9px 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.vint{font-size:9px;letter-spacing:.16em;border:1px solid var(--cy);color:var(--cy);padding:1px 8px}
+.vact{font-size:11.5px;color:var(--txt);flex:1;min-width:200px}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--panel);border:1px solid var(--acc);
+  color:var(--acc);padding:6px 16px;font-size:11px;letter-spacing:.12em;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99}
+#toast.show{opacity:1}
+#top-btn{position:fixed;right:22px;bottom:22px;z-index:50;background:var(--panel);border:1px solid var(--brd2);color:var(--txt2);
+  padding:6px 11px;cursor:pointer;font:10px var(--mono);letter-spacing:.2em}
+#top-btn:hover{border-color:var(--acc);color:var(--acc)}
+@media(max-width:900px){
+  .doc{display:block}
+  #side{position:relative;width:100%;height:auto;display:flex;flex-wrap:wrap;padding:8px}
+  #side .sbrand,#side .sgroup{display:none}
+  #side a{padding:4px 10px;border:1px solid var(--brd);margin:2px}
+  #side a.on{border-color:var(--acc)}
+  main{padding:0 16px 80px}
+  .hero h1{font-size:28px}
+  .fbr{margin-left:14px}
+  h2 .mlchip{float:none;display:inline-block;margin-top:0}
+}
+</style>
+</head>
+<body>
+<div class="doc">
+
+<nav id="side">
+  <div class="sbrand"><b>MOTHERLODE</b><span>VOICE CONTROL · ML-DOC-003</span></div>
+  <div class="sgroup">SYSTEM</div>
+  <a href="#overview"><span class="n">VC-00</span>OVERVIEW — TALK TO IT</a>
+  <a href="#architecture"><span class="n">—</span>PIPELINE ARCHITECTURE</a>
+  <a href="#states"><span class="n">—</span>MIC STATES &amp; WAKE SPEC</a>
+  <div class="sgroup">A · ACCESS</div>
+  <a href="#vc1"><span class="n">VC-01</span>MICROPHONE PERMISSION</a>
+  <a href="#vc2"><span class="n">VC-02</span>WAKE &amp; FIRST COMMAND</a>
+  <div class="sgroup">B · THE FOUR JOBS</div>
+  <a href="#vc3"><span class="n">VC-03</span>DIRECT IT — FLY &amp; TRACK</a>
+  <a href="#vc4"><span class="n">VC-04</span>QUERY IT</a>
+  <a href="#vc5"><span class="n">VC-05</span>OPERATE IT</a>
+  <a href="#vc6"><span class="n">VC-06</span>TOUR CONTROL</a>
+  <a href="#vc7"><span class="n">VC-07</span>PIT MODE BY VOICE</a>
+  <div class="sgroup">C · ROBUSTNESS</div>
+  <a href="#vc8"><span class="n">VC-08</span>DICTATION FALLBACK</a>
+  <a href="#vc9"><span class="n">VC-09</span>NO-MATCH &amp; CORRECTION</a>
+  <a href="#vc10"><span class="n">VC-10</span>NO MIC OR DENIED</a>
+  <div class="sgroup">D · SESSION</div>
+  <a href="#vc11"><span class="n">VC-11</span>MUTE &amp; PRIVACY</a>
+  <a href="#vc12"><span class="n">VC-12</span>SPOKEN REPLIES</a>
+  <a href="#vc13"><span class="n">VC-13</span>SESSION STATUS &amp; COST</a>
+  <a href="#vc14"><span class="n">VC-14</span>WAKE PROFILE</a>
+  <div class="sgroup">REFERENCE</div>
+  <a href="#grammar"><span class="n">—</span>VOICE GRAMMAR</a>
+  <a href="#tryit"><span class="n">—</span>TRY IT — LIVE</a>
+  <a href="#privacy"><span class="n">—</span>PRIVACY &amp; THE LINE</a>
+  <a href="#troubleshoot"><span class="n">—</span>TROUBLESHOOTING</a>
+  <a href="#dev"><span class="n">—</span>DEV WIRING</a>
+  <a href="#coverage"><span class="n">—</span>CROSS-DOC COVERAGE</a>
+</nav>
+
+<main>
+
+<header class="hero">
+  <div class="doccode">ML-DOC-003 · VOICE CONTROL MANUAL · REVISION A</div>
+  <h1>TALK TO IT</h1>
+  <div class="tag">The microphone is a front-end, not a privilege. Every spoken command resolves to the exact same local parser the keyboard uses — no keys, no cloud account, and every utterance has a text twin, so nothing is ever voice-only. This manual documents the v0.2 voice module: the pipeline, the states, 14 user flows, the 33-entry grammar, and the one-function wiring that adds it to the console.</div>
+  <div class="chips">
+    <span class="chip on">14 VOICE FLOWS</span>
+    <span class="chip">33 GRAMMAR ENTRIES</span>
+    <span class="chip">4 JOBS — DIRECT · QUERY · OPERATE · CONTROL</span>
+    <span class="chip amb">LIVE TRY-IT PANEL BELOW</span>
+  </div>
+</header>
+
+<!-- VC-00 -->
+<section id="overview">
+  <h2><span class="sn">VC-00</span>OVERVIEW — TALK TO IT<span class="mlchip">manual.html#console</span></h2>
+  <p class="lead">What voice control is in MOTHERLODE — and what it deliberately is not.</p>
+  <p>The console already understands natural phrases through its local parser: <span class="cmd" data-cmd="track grasberg">track grasberg</span>, <span class="cmd" data-cmd="show lithium">show lithium</span>, <span class="cmd" data-cmd="fly to chile">fly to chile</span>. The voice layer simply removes the keyboard from that path. Speech in, transcript out, grammar match, parser, action — plus a terse spoken reply so the operator never has to look at the screen.</p>
+  <h3>THE FOUR VOICE JOBS</h3>
+  <ul class="dim" style="list-style:none">
+    <li>▸ <b class="grn">DIRECT IT</b> — camera and targeting by mouth: fly, track, zoom, reset. (→ VC-03)</li>
+    <li>▸ <b class="cyn">QUERY IT</b> — analyst questions against the local dataset: counts, quotes, assays, context. (→ VC-04)</li>
+    <li>▸ <b class="amb">OPERATE IT</b> — the whole console hands-free: layers, sensors, detection, pit mode, tours. (→ VC-05 → VC-07)</li>
+    <li>▸ <b>CONTROL IT</b> — the voice session itself: wake, cancel, mute, repeat. (→ VC-02, VC-11)</li>
+  </ul>
+  <div class="note grn"><span class="nt">DESIGN RULE — THE TEXT TWIN</span>
+  Every entry in the grammar table below carries a text twin: the console command that does the identical thing. If the mic is denied, missing, or simply unwanted, nothing is lost. Voice is an input method, never a dependency — the opposite of a feature you pay per minute to use.</div>
+</section>
+
+<!-- architecture -->
+<section id="architecture">
+  <h2><span class="sn">—</span>PIPELINE ARCHITECTURE<span class="mlchip">manual.html#hood</span></h2>
+  <p class="lead">Nine stages from sound wave to spoken reply. Every stage also writes to the console log.</p>
+  <div class="pipe">
+    <div class="pn"><b>MIC</b><span>raw audio, only while ARMED</span></div><div class="pa">▼</div>
+    <div class="pn"><b>1 · WAKE DETECTOR</b><span>scores transcript hypotheses against the wake phrase</span></div><div class="pa">▼</div>
+    <div class="pn"><b>2 · CAPTURE WINDOW</b><span>5–9 s by profile, barge-in enabled</span></div><div class="pa">▼</div>
+    <div class="pn"><b>3 · SPEECH ENGINE (STT)</b><span>the browser engine — keyless</span></div><div class="pa">▼</div>
+    <div class="pn"><b>4 · TRANSCRIPT → LOG</b><span>echoed with a speaker glyph, always</span></div><div class="pa">▼</div>
+    <div class="pn"><b>5 · GRAMMAR MATCHER</b><span>utterance → intent → text twin</span></div><div class="pa">▼</div>
+    <div class="pn hot"><b>6 · CONSOLE PARSER — parseCmd()</b><span>the exact parser the keyboard uses</span></div><div class="pa">▼</div>
+    <div class="pn"><b>7 · ACTION + RETICLE</b><span>fly · track · layer · style · pit · tour</span></div><div class="pa">▼</div>
+    <div class="pn"><b>8 · SPOKEN REPLY (TTS)</b><span>terse confirmation, mirrored to the log</span></div>
+  </div>
+  <table>
+    <tr><th>Component</th><th>Implementation</th><th>Notes</th></tr>
+    <tr><td>STT engine</td><td><code>SpeechRecognition</code> / <code>webkitSpeechRecognition</code></td><td>Keyless. Present in Chrome, Edge, Safari; absent in Firefox → UNSUPPORTED state, not a fault.</td></tr>
+    <tr><td>Wake detector</td><td>Transcript scoring in the app</td><td>Three profiles — strict / balanced / eager (VC-14). No always-on keyword hardware.</td></tr>
+    <tr><td>Grammar matcher</td><td>Utterance patterns → intent</td><td>Maps onto the existing console verbs; compounds split on and / then / plus.</td></tr>
+    <tr><td>Parser</td><td>The existing <code>parseCmd()</code></td><td>Unchanged. This is why voice and text can never drift apart.</td></tr>
+    <tr><td>TTS</td><td><code>speechSynthesis</code></td><td>Half-duplex: the recognizer pauses while the console speaks.</td></tr>
+    <tr><td>Session meter</td><td>Local counters</td><td>Utterances, commands, no-match rate, latency — and a cost field that reads zero.</td></tr>
+  </table>
+</section>
+
+<!-- states -->
+<section id="states">
+  <h2><span class="sn">—</span>MIC STATES &amp; WAKE SPEC<span class="mlchip">manual.html#interface</span></h2>
+  <p class="lead">The MIC chip in the header is the single source of truth for what the console can hear.</p>
+  <div class="sts">
+    <div class="stc"><b style="color:var(--dim)">OFF</b><span>Engine idle. Press to arm.</span></div>
+    <div class="stc"><b style="color:var(--grn)">ARMED</b><span>Listening for the wake phrase. Slow pulse.</span></div>
+    <div class="stc"><b style="color:var(--acc)">LISTENING</b><span>Capture window open. Fast pulse. Speak.</span></div>
+    <div class="stc"><b style="color:var(--cy)">PROCESSING</b><span>Transcript resolving — typically under 300 ms.</span></div>
+    <div class="stc"><b style="color:var(--dim)">MUTED</b><span>Recognizer stopped. Chip press re-arms.</span></div>
+    <div class="stc"><b style="color:var(--red)">DENIED</b><span>Permission blocked. See troubleshooting.</span></div>
+    <div class="stc"><b style="color:var(--red)">UNSUPPORTED</b><span>No engine in this browser. Text console parity.</span></div>
+  </div>
+  <h3>WAKE SPECIFICATION</h3>
+  <table>
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td>Primary wake phrase</td><td><b class="say">mother lode</b></td></tr>
+    <tr><td>Alias</td><td><b class="say">hey mother lode</b></td></tr>
+    <tr><td>strict profile</td><td>High wake threshold · 5 s capture window</td></tr>
+    <tr><td>balanced profile <span class="dim">(default)</span></td><td>7 s capture window</td></tr>
+    <tr><td>eager profile</td><td>Low threshold · 9 s window · expects false wakes</td></tr>
+    <tr><td>Half-duplex</td><td>Recognizer paused while TTS speaks — the console never hears itself</td></tr>
+    <tr><td>Auto-mute</td><td>Tab blur kills the listener instantly</td></tr>
+    <tr><td>Barge-in</td><td>Any keypress cancels an open capture window safely</td></tr>
+  </table>
+</section>
+
+<!-- flows render here -->
+<div id="vcbody"></div>
+
+<!-- grammar -->
+<section id="grammar">
+  <h2><span class="sn">—</span>VOICE GRAMMAR<span class="mlchip">manual.html#console</span></h2>
+  <p class="lead">33 entries, four jobs. YOU SAY is speech; the TEXT TWIN is the console command that does the identical thing — click any twin to copy it. Spoken replies are capped at twelve words.</p>
+  <div id="grammarbody"></div>
+  <h3>SPOKEN REPLY STYLE GUIDE</h3>
+  <ul class="dim" style="list-style:none">
+    <li>▸ Subject + state, at most twelve words — <b>Tracking Grasberg. Copper and gold. Indonesia.</b></li>
+    <li>▸ Numbers spoken naturally, never digit strings.</li>
+    <li>▸ Every spoken line mirrors into the console log — spoken words are always also written.</li>
+    <li>▸ The SILENCE toggle kills TTS without touching any other function.</li>
+  </ul>
+</section>
+
+<!-- try it -->
+<section id="tryit">
+  <h2><span class="sn">—</span>TRY IT — LIVE<span class="mlchip">runs the documented grammar matcher</span></h2>
+  <p class="lead">A working slice of stage 5 — the grammar matcher — with a real microphone pass-through where the browser engine allows it. No keys, nothing leaves the page except the audio the browser engine itself processes.</p>
+  <div class="try">
+    <div class="tryrow">
+      <button id="vtalk">◉ HOLD STATE — PRESS TO SPEAK</button>
+      <span class="dim" style="font-size:10px;letter-spacing:.1em">SAY: “mother lode, track grasberg” · “show lithium” · “night vision” · “how many gold mines”</span>
+    </div>
+    <div class="tryrow">
+      <input id="vtype" placeholder="no mic? type the utterance here and press Enter — same matcher">
+    </div>
+    <div id="vstat">IDLE — matcher ready.</div>
+    <div id="vres"></div>
+  </div>
+  <div class="note"><span class="nt">WHAT THIS DEMO IS</span>
+  The panel resolves intent exactly as the console would — including the wake-phrase strip, compound splitting is simplified, and entity matching runs against a shortlist of famous sites. The production grammar adds full fuzzy matching against all 140 records, the clarification loop (VC-09) and the dictation fallback (VC-08).</div>
+</section>
+
+<!-- privacy -->
+<section id="privacy">
+  <h2><span class="sn">—</span>PRIVACY &amp; THE LINE<span class="mlchip">manual.html#sources</span></h2>
+  <p class="lead">Where the audio goes, and the rule that never bends.</p>
+  <ul class="dim" style="list-style:none">
+    <li>▸ Audio streams to the browser speech engine and is gone — nothing is recorded, stored, or attached to any account.</li>
+    <li>▸ Chrome and Edge may route engine audio through the vendor speech service. The session panel (VC-13) says so plainly. If that is unacceptable, use the text console — the two are feature-equal.</li>
+    <li>▸ Firefox ships no SpeechRecognition → the chip reads UNSUPPORTED, and nothing degrades.</li>
+    <li>▸ The wake gate runs on transcript hypotheses inside the page — there is no always-on hardware keyword.</li>
+    <li>▸ Auto-mute on tab blur: the listener never runs while you are somewhere else.</li>
+  </ul>
+  <div class="note red"><span class="nt">THE LINE</span>
+  The grammar contains no person-search intents — no names, no faces, no individuals — and it never will. This console models sites, infrastructure and public data. <b>People are not a query type here.</b></div>
+</section>
+
+<!-- troubleshoot -->
+<section id="troubleshoot">
+  <h2><span class="sn">—</span>TROUBLESHOOTING<span class="mlchip">manual.html#troubleshooting</span></h2>
+  <table>
+    <tr><th>Symptom</th><th>Cause &amp; fix</th></tr>
+    <tr><td>Chip red — DENIED</td><td>Permission blocked. Re-grant via the browser address-bar site-settings icon, then press MIC once more (VC-10 E1).</td></tr>
+    <tr><td>Wake never triggers</td><td>Say the full phrase, not just “lode”. Check the profile — strict is harder to wake. Reduce background noise.</td></tr>
+    <tr><td>Wake fires constantly</td><td>Switch to the strict profile; a false-wake storm auto-suggests it (VC-14 E1).</td></tr>
+    <tr><td>Commands resolve to nonsense</td><td>Read the raw transcript in the log — it is always printed. Use the correction loop or the dictation fallback (VC-08).</td></tr>
+    <tr><td>The console seems to answer itself</td><td>Half-duplex normally prevents this. If it persists, use headphones or the SILENCE toggle (VC-12).</td></tr>
+    <tr><td>Voice does nothing on Firefox</td><td>No engine in that browser — UNSUPPORTED by design. The text console has full parity.</td></tr>
+    <tr><td>Permission prompt never appears</td><td>Previously blocked at the browser level. Clear the site permission and reload.</td></tr>
+  </table>
+</section>
+
+<!-- dev -->
+<section id="dev">
+  <h2><span class="sn">—</span>DEV WIRING<span class="mlchip">manual.html#extending</span></h2>
+  <p class="lead">How little stands between console v0.1.1 and the voice layer — one function, because voice is a front-end to the parser.</p>
+  <pre>// one function, zero keys — voice becomes a front-end to the parser
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  const rec = new SR();
+  rec.continuous = true;   rec.interimResults = true;  rec.lang = "en-US";
+  rec.onresult = e => {
+    const t = e.results[e.results.length-1][0].transcript.trim();
+    // wake gate lives here — score the hypothesis, open the capture window
+    parseCmd(t);           // the exact same parser the keyboard uses
+  };
+  rec.onerror = ev =&gt; setMicState(ev.error === "not-allowed" ? "DENIED" : "OFF");
+  $("#btn-mic").onclick = () =&gt; rec.start();
+}
+
+// spoken replies — one line
+const say = s =&gt; speechSynthesis.speak(new SpeechSynthesisUtterance(s));</pre>
+  <h3>LISTENING MODES</h3>
+  <table>
+    <tr><th>Mode</th><th>How</th><th>Trade</th></tr>
+    <tr><td>Push-to-talk</td><td>Single-shot recognition on button press</td><td>Simplest; no wake word; zero idle listening</td></tr>
+    <tr><td>Continuous + wake <span class="dim">(documented default)</span></td><td><code>continuous=true</code>, wake gate on hypotheses</td><td>Hands-free; needs the profile discipline of VC-14</td></tr>
+    <tr><td>TTS half-duplex</td><td>Pause the recognizer on utterance <code>onstart</code>, resume on <code>onend</code></td><td>Prevents self-triggering</td></tr>
+  </table>
+</section>
+
+<!-- coverage -->
+<section id="coverage">
+  <h2><span class="sn">—</span>CROSS-DOC COVERAGE<span class="mlchip">usecases.html</span></h2>
+  <p class="lead">Every voice flow mapped to the base use cases it fronts and the manual pages that document them. The four documents form one set: <b>index.html</b> · <b>manual.html</b> · <b>usecases.html</b> · <b>voice.html</b>.</p>
+  <div id="covbody"></div>
+</section>
+
+</main>
+</div>
+<div id="toast">COPIED</div>
+<button id="top-btn">▲ TOP</button>
+
+<!-- ================= SCRIPT A — DATA + RENDER ================= -->
+<script>
+'use strict';
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var MLA={1:'overview',2:'quickstart',3:'firstfive',4:'interface',5:'globe',6:'layers',7:'commodities',
+  8:'glyphs',9:'tracking',10:'pit',11:'sensors',12:'detection',13:'console',14:'tours',15:'wire',
+  16:'ticker',17:'seismic',18:'share',19:'directory',20:'sources',21:'hood',22:'keyboard',
+  23:'troubleshooting',24:'extending',25:'appendix'};
+function mlLink(n){return '<a href="manual.html#'+MLA[n]+'">ML-'+String(n).padStart(2,'0')+'</a>';}
+function ucLink(n){return '<a href="usecases.html#uc'+n+'">UC-'+String(n).padStart(2,'0')+'</a>';}
+function cmdChip(c){return '<span class="cmd" data-cmd="'+c+'">'+c+'</span>';}
+
+var VC=[
+{id:1,g:'A · ACCESS',t:'MICROPHONE PERMISSION',uc:[1],ml:[2],
+ actor:'Operator — first voice use',trig:'Presses the MIC chip in the header',pre:'A browser with a speech engine',
+ post:'Engine armed · wake listener live',
+ flow:[
+  ['USER','Presses the <b>MIC</b> chip in the header.'],
+  ['SYS','Feature-detects the browser speech engine.',
+    [['engine missing (Firefox and others)','chip reads UNSUPPORTED; the text console carries everything → VC-10']]],
+  ['ENG','The browser raises the microphone permission prompt.',
+    [['permission previously granted','prompt skipped; jump to step 5']]],
+  ['USER','Grants access.',
+    [['blocked or dismissed','chip reads DENIED; a toast explains the unblock path → VC-10']]],
+  ['SYS','Arms the wake listener; chip → ARMED with a slow pulse.'],
+  ['ENG','Speaks one confirmation line — <span class="say">MOTHERLODE listening</span>.']],
+ alts:[
+  ['E1','Opened from file — the prompt works in Chrome and Edge; some browsers require https, see troubleshooting.'],
+  ['E2','Permission revoked mid-session → recognizer errors are caught; chip → DENIED; no crash.']],
+},
+
+{id:2,g:'A · ACCESS',t:'WAKE &amp; FIRST COMMAND',uc:[13],ml:[13],
+ actor:'Operator, speaking',trig:'Speech near the console while ARMED',pre:'Chip ARMED',
+ post:'Command executed via the parser · chip re-ARMED',
+ flow:[
+  ['VOICE','Says the wake phrase — <span class="say">mother lode</span>.'],
+  ['ENG','Streams a transcript hypothesis; the wake detector scores it.',
+    [['score below threshold','ignored; no visible state change']]],
+  ['SYS','Chip → LISTENING; the capture window opens — 7 s on the balanced profile.'],
+  ['VOICE','Speaks the command — <span class="say">take me to the Atacama</span>.'],
+  ['ENG','Returns the final transcript.'],
+  ['SYS','Echoes it to the console log with a speaker glyph; the grammar matcher resolves intent FLY.'],
+  ['SYS','Camera flies to the salar; chip → ARMED again.']],
+ alts:[
+  ['E1','Silence in the window → timeout; silent re-arm.'],
+  ['E2','False wake from background speech → the transcript scores as no-match → ignored, logged dim.'],
+  ['E3','Any keypress during capture (barge-in) → capture cancelled safely.']],
+},
+
+{id:3,g:'B · THE FOUR JOBS',t:'DIRECT IT — FLY &amp; TRACK BY VOICE',uc:[9,13],ml:[13,9],
+ actor:'Operator, speaking',trig:'A wake followed by a targeting utterance',pre:'Chip ARMED · target word spoken clearly',
+ post:'Camera flown or contact locked · spoken confirmation',
+ flow:[
+  ['VOICE','<span class="say">mother lode, track Grasberg</span>.'],
+  ['ENG','Final transcript returns.'],
+  ['SYS','Entity resolution — the same fuzzy matcher the text parser uses.',
+    [['several names sound alike','TTS reads the top two candidates — say one or press one → VC-09']]],
+  ['SYS','flyTo + lock + telemetry card — mirrors UC-09 exactly.'],
+  ['ENG','Spoken confirmation — <span class="say">Tracking Grasberg. Copper and gold. Indonesia.</span>']],
+ alts:[
+  ['E1','Region utterances — fly to Chile — resolve against the 44-region register.'],
+  ['E2','Superlatives — track the biggest copper mine — resolve to the tier-1 flagship, Escondida.'],
+  ['E3','A bare site name — Grasberg — is treated as a track intent.']],
+},
+
+{id:4,g:'B · THE FOUR JOBS',t:'QUERY IT',uc:[13,16],ml:[13,16],
+ actor:'Analyst, speaking',trig:'A wake followed by a question',pre:'Chip ARMED',
+ post:'Answer printed to the log and spoken',
+ flow:[
+  ['VOICE','<span class="say">how many lithium mines</span> · <span class="say">price of copper</span> · <span class="say">what am I looking at</span>.'],
+  ['SYS','Intent → QUERY; executed against the local dataset — nothing leaves the page.'],
+  ['SYS','Result line printed to the log.'],
+  ['ENG','Terse spoken readout, brief style, at most twelve words — <span class="say">Twelve lithium sites.</span>']],
+ alts:[
+  ['E1','Unknown metal → TTS offers three example metals.'],
+  ['E2','Context question with nothing tracked → TTS reads the view coordinates and contact count from the HUD.'],
+  ['E3','Assay plus a site name reads grade, production and status.']],
+},
+
+{id:5,g:'B · THE FOUR JOBS',t:'OPERATE IT',uc:[6,11],ml:[6,11],
+ actor:'Operator, speaking',trig:'A wake followed by a console verb',pre:'Chip ARMED',
+ post:'Layers, sensors or overlays switched · each confirmed in speech',
+ flow:[
+  ['VOICE','Compound utterance — <span class="say">show lithium, and hide coal</span>.'],
+  ['SYS','Split on and / then / plus; each clause parsed in order.'],
+  ['SYS','Layer flags flip; the panel re-syncs.'],
+  ['ENG','Confirms each clause — <span class="say">Lithium on. Twelve sites. Coal off.</span>'],
+  ['VOICE','<span class="say">night vision</span> · <span class="say">thermal</span> · <span class="say">detection on</span> · <span class="say">spin off</span>.'],
+  ['SYS','Each maps to the matching style or toggle — mirrors UC-11 and the layers panel.']],
+ alts:[
+  ['E1','Sensor synonyms — thermal, flir, ironbow — all map to the FLIR IRONBOW preset.'],
+  ['E2','A bare commodity word toggles the layer on and auto-flights to the flagship — the same rule as the console.'],
+  ['E3','A bare digit — sensor four — selects the palette by number.']],
+},
+
+{id:6,g:'B · THE FOUR JOBS',t:'TOUR CONTROL BY VOICE',uc:[14],ml:[14],
+ actor:'Operator, speaking',trig:'A wake followed by a tour verb',pre:'Globe mode (pit closed first)',
+ post:'Tour driven by mouth · or cleanly cancelled',
+ flow:[
+  ['VOICE','<span class="say">play the copper tour</span>.'],
+  ['SYS','Tour chain starts; caption bar up — mirrors UC-14.'],
+  ['ENG','Narrates each site note, matching the caption bar text word for word.'],
+  ['VOICE','<span class="say">next stop</span>.',
+    [['said during the flight','the current ease finishes, then it advances — no snap cuts']]],
+  ['SYS','Hold skipped; advances immediately.'],
+  ['VOICE','<span class="say">stop the tour</span> or <span class="say">cancel</span>.'],
+  ['SYS','Tour ends cleanly; the last stop stays tracked.']],
+ alts:[
+  ['E1','A globe drag also cancels — voice and hand never fight.'],
+  ['E2','Tour name unknown → TTS lists the five tours.'],
+  ['E3','The hazards tour auto-enables the TSF layer first.']],
+},
+
+{id:7,g:'B · THE FOUR JOBS',t:'PIT MODE BY VOICE',uc:[10],ml:[10],
+ actor:'Operator, speaking',trig:'A wake followed by a pit verb',pre:'A tracked contact for the happy path',
+ post:'Pit entered or exited by mouth',
+ flow:[
+  ['VOICE','<span class="say">enter pit</span> or <span class="say">cockpit</span>.',
+    [['no target tracked','TTS — track a site first — mirroring the console toast']]],
+  ['SYS','Pit overlay opens; scene drawn by contact kind.'],
+  ['VOICE','<span class="say">exit pit</span>.'],
+  ['SYS','Overlay closes; the globe resumes without state loss.']],
+ alts:[
+  ['E1','cockpit is a genre homage — both utterances map to PIT.'],
+  ['E2','Tour commands while in pit are refused politely — close the pit first.']],
+},
+
+{id:8,g:'C · ROBUSTNESS',t:'DICTATION FALLBACK',uc:[13],ml:[13],
+ actor:'Operator + engine',trig:'A transcript that resolves to no intent',pre:'A completed capture',
+ post:'Command recovered, or the transcript handed to the keyboard',
+ flow:[
+  ['ENG','A transcript resolves to no intent.'],
+  ['SYS','Tries a raw fuzzy site match on the words.',
+    [['one site matches','proposes it — say yes or no'],['nothing matches','transcript placed into the console input, caret at the end']]],
+  ['USER','Fixes one word — or says yes — and confirms.'],
+  ['SYS','Executes through the normal parser path.']],
+ alts:[
+  ['E1','never mind → the suggestion is discarded.'],
+  ['E2','The raw transcript always prints to the log — debugging by reading, never guessing.']],
+},
+
+{id:9,g:'C · ROBUSTNESS',t:'NO-MATCH &amp; CORRECTION LOOP',uc:[13],ml:[13],
+ actor:'Operator + engine',trig:'A low-confidence transcript',pre:'A completed capture',
+ post:'Intent recovered in at most one clarification',
+ flow:[
+  ['ENG','Low-confidence transcript returns.'],
+  ['SYS','Asks one spoken clarification — at most two candidates.'],
+  ['VOICE','Picks one.'],
+  ['SYS','Executes the resolved command.']],
+ alts:[
+  ['E1','Two failed clarifications → drop to dictation (VC-08). The loop is capped at two — the console never nags.'],
+  ['E2','cancel during clarification → everything discarded.']],
+},
+
+{id:10,g:'C · ROBUSTNESS',t:'NO MIC, DENIED, OR UNSUPPORTED',uc:[22],ml:[23],
+ actor:'Operator without voice',trig:'MIC pressed with the engine missing or blocked',pre:'None',
+ post:'Full functionality retained — nothing degraded',
+ flow:[
+  ['USER','Presses MIC with the engine missing or permission blocked.'],
+  ['SYS','Chip → DENIED or UNSUPPORTED, red.'],
+  ['SYS','Toast — voice unavailable; the console is fully functional.'],
+  ['USER','Continues with the keyboard console — every voice command has an exact text twin, by design.']],
+ alts:[
+  ['E1','Unblock path — the browser site-settings icon → re-grant → the next MIC press arms normally.'],
+  ['E2','Feature parity is the rule: no voice-only commands exist, so nothing is lost.']],
+},
+
+{id:11,g:'D · SESSION',t:'MUTE &amp; PRIVACY CONTROL',uc:[],ml:[20],
+ actor:'Operator',trig:'The mute utterance, or a chip press while ARMED',pre:'Chip ARMED or LISTENING',
+ post:'Recognizer stopped · no listening anywhere',
+ flow:[
+  ['USER','Says <span class="say">mute</span> — or presses the MIC chip while ARMED.'],
+  ['SYS','Recognizer stops; capture windows killed; chip → MUTED.'],
+  ['SYS','Auto-mute on tab blur — the listener never runs in a background tab.']],
+ alts:[
+  ['E1','While MUTED, unmuting is by chip press only — the wake listener is off.'],
+  ['E2','Audio is never recorded or stored; it streams to the engine and is gone.']],
+},
+
+{id:12,g:'D · SESSION',t:'SPOKEN REPLIES (TTS)',uc:[13],ml:[13],
+ actor:'System + operator',trig:'Any completed voice action',pre:'SILENCE toggle off',
+ post:'Terse confirmation spoken, written, and optional',
+ flow:[
+  ['SYS','An action completes.'],
+  ['ENG','TTS speaks a terse confirmation — subject plus state.'],
+  ['SYS','The same line prints to the log with a speaker glyph — spoken words are always also written.'],
+  ['USER','Presses the SILENCE toggle → TTS off; actions still logged.']],
+ alts:[
+  ['E1','repeat that → the last spoken line repeats once.'],
+  ['E2','Half-duplex by design — the recognizer pauses while TTS speaks, so the console never hears itself.']],
+},
+
+{id:13,g:'D · SESSION',t:'SESSION STATUS &amp; COST',uc:[],ml:[20],
+ actor:'Operator',trig:'Opens the voice panel',pre:'A voice session, however short',
+ post:'State of the session known at a glance',
+ flow:[
+  ['SYS','The voice panel shows utterances, resolved commands, no-match rate and latency.'],
+  ['SYS','The cost field reads zero — local engine, no metered API, no keys.'],
+  ['USER','Glances, closes the panel.']],
+ alts:[
+  ['E1','Browsers that route audio through a vendor speech service show a privacy note in the panel — honesty, not a cost.']],
+},
+
+{id:14,g:'D · SESSION',t:'WAKE PROFILE &amp; PERSISTENCE',uc:[],ml:[24],
+ actor:'Operator',trig:'Opens VOICE settings from the MIC chip context',pre:'None',
+ post:'Profile tuned and remembered',
+ flow:[
+  ['USER','Opens VOICE settings — the MIC chip context menu.'],
+  ['SYS','Wake profile selector — strict / balanced / eager — plus the wake phrase display.'],
+  ['USER','Sets eager → higher wake sensitivity, 9 s capture window.'],
+  ['SYS','Choice persists in localStorage; the false-wake counter resets.']],
+ alts:[
+  ['E1','A false-wake storm — three in a minute → the panel suggests strict.'],
+  ['E2','Strict profile → 5 s window, fewer false wakes, slightly harder to trigger.']],
+}
+];
+
+/* ---- render flows ---- */
+(function(){
+  var host=$('#vcbody'),lastGroup='';
+  VC.forEach(function(u){
+    if(u.g!==lastGroup){
+      var gh=document.createElement('div');
+      gh.innerHTML='<h2 style="margin-top:44px"><span class="sn">◆</span>GROUP '+u.g+'</h2>';
+      host.appendChild(gh);
+      lastGroup=u.g;
+    }
+    var sec=document.createElement('section');
+    sec.id='vc'+u.id;
+    var refs=(u.uc||[]).map(ucLink).concat((u.ml||[]).map(mlLink)).join(' · ');
+    var inner='<h2><span class="sn">VC-'+String(u.id).padStart(2,'0')+'</span>'+u.t+
+      (refs?'<span class="mlchip">'+refs+'</span>':'')+'</h2>'+
+      '<div class="uc"><div class="uch"><span class="uid">VC-'+String(u.id).padStart(2,'0')+'</span><span class="ut">'+u.t+'</span>'+
+      '<span class="uml">GROUP '+u.g+'</span></div>'+
+      '<div class="mgrid">'+
+        '<div class="mcell"><span class="mk">ACTOR</span><span class="mv">'+u.actor+'</span></div>'+
+        '<div class="mcell"><span class="mk">TRIGGER</span><span class="mv">'+u.trig+'</span></div>'+
+        '<div class="mcell"><span class="mk">PRECONDITION</span><span class="mv">'+u.pre+'</span></div>'+
+        '<div class="mcell post"><span class="mk">POSTCONDITION</span><span class="mv">'+u.post+'</span></div>'+
+      '</div><div class="flow">';
+    var n=0;
+    u.flow.forEach(function(step){
+      n++;
+      inner+='<div class="fnode a-'+step[0]+'"><span class="fn">'+n+'</span><span class="fa">'+step[0]+'</span><div class="ft">'+step[1]+'</div></div>';
+      if(step[2])step[2].forEach(function(br){inner+='<div class="fbr"><b>IF</b>'+br[0]+'<span class="dim"> — '+br[1]+'</span></div>';});
+      if(n<u.flow.length)inner+='<div class="farr">▼</div>';
+    });
+    inner+='</div>';
+    if(u.alts&&u.alts.length){
+      inner+='<div class="altbox"><div class="ah">ALTERNATE PATHS &amp; EXCEPTIONS</div>'+
+        u.alts.map(function(a){return '<div class="altrow"><b>'+a[0]+'</b><span class="ac">'+a[1]+'</span></div>';}).join('')+'</div>';
+    }
+    inner+='</div>';
+    sec.innerHTML=inner;
+    host.appendChild(sec);
+  });
+})();
+
+/* ---- grammar ---- */
+var GRAMMAR=[
+['CONTROL — WAKE &amp; SESSION',[
+ ['mother lode','WAKE','opens the 7 s capture window','—','(chirp — no words)'],
+ ['cancel','CANCEL','aborts capture or the running tour','—','Discarded.'],
+ ['never mind','DISCARD','drops the pending transcript','—','Discarded.'],
+ ['mute','MUTE','recognizer stops; chip → MUTED','(chip)','Muted.'],
+ ['repeat that','REPEAT','last spoken line repeats once','—','(repeats)']
+]],
+['DIRECT — CAMERA &amp; TARGETS',[
+ ['take me to Chile','FLY · REGION','camera eases to the region','fly chile','Chile. The copper kingdom.'],
+ ['fly to Grasberg','FLY · SITE','camera moves, no track','fly grasberg','Flying to Grasberg.'],
+ ['track Grasberg','TRACK','fly + lock + telemetry card','track grasberg','Tracking Grasberg. Copper and gold. Indonesia.'],
+ ['track the biggest copper mine','TRACK · SUPER','resolves to the tier-1 flagship','track escondida','Tracking Escondida.'],
+ ['next contact','STEP','advances the roster in distance order','next','Next contact.'],
+ ['zoom out to the globe','RESET','full Earth + auto-spin','reset','Full globe.'],
+ ['zoom in · zoom out','ZOOM','one step per utterance','zoom in · zoom out','Zoomed.']
+]],
+['QUERY — INTERROGATE THE DATA',[
+ ['how many lithium mines','COUNT','dataset tally','how many lithium mines','Twelve lithium sites.'],
+ ['price of copper','QUOTE','simulated wire value','price copper','Copper. Nine four six zero. Simulated.'],
+ ['what am I looking at','CONTEXT','HUD + dossier readout','whats this','Atacama. Twelve contacts.'],
+ ['assay Escondida','ASSAY','grade + production + status','assay escondida','Escondida. Zero point nine five percent.'],
+ ['nearest tailings dam','NEAREST · TSF','great-circle handoff','(card button)','Nearest record selected.'],
+ ['stats','TOTALS','dataset summary','stats','One hundred forty records.']
+]],
+['OPERATE — LAYERS, SENSORS, MODES',[
+ ['show lithium','LAYER · ON','enable commodity layer','show lithium','Lithium on. Twelve sites.'],
+ ['hide coal','LAYER · OFF','disable commodity layer','hide coal','Coal off.'],
+ ['turn on tailings','LAYER · ON','TSF records layer','show tailings','Tailings on. Eleven records.'],
+ ['night vision','STYLE','NVG palette','nvg','Night vision.'],
+ ['thermal · ironbow','STYLE','FLIR IRONBOW','flir','Ironbow.'],
+ ['spectral','STYLE','false-color geology','spectral','Spectral.'],
+ ['sensor four','STYLE · N','palette by digit','4','Sensor four.'],
+ ['detection on · detection off','OVERLAY','detection mesh toggle','detect on · detect off','Detection on.'],
+ ['labels on','LABELS','force all labels','labels on','Labels forced.'],
+ ['spin off','MOTION','idle rotation toggle','spin off','Spin off.'],
+ ['enter pit · cockpit','PIT','pit overlay on the tracked site','pit','Pit mode. Grasberg.'],
+ ['exit pit','PIT · EXIT','close the overlay','Esc','Exiting.'],
+ ['play the copper tour','TOUR','chain start','tour copper','Copper tour. Nine stops.'],
+ ['next stop','TOUR · ADV','skip the hold, advance','—','Stop five. Bingham Canyon.'],
+ ['stop the tour','TOUR · END','clean cancel','Esc','Tour ended.']
+]]
+];
+function twinCell(t){
+  if(!t||t==='—'||t==='(chip)'||t==='(card button)'||t==='Esc')return '<span class="dim">'+(t||'—')+'</span>';
+  if(t.indexOf('·')>=0)return t.split(' · ').map(function(x){return cmdChip(x.trim());}).join(' · ');
+  return cmdChip(t);
+}
+(function(){
+  var h='';
+  GRAMMAR.forEach(function(g){
+    h+='<h3>'+g[0]+'</h3><table><tr><th>YOU SAY</th><th>INTENT</th><th>ACTION</th><th>TEXT TWIN</th><th>SPOKEN REPLY</th></tr>';
+    g[1].forEach(function(r){
+      h+='<tr><td><span class="say">"'+r[0]+'"</span></td><td><b>'+r[1]+'</b></td><td class="dim">'+r[2]+'</td><td>'+twinCell(r[3])+'</td><td class="dim">'+r[4]+'</td></tr>';
+    });
+    h+='</table>';
+  });
+  $('#grammarbody').innerHTML=h;
+})();
+
+/* ---- coverage ---- */
+(function(){
+  var rows=[
+    ['VC-01',[1],[2]],['VC-02',[13],[13]],['VC-03',[9,13],[13,9]],['VC-04',[13,16],[13,16]],
+    ['VC-05',[6,11],[6,11]],['VC-06',[14],[14]],['VC-07',[10],[10]],['VC-08',[13],[13]],
+    ['VC-09',[13],[13]],['VC-10',[22],[23]],['VC-11',[],[20]],['VC-12',[13],[13]],
+    ['VC-13',[],[20]],['VC-14',[],[24]]
+  ];
+  var h='<table><tr><th>VOICE FLOW</th><th>FRONTS USE CASE</th><th>MANUAL PAGE</th></tr>';
+  rows.forEach(function(r){
+    h+='<tr><td><b>'+r[0]+'</b> — '+VC[parseInt(r[0].slice(3),10)-1].t.replace(/&amp;/g,'&')+'</td>'+
+      '<td>'+(r[1].length?r[1].map(ucLink).join(' · '):'<span class="dim">voice-specific</span>')+'</td>'+
+      '<td>'+(r[2].length?r[2].map(mlLink).join(' · '):'<span class="dim">—</span>')+'</td></tr>';
+  });
+  $('#covbody').innerHTML=h+'</table>';
+})();
+
+/* ---- TRY IT — live matcher ---- */
+var DEMO_SITES=['escondida','grasberg','chuquicamata','el teniente','bingham','carajas','muruntau','atacama',
+ 'greenbushes','kiruna','mponeng','norilsk','pilbara','mutanda','mountain pass','thacker pass','kakula','sudbury','nevada','chile','peru','katanga'];
+var DEMO_COMM=['copper','gold','iron','lithium','nickel','cobalt','coal','zinc','silver','uranium','tin','potash','diamonds','bauxite'];
+function demoResolve(raw){
+  var q=raw.toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim();
+  q=q.replace(/^(hey\s+)?mother\s*lode[\s,]*/,'').trim();
+  function R(i,a,t){return {intent:i,action:a,twin:t};}
+  if(!q)return R('NO MATCH','empty transcript','');
+  var site=null;
+  for(var i=0;i<DEMO_SITES.length;i++){if(q.indexOf(DEMO_SITES[i])>=0){site=DEMO_SITES[i];break;}}
+  var comm=null;
+  for(var c=0;c<DEMO_COMM.length;c++){if(q.indexOf(DEMO_COMM[c])>=0){comm=DEMO_COMM[c];break;}}
+  if(/fly|take me|go to/.test(q))return R('FLY','camera eases to '+(site||'the named place'),'fly '+(site||'…'));
+  if(/track|lock/.test(q))return R('TRACK','fly + lock + telemetry card','track '+(site||'…'));
+  if(/how many/.test(q))return R('COUNT','dataset tally','how many '+(comm||'…')+' mines');
+  if(/price|quote|cost/.test(q))return R('QUOTE','simulated wire value','price '+(comm||'…'));
+  if(/what.*(looking|this)|describe|read/.test(q))return R('CONTEXT','HUD + dossier readout','whats this');
+  if(/assay/.test(q))return R('ASSAY','grade + production','assay '+(site||'…'));
+  if(/nearest|closest/.test(q))return R('NEAREST','great-circle handoff','card button');
+  if(/show|turn on|light up/.test(q))return R('LAYER ON','enable the '+(comm||'named')+' layer','show '+(comm||'…'));
+  if(/hide|turn off/.test(q))return R('LAYER OFF','disable the '+(comm||'named')+' layer','hide '+(comm||'…'));
+  if(/night vision|nvg/.test(q))return R('STYLE','NVG palette','nvg');
+  if(/thermal|flir|ironbow/.test(q))return R('STYLE','FLIR IRONBOW','flir');
+  if(/spectral/.test(q))return R('STYLE','false-color geology','spectral');
+  if(/white/.test(q))return R('STYLE','FLIR WHITE-HOT','white');
+  if(/noir/.test(q))return R('STYLE','NOIR','noir');
+  if(/crt|phosphor/.test(q))return R('STYLE','CRT','crt');
+  var sn=q.match(/sensor (\d)/);
+  if(sn)return R('STYLE · N','palette number '+sn[1],sn[1]);
+  if(/detection|boxes/.test(q))return R('OVERLAY','detection mesh '+(q.indexOf('off')>=0?'off':'on'),'detect '+(q.indexOf('off')>=0?'off':'on'));
+  if(/labels/.test(q))return R('LABELS','force all labels','labels on');
+  if(/spin/.test(q))return R('MOTION','idle rotation '+(q.indexOf('off')>=0?'off':'on'),'spin '+(q.indexOf('off')>=0?'off':'on'));
+  if(/pit|cockpit/.test(q))return R('PIT','pit overlay on the tracked site','pit');
+  if(/next stop/.test(q))return R('TOUR · ADV','skip the hold','—');
+  if(/stop the tour|end the tour/.test(q))return R('TOUR · END','clean cancel','Esc');
+  if(/tour/.test(q)){
+    var tn='copper';
+    ['battery','iron','precious','hazards'].forEach(function(x){if(q.indexOf(x)>=0)tn=x;});
+    return R('TOUR','chain start','tour '+tn);
+  }
+  if(/zoom in/.test(q))return R('ZOOM','one step in','zoom in');
+  if(/zoom out|globe view|come home|reset/.test(q))return R('RESET','full Earth + spin','reset');
+  if(/mute/.test(q))return R('MUTE','recognizer stops','chip');
+  return R('NO MATCH','no intent — dictation fallback (VC-08)','raw: '+q);
+}
+(function(){
+  var btn=$('#vtalk'),inp=$('#vtype'),out=$('#vres'),stat=$('#vstat');
+  function show(r,raw){
+    stat.textContent='TRANSCRIPT: '+raw;
+    var twin;
+    if(!r.twin||r.twin==='—'||r.twin==='Esc'||r.twin==='chip'||r.twin==='card button'||r.twin.indexOf('…')>=0||r.twin.indexOf('raw:')===0){
+      twin='<span class="dim">'+(r.twin||'—')+'</span>';
+    }else{twin=cmdChip(r.twin);}
+    out.innerHTML='<div class="vri"><span class="vint">'+r.intent+'</span><div class="vact">'+r.action+'</div>'+twin+'</div>';
+  }
+  inp.addEventListener('keydown',function(e){
+    if(e.key==='Enter'){var v=inp.value.trim();if(v){show(demoResolve(v),v);inp.select();}}
+  });
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    btn.classList.add('dead');
+    btn.textContent='MIC UNSUPPORTED IN THIS BROWSER — TYPE INSTEAD';
+    stat.textContent='NO ENGINE — the typed input above runs the identical matcher.';
+    return;
+  }
+  btn.onclick=function(){
+    try{
+      stat.textContent='LISTENING — speak now…';
+      var rec=new SR();
+      rec.lang='en-US';rec.interimResults=false;rec.maxAlternatives=3;
+      rec.onresult=function(e){
+        var tr=e.results[0][0].transcript.trim();
+        var conf=e.results[0][0].confidence;
+        show(demoResolve(tr),tr+(conf?'  ·  confidence '+(conf*100|0)+'%':''));
+      };
+      rec.onerror=function(ev){
+        stat.textContent='ENGINE: '+(ev.error==='not-allowed'?'PERMISSION DENIED — see troubleshooting':(ev.error==='no-speech'?'NO SPEECH — press and try again':'ERROR '+ev.error));
+      };
+      rec.onend=function(){if(stat.textContent.indexOf('LISTENING')>=0)stat.textContent='CAPTURE ENDED — press to speak again';};
+      rec.start();
+    }catch(err){stat.textContent='ENGINE FAULT: '+err.message;}
+  };
+})();
+
+/* ---- chrome ---- */
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.cmd');if(!c)return;
+  var txt=c.dataset.cmd||c.textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(txt).catch(function(){});
+  var t=$('#toast');t.textContent='COPIED ▸ '+txt;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},1400);
+});
+(function(){
+  var links={};
+  $$('#side a').forEach(function(a){links[a.getAttribute('href').slice(1)]=a;});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){
+      if(en.isIntersecting){
+        $$('#side a').forEach(function(a){a.classList.remove('on');});
+        var l=links[en.target.id];if(l)l.classList.add('on');
+      }
+    });
+  },{rootMargin:'-12% 0px -75% 0px'});
+  document.querySelectorAll('main section[id]').forEach(function(s){io.observe(s);});
+})();
+ $('#top-btn').onclick=function(){scrollTo({top:0,behavior:'smooth'});};
+</script>
+
+<!-- ================= SCRIPT B — GUARD =================
+     Runs even if Script A failed to parse. Creates stub sections
+     for any missing voice flow so every sidebar link resolves,
+     and raises a visible fault banner. Deliberately minimal. -->
+<script>
+(function(){
+  try{
+    var host=document.getElementById('vcbody');
+    if(!host)return;
+    var STUBS=[
+      ['vc1','VC-01','MICROPHONE PERMISSION'],
+      ['vc2','VC-02','WAKE &amp; FIRST COMMAND'],
+      ['vc3','VC-03','DIRECT IT — FLY &amp; TRACK BY VOICE'],
+      ['vc4','VC-04','QUERY IT'],
+      ['vc5','VC-05','OPERATE IT'],
+      ['vc6','VC-06','TOUR CONTROL BY VOICE'],
+      ['vc7','VC-07','PIT MODE BY VOICE'],
+      ['vc8','VC-08','DICTATION FALLBACK'],
+      ['vc9','VC-09','NO-MATCH &amp; CORRECTION'],
+      ['vc10','VC-10','NO MIC, DENIED, OR UNSUPPORTED'],
+      ['vc11','VC-11','MUTE &amp; PRIVACY'],
+      ['vc12','VC-12','SPOKEN REPLIES'],
+      ['vc13','VC-13','SESSION STATUS &amp; COST'],
+      ['vc14','VC-14','WAKE PROFILE &amp; PERSISTENCE']
+    ];
+    var missing=0;
+    for(var i=0;i<STUBS.length;i++){
+      if(!document.getElementById(STUBS[i][0])){
+        missing++;
+        var s=document.createElement('section');
+        s.id=STUBS[i][0];
+        s.innerHTML='<h2><span class="sn">'+STUBS[i][1]+'</span>'+STUBS[i][2]+
+          '<span class="mlchip">STUB — RENDER FAULT</span></h2>'+
+          '<div class="note red"><span class="nt">RENDER FAULT</span>This flow could not be drawn because the flows script did not complete. The sidebar still navigates — press F12 and read the console error line.</div>';
+        host.appendChild(s);
+      }
+    }
+    if(missing>0){
+      var m=document.querySelector('main');
+      var b=document.createElement('div');
+      b.className='note red';
+      b.style.marginTop='18px';
+      b.innerHTML='<span class="nt">SCRIPT FAULT — '+(missing===STUBS.length?'NOTHING RENDERED':'PARTIAL RENDER')+'</span>'+
+        'The voice-flows script failed before finishing ('+missing+' of '+STUBS.length+' sections missing). '+
+        'Stub sections were created so every link resolves. Open the browser console (F12) — the red error points at one exact line.';
+      m.insertBefore(b,m.firstChild);
+    }
+  }catch(e){/* never throw from the guard */}
+})();
+</script>
+</body>
+</html>
