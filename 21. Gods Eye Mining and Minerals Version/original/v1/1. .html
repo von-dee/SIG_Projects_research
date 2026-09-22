@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God's Eye View - System Transcript</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #05080a;
+            --bg-secondary: #0d1117;
+            --bg-tertiary: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-cyan: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --glow-cyan: 0 0 10px rgba(88, 166, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(40, 50, 60, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(40, 50, 60, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+
+        /* Top Navigation HUD */
+        .hud-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+        }
+
+        .hud-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hud-logo::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .hud-status {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: 20px;
+        }
+
+        .hud-status span {
+            color: var(--accent-cyan);
+        }
+
+        /* Layout Grid */
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 60px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 60px;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .chapter-list {
+            list-style: none;
+        }
+
+        .chapter-link {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 0.5rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+        }
+
+        .chapter-link:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-cyan);
+        }
+
+        .chapter-link.active {
+            background: rgba(88, 166, 255, 0.1);
+            color: var(--accent-cyan);
+            border-left: 2px solid var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+        }
+
+        .chapter-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 4rem;
+            max-width: 900px;
+        }
+
+        .video-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .video-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Transcript Styling */
+        .transcript-section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 80px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-header::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--accent-orange);
+            border-radius: 2px;
+        }
+
+        .transcript-block {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timestamp {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            min-width: 50px;
+            padding-top: 2px;
+            cursor: pointer;
+        }
+
+        .timestamp:hover {
+            text-decoration: underline;
+        }
+
+        .text-content {
+            flex: 1;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* AI Voice Command Styling */
+        .voice-interaction {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(88, 166, 255, 0.05);
+            border: 1px solid rgba(88, 166, 255, 0.2);
+            border-radius: 8px;
+        }
+
+        .user-cmd {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-cmd::before {
+            content: 'MIC';
+            font-size: 0.65rem;
+            background: var(--accent-cyan);
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .ai-resp {
+            margin-top: 0.75rem;
+            padding-left: 20px;
+            border-left: 2px solid var(--accent-red);
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        .ai-resp::before {
+            content: 'AI: ';
+            color: var(--accent-red);
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: relative;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                top: 0;
+            }
+            .main-content {
+                padding: 2rem 1.5rem;
+            }
+            .video-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top HUD -->
+    <header class="hud-header">
+        <div class="hud-logo">GOD'S EYE VIEW // OS</div>
+        <div class="hud-status">
+            <div>SIGNAL: <span>STRONG</span></div>
+            <div>LAYER: <span>TRANSCRIPT</span></div>
+            <div>STATUS: <span>OPEN SOURCE</span></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Chapters // Index</div>
+            <ul class="chapter-list">
+                <li><a href="#ch-1" class="chapter-link"><span class="chapter-time">0:00</span> God’s Eye View Blew Up</a></li>
+                <li><a href="#ch-2" class="chapter-link"><span class="chapter-time">1:06</span> Install God’s Eye View</a></li>
+                <li><a href="#ch-3" class="chapter-link"><span class="chapter-time">2:09</span> The Interface, Flight Tracking & Radio</a></li>
+                <li><a href="#ch-4" class="chapter-link"><span class="chapter-time">5:51</span> Contacts Mode & Cockpit View</a></li>
+                <li><a href="#ch-5" class="chapter-link"><span class="chapter-time">7:48</span> Control the World With Your Voice</a></li>
+                <li><a href="#ch-6" class="chapter-link"><span class="chapter-time">11:25</span> Area 51 Easter Egg</a></li>
+                <li><a href="#ch-7" class="chapter-link"><span class="chapter-time">12:40</span> Traffic & Public Cameras</a></li>
+                <li><a href="#ch-8" class="chapter-link"><span class="chapter-time">15:56</span> Track Ships & Ride Along With Flights</a></li>
+                <li><a href="#ch-9" class="chapter-link"><span class="chapter-time">19:55</span> Record Your Own Camera Tours</a></li>
+                <li><a href="#ch-10" class="chapter-link"><span class="chapter-time">21:07</span> Fires, Earthquakes & the Physical Internet</a></li>
+                <li><a href="#ch-11" class="chapter-link"><span class="chapter-time">24:18</span> Reconstructing Nepal Floods</a></li>
+                <li><a href="#ch-12" class="chapter-link"><span class="chapter-time">25:55</span> Building God’s Eye View Together</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Transcript Content -->
+        <main class="main-content">
+            <h1 class="video-title">God's Eye View Blew Up</h1>
+            <div class="video-meta">
+                TRANSCRIPT LOG // DURATION: 28:47 // AUTHOR: BAVO
+            </div>
+
+            <!-- Chapter 1 -->
+            <section id="ch-1" class="transcript-section">
+                <div class="section-header"><h2>God’s Eye View Blew Up</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">0:00</span>
+                    <div class="text-content">
+                        <p>God's Eye View is open sourced. And guys, I knew you wanted the code, but I didn't think this would happen. This is Palunteer before GTA 6. Open source. Google Maps. Fast and Furious God. Someone actually built it.</p>
+                        <p>This website that shows you the whole planet live right now. In the first few days, the launch video crossed a half a million views. The repo hit number one on GitHub trending, and a week later, it's still up there. The inventor of the Twitter hashtag put it on Product Hunt.</p>
+                        <p>Then Brendan Ike, the creator of Brave, Firefox, and JavaScript. Yes, the language I literally used to code the damn thing, jumped into the conversation. And let's just say things are getting spicy. FBI, open up. God, I love that meme.</p>
+                        <p>So, all fun aside, the reaction has been incredible, but the same two questions keep coming up. How do I run the damn thing if I'm not a coder? And can you give me a proper walkthrough of all the things the tool can do? So, today, let's get into both.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 2 -->
+            <section id="ch-2" class="transcript-section">
+                <div class="section-header"><h2>Install God’s Eye View</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">1:06</span>
+                    <div class="text-content">
+                        <p>All right, so there are two quick ways to get this thing up and running. And if you've already got it set up, skip to the next chapter. That's where the walkthrough begins.</p>
+                        <p>Now, if you're on Windows, Mac, or Linux and you want the easy route, just install Pinocchio. Go to the website linked in the description. You'll go over there and you'll see an officially featured version for God's Eye View. You literally download the tool, press one button, and you are up and running.</p>
+                        <p>Now, you'll see a bunch of other community installers over here, but this is the officially supported one. Thank you to the team for actually fixing a bug that we found. So, if you had any issues previously, just install the new version of Pinocchio 8.2 and you're off to the races.</p>
+                        <p>Now, if you're a coder or you want to start hacking on God's Eye View, just drop the GitHub link into Codeex, Claude Code, Cursor, Anti-gravity, any AI coding agent, not the Chat GPT website, but like a coding agent that runs on your computer. Give it the prompt in the description below, and it will handle the rest. And honestly, it is not as hard as you think. So, if you start building something cool, feel free to send a poll request so we all can play with it.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 3 -->
+            <section id="ch-3" class="transcript-section">
+                <div class="section-header"><h2>The Interface, Flight Tracking & Radio</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">2:09</span>
+                    <div class="text-content">
+                        <p>All right. So, when you first open it up, you'll get the keyless Ezri globe. It's 2D, but the layers and the whole interface will still work. Now, Google Maps is actually pretty cheap. For most of you, it'll actually cost no money, but you may need to put in a credit card if you don't want to set up a Google key.</p>
+                        <p>Cesium is actually kind enough to offer a community account with pretty generous access to the same Google 3D tiles for free as long as it's for personal and non-commercial use. So once you launch the experience for the first time, this is where you'll show up. I've got a bunch of presets here, so you could hit the ground running, but for our purposes, let's explore manually.</p>
+                        <p>So on the left, you've got your data layers, all the data layers over here. And below that, you've got your scene editor. On the right, we've got display settings. You got CCTV and the context menu. And by the way, if you want help adding the keys itself, you just got to click this thing on the bottom right that says power up. And here you can click on manage to figure out what it is that you need to pop in.</p>
+                        <p>So, let's break this all down. So, on the bottom here, you've got your presets that I've covered in the previous videos, but you've also got the map source over here. So, uh let's say you want a 2D map, but with labels. You can choose Bing labels on the bottom, and suddenly you can see the geopolitical outlines of everything. If you go into OSM, you get the traditional 2D map view you're very familiar with in your favorite mapping application.</p>
+                        <p>And if you ever want to jump to a globe view, you can always hit this button on the top right over here. And that'll zoom you out and take you into globe view. If you want to jump to different locations, there's a bunch of presets over here. So, for example, you can click on Austin, and then you'll see a bunch of presets on top. You can also just search for any location over here.</p>
+                        <p>So, I could say SFO airport, for example, and it'll take me right over there. And let's turn on flights now, military and regular, and see what's going on. And there you go. Now, at higher zoom levels, you'll notice there are two different colors. You know, white's basically like commercial air traffic and then yellow is military flights. And this stuff is kind of cool, right?</p>
+                        <p>Like the way all of this tech works is basically there are tens of thousands of volunteers across the world that have a receiver plugged into their computer. And in aggregate, those tens of thousands of people are building and maintaining a digital twin of all the planes on the planet. How cool is that? And we get to benefit from all of it inside of God's ID.</p>
+                        <p>This is where I'd like to tell you a little bit about the display settings over here. So, for example, the labels, you can decide how many labels you actually want to show. And this becomes a lot more obvious when you actually zoom out to an Earth view, right? Because these things can get pretty pretty dense. You can also change the appearance of what happens around the reticle.</p>
+                        <p>So, for example, I really like the scope-like view, but if you want to feather it out a lot more, you can. And then it looks like a regular map or you make it super hard edge over here too. But as a part of that, you'll notice these detections extend past the circle. So you can change how you want this to actually operate. Do you want the outside view to be visible? Do you want it to completely clip away or do you want to find some happy medium?</p>
+                        <p>I tend to like a happy medium sort of like this, which is where I've kept the default settings. Now, what's also cool over here is when you zoom out to a globe view, there's a celestial mode. If you click on this, it'll actually tell you where the sun and the moon is as you rotate around. And of course, because this is a spy satellite simulator, but underpinned by real data, we've got this nice like keyhole spy satellite style branding over here. But if you don't like it, you can go far more minimalist. And in fact, if you want, you can make absolutely everything disappear as well and just go and exit clean view if you want to go back to where we started. So, I like tactical mode because yo, we don't take ourselves too seriously.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 4 -->
+            <section id="ch-4" class="transcript-section">
+                <div class="section-header"><h2>Contacts Mode & Cockpit View</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">5:51</span>
+                    <div class="text-content">
+                        <p>One other mode I want to talk about over here now is the context menu. So if you go into here and click on contacts, for example, this will let you do a couple of really interesting things. First off, it'll tell you all the commercial air traffic nearby, the military flights, even the vessels nearby, including mapped installations, assuming it's available. And what you can do is very quickly just like jump to the next track.</p>
+                        <p>Here we go. Now we're following this operator unknown loss 77. Nice call sign, bro. You can see the speed, the altitude it's at, and a bunch of other information over here. What you can also do is jump into cockpit mode, and I talked about this a bunch. This will give you a bunch of telemetry over here. And in a similar fashion, you'll see what other air traffic is nearby.</p>
+                        <p>So, these military flights or commercial traffic, and if you click on any one of these, you can jump to this. You also have toggles over here to jump forward and backward. So, you basically can jump around and see all the flights in an area. If you want to exit cockpit view, you just click on exit cockpit here on the bottom. And if you zoom out while you're tracking something in this contacts mode, you'll notice, see there's a circle over here, 250 km radius of any track that I click on. And that's basically how context menu works.</p>
+                        <p>By the way, you can also enable radio, which is also in the context menu. And you can enable this and look at station tags. Everything from available police stations, weather monitoring stations, and just regular radio channels if you want to just get like a traffic update or something like that. So, for example, here's the Noah weather radio.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="ai-resp">"Francisco wind south at 12 knots, pressure 1,3.4 seconds."</div>
+                        </div>
+
+                        <p>Now, one other thing I'll point out again is if you're in context mode, by the way, when you're in that cockpit view, you can toggle through all the usual modes that we've discussed as well. And the display settings will pop up and you can change those as you see fit. And if they're not popping up, you can always expand display and you'll notice the context menu will collapse down here. Super simple and easy to use. Now, jumping out to a globe view...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 5 -->
+            <section id="ch-5" class="transcript-section">
+                <div class="section-header"><h2>Control the World With Your Voice</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">7:48</span>
+                    <div class="text-content">
+                        <p>...I want to talk to you a little bit about what you can do with voice itself, right? Um, so of course voice is down here on the bottom. You can either click on it to turn it on for good or just hold the space key and let go of it if you want to do it that way. And make sure you put in your OpenAI API key in here.</p>
+                        <p>And once you've done that, also make sure you've given your browser permissions to actually access the microphone. Otherwise, it ain't going to work. And in here, there are two different models. There's the standard one and the mini one. You can toggle it just by clicking this button over here. They both use GPT real time. And mini is a little bit cheaper and standard is a little higher quality and a little more expensive.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, please turn on vessels."</div>
+                            <div class="ai-resp">"Vessels are now enabled."</div>
+                        </div>
+
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, can you take me to Roderdam?"</div>
+                            <div class="ai-resp">"Flying to Roderdam now. Arrived at Roderdam."</div>
+                        </div>
+
+                        <p>Now, look at all those vessels.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, can you please mark the port of Roderdam and start a camera orbit around it?"</div>
+                            <div class="ai-resp">"The camera is slowly orbiting the port now. All set. The port is marked and you're in a slow orbit around it."</div>
+                        </div>
+
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, can you tell me a little bit about Roderdam?"</div>
+                            <div class="ai-resp">"Rotterdam is a major port city in the Netherlands, known for its huge harbor complex, modern architecture, and a lively cultural scene. It's a major logistics gateway for Europe and is famous for its rebuilt waterfront and innovative design."</div>
+                        </div>
+
+                        <p>By the way, I can click on any of these vessels over here. You can see there's just a so much action going on. And just like planes, when you click on a vessel track, it zooms in on it and lets you see what's going on. And if you leave this running in the background, it'll actually start caching the path as well, which is really cool. These are all obviously docked, so you're not going to see any paths over here. Let me show you one thing.</p>
+
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, can you draw me a route from the port of Roderdam to Antworp?"</div>
+                            <div class="ai-resp">"I mapped a walking route from the Port of Roderdam to Antworp. It's about 103 km."</div>
+                            <div class="user-cmd">"Cool. Can you fly that route now?"</div>
+                            <div class="ai-resp">"I'll fly that route and keep the motion smooth. The route is now flying."</div>
+                        </div>
+
+                        <p>So there you go. You can basically take any two points, ask for directions between them, and by default, it'll give you walking directions, and then you can ask the AI to basically trace that route, and it'll smoothly follow that path for you. At any point, you can just take a pull back, and it'll stop, and you can see the entire route over here nicely highlighted. Super easy.</p>
+                        <p>What's cool is if you're using voice mode, like this thing has like general world knowledge. So you could ask it things like, "Hey, can you please tell me a little bit about this Air Force base?"</p>
+
+                        <div class="voice-interaction">
+                            <div class="ai-resp">"That's Laughlin Air Force Base in Texas along US 90 near Liberty Drive just outside Del Rio."</div>
+                            <div class="user-cmd">"Can you tell me a little bit about its significance?"</div>
+                            <div class="ai-resp">"It's a major pilot training base for the US Air Force, known for producing new military aviators through undergraduate flight training. It's part of the Air Education and Training Command with the 47th Flying Training Wing based there. In simple terms, it's a pipeline base that helps turn students into operational pilots who then move on to other aircraft and missions..."</div>
+                        </div>
+
+                        <p>...which makes a ton of sense, right? That's why we can see there's a bunch of these jets. And if I zoom out, you can look at the classes of all of these planes over here, which is so cool, right? Because in my last video we were looking at Fort Rucker which is you know a place where helicopter training often happens. Somebody commented literally saying like I have literally been on that exact flight line in the video which I thought was so funny. So we vicariously get to live through these pilots learning how to become professional aviators and I just think that's so cool.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 6 -->
+            <section id="ch-6" class="transcript-section">
+                <div class="section-header"><h2>Area 51 Easter Egg</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">11:25</span>
+                    <div class="text-content">
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Please take me to Area 51."</div>
+                            <div class="ai-resp">"Flying you over to Area 51 now. You're now at Area 51."</div>
+                        </div>
+                        
+                        <p>Here. If I see Janet 27, okay, operator unknown. What's this guy doing over here? It's been doing some loop-de-loops across Area 51. Very interesting. Very, very interesting. And for all the UFO UAP nerds out there, I got a fun little Easter egg for y'all.</p>
+                        <p>If you go and click on the context menu, you'll see little icon over here. If you click on this bad boy, suddenly this thing will turn into a TR3B, which has some interesting lore that you should look up and watch some videos on, which is supposedly the US government's next generation craft. They can do some very, very cool things and of course, uh, just looks so freaking cool.</p>
+                        <p>So in fleer and night vision mode especially uh you can have some fun but also a sign of like the kinds of things that you can make yourself very very easily just by describing it to your AI agent. So there we are monitoring the situation in your area 51. Um all right moving on. Another thing that you can do is if you ever have these kind of annotations on you can always just say hey please clear all annotations.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="ai-resp">"Clearing those map annotations now. All annotations are cleared."</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 7 -->
+            <section id="ch-7" class="transcript-section">
+                <div class="section-header"><h2>Traffic & Public Cameras</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">12:40</span>
+                    <div class="text-content">
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Awesome. Can you turn on traffic mode and CCTV mode, please?"</div>
+                            <div class="ai-resp">"Traffic is on. CCTV is on, too."</div>
+                        </div>
+
+                        <p>All right, there we go. So, CCTV is on. You can click on any of the cameras over here and suddenly see what's going on. So, now let me explain the color coding that's going on here. So, by default, you can see all these dots, right? So, if you zoom out a little bit, you'll see it's all colorcoded based on the intensity of traffic.</p>
+                        <p>So, if you've got your TomTom key on, it'll use aggregate location data essentially to color code and give you some density of the traffic that's in the area. So, here you can see it's red. And indeed, we can see there's a lot of action going on over here. So, if we go on this highway over here again, you can see there's just like so much traffic. It's like literally what 6:30 p.m. in Austin right now. So, it'll be rush hour. Let's go take a look at that. Yep. Yep. Yep. Yep. Yep. That makes sense. Uh, we've got bumper-to-bumper traffic.</p>
+                        <p>So, this is really cool, right? Like you can see aggregate location data, which if you've ever been to a location with Google Maps, right? And it'll say like, "Hey, busier than usual." And you'll go there and it's actually freaking empty. This is a way of visually confirming if the aggregate location data is actually accurate. God bless everyone making their home commute right now.</p>
+                        <p>Now, the other cool thing about CCTV, by the way, is if you ever want to just see a preview, you can hover over any of the cameras, and if you just keep your cursor over it for a second, it'll pop up. So, here I can just click on this over here, and I'm seeing, okay, Martin Luther King, a bunch of action going on over here. And for CCTV, again, this is like real data. This is real time.</p>
+                        <p>And by real time, I mean this is like what's happening right now, but the image only refreshes one frame every 5 to 10 minutes. And that's for privacy reasons, right? like uh city of Austin's opening up this data. Uh they don't want to make it easy for you to be able to track this car. It's like ooh like this Bronco over here, where has this Bronco been? Instead, what they'll do is give you a pretty high resolution image, but make it very low frame rate. So, it's still real time, just, you know, not like 30 frames per second.</p>
+                        <p>Anyway, it's a very cool way to just see at a glance what's going on in a city. You can see like what the choke points are uh very, very easily. So, that's Austin for you. Uh let me take you to London, which is again a lot of fun.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, hey, can you take me to London, please?"</div>
+                            <div class="ai-resp">"The camera has flown to London in a city overview."</div>
+                        </div>
+
+                        <p>Now, as I mentioned previously, London has a lot of cameras, too. Right. All right. So, if we zoom out to more of a sky view, right? Like, uh, and by the way, here in CRT mode and all these different modes, the color coding is still perfectly legible if that's something you want to take a look at. But here, as you can see, there's a lot of red over here. So, let's just go see what's going on over here. I'm going to click on this CCTV camera. See? Yep, indeed. There's bumperto-bumper traffic over here.</p>
+                        <p>And by the way, if the preview ever disappears again, you can like unfurl and expand these menus. So, you can go back to CCTV and see. So, that's basically how this works. You can have fun. Uh, people are already putting in other CCTV camera modules. You can add your own as well. You could go wild. And of course, what I love about this, I see a plane flying overhead. I can track it very easily. And as you're tracking it, you can see the beautiful CCTV coverage in the background. One of the funnest things you can do is is like essentially jump from crack to track. So like I'm over here. I see a bunch of activity over here. I want to click on that one over there. Boom. The camera will fly you over there.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 8 -->
+            <section id="ch-8" class="transcript-section">
+                <div class="section-header"><h2>Track Ships & Ride Along With Flights</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">15:56</span>
+                    <div class="text-content">
+                        <p>Now, while I'm here, right, like in Europe, you got really good coverage in this area. And you'll see a lot of vessels. Now, you may be wondering,</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, take me to the Straight of Hormuz."</div>
+                            <div class="ai-resp">"Heading toward the Straight of Hormuz now. Done. The camera has flown to the straight of Hormuz."</div>
+                        </div>
+
+                        <p>Now, you may be wondering, why the hell are there no vessels in the Straight of Hormuz? Well, the thing is, just like I described how planes rely on tens of thousands of volunteers with these receivers aggregating all of these signals, planes are flying overhead, right? So, they're like pretty flying pretty high up, but that is not the case with vessels, right?</p>
+                        <p>So, you need a bunch of coverage near these shorelines and and for the free API that we're using for AIS vessels, right, like AIS stream, and thank you so much to them for keeping this data open. You'll get great coverage in Europe, in the US, but not so much in these areas. And so that's why Roderdam or the English Channel will look packed, but the straight of Hormuz looks weirdly empty because the free providers don't have that much coverage.</p>
+                        <p>And in fact, for vessels, what you also need to do is use satellites that have their own radio frequency sensors to map all of these vessels. And so that gets expensive. I'm talking on the order of thousands, if not tens of thousands of dollars. And quite frankly, a bunch of these providers are also doing surge pricing for these areas uh that we really care about monitoring.</p>
+                        <p>So, I'm working on that to see how we can get more of this data accessible at a much cheaper rate, but for free. This is what you get to work with right now. You can obviously swap your APIs for anything else. But military activity is pretty good. So, we see this guy over here. Let's see what this dude's up to. All right. Operator Unrown. This guy's clearly been doing some sort of a run right over here. Right past the straightfor. So, there's still a lot of insights that you can get and there's a lot of military planes that you can monitor uh in the Middle East region.</p>
+                        <p>Now, while I'm at this, one other thing that I'll point out is uh if we go look at some of these planes over here, the point I wanted to bring up here is if you've got planes that are landing, what you need to do is chill in the area for a second. And in the background, what it's doing is updating the terrain data so that the planes don't actually clip through the ground. Otherwise, what'll happen sometimes is when you go to a region for the first time, that terrain hasn't loaded up and the planes might like clip straight into the ground.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, can you take me to the busiest airport in the United States?"</div>
+                            <div class="ai-resp">"You're at Hartsfield Jackson in Atlanta, the busiest airport in the United States."</div>
+                        </div>
+
+                        <p>Damn. And it does look busy. So, this is a great example. Let's see if we can find a plane that's like actually about to do a landing over here. There we go. So, I chill over here for a little while. You'll see planes. Are they on the ground? Yes, they are. That means the train's loaded up. This is what I wanted to show you. There you go. Look at these planes. They'll slowly pop up out of the ground as the train is warming up.</p>
+                        <p>Now, let's try to do what I love doing, which is looking at a plane that's coming in over here. So, this guy looks great. Delta Airlines. I'm going to go into contacts mode and click on cockpit. And there we go, ladies and gentlemen. We are about to see landing from the perspective of DAL 3146 over here.</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, got any fun facts about Delta Airlines for me?"</div>
+                            <div class="ai-resp">"Yes, a few quick ones. Delta started as a crop dusting company called Huffen Dusters back in the 1920s. The name Delta comes from the Mississippi Delta region. It was one of the first major airlines to introduce a frequent flyer program with partners and its main hub in Atlanta is one of the busiest airport hubs in the world."</div>
+                        </div>
+
+                        <p>Oh god, I love that. I didn't know that. The crop dusting company is what turned into my favorite airline anyway in the United States. So here you can see it's landing nicely now that the train's been warmed up. If you go into this area cold, you might run into a situation where you're just like underneath the train. Anyway, there you go. How cool is that? Cockpit mode, baby. Okay, so I've talked to you about all the various display modes, CCTV, context, data layers. Okay, so what the hell is the scenes menu?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 9 -->
+            <section id="ch-9" class="transcript-section">
+                <div class="section-header"><h2>Record Your Own Camera Tours</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">19:55</span>
+                    <div class="text-content">
+                        <p>Now, this is a cool way for you to make video recordings. Now, by default, this whole thing is designed very nicely for you to make videos. And by the way, a bunch of you did. Check out the number of likes and views on these cats that have been covering God's Eye View. Thank you so much, by the way. I really, really do appreciate it. You can record these kinds of videos, too.</p>
+                        <p>My only ask is that you shout out God's Eye View and the repository. But if you want to create like offline rendered content and just have a little bit more control, you can always go into recording these things. Let's say you want to create a bunch of cool shots, you can go into here, create a whole different scene, right? Just hit new and then for each of these shots, like frame exactly where you want the camera and click capture shot. And if you already have a shot, you just hit update shot. And that lets you go from shot to shot to shot.</p>
+                        <p>And even very easily click on start and play back the whole freaking thing. So that way you can screen record this easily for whatever project that you have. In fact, a bunch of you messaged me about saying like you're using this in your like film projects, which is so freaking cool. And once you're done with the thing, you just hit escape and it'll take you right back. Kind of a cool way of basically having a bunch of preset views that you can jump back to. Now, there's a bunch of other layers in here. For example, earthquakes, right? So you can see there's a 5.1. And if you go into Google and you look at this, like affected countries, Nepal, India, and China, this just happened at 3:16 a.m., it'll show up here as well.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 10 -->
+            <section id="ch-10" class="transcript-section">
+                <div class="section-header"><h2>Fires, Earthquakes & the Physical Internet</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">21:07</span>
+                    <div class="text-content">
+                        <p>So, if you go into data layers, and let's turn off street traffic for a second and turn off CCTV. And what we're going to do is turn on firms active fires. So, this is a NASA satellite that uses thermal imaging from space to detect where fires exist. So, as you find these hotspots that will subdivide, you can go even find like first responders that are responding to a situation, which is really, really cool to see. It's insane what you can monitor from the comfort of your home. Like, it's truly wild.</p>
+                        <p>So, again, it's pretty wild what you can see over here. And what I love doing is in fact switching uh the imagery providers in these situations cuz then you can see what exactly is the difference between what's been captured in these locations. For example, in in the Google imagery here, we can see a much denser smoke plume over here. Now, I am working on how to get a bunch of the Sentinel imagery that's available for free. But note that even in war zones there, that imagery is like 3 days delayed now.</p>
+                        <p>So, that's just the world we live in, ladies and gentlemen. Like, OSENT is getting a little too powerful. So, you know, the governments are of course taking caution so that these tools can't be used by adversaries to figure out what's going on. But that kind of sucks too because like at the same time like like we the public are delayed in knowing what's actually going down as well.</p>
+                        <p>Now look, there's a bunch of other layers in here. You can turn on data centers, submarine cables, and really get a good sense of what's going on. And again, with AI mode, ask questions about these data centers and ask questions about this infrastructure to learn a lot more. So for example, I could just say something like,</p>
+                        
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"Hey, take me to a place with the densest coverage of undersea cables."</div>
+                            <div class="ai-resp">"Heading to a major undersea cable hub now. Done. You're over Marseilles. A major landing hub with very dense undersea cable connectivity."</div>
+                        </div>
+
+                        <div class="voice-interaction">
+                            <div class="user-cmd">"I assume this is in uh France. Can you tell me more about the energy situation in France? Cuz I believe it's very popular for data centers, right?"</div>
+                            <div class="ai-resp">"Yes. And it's widely used for data centers, partly because of its power profile. The grid is heavily nuclear which gives it relatively lowcarbon electricity compared with many countries and strong interconnections help with reliability for data centers. That lowcarbon base is attractive along with mature fiber routes including subc connectivity through hubs like Marseilles and a large market around Paris."</div>
+                            <div class="user-cmd">"Is that why we see so many data centers right by where these like undersea cables come onto land?"</div>
+                            <div class="ai-resp">"Often yes. Cable landing spots can turn into natural connectivity hubs, so data centers cluster nearby to keep latency low and reduce back haul costs."</div>
+                        </div>
+
+                        <p>And ladies and gentlemen, when you start looking at this from a God's eye view, you suddenly realize this is literally the nervous system of our planet. This is what connects all of us. This is how we get these YouTube videos. This is how we get our tweets. This is how we play our video games. All of that is possible because of this infrastructure. And now you can see it all for free. How crazy is that? Cuz all these data layers are free for non-commercial use.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 11 -->
+            <section id="ch-11" class="transcript-section">
+                <div class="section-header"><h2>Reconstructing Nepal Floods</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">24:18</span>
+                    <div class="text-content">
+                        <p>What I want to talk about next is how do you use this as a foundation to build your own things. Like I saw a lot of folks were already using God's Eye View to do reconstructions for the Nepal disaster that just happened. And so you could do that too. And all you need to do is like get this up and running in whatever AI coding agent you have and talk to the damn thing.</p>
+                        <p>So by asking your agent to pull this open source data right like from planet vantor and officially reported sources you can say hey can you please find the right data and plot it on the map is so it'll literally map out the trajectory of the flooding that took place. So here is the initial USGS report and this is the M5.2 into a landslide that we just saw a little bit earlier.</p>
+                        <p>Right now, as these events happen, you've noticed people publish photos and videos on Twitter, on YouTube, and so forth. Right? So, you can use your AI agent and work with God's Eye View and essentially have it all plotted out on the map, right? So, you can see just scale and scope of this devastation. You can see this is the path that the flood went down and all the clips that were recorded along the way observing this devastation.</p>
+                        <p>It's absolutely chilling. I mean, holy crap. You know, they say hell hath no fury, like mother nature scorned. And these are the moments that make you truly understand. My god, look at that. Absolutely nuts. I can't even imagine being a bystander. Like, that's a vantage point that just really shows just how insane this is. Holy crap. Oh my god. This is insane. If you saw a couple months ago, I made exactly this type of reconstruction for Operation Epic Theory. You can do this for absolutely everything. whether you're trying to help, whether you're trying to report, or just understand what's going on.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chapter 12 -->
+            <section id="ch-12" class="transcript-section">
+                <div class="section-header"><h2>Building God’s Eye View Together</h2></div>
+                <div class="transcript-block">
+                    <span class="timestamp">25:55</span>
+                    <div class="text-content">
+                        <p>And so hopefully this tells you like this isn't just a spy satellite simulator in your browser. Use this as a foundation for whatever interests you about the real world that we live in, right? Like whatever it is that you need to track, whether it's environmental, geopolitical, or just local infrastructure. You are not limited to the data layers that are in here. You can very easily use coding agents and describe in natural language and start building stuff on top of it.</p>
+                        <p>Now, if you build something interesting that worth sharing with a community, you know, create a poll request and put in the features that you want and I will try my best to get them in here. If you have ideas, you can go start the issues and look at the conversations that are already going on and upvote them and say, "Hey, yes, we'd love for you to build this." And I want to just thank all the contributors that have worked on this already. Thank you so much for jumping in on this.</p>
+                        <p>So, we've already got contributions for automatic license plate readers. And by the way, if something isn't even in the main branch, you can just ask your clanker or your AI agent of choice to be like, hey, can you pull this in as well? So, you can play around with a bunch of these experimental layers that are sitting around before I have a chance to get to it and integrate it properly.</p>
+                        <p>And already there's another really cool idea about having your own softwaredefined radio that costs like tens of dollars. Plug it in and monitor the signals around you and even listen to radio, including police radio. And I'm sure watching this you have so many more ideas. So, I can't even wait to see what we all come up with together to build this collective window through which we can see our world.</p>
+                        <p>So, we've got the one-click Pinocchio installer. You can have your agent do it, too. And for most of y'all, if you're playing with this, like quite literally for non-commercial purposes, it'll be pretty much no cost, especially if you're not using voice.</p>
+                        <p>Now, despite the open code, very low bar, it has been shocking to me how many of you are asking for a hosted version. You're like, I don't want to deal with any of this. I just want a website that I can go to. When are you making the hosted version? Well, if that's something you're interested in, please let me know in the comments below. And who knows, maybe I'll freaking do it.</p>
+                        <p>We'll still keep this open source, of course, that's not going to change. But hey, if y'all want an easier hosted option, I need to figure out how to swap out a bunch of these non-commercial APIs for things that you can use commercially. Even a free service is considered commercial by these terms of service. So, working on that. There may be a paid plan as well if you want to use like voice mode. So, I'm still trying to figure all that out, but let me know your interest below. Based on that, I can figure out how to prioritize this versus just working on the open source project for the moment.</p>
+                        <p>Anyway, we haven't even talked about going back in time. That's another can of worms and costs way more money, but that's a conversation for the future. Until then, everything you need is in the description below. Let's build this collective window through which we can see the world, baby. This is so freaking exciting. Thank you so much for the support. Bavo signing off and I'll see y'all in the next one. Cheers.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Scroll Spy Functionality
+        const sections = document.querySelectorAll('.transcript-section');
+        const chapterLinks = document.querySelectorAll('.chapter-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    chapterLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Timestamp click mock interaction
+        document.querySelectorAll('.timestamp').forEach(ts => {
+            ts.addEventListener('click', () => {
+                ts.style.color = '#fff';
+                setTimeout(() => {
+                    ts.style.color = '';
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

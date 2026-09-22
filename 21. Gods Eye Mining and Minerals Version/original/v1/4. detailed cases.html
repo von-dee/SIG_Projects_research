@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God's Eye View - 200 Tactical Deployments</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #05080a;
+            --bg-secondary: #0d1117;
+            --bg-tertiary: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-cyan: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --accent-purple: #bc8cff;
+            --accent-blue: #1f6feb;
+            --glow-cyan: 0 0 10px rgba(88, 166, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(40, 50, 60, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(40, 50, 60, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
+
+        .hud-header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .hud-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .hud-logo::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .hud-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .hud-subtitle {
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .filter-btn.active { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); box-shadow: var(--glow-cyan); }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            display: block;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus { border-color: var(--accent-cyan); box-shadow: var(--glow-cyan); }
+        .search-box::placeholder { color: var(--text-secondary); }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px; height: 100%;
+            background: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(88, 166, 255, 0.5);
+            background: var(--bg-tertiary);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .card:hover::before { width: 6px; }
+
+        .card.cat-Aviation:hover::before { background: var(--accent-cyan); box-shadow: var(--glow-cyan); }
+        .card.cat-Maritime:hover::before { background: var(--accent-blue); box-shadow: 0 0 10px rgba(31, 111, 235, 0.3); }
+        .card.cat-Disaster:hover::before { background: var(--accent-red); box-shadow: 0 0 10px rgba(248, 81, 73, 0.3); }
+        .card.cat-Infrastructure:hover::before { background: var(--accent-orange); box-shadow: 0 0 10px rgba(210, 153, 34, 0.3); }
+        .card.cat-Urban:hover::before { background: var(--accent-green); box-shadow: 0 0 10px rgba(63, 185, 80, 0.3); }
+        .card.cat-Media:hover::before { background: var(--accent-purple); box-shadow: 0 0 10px rgba(188, 140, 255, 0.3); }
+        .card.cat-Developer:hover::before { background: #f0883e; box-shadow: 0 0 10px rgba(240, 136, 62, 0.3); }
+
+        .card-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-category {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .card-section {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-list {
+            padding-left: 1.2rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .step-list li { margin-bottom: 0.3rem; }
+
+        .voice-cmd {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.05);
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid rgba(63, 185, 80, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .hud-title { font-size: 1.8rem; }
+            .container { padding: 1rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hud-header">
+        <div class="hud-logo">GOD'S EYE VIEW // OS</div>
+        <h1 class="hud-title">200 Tactical Deployments</h1>
+        <div class="hud-subtitle">DEPLOYMENT SCENARIOS // CIVILIAN, DEV & OSINT INTELLIGENCE</div>
+        
+        <div class="controls">
+            <button class="filter-btn active" onclick="filterCategory('All')">All</button>
+            <button class="filter-btn" onclick="filterCategory('Aviation')">Aviation</button>
+            <button class="filter-btn" onclick="filterCategory('Maritime')">Maritime</button>
+            <button class="filter-btn" onclick="filterCategory('Disaster')">Disaster & Env</button>
+            <button class="filter-btn" onclick="filterCategory('Infrastructure')">Infrastructure</button>
+            <button class="filter-btn" onclick="filterCategory('Urban')">Urban & CCTV</button>
+            <button class="filter-btn" onclick="filterCategory('Media')">Media & Film</button>
+            <button class="filter-btn" onclick="filterCategory('Developer')">Dev & AI</button>
+        </div>
+        <input type="text" id="searchInput" class="search-box" placeholder="SEARCH USE CASES (e.g., 'fire', 'submarine', 'cursor')..." onkeyup="searchCards()">
+    </header>
+
+    <div class="container">
+        <div class="grid" id="useCaseGrid">
+            <!-- JavaScript will inject the 200 cards here -->
+        </div>
+    </div>
+
+    <script>
+        // Array holding all 200 use cases
+        const useCases = [
+            // --- AVIATION (1-30) ---
+            {c: "Aviation", t: "Commercial Flight Tracking", d: "Track commercial flights globally.", s: ["Enable Flights layer.", "Click white aircraft icons.", "View speed/altitude."], v: "> Turn on flights."},
+            {c: "Aviation", t: "Military Aircraft Monitoring", d: "Identify military and 'operator unknown' flights.", s: ["Enable Flights.", "Look for yellow aircraft.", "Click to view call signs."], v: "> Turn on military flights."},
+            {c: "Aviation", t: "Cockpit View Landings", d: "Experience real-time landings at major hubs.", s: ["Click plane near runway.", "Open Context Menu.", "Select Cockpit mode."], v: "> Enter cockpit mode."},
+            {c: "Aviation", t: "Pilot Training Observation", d: "Monitor flight training at specific airbases.", s: ["Search 'Laughlin AFB'.", "Enable Military Flights.", "Zoom in to see patterns."], v: "> Take me to Laughlin Air Force Base."},
+            {c: "Aviation", t: "Restricted Airspace Monitoring", d: "Track Janet flights entering Area 51.", s: ["Search 'Area 51'.", "Enable Military Flights.", "Monitor loop-de-loops."], v: "> Fly me to Area 51."},
+            {c: "Aviation", t: "Airport Ground Traffic", d: "Monitor planes taxiing at gates.", s: ["Search 'ATL'.", "Wait for terrain load.", "Zoom in to ground level."], v: "> Take me to the busiest airport."},
+            {c: "Aviation", t: "Air Traffic Telemetry", d: "View live speed and altitude context.", s: ["Click any tracked aircraft.", "View left panel data.", "Use toggles to jump tracks."], v: "> Show telemetry for nearest flight."},
+            {c: "Aviation", t: "VIP/Private Jet Tracking", d: "Monitor private jet movements.", s: ["Enable Flights.", "Filter by aircraft type.", "Track specific tail numbers."], v: "> Track tail number N123AB."},
+            {c: "Aviation", t: "Search & Rescue (SAR) Ops", d: "Track SAR helicopters in disaster zones.", s: ["Navigate to disaster area.", "Enable Military Flights.", "Monitor low-level hover patterns."], v: "> Show nearby helicopters."},
+            {c: "Aviation", t: "Aerial Firefighting Coordination", d: "Track water-dropping planes over wildfires.", s: ["Enable FIRMS Active Fires.", "Enable Flights.", "Monitor planes circling hotspots."], v: "> Show flights over active fires."},
+            {c: "Aviation", t: "Air Show Practice Monitoring", d: "Watch military jets practicing air show routines.", s: ["Search local airbase.", "Enable Military Flights.", "Observe tight circular flight paths."], v: "> Track nearest military jet."},
+            {c: "Aviation", t: "Airline Route Efficiency Analysis", d: "Compare planned vs actual flight paths.", s: ["Track specific commercial flight.", "View cached path history.", "Compare to great circle route."], v: "> Show flight path history."},
+            {c: "Aviation", t: "Diverted Flight Tracking", d: "Track flights diverting due to weather.", s: ["Monitor airport during storm.", "Look for aircraft turning away.", "Track to alternate airport."], v: "> Show flights diverting."},
+            {c: "Aviation", t: "Holding Pattern Observation", d: "View stacks of planes waiting to land.", s: ["Search busy airport at rush hour.", "Enable Flights.", "Observe circular holding patterns."], v: "> Show holding patterns near ATL."},
+            {c: "Aviation", t: "Transponder Squawk Code Alerts", d: "Identify planes squawking 7700 (emergency).", s: ["Monitor high-density airspace.", "Filter for emergency squawks.", "Track aircraft to nearest airport."], v: "> Show emergency flights."},
+            {c: "Aviation", t: "HEMS (Helicopter EMS) Tracking", d: "Track medical helicopters flying to trauma centers.", s: ["Search local hospital helipad.", "Enable Military/Commercial.", "Monitor rapid point-to-point flights."], v: "> Track nearest helicopter."},
+            {c: "Aviation", t: "Offshore Oil Rig Transit", d: "Monitor helicopter flights to offshore rigs.", s: ["Search Gulf of Mexico.", "Enable Flights.", "Track routes from shore to rigs."], v: "> Show flights over Gulf of Mexico."},
+            {c: "Aviation", t: "Border Patrol UAV Tracking", d: "Track unmanned aerial vehicles along borders.", s: ["Search US-Mexico border.", "Enable Military Flights.", "Look for slow, loitering tracks."], v: "> Track UAVs near border."},
+            {c: "Aviation", t: "Air Force One Monitoring", d: "Track the President's aircraft.", s: ["Search 'VC-25' or known location.", "Enable Military Flights.", "Monitor secure flight paths."], v: "> Track Air Force One."},
+            {c: "Aviation", t: "Night Flight Corridor Verification", d: "Verify night-time flight path adherence.", s: ["Switch to Night Vision mode.", "Enable Flights.", "Monitor commercial corridors."], v: "> Switch to night vision."},
+            {c: "Aviation", t: "Airport Curfew Violation Detection", d: "Track planes taking off after curfew.", s: ["Search curfew-restricted airport.", "Monitor late-night flights.", "Log departure times."], v: "> Show late night departures."},
+            {c: "Aviation", t: "Flight Path Conflict Alerting", d: "Visually identify planes flying too close.", s: ["Zoom into high-density airspace.", "Observe intersecting paths.", "Monitor ATC response."], v: "> Show nearby traffic conflicts."},
+            {c: "Aviation", t: "Cargo Plane Logistics Tracking", d: "Track FedEx/UPS hubs at night.", s: ["Search 'Memphis Airport'.", "Enable Flights at 2AM.", "Monitor cargo hub activity."], v: "> Take me to Memphis airport."},
+            {c: "Aviation", t: "Regional Jet vs Wide-body Comparison", d: "Compare altitudes of regional vs international flights.", s: ["Zoom out to globe view.", "Enable Flights.", "Compare telemetry data of different jets."], v: "> Show flight altitudes."},
+            {c: "Aviation", t: "Low-Level Military Training Routes", d: "Track military jets flying low-level routes.", s: ["Search known military training route.", "Enable Military Flights.", "Monitor low-altitude telemetry."], v: "> Show low-level military flights."},
+            {c: "Aviation", t: "Airspace Density Heatmapping", d: "Visually identify congested airspace.", s: ["Zoom out to region view.", "Enable all Flights.", "Observe cluster density."], v: "> Show airspace density."},
+            {c: "Aviation", t: "Glider/Microlight Tracking", d: "Track transponder-equipped gliders.", s: ["Search known glider port.", "Enable Flights.", "Look for slow, low-altitude tracks."], v: "> Track slow aircraft."},
+            {c: "Aviation", t: "UAP/UFO Correlation", d: "Cross-reference UFO reports with radar data.", s: ["Search reported UAP location.", "Enable Military Flights.", "Look for anomalous tracks."], v: "> Show unknown operators near Area 51."},
+            {c: "Aviation", t: "ATC Radio Correlation", d: "Listen to ATC while tracking planes.", s: ["Enable Radio in Context Menu.", "Select local ATC frequency.", "Watch flights transmit in real-time."], v: "> Play nearest ATC radio."},
+            {c: "Aviation", t: "SpaceX Rocket Re-entry Tracking", d: "Track aircraft avoiding rocket re-entry zones.", s: ["Search NOTAM re-entry zone.", "Enable Flights.", "Observe aircraft routing around zone."], v: "> Show flights avoiding NOTAMs."},
+            
+            // --- MARITIME (31-60) ---
+            {c: "Maritime", t: "Vessel Path Caching", d: "Cache historical paths of moving vessels.", s: ["Click on a moving vessel.", "Leave app running.", "Check cached path later."], v: "> Track nearest vessel."},
+            {c: "Maritime", t: "Port Congestion Monitoring", d: "Visualize docked vessels at Rotterdam.", s: ["Search 'Rotterdam'.", "Toggle Vessels.", "Zoom out to see clusters."], v: "> Take me to Rotterdam."},
+            {c: "Maritime", t: "Geopolitical Chokepoint Watch", d: "Monitor Strait of Hormuz activity.", s: ["Search 'Strait of Hormuz'.", "Enable Vessels.", "Monitor military/commercial mix."], v: "> Take me to the Strait of Hormuz."},
+            {c: "Maritime", t: "AIS Coverage Gap Analysis", d: "Identify areas lacking free AIS data.", s: ["Toggle Vessels on.", "Compare Europe vs Middle East.", "Note empty zones."], v: "> Toggle vessels."},
+            {c: "Maritime", t: "Docked Ship Auditing", d: "Verify stationary vessels at docks.", s: ["Go to major port.", "Click docked vessels.", "Confirm zero movement."], v: "> Show vessels in port."},
+            {c: "Maritime", t: "English Channel Traffic", d: "Visualize maritime shipping density.", s: ["Search 'English Channel'.", "Enable Vessels.", "Observe heavy AIS coverage."], v: "> Take me to the English Channel."},
+            {c: "Maritime", t: "Voice-Activated Vessel Search", d: "Use voice to locate vessel clusters.", s: ["Hold Spacebar.", "State port and action.", "AI flies camera."], v: "> Mark the port of Rotterdam and orbit."},
+            {c: "Maritime", t: "Cruise Ship Itinerary Tracking", d: "Track cruise ships moving between ports.", s: ["Search major cruise port.", "Enable Vessels.", "Track large passenger ship paths."], v: "> Track nearest cruise ship."},
+            {c: "Maritime", t: "Illegal Fishing Vessel Identification", d: "Track vessels with AIS turned off.", s: ["Search protected marine area.", "Compare radar data vs AIS.", "Identify dark vessels."], v: "> Show vessels near marine sanctuary."},
+            {c: "Maritime", t: "Coast Guard Patrol Monitoring", d: "Track coast guard cutters and boats.", s: ["Search coastal region.", "Enable Vessels.", "Identify CG call signs/patterns."], v: "> Track nearest coast guard vessel."},
+            {c: "Maritime", t: "Superyacht Tracking", d: "Monitor luxury yacht movements.", s: ["Search Monaco/Fort Lauderdale.", "Enable Vessels.", "Track large private yachts."], v: "> Take me to Monaco."},
+            {c: "Maritime", t: "Cargo Container Supply Chain", d: "Track container ships crossing oceans.", s: ["Zoom out to globe view.", "Enable Vessels.", "Follow trans-Pacific routes."], v: "> Show trans-Pacific vessels."},
+            {c: "Maritime", t: "Oil Tanker Route Deviation", d: "Track tankers deviating from standard routes.", s: ["Search major oil shipping lane.", "Enable Vessels.", "Monitor for route anomalies."], v: "> Show oil tankers near me."},
+            {c: "Maritime", t: "Naval Fleet Maneuver Observation", d: "Track naval strike groups.", s: ["Search known naval operating area.", "Enable Vessels & Military Flights.", "Observe formation movements."], v: "> Show naval fleets."},
+            {c: "Maritime", t: "Maritime Search & Rescue", d: "Track vessels converging on distress signal.", s: ["Search reported distress area.", "Enable Vessels.", "Monitor converging ship paths."], v: "> Show vessels near distress signal."},
+            {c: "Maritime", t: "Drug Interdiction Fast Boat Tracking", d: "Track high-speed smuggling boats.", s: ["Search known smuggling route.", "Enable Vessels.", "Look for high-speed, erratic paths."], v: "> Track high-speed vessels."},
+            {c: "Maritime", t: "Lighthouse Beacon Verification", d: "Visually locate lighthouses on terrain.", s: ["Search coastal lighthouse.", "Zoom in to coastline.", "Verify structure on map."], v: "> Take me to nearest lighthouse."},
+            {c: "Maritime", t: "Pirate Activity Risk Assessment", d: "Monitor high-risk piracy zones.", s: ["Search Gulf of Aden.", "Enable Vessels.", "Monitor naval escort patterns."], v: "> Take me to Gulf of Aden."},
+            {c: "Maritime", t: "Icebreaker Path Mapping", d: "Track icebreakers clearing Arctic routes.", s: ["Search Arctic Ocean.", "Enable Vessels.", "Follow icebreaker path caches."], v: "> Track Arctic icebreakers."},
+            {c: "Maritime", t: "Ferry Route Schedule Verification", d: "Check if ferries are on schedule.", s: ["Search local ferry route.", "Enable Vessels.", "Track ferry transit time."], v: "> Show ferries near me."},
+            {c: "Maritime", t: "Anchorage Overflow Monitoring", d: "View ships waiting outside ports.", s: ["Search major port (e.g. LA/Long Beach).", "Enable Vessels.", "Count ships at anchor."], v: "> Show anchored ships near LA."},
+            {c: "Maritime", t: "Ship-to-Ship Transfer Operations", d: "Monitor STS transfers (smuggling/oil).", s: ["Zoom into open ocean.", "Enable Vessels.", "Look for two ships meeting."], v: "> Show ship-to-ship transfers."},
+            {c: "Maritime", t: "Vessel Speed (SOG) Analysis", d: "Identify vessels speeding in slow zones.", s: ["Search marine protected area.", "Enable Vessels.", "Check speed over ground data."], v: "> Show vessel speeds."},
+            {c: "Maritime", t: "Maritime Boundary Violations", d: "Track ships crossing EEZ lines.", s: ["Toggle Bing Geopolitical Labels.", "Enable Vessels.", "Monitor border crossings."], v: "> Turn on geopolitical labels."},
+            {c: "Maritime", t: "Vessel Type Filtering", d: "Isolate tankers from cargo ships.", s: ["Open Data Layers.", "Filter Vessels by type.", "View specific maritime categories."], v: "> Show only oil tankers."},
+            {c: "Maritime", t: "Port Arrival Time ETA Verification", d: "Calculate ship arrival based on speed.", s: ["Track inbound vessel.", "View speed and heading.", "Calculate distance to port."], v: "> Show ETA for nearest vessel."},
+            {c: "Maritime", t: "Bunkering Operations Monitoring", d: "Watch fuel transfer operations at sea.", s: ["Zoom into port anchorage.", "Enable Vessels.", "Look for bunker ships alongside."], v: "> Show bunkering operations."},
+            {c: "Maritime", t: "Tugboat & Pilot Boat Coordination", d: "Track harbor tugs guiding ships in.", s: ["Search major harbor.", "Enable Vessels.", "Monitor small craft meeting large ships."], v: "> Show harbor tugs."},
+            {c: "Maritime", t: "Autonomous Surface Ship (MASS) Tracking", d: "Track unmanned ocean drones.", s: ["Search known ocean drone routes.", "Enable Vessels.", "Look for slow, persistent tracks."], v: "> Track ocean drones."},
+            {c: "Maritime", t: "Submarine Periscope Detection (Simulated)", d: "Use AI to spawn submarine assets.", s: ["Go to deep ocean.", "Use AI to spawn 3D sub model.", "Conduct simulated surveillance."], v: "> Spawn submarine over deep ocean."},
+
+            // --- DISASTER & ENVIRONMENT (61-95) ---
+            {c: "Disaster", t: "Active Wildfire Detection", d: "Monitor NASA FIRMS thermal data.", s: ["Open Data Layers.", "Toggle 'FIRMS Active Fires'.", "View hotspots."], v: "> Turn on active fires."},
+            {c: "Disaster", t: "Earthquake Impact Mapping", d: "Visualize USGS earthquake epicenters.", s: ["Open Data Layers.", "Enable Earthquakes.", "Click magnitude markers."], v: "> Turn on earthquakes."},
+            {c: "Disaster", t: "Flood Trajectory Reconstruction", d: "Map flood paths using AI and USGS.", s: ["Open AI Coding Agent.", "Prompt to pull USGS flood data.", "Plot trajectory on map."], v: "> Plot Nepal flood trajectory from USGS."},
+            {c: "Disaster", t: "Smoke Plume Analysis", d: "Compare smoke density between providers.", s: ["Locate active fire hotspot.", "Switch Map Source (Google/Bing).", "Observe smoke rendering."], v: "> Switch map imagery."},
+            {c: "Disaster", t: "War Zone Imagery Monitoring", d: "Track 3-day delayed Sentinel imagery.", s: ["Navigate to conflict zone.", "Toggle Sentinel Imagery.", "Monitor 3-day delayed visual data."], v: "> Switch to Sentinel imagery."},
+            {c: "Disaster", t: "NOAA Weather Radio Alerts", d: "Listen to local weather stations.", s: ["Open Context Menu.", "Enable Radio.", "Click NOAA station tags."], v: "> Play nearest weather station."},
+            {c: "Disaster", t: "Social Media Disaster Sync", d: "Plot YouTube/Twitter clips on map.", s: ["Use AI Coding Agent.", "Prompt to pull geo-tagged clips.", "Plot as annotations."], v: "> Plot social media clips of Nepal flood."},
+            {c: "Disaster", t: "Landslide Vector Mapping", d: "Trace landslide vectors from quakes.", s: ["View M5.2 earthquake marker.", "Use AI Agent to map path.", "Observe plotted vector."], v: "> Show landslide vector from recent quake."},
+            {c: "Disaster", t: "Volcanic Ash Cloud Tracking", d: "Monitor ash plumes affecting flights.", s: ["Locate active volcano.", "Enable Flights.", "Observe aircraft avoiding ash clouds."], v: "> Show flights avoiding volcano."},
+            {c: "Disaster", t: "Hurricane Evacuation Route Planning", d: "Monitor traffic during hurricane evac.", s: ["Search coastal city under warning.", "Enable Traffic & CCTV.", "Monitor chokepoints on evacuation routes."], v: "> Show evacuation traffic."},
+            {c: "Disaster", t: "Tornado Damage Path Assessment", d: "Use satellite imagery to view damage.", s: ["Search reported tornado path.", "Zoom in on terrain.", "Compare before/after imagery."], v: "> Take me to [Tornado City]."},
+            {c: "Disaster", t: "Tsunami Inundation Zone Mapping", d: "Visualize coastal vulnerability.", s: ["Search coastal earthquake epicenter.", "Toggle 3D globe view.", "Assess low-lying coastal terrain."], v: "> Show coastal terrain near quake."},
+            {c: "Disaster", t: "Drought Water Level Monitoring", d: "Track receding lake levels.", s: ["Search major reservoir (e.g. Lake Mead).", "Switch to Sentinel Imagery.", "Observe water line recession."], v: "> Take me to Lake Mead."},
+            {c: "Disaster", t: "Deforestation Hotspot Identification", d: "Track illegal logging via fire data.", s: ["Search Amazon rainforest.", "Enable FIRMS Active Fires.", "Identify suspicious hotspots."], v: "> Show fires in the Amazon."},
+            {c: "Disaster", t: "Oil Spill Trajectory Modeling", d: "Track oil slicks via satellite.", s: ["Search offshore oil platform.", "Switch to Sentinel Imagery.", "Observe slick movement on water."], v: "> Show nearest oil platform."},
+            {c: "Disaster", t: "Wildfire Containment Line Monitoring", d: "Check if fire is crossing firebreaks.", s: ["Locate active fire perimeter.", "Zoom in using Google 3D tiles.", "Observe fire spread vs terrain."], v: "> Zoom into fire perimeter."},
+            {c: "Disaster", t: "Evacuation Shelter Demand Forecasting", d: "Estimate shelter needs based on traffic.", s: ["Enable Traffic in disaster zone.", "Monitor flow away from incident.", "Estimate population displacement."], v: "> Show outbound traffic from [City]."},
+            {c: "Disaster", t: "Extreme Heat Urban Island Effect", d: "Identify dense urban areas lacking greenery.", s: ["Search major metropolis.", "Switch to Night Vision/FLIR.", "Identify high thermal mass zones."], v: "> Switch to thermal imaging."},
+            {c: "Disaster", t: "Post-Earthquake Building Collapse", d: "Use AI to identify collapsed structures.", s: ["Use AI Agent on recent quake zone.", "Prompt to analyze Sentinel imagery.", "Flag collapsed building polygons."], v: "> Analyze building collapse in quake zone."},
+            {c: "Disaster", t: "Avalanche Risk Assessment", d: "Monitor snowpack and terrain traps.", s: ["Search mountainous ski region.", "Switch to 3D globe view.", "Identify steep gullies."], v: "> Show steep mountain terrain."},
+            {c: "Disaster", t: "Glacier Retreat Time-lapse", d: "View historical imagery of glaciers.", s: ["Search major glacier (e.g. Himalayas).", "Switch to Sentinel historical.", "Compare boundary over years."], v: "> Show historical glacier imagery."},
+            {c: "Disaster", t: "Floodplain Urban Planning", d: "Assess new construction in flood zones.", s: ["Search proposed development site.", "Enable 3D terrain.", "Assess elevation relative to river."], v: "> Show floodplain terrain."},
+            {c: "Disaster", t: "Drought Agricultural Impact", d: "Monitor crop health via satellite.", s: ["Search major agricultural region.", "Switch to Sentinel Imagery.", "Identify brown/dead fields."], v: "> Show agricultural imagery."},
+            {c: "Disaster", t: "Lightning Strike Density", d: "Correlate lightning with wildfire starts.", s: ["Enable FIRMS Active Fires.", "Cross-reference with weather radar.", "Identify lightning-caused fires."], v: "> Show lightning strike fires."},
+            {c: "Disaster", t: "Radioactive Plume Tracking (Sim)", d: "Simulate nuclear fallout tracking.", s: ["Search nuclear power plant.", "Use AI to plot wind direction.", "Simulate plume trajectory."], v: "> Simulate plume from nuclear plant."},
+            {c: "Disaster", t: "Severe Thunderstorm Warning Polygons", d: "View live weather warning zones.", s: ["Open Data Layers.", "Enable Weather Warnings.", "View red polygons on map."], v: "> Turn on weather warnings."},
+            {c: "Disaster", t: "Winter Storm Snowfall Accumulation", d: "Monitor snow bands in real-time.", s: ["Search region under winter storm.", "Enable Traffic to see road impacts.", "Monitor CCTV for snow depth."], v: "> Show winter storm traffic."},
+            {c: "Disaster", t: "Coastal Erosion Rate Analysis", d: "Measure coastline retreat.", s: ["Search vulnerable coastline.", "Use historical Sentinel imagery.", "Measure coastline shift."], v: "> Show coastal erosion."},
+            {c: "Disaster", t: "Wildfire Evacuation Traffic Sync", d: "Watch traffic flee active fire.", s: ["Enable FIRMS Active Fires.", "Enable Traffic layer.", "Monitor red zones leaving fire area."], v: "> Show traffic near active fires."},
+            {c: "Disaster", t: "Earthquake Aftershock Mapping", d: "Track subsequent smaller quakes.", s: ["Enable Earthquakes.", "Zoom into main epicenter.", "Observe cluster of smaller magnitudes."], v: "> Show aftershocks near epicenter."},
+            {c: "Disaster", t: "Dam Break Inundation Modeling", d: "Simulate downstream flooding.", s: ["Search major dam.", "Use AI to model water flow.", "Plot inundation path downstream."], v: "> Model dam break inundation."},
+            {c: "Disaster", t: "Forest Fire Carbon Emission Est.", d: "Estimate carbon burn via fire size.", s: ["Measure active fire hotspot area.", "Use AI to calculate burn area.", "Estimate carbon emissions."], v: "> Calculate fire burn area."},
+            {c: "Disaster", t: "Volcanic Lava Flow Prediction", d: "Predict lava path based on terrain.", s: ["Search active volcano.", "Enable 3D terrain.", "Trace downhill paths from crater."], v: "> Show lava flow paths."},
+            {c: "Disaster", t: "Sinkhole Formation Monitoring", d: "Watch for terrain subsidence.", s: ["Search known sinkhole region.", "Switch to high-res Google 3D.", "Look for terrain depressions."], v: "> Show terrain depressions."},
+            {c: "Disaster", t: "Coral Reef Bleaching Heatmaps", d: "Monitor sea surface temp anomalies.", s: ["Search Great Barrier Reef.", "Use AI to pull SST data.", "Overlay heatmap on reef."], v: "> Show sea surface temperatures."},
+
+            // --- INFRASTRUCTURE & TELECOM (96-125) ---
+            {c: "Infrastructure", t: "Submarine Cable Mapping", d: "Visualize global undersea internet cables.", s: ["Open Data Layers.", "Toggle 'Submarine Cables'.", "Zoom out to globe view."], v: "> Turn on submarine cables."},
+            {c: "Infrastructure", t: "Data Center Hub Discovery", d: "Identify data centers near cable landings.", s: ["Enable Data Centers & Cables.", "Search 'Marseilles'.", "Observe cluster proximity."], v: "> Take me to densest undersea cable hub."},
+            {c: "Infrastructure", t: "Energy Grid Analysis", d: "Ask AI about regional power profiles.", s: ["Click Data Center hub.", "Open Voice AI.", "Ask about local energy grid."], v: "> Tell me about the energy situation in France."},
+            {c: "Infrastructure", t: "Geopolitical Boundary Mapping", d: "View political outlines.", s: ["Select 'Bing labels' on bottom bar.", "View geopolitical outlines over 2D.", "Toggle off for clean view."], v: "> Turn on geopolitical labels."},
+            {c: "Infrastructure", t: "Celestial & Sun Tracking", d: "View real-time sun/moon positions.", s: ["Switch to Globe View (top right).", "Toggle 'Celestial Mode'.", "Rotate globe to see sun."], v: "> Switch to globe view. Turn on celestial mode."},
+            {c: "Infrastructure", t: "Network Latency Visualization", d: "Understand internet latency via distance.", s: ["Enable Data Centers & Cables.", "Trace cable from US to Europe.", "Visualize physical distance."], v: "> Turn on data centers and cables."},
+            {c: "Infrastructure", t: "Fiber Route Planning", d: "Inspect coastal terrain for new cables.", s: ["Follow existing subsea cable to shore.", "Zoom into coastal terrain.", "Analyze geographic chokepoints."], v: "> Zoom into coastal cable landing spots."},
+            {c: "Infrastructure", t: "Night Vision Reconnaissance", d: "Toggle thermal/night vision modes.", s: ["Open Display Settings (right).", "Switch from Tactical to Night Vision.", "Observe terrain in thermal."], v: "> Turn on night vision mode."},
+            {c: "Infrastructure", t: "5G Tower Placement Analysis", d: "Analyze elevation for line-of-sight 5G.", s: ["Search urban region.", "Enable 3D terrain.", "Identify high-elevation points."], v: "> Show high elevation points."},
+            {c: "Infrastructure", t: "Power Grid Substation Monitoring", d: "Map high-voltage substations.", s: ["Enable Data Centers.", "Follow power lines from plants.", "Identify major substation nodes."], v: "> Show power substations."},
+            {c: "Infrastructure", t: "Wind Turbine Farm Mapping", d: "Locate offshore wind farms.", s: ["Search North Sea.", "Zoom in on turbine arrays.", "Measure farm footprint."], v: "> Take me to North Sea wind farms."},
+            {c: "Infrastructure", t: "Solar Farm Output Optimization", d: "Sync solar farms with celestial mode.", s: ["Enable Celestial Mode.", "Locate major solar farm.", "Observe sun angle relative to panels."], v: "> Show sun angle over solar farm."},
+            {c: "Infrastructure", t: "Oil Pipeline Leak Detection", d: "Monitor pipelines via satellite.", s: ["Search known pipeline route.", "Switch to Sentinel Imagery.", "Look for vegetation die-off near pipe."], v: "> Show pipeline routes."},
+            {c: "Infrastructure", t: "Railroad Network Bottleneck Analysis", d: "Track train density via CCTV.", s: ["Search major rail junction.", "Enable CCTV.", "Monitor train passing frequency."], v: "> Show rail junction CCTV."},
+            {c: "Infrastructure", t: "Highway Construction Routing", d: "Plan new highways using 3D terrain.", s: ["Enable 3D tiles.", "Draw walking route between towns.", "Analyze elevation for road grading."], v: "> Draw route between point A and B."},
+            {c: "Infrastructure", t: "Bridge Structural Integrity", d: "Use AI to analyze bridge imagery.", s: ["Search major bridge.", "Zoom in with Google 3D.", "Use AI to scan for structural cracks."], v: "> Analyze nearest bridge structure."},
+            {c: "Infrastructure", t: "Border Wall/Fence Progress", d: "Monitor construction progress.", s: ["Search US-Mexico border.", "Switch to Sentinel imagery.", "Compare historical vs current gaps."], v: "> Show border construction progress."},
+            {c: "Infrastructure", t: "Water Reservoir Level Monitoring", d: "Track water capacity visually.", s: ["Search major reservoir.", "Switch to high-res imagery.", "Observe water line against terrain."], v: "> Show nearest reservoir."},
+            {c: "Infrastructure", t: "Satellite Uplink Station Mapping", d: "Locate major teleports.", s: ["Enable Data Centers.", "Look for large dish arrays.", "Cross-reference with cable hubs."], v: "> Show satellite uplink stations."},
+            {c: "Infrastructure", t: "Transoceanic Cable Repair Ship", d: "Track ships repairing cables.", s: ["Enable Vessels.", "Search near cable breaks.", "Track cable-laying ship path."], v: "> Track cable repair ships."},
+            {c: "Infrastructure", t: "Cloud Computing Region Mapping", d: "Visualize AWS/Azure/GCP regions.", s: ["Enable Data Centers.", "Search major cloud hubs (e.g. Virginia).", "Observe massive facility clusters."], v: "> Take me to AWS us-east-1 region."},
+            {c: "Infrastructure", t: "EV Charging Station Deployment", d: "Plan charging routes based on traffic.", s: ["Enable Traffic layer.", "Identify highway chokepoints.", "Plot EV stations near red zones."], v: "> Show traffic chokepoints."},
+            {c: "Infrastructure", t: "Nuclear Power Plant Proximity", d: "Assess population density near plants.", s: ["Search nuclear power plant.", "Enable 3D globe.", "Measure distance to nearby cities."], v: "> Show nearby cities near nuclear plant."},
+            {c: "Infrastructure", t: "Hydroelectric Dam Flow Monitoring", d: "Track dam spillway activity.", s: ["Search major hydro dam.", "Zoom in with 3D tiles.", "Observe spillway water flow."], v: "> Show nearest hydroelectric dam."},
+            {c: "Infrastructure", t: "Natural Gas Liquefaction Plant", d: "Track LNG export terminals.", s: ["Search Gulf coast.", "Enable Vessels.", "Identify LNG carriers at docks."], v: "> Show LNG terminals."},
+            {c: "Infrastructure", t: "Dark Fiber Network Routing", d: "Plan unused fiber routes.", s: ["Enable Submarine Cables.", "Identify dead-end landing spots.", "Plan terrestrial dark fiber extensions."], v: "> Show dark fiber landing spots."},
+            {c: "Infrastructure", t: "Spaceport Launch Pad Construction", d: "Monitor SpaceX/Blue Origin pads.", s: ["Search Boca Chica, TX.", "Switch to historical Sentinel.", "Compare launch pad construction."], v: "> Take me to SpaceX launch pad."},
+            {c: "Infrastructure", t: "Mining Operation Expansion", d: "Track open-pit mine growth.", s: ["Search major mine (e.g. Bingham Canyon).", "Switch to Sentinel imagery.", "Measure pit expansion over time."], v: "> Show nearest mining operation."},
+            {c: "Infrastructure", t: "Desalination Plant Output", d: "Monitor coastal desalination facilities.", s: ["Search Middle East coast.", "Enable 3D terrain.", "Locate intake/outfall structures."], v: "> Show desalination plants."},
+            {c: "Infrastructure", t: "Green Energy Grid Integration", d: "Map solar/wind to grid connections.", s: ["Enable Data Centers & Cables.", "Overlay renewable energy sites.", "Trace connection to grid hubs."], v: "> Show renewable energy sites."},
+            {c: "Infrastructure", t: "Autonomous Vehicle Testing Routes", d: "Track AVs in dedicated zones.", s: ["Search known AV city (e.g. Phoenix).", "Enable Traffic & CCTV.", "Observe AV fleet behavior."], v: "> Show AV testing zones."},
+
+            // --- URBAN, TRAFFIC & CCTV (126-155) ---
+            {c: "Urban", t: "Google Maps Traffic Verification", d: "Confirm 'busier than usual' alerts.", s: ["Turn on Traffic & CCTV.", "Hover over red traffic dots.", "View CCTV camera to confirm."], v: "> Turn on traffic mode and CCTV mode."},
+            {c: "Urban", t: "City Chokepoint Identification", d: "Instantly spot traffic chokepoints.", s: ["Search 'London'.", "Enable Traffic.", "Zoom out to see red clusters."], v: "> Take me to London. Turn on traffic."},
+            {c: "Urban", t: "Public CCTV Monitoring", d: "Access city cameras (5-10 min refresh).", s: ["Toggle CCTV layer.", "Click camera dots on map.", "View high-res, low-framerate image."], v: "> Turn on CCTV."},
+            {c: "Urban", t: "Police & Emergency Radio", d: "Tune into local police radio channels.", s: ["Open Context Menu.", "Enable Radio.", "Filter for police/emergency tags."], v: "> Enable police radio."},
+            {c: "Urban", t: "Rush Hour Commute Check", d: "View aggregate location data density.", s: ["Search your city.", "Turn on Traffic (needs TomTom key).", "Check red zones at 6:30 PM."], v: "> Show traffic in Austin."},
+            {c: "Urban", t: "TomTom Traffic Density Overlay", d: "Use TomTom data to color-code zones.", s: ["Click 'Power Up' (bottom right).", "Enter TomTom API key.", "Toggle Traffic layer on."], v: "> Turn on traffic density."},
+            {c: "Urban", t: "Privacy-Safe Vehicle Tracking", d: "Understand flow without tracking cars.", s: ["Click on city CCTV camera.", "View image (refreshes 1f/5-10m).", "Analyze flow without identifying cars."], v: "> Show CCTV cameras."},
+            {c: "Urban", t: "Protest/March Route Monitoring", d: "Monitor large crowd movements.", s: ["Search city center.", "Enable Traffic & CCTV.", "Monitor red pedestrian zones."], v: "> Show traffic in city center."},
+            {c: "Urban", t: "Stadium Event Traffic Management", d: "Manage post-game congestion.", s: ["Search major stadium.", "Enable Traffic layer.", "Monitor chokepoints post-event."], v: "> Show traffic near nearest stadium."},
+            {c: "Urban", t: "Bus Route Efficiency Analysis", d: "Track buses vs traffic density.", s: ["Search major bus corridor.", "Enable Traffic layer.", "Compare bus speed to car traffic."], v: "> Show bus routes."},
+            {c: "Urban", t: "Subway/Metro Passenger Load", d: "Infer passenger load from CCTV.", s: ["Search major metro station.", "Enable CCTV.", "Observe platform camera density."], v: "> Show metro station CCTV."},
+            {c: "Urban", t: "School Zone Safety Monitoring", d: "Track speeding in school zones.", s: ["Search local school.", "Enable Traffic layer.", "Monitor red zones during release."], v: "> Show traffic near schools."},
+            {c: "Urban", t: "Hit-and-Run Suspect Tracking", d: "Use ALPR to track fleeing vehicles.", s: ["Enable custom ALPR layer.", "Search incident location.", "Follow ALPR pings along route."], v: "> Track vehicle via ALPR."},
+            {c: "Urban", t: "Ambulance Route Optimization", d: "Find fastest path through traffic.", s: ["Enable Traffic layer.", "Identify green (clear) routes.", "Guide ambulance avoiding red zones."], v: "> Show clear routes to hospital."},
+            {c: "Urban", t: "Snowplow Fleet Tracking", d: "Track plows during winter storms.", s: ["Search snow-affected city.", "Enable Traffic layer.", "Track slow-moving plow vehicles."], v: "> Show snowplow traffic."},
+            {c: "Urban", t: "Parking Lot Availability Est.", d: "View parking lots from CCTV.", s: ["Search major mall/airport.", "Enable CCTV.", "Zoom in on parking lot cameras."], v: "> Show parking lot cameras."},
+            {c: "Urban", t: "Traffic Light Outage Detection", d: "Identify broken lights via traffic backup.", s: ["Enable Traffic layer.", "Look for unusual red dots at intersections.", "Check CCTV to confirm light out."], v: "> Show traffic light outages."},
+            {c: "Urban", t: "Construction Zone Hazard ID", d: "Monitor construction traffic impacts.", s: ["Search known construction zone.", "Enable Traffic & CCTV.", "Monitor backup length."], v: "> Show construction zone traffic."},
+            {c: "Urban", t: "Carpool Lane Compliance", d: "Monitor HOV lane usage.", s: ["Search major highway.", "Enable CCTV.", "Zoom in on HOV lanes."], v: "> Show HOV lane CCTV."},
+            {c: "Urban", t: "Delivery Truck Route Bypassing", d: "Help delivery trucks avoid red zones.", s: ["Enable Traffic layer.", "Identify red zones on route.", "Calculate bypass route."], v: "> Show delivery route bypasses."},
+            {c: "Urban", t: "Border Crossing Wait Time Est.", d: "Estimate wait times via CCTV.", s: ["Search major border crossing.", "Enable CCTV.", "View bridge/tunnel cameras."], v: "> Show border crossing CCTV."},
+            {c: "Urban", t: "Toll Booth Congestion Monitoring", d: "Monitor toll plaza backups.", s: ["Search major toll plaza.", "Enable Traffic.", "Zoom in to plaza CCTV."], v: "> Show toll booth traffic."},
+            {c: "Urban", t: "Pedestrian Crossing Density", d: "Monitor foot traffic at crosswalks.", s: ["Search busy intersection.", "Enable CCTV.", "Observe pedestrian crossing volume."], v: "> Show pedestrian crossings."},
+            {c: "Urban", t: "Emergency Evacuation Route Drills", d: "Simulate city evacuation.", s: ["Enable Traffic layer.", "Use AI to simulate mass exodus.", "Identify failing chokepoints."], v: "> Simulate city evacuation."},
+            {c: "Urban", t: "Loitering/Vagrancy Pattern Analysis", d: "Monitor public spaces via CCTV.", s: ["Search public park/plaza.", "Enable CCTV.", "Observe stationary vs moving groups."], v: "> Show public park CCTV."},
+            {c: "Urban", t: "Traffic Accident Reconstruction", d: "Sync dashcam footage to map.", s: ["Use AI agent to pull dashcam videos.", "Plot crash locations on map.", "Analyze skid marks in 3D terrain."], v: "> Plot dashcam accidents near me."},
+            {c: "Urban", t: "Public Transit GPS Verification", d: "Verify bus/train GPS data visually.", s: ["Track public transit vehicle.", "Zoom in with CCTV.", "Confirm vehicle location matches map."], v: "> Verify transit vehicle location."},
+            {c: "Urban", t: "Bike Lane Utilization Metrics", d: "Track cyclist density via CCTV.", s: ["Search known bike lane.", "Enable CCTV.", "Count cyclists passing camera."], v: "> Show bike lane CCTV."},
+            {c: "Urban", t: "Highway Patrol Speed Trap ID", d: "Identify speed traps via sudden braking.", s: ["Enable Traffic layer.", "Look for sudden red-to-green transitions.", "Check CCTV for police presence."], v: "> Show speed traps on highway."},
+            {c: "Urban", t: "Smart City Sensor Deployment", d: "Plan IoT sensor placement.", s: ["Enable Traffic & CCTV.", "Identify blind spots in coverage.", "Plan new sensor/CCTV locations."], v: "> Show sensor coverage gaps."},
+
+            // --- MEDIA, FILM & CINEMATOGRAPHY (156-175) ---
+            {c: "Media", t: "Film Project B-Roll Generation", d: "Record cinematic fly-throughs.", s: ["Open Scenes Menu.", "Hit 'New' and capture shots.", "Screen record the playback."], v: "> Start recording a camera orbit."},
+            {c: "Media", t: "Scene Preset Management", d: "Create storyboards and play sequentially.", s: ["Frame camera where desired.", "Click 'Capture Shot'.", "Repeat, then click 'Start'."], v: "> Capture shot. Update shot."},
+            {c: "Media", t: "Voice-Guided AI Camera Tours", d: "Hands-free filming via voice commands.", s: ["Hold Spacebar for Voice AI.", "State location and orbit command.", "Screen record the motion."], v: "> Mark the port of Rotterdam and orbit."},
+            {c: "Media", t: "Walking Route Fly-Overs", d: "Smoothly fly camera along a path.", s: ["Ask AI to draw route between points.", "Command AI to fly the route.", "Pull back to stop and view."], v: "> Draw route from Rotterdam to Antworp. Fly route."},
+            {c: "Media", t: "AI World Knowledge Q&A", d: "Get historical fun facts about landmarks.", s: ["Search for a landmark.", "Open Voice AI.", "Ask for fun facts or significance."], v: "> Tell me about this Air Force base."},
+            {c: "Media", t: "Custom 3D Model Spawning", d: "Spawn 3D assets like the TR3B UFO.", s: ["Go to Context Menu.", "Click TR3B icon (or use AI).", "Switch to Night Vision to view."], v: "> Spawn TR3B over Area 51."},
+            {c: "Media", t: "Historical Event Reconstruction", d: "Build timelines of past events.", s: ["Use AI Agent to pull archived news.", "Plot coordinates onto map.", "Create a scene playback timeline."], v: "> Plot Operation Epic Theory timeline."},
+            {c: "Media", t: "Geopolitical Documentary Rendering", d: "Create map transitions for documentaries.", s: ["Enable Bing Geopolitical Labels.", "Record slow zooms into borders.", "Use in video editor."], v: "> Turn on geopolitical labels."},
+            {c: "Media", t: "Music Video Visual FX Backgrounds", d: "Use tactical HUD as green screen.", s: ["Switch to Tactical Mode.", "Enable scope-like reticle.", "Screen record background for VFX."], v: "> Switch to tactical mode."},
+            {c: "Media", t: "News Broadcast 'Fly-In' Graphics", d: "Create live news map graphics.", s: ["Start at globe view.", "Use Voice AI to 'Fly to' location.", "Screen record the zoom-in."], v: "> Fly to London."},
+            {c: "Media", t: "Weather Forecast Cinematic Zooms", d: "Enhance weather reporting visuals.", s: ["Enable Celestial Mode.", "Zoom into storm region.", "Screen record for broadcast."], v: "> Show sun position over storm."},
+            {c: "Media", t: "Real Estate Virtual Tours", d: "High altitude property context.", s: ["Search property address.", "Enable 3D tiles.", "Record orbit around neighborhood."], v: "> Orbit around this address."},
+            {c: "Media", t: "Tourism Board Promotional Videos", d: "Showcase city infrastructure.", s: ["Search tourist city.", "Enable Traffic/CCTV.", "Record bustling city fly-through."], v: "> Fly over London traffic."},
+            {c: "Media", t: "Virtual Sightseeing for Disabled", d: "Explore world landmarks from home.", s: ["Search 'Mt Everest' or 'Grand Canyon'.", "Enable 3D globe view.", "Use Voice AI to navigate."], v: "> Take me to the Grand Canyon."},
+            {c: "Media", t: "Real-time Flight Cockpit POV", d: "Stream live cockpit view for aviation fans.", s: ["Track a commercial flight.", "Enter Cockpit Mode.", "Screen record for streaming."], v: "> Track nearest commercial flight."},
+            {c: "Media", t: "Time-lapse Cloud Movement Capture", d: "Record weather patterns via satellite.", s: ["Switch to Sentinel Imagery.", "Observe cloud cover over hours.", "Create time-lapse screen recording."], v: "> Show cloud cover."},
+            {c: "Media", t: "Topographic Map Transition", d: "Transition from 2D map to 3D globe.", s: ["Start in 2D OSM view.", "Hit top-right globe button.", "Record smooth transition."], v: "> Switch to globe view."},
+            {c: "Media", t: "Tactical HUD Overlay for Gaming", d: "Use UI as stream overlay.", s: ["Enable Tactical Mode.", "Remove unnecessary layers.", "Capture UI for game overlay."], v: "> Switch to tactical mode."},
+            {c: "Media", t: "Educational Geography Lessons", d: "Teach geography via interactive globe.", s: ["Enable Bing Labels.", "Zoom to different continents.", "Use Voice AI for facts."], v: "> Tell me about France."},
+            {c: "Media", t: "Local History Storytelling", d: "Plot historical events on map.", s: ["Search historical site.", "Use AI to spawn custom 3D assets.", "Record narrative fly-through."], v: "> Spawn historical assets here."},
+
+            // --- DEVELOPER, OSINT & AI INTEGRATIONS (176-200) ---
+            {c: "Developer", t: "Custom ALPR Integration", d: "Build Automatic License Plate Reader layers.", s: ["Open AI Coding Agent (Cursor).", "Point to God's Eye View repo.", "Prompt agent to pull ALPR branch."], v: "> Pull the ALPR module branch."},
+            {c: "Developer", t: "SDR (Software Defined Radio) Inputs", d: "Plug in $50 SDR to monitor local RF.", s: ["Plug SDR USB into computer.", "Use AI agent to build SDR bridge.", "Toggle new SDR layer in app."], v: "> Create a data layer to map local SDR frequencies."},
+            {c: "Developer", t: "AI-Driven Annotation Clearing", d: "Use voice to instantly clear annotations.", s: ["Draw or generate annotations.", "Open Voice AI.", "Command clear."], v: "> Please clear all annotations."},
+            {c: "Developer", t: "Local Coding Agent Deployment", d: "Drop repo into Cursor to hack features.", s: ["Copy GitHub repo link.", "Paste into Cursor / Claude Code.", "Provide prompt to run environment."], v: "> Clone this repo and set up local env."},
+            {c: "Developer", t: "Custom API Swapping", d: "Swap free non-commercial APIs for paid.", s: ["Click 'Power Up' (bottom right).", "Select 'Manage'.", "Swap keys (e.g. AIS Stream)."], v: "> Open API key management."},
+            {c: "Developer", t: "Open Source Community Hosting", d: "Host a free web version for community.", s: ["Swap all APIs for commercial ones.", "Deploy God's Eye View to web host.", "Share hosted URL."], v: "> Configure deployment for commercial hosting."},
+            {c: "Developer", t: "AIS Stream Data Scraping", d: "Build custom maritime data scraper.", s: ["Use AI agent to write Python script.", "Connect to AIS Stream API.", "Log vessel data to local DB."], v: "> Write script to scrape AIS data."},
+            {c: "Developer", t: "ADS-B Volunteer Receiver Mapping", d: "Map your own receiver coverage.", s: ["Set up RTL-SDR receiver.", "Feed data to God's Eye View.", "Visualize your local coverage radius."], v: "> Map my ADS-B receiver coverage."},
+            {c: "Developer", t: "Machine Learning Flight Pattern Training", d: "Export flight paths to train ML models.", s: ["Cache multiple flight paths.", "Export path data via AI agent.", "Train model on normal vs anomalous routes."], v: "> Export cached flight path data."},
+            {c: "Developer", t: "Custom Weather Overlay API Integration", d: "Pull custom weather APIs onto map.", s: ["Get OpenWeatherMap API key.", "Prompt AI agent to build overlay layer.", "Toggle custom weather layer on."], v: "> Integrate OpenWeatherMap overlay."},
+            {c: "Developer", t: "GitHub Pull Request Feature Testing", d: "Test community PRs locally.", s: ["Find open PR on GitHub.", "Ask AI agent to pull PR branch.", "Test new feature in local build."], v: "> Pull PR branch 123 and test."},
+            {c: "Developer", t: "Autonomous Drone Telemetry Injection", d: "Fly simulated drones on the map.", s: ["Use AI agent to script drone path.", "Inject telemetry via local websocket.", "Track simulated drone on map."], v: "> Inject simulated drone telemetry."},
+            {c: "Developer", t: "Radio Frequency (RF) Heatmap Generation", d: "Map RF signal strength.", s: ["Connect SDR to laptop.", "Drive around city logging RF.", "Plot signal strength as heatmap layer."], v: "> Generate RF heatmap layer."},
+            {c: "Developer", t: "OSINT Geolocation Challenge Hosting", d: "Create challenges for OSINT communities.", s: ["Hide 3D assets on globe.", "Provide clues to participants.", "Track who finds the asset first."], v: "> Spawn hidden asset at random coords."},
+            {c: "Developer", t: "Crowdsourced Disaster Damage Assessment", d: "Build tool for crowdsourcing damage.", s: ["Use AI to build custom UI layer.", "Allow users to click 'Damaged' or 'Intact'.", "Submit polygons to central DB."], v: "> Build crowdsourced damage layer."},
+            {c: "Developer", t: "Satellite Imagery Change Detection", d: "Algorithm to detect new buildings.", s: ["Use AI agent to compare Sentinel images.", "Identify new structures in ROI.", "Plot new building polygons on map."], v: "> Detect new buildings in this region."},
+            {c: "Developer", t: "Custom KML/KMZ File Importing", d: "View custom Google Earth files.", s: ["Use AI agent to add KML parser.", "Drag/drop KML into God's Eye View.", "View custom polygons on globe."], v: "> Add KML import feature."},
+            {c: "Developer", t: "Real-time Twitter Geo-Tag Scraping", d: "Plot geo-tagged tweets in real-time.", s: ["Connect to Twitter API.", "Filter for geo-tagged disaster tweets.", "Plot tweets as fading annotations."], v: "> Plot geo-tagged tweets in real-time."},
+            {c: "Developer", t: "Predictive Policing Data Visualization", d: "Overlay crime prediction heatmaps.", s: ["Pull historical crime data API.", "Run ML prediction script.", "Overlay high-risk zones on map."], v: "> Show crime prediction heatmap."},
+            {c: "Developer", t: "Air Quality Index (AQI) Overlay", d: "Build custom AQI layer.", s: ["Pull open AQI API data.", "Prompt AI to build color-coded layer.", "Toggle AQI layer on globe."], v: "> Integrate AQI overlay."},
+            {c: "Developer", t: "Starlink Satellite Constellation Tracking", d: "Track SpaceX Starlink trains.", s: ["Pull satellite TLE data.", "Use AI to plot orbits in real-time.", "Track Starlink trains over globe."], v: "> Plot Starlink constellation."},
+            {c: "Developer", t: "UFO/UAP Reporting Database Correlation", d: "Cross-reference MUFON reports.", s: ["Scrape MUFON API for geo-tags.", "Plot reports on map.", "Cross-reference with military flight paths."], v: "> Plot recent UFO reports."},
+            {c: "Developer", t: "Custom Vessel Silhouette Rendering", d: "Render 3D models instead of dots.", s: ["Download 3D ship models.", "Use AI to bind models to AIS data.", "View 3D ships moving on ocean."], v: "> Render 3D vessel models."},
+            {c: "Developer", t: "Hackathon Project Boilerplate", d: "Use repo as base for mapping hacks.", s: ["Clone God's Eye View repo.", "Strip unnecessary layers.", "Build custom hackathon UI on top."], v: "> Prepare repo for hackathon."},
+            {c: "Developer", t: "Natural Language to Map Query Engine", d: "Enhance AI to build custom layers.", s: ["Connect Claude/GPT to agent.", "Prompt: 'Build layer showing all airports with > 3 delays'.", "AI scripts and renders layer."], v: "> Build layer showing delayed airports."}
+        ];
+
+        const grid = document.getElementById('useCaseGrid');
+
+        function renderCards(category = 'All', searchTerm = '') {
+            grid.innerHTML = '';
+            let count = 0;
+
+            useCases.forEach((uc, index) => {
+                const matchesCategory = category === 'All' || uc.c === category;
+                const matchesSearch = uc.t.toLowerCase().includes(searchTerm) || uc.d.toLowerCase().includes(searchTerm) || uc.c.toLowerCase().includes(searchTerm);
+                
+                if (matchesCategory && matchesSearch) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = `card cat-${uc.c}`;
+                    
+                    const stepsHtml = uc.s.map(step => `<li>${step}</li>`).join('');
+                    
+                    card.innerHTML = `
+                        <div class="card-id">
+                            USE CASE // ${String(index + 1).padStart(3, '0')} 
+                            <span class="card-category">${uc.c}</span>
+                        </div>
+                        <div class="card-title">${uc.t}</div>
+                        <p class="card-desc">${uc.d}</p>
+                        <div class="card-section">
+                            <div class="section-label">Deployment Steps</div>
+                            <ol class="step-list">${stepsHtml}</ol>
+                        </div>
+                        <div class="card-section">
+                            <div class="section-label">Voice Sequence</div>
+                            <div class="voice-cmd">${uc.v}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+
+            if (count === 0) {
+                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-secondary); padding: 4rem; font-family: 'JetBrains Mono', monospace;">NO RESULTS FOUND. ADJUST SEARCH PARAMETERS.</div>`;
+            }
+        }
+
+        function filterCategory(cat) {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            renderCards(cat, search);
+        }
+
+        function searchCards() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const activeBtn = document.querySelector('.filter-btn.active');
+            const cat = activeBtn ? activeBtn.innerText : 'All';
+            renderCards(cat, searchTerm);
+        }
+
+        // Initial render
+        renderCards();
+    </script>
+</body>
+</html>

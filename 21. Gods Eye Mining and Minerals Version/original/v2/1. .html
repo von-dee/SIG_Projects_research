@@ -1,0 +1,2720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View — Documentation</title>
+<meta name="description" content="A spy-satellite simulator in your browser — then you realize the sources are public and the data is real." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg-0: #05080d;
+    --bg-1: #0a0f17;
+    --bg-2: #0e1420;
+    --bg-3: #131b2a;
+    --panel: rgba(14, 20, 32, 0.72);
+    --panel-solid: #0e1420;
+    --border: rgba(120, 180, 220, 0.12);
+    --border-strong: rgba(120, 200, 255, 0.28);
+    --text: #d8e6f3;
+    --text-dim: #8a9bad;
+    --text-faint: #56697c;
+    --accent: #00e5ff;
+    --accent-dim: #00b8cc;
+    --amber: #ffb547;
+    --amber-dim: #cc8c2e;
+    --danger: #ff5572;
+    --success: #4ade80;
+    --warn: #fbbf24;
+    --military: #ff9d3c;
+    --grid: rgba(0, 229, 255, 0.06);
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 229, 255, 0.04);
+    --glow: 0 0 24px rgba(0, 229, 255, 0.25);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --display: 'Orbitron', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+  body {
+    background: var(--bg-0);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 229, 255, 0.08), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 181, 71, 0.05), transparent 60%),
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 60px 60px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 60px 60px,
+      var(--bg-0);
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.0) 0px,
+      rgba(0, 0, 0, 0.0) 2px,
+      rgba(0, 229, 255, 0.015) 3px,
+      rgba(0, 0, 0, 0.0) 4px
+    );
+    z-index: -1;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--accent-dim), var(--amber-dim));
+    border-radius: 5px;
+    border: 2px solid var(--bg-1);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  ::selection { background: var(--accent); color: var(--bg-0); }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(5, 8, 13, 0.85);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid var(--border);
+    transition: transform 0.3s ease;
+  }
+
+  .topbar-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    color: var(--text);
+    text-transform: uppercase;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .brand-mark {
+    width: 32px; height: 32px;
+    position: relative;
+    display: grid;
+    place-items: center;
+  }
+  .brand-mark::before, .brand-mark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+  }
+  .brand-mark::after {
+    inset: 6px;
+    border-color: var(--amber);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .brand-mark i {
+    color: var(--accent);
+    font-size: 11px;
+    z-index: 1;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .brand-text { display: flex; flex-direction: column; line-height: 1; gap: 2px; }
+  .brand-text small {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    font-weight: 500;
+  }
+
+  .topbar-nav {
+    display: flex;
+    gap: 4px;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  .topbar-nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .topbar-nav a:hover { color: var(--accent); background: rgba(0, 229, 255, 0.06); }
+
+  .topbar-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--success);
+    background: rgba(74, 222, 128, 0.06);
+  }
+  .topbar-status .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px var(--success);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    width: 38px; height: 38px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    padding: 140px 24px 80px;
+    max-width: 1600px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-strong);
+    background: rgba(0, 229, 255, 0.04);
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-eyebrow .ci-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+  }
+
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(40px, 6vw, 78px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    background: linear-gradient(180deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero h1 .glitch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-tagline {
+    font-size: 20px;
+    color: var(--text-dim);
+    max-width: 580px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .hero-tagline strong { color: var(--text); font-weight: 600; }
+
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    margin-bottom: 36px;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+    color: var(--bg-0);
+    box-shadow: var(--glow);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(0, 229, 255, 0.45); }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 229, 255, 0.06); }
+
+  /* Hero visual */
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 480px;
+    margin-left: auto;
+  }
+  .globe-frame {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 30%, rgba(0, 229, 255, 0.15), transparent 50%),
+      radial-gradient(circle at 70% 70%, rgba(255, 181, 71, 0.08), transparent 50%),
+      radial-gradient(circle at 50% 50%, #0a1422 0%, #050810 70%);
+    overflow: hidden;
+    box-shadow: inset 0 0 80px rgba(0, 229, 255, 0.15), 0 0 80px rgba(0, 229, 255, 0.1);
+  }
+  .globe-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 30px, rgba(0, 229, 255, 0.08) 30px 31px),
+      repeating-linear-gradient(0deg, transparent 0 30px, rgba(0, 229, 255, 0.08) 30px 31px);
+    animation: rotate-globe 60s linear infinite;
+  }
+  .globe-frame::after {
+    content: '';
+    position: absolute;
+    inset: 20%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #0d2238, #05101c 80%);
+    box-shadow: inset -20px -20px 60px rgba(0, 0, 0, 0.8), inset 10px 10px 30px rgba(0, 229, 255, 0.15);
+  }
+  @keyframes rotate-globe {
+    to { transform: rotate(360deg); }
+  }
+  .orbit-ring {
+    position: absolute;
+    inset: -8%;
+    border: 1px dashed rgba(255, 181, 71, 0.4);
+    border-radius: 50%;
+    transform: rotate(20deg);
+    animation: rotate-globe 30s linear infinite reverse;
+  }
+  .orbit-ring::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -6px;
+    width: 12px; height: 12px;
+    background: var(--amber);
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--amber);
+    transform: translateY(-50%);
+  }
+  .reticle {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .reticle::before, .reticle::after {
+    content: '';
+    position: absolute;
+    background: var(--accent);
+  }
+  .reticle::before {
+    top: 50%; left: -10%; right: -10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+  }
+  .reticle::after {
+    left: 50%; top: -10%; bottom: -10%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--accent), transparent);
+    opacity: 0.5;
+  }
+  .corner-brackets {
+    position: absolute;
+    inset: -20px;
+    pointer-events: none;
+  }
+  .corner-brackets span {
+    position: absolute;
+    width: 24px; height: 24px;
+    border: 2px solid var(--accent);
+  }
+  .corner-brackets span:nth-child(1) { top: 0; left: 0; border-right: none; border-bottom: none; }
+  .corner-brackets span:nth-child(2) { top: 0; right: 0; border-left: none; border-bottom: none; }
+  .corner-brackets span:nth-child(3) { bottom: 0; left: 0; border-right: none; border-top: none; }
+  .corner-brackets span:nth-child(4) { bottom: 0; right: 0; border-left: none; border-top: none; }
+
+  .hero-stats {
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-strong);
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+  .hero-stats span { color: var(--text); }
+
+  /* Hero meta */
+  .hero-meta {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .meta-item {
+    padding: 4px 0;
+  }
+  .meta-item .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .meta-item .value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .meta-item .value strong { color: var(--accent); }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 60px;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+    max-height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding-right: 12px;
+    padding-bottom: 24px;
+  }
+  .sidebar::-webkit-scrollbar { width: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 12px 0 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    line-height: 1.3;
+  }
+  .sidebar a:hover {
+    color: var(--text);
+    background: rgba(0, 229, 255, 0.04);
+  }
+  .sidebar a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(0, 229, 255, 0.06);
+  }
+  .sidebar a i {
+    width: 14px;
+    font-size: 11px;
+    opacity: 0.7;
+  }
+  .sidebar a .sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    margin-left: auto;
+    letter-spacing: 0.05em;
+  }
+
+  /* Content */
+  .content { min-width: 0; }
+
+  section.doc-section {
+    padding: 60px 0 20px;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 88px;
+  }
+  section.doc-section:last-child { border-bottom: none; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    padding: 4px 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    background: rgba(0, 229, 255, 0.04);
+  }
+  .section-head h2 {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .section-tag {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+  }
+  .section-intro {
+    color: var(--text-dim);
+    font-size: 17px;
+    max-width: 720px;
+    margin-bottom: 32px;
+  }
+  .section-intro strong { color: var(--text); }
+
+  h3.subhead {
+    font-family: var(--sans);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 36px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  h3.subhead::before {
+    content: '';
+    width: 3px;
+    height: 18px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    border-radius: 1px;
+  }
+
+  p { margin-bottom: 14px; color: var(--text-dim); }
+  p strong { color: var(--text); font-weight: 600; }
+
+  a.inline-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.3);
+    transition: border-color 0.2s;
+  }
+  a.inline-link:hover { border-color: var(--accent); }
+
+  /* Feature cards */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin: 20px 0 30px;
+  }
+  .feature-card {
+    background: var(--panel);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 30px; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .feature-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  .feature-card:hover::before { width: 100%; }
+  .feature-card .ico {
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .feature-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Code block */
+  .code-block {
+    background: #060a12;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    margin: 16px 0 24px;
+    overflow: hidden;
+    position: relative;
+    font-family: var(--mono);
+  }
+  .code-block .code-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0, 229, 255, 0.04);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .code-block .code-head .dots {
+    display: flex;
+    gap: 5px;
+  }
+  .code-block .code-head .dots span {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #2a3548;
+  }
+  .code-block .code-head .dots span:nth-child(1) { background: #ff5f57; }
+  .code-block .code-head .dots span:nth-child(2) { background: #febc2e; }
+  .code-block .code-head .dots span:nth-child(3) { background: #28c840; }
+  .code-block .code-head .lang {
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .code-block pre {
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .code-block pre::-webkit-scrollbar { height: 6px; }
+  .code-block .copy-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(0, 229, 255, 0.1);
+    border: 1px solid var(--border-strong);
+    color: var(--accent);
+    padding: 4px 10px;
+    font-size: 10px;
+    font-family: var(--mono);
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    opacity: 0;
+  }
+  .code-block:hover .copy-btn { opacity: 1; }
+  .code-block .copy-btn:hover { background: var(--accent); color: var(--bg-0); }
+
+  .tk-key { color: #ff9d3c; }
+  .tk-str { color: #4ade80; }
+  .tk-cmt { color: #56697c; font-style: italic; }
+  .tk-fn { color: #00e5ff; }
+  .tk-num { color: #ffb547; }
+  .tk-op { color: #8a9bad; }
+  .tk-var { color: #d8e6f3; }
+
+  /* Path install cards */
+  .paths {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 18px;
+    margin: 24px 0;
+  }
+  .path-card {
+    background: linear-gradient(180deg, rgba(14, 20, 32, 0.9), rgba(10, 15, 23, 0.9));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    position: relative;
+    transition: all 0.25s;
+  }
+  .path-card:hover { border-color: var(--border-strong); transform: translateY(-2px); }
+  .path-card .path-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    padding: 4px 10px;
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .path-card h4 {
+    font-size: 19px;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .path-card .path-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+  }
+  .path-card ol {
+    list-style: none;
+    counter-reset: step;
+    padding: 0;
+  }
+  .path-card ol li {
+    counter-increment: step;
+    padding: 8px 0 8px 36px;
+    position: relative;
+    font-size: 13px;
+    color: var(--text);
+    border-bottom: 1px dashed var(--border);
+  }
+  .path-card ol li:last-child { border-bottom: none; }
+  .path-card ol li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0, 229, 255, 0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border-strong);
+  }
+  .path-card .path-note {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: rgba(255, 181, 71, 0.06);
+    border-left: 2px solid var(--amber);
+    font-size: 12px;
+    color: var(--text-dim);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* Layers table */
+  .layer-table-wrap {
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0;
+    background: var(--bg-1);
+  }
+  .layer-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .layer-table thead {
+    background: rgba(0, 229, 255, 0.05);
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .layer-table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .layer-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text-dim);
+  }
+  .layer-table tr:last-child td { border-bottom: none; }
+  .layer-table tr:hover td { background: rgba(0, 229, 255, 0.03); }
+  .layer-table .layer-name {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .layer-table .layer-name i { color: var(--accent); font-size: 13px; }
+  .layer-table .source {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+  .auth-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .auth-green { background: rgba(74, 222, 128, 0.12); color: var(--success); border: 1px solid rgba(74, 222, 128, 0.3); }
+  .auth-yellow { background: rgba(251, 191, 36, 0.12); color: var(--warn); border: 1px solid rgba(251, 191, 36, 0.3); }
+  .auth-red { background: rgba(255, 85, 114, 0.12); color: var(--danger); border: 1px solid rgba(255, 85, 114, 0.3); }
+
+  /* Basemap ladder */
+  .ladder {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .ladder-rung {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .ladder-rung:hover { border-color: var(--border-strong); }
+  .ladder-tier {
+    display: grid;
+    place-items: center;
+    width: 50px; height: 50px;
+    border-radius: 8px;
+    font-size: 22px;
+  }
+  .ladder-tier.green { background: rgba(74, 222, 128, 0.1); color: var(--success); border: 1px solid rgba(74, 222, 128, 0.3); }
+  .ladder-tier.yellow { background: rgba(251, 191, 36, 0.1); color: var(--warn); border: 1px solid rgba(251, 191, 36, 0.3); }
+  .ladder-tier.red { background: rgba(255, 85, 114, 0.1); color: var(--danger); border: 1px solid rgba(255, 85, 114, 0.3); }
+  .ladder-content .ladder-label {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .ladder-content .ladder-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* Missions */
+  .mission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .mission-card {
+    background: linear-gradient(180deg, rgba(14, 20, 32, 0.6), rgba(10, 15, 23, 0.6));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .mission-card:hover {
+    border-color: var(--amber);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .mission-card .mission-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .mission-card .mission-icon {
+    font-size: 20px;
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    background: rgba(255, 181, 71, 0.08);
+    border: 1px solid rgba(255, 181, 71, 0.25);
+    border-radius: 6px;
+    color: var(--amber);
+  }
+  .mission-card h4 {
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 700;
+    flex: 1;
+  }
+  .mission-card .voice-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--accent);
+    padding: 2px 6px;
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+  }
+  .mission-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Voice commands */
+  .voice-section {
+    background: linear-gradient(180deg, rgba(0, 229, 255, 0.04), transparent);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+  .voice-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+  }
+  .voice-block .voice-cat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .voice-cmd {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    border-bottom: 1px dashed var(--border);
+  }
+  .voice-cmd:last-child { border-bottom: none; }
+  .voice-cmd i {
+    color: var(--accent);
+    font-size: 10px;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .voice-cmd .cmd-text {
+    color: var(--text);
+    font-style: italic;
+  }
+
+  /* Callouts */
+  .callout {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    margin: 18px 0;
+    border: 1px solid;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .callout i { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout.info { background: rgba(0, 229, 255, 0.06); border-color: rgba(0, 229, 255, 0.25); }
+  .callout.info i { color: var(--accent); }
+  .callout.warn { background: rgba(251, 191, 36, 0.06); border-color: rgba(251, 191, 36, 0.25); }
+  .callout.warn i { color: var(--warn); }
+  .callout.danger { background: rgba(255, 85, 114, 0.06); border-color: rgba(255, 85, 114, 0.25); }
+  .callout.danger i { color: var(--danger); }
+  .callout.success { background: rgba(74, 222, 128, 0.06); border-color: rgba(74, 222, 128, 0.25); }
+  .callout.success i { color: var(--success); }
+  .callout strong { color: var(--text); }
+
+  /* Keys table */
+  .keys-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  @media (max-width: 900px) { .keys-grid { grid-template-columns: 1fr; } }
+
+  .keys-col h3.subhead { margin-top: 0; }
+
+  .key-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    transition: all 0.2s;
+  }
+  .key-card:hover { border-color: var(--border-strong); }
+  .key-card .key-icon {
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .key-card.green .key-icon { background: rgba(74, 222, 128, 0.1); color: var(--success); }
+  .key-card.yellow .key-icon { background: rgba(251, 191, 36, 0.1); color: var(--warn); }
+  .key-card.red .key-icon { background: rgba(255, 85, 114, 0.1); color: var(--danger); }
+  .key-card .key-info h5 {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .key-card .key-info p {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .key-card .key-link {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .key-card .key-link:hover { background: var(--accent); color: var(--bg-0); }
+
+  /* Cost reality */
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+  }
+  .cost-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    border-left: 3px solid;
+  }
+  .cost-card.green { border-left-color: var(--success); }
+  .cost-card.yellow { border-left-color: var(--warn); }
+  .cost-card.red { border-left-color: var(--danger); }
+  .cost-card .cost-tier {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cost-card.green .cost-tier { color: var(--success); }
+  .cost-card.yellow .cost-tier { color: var(--warn); }
+  .cost-card.red .cost-tier { color: var(--danger); }
+  .cost-card h5 {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .cost-card p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Stats showcase */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+  .stat-cell {
+    background: var(--bg-1);
+    padding: 22px 18px;
+    text-align: center;
+  }
+  .stat-cell .stat-val {
+    font-family: var(--display);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-cell .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Architecture tree */
+  .arch-tree {
+    background: #060a12;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: var(--text-dim);
+  }
+  .arch-tree .dir { color: var(--accent); font-weight: 600; }
+  .arch-tree .file { color: var(--text); }
+  .arch-tree .cmt { color: var(--text-faint); font-style: italic; }
+  .arch-tree .arrow { color: var(--amber); }
+
+  /* Keyboard shortcuts */
+  .kbd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin: 16px 0;
+  }
+  .kbd-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .kbd {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(0, 229, 255, 0.08);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .kbd-item .kbd-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  /* Pull quote */
+  .pullquote {
+    margin: 30px 0;
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(0, 229, 255, 0.04), rgba(255, 181, 71, 0.02));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+  .pullquote .attrib {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--text-faint);
+    font-style: normal;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+
+  /* Important notice */
+  .important-notice {
+    margin: 30px 0;
+    padding: 22px 24px;
+    background: rgba(255, 85, 114, 0.04);
+    border: 1px solid rgba(255, 85, 114, 0.25);
+    border-radius: 10px;
+  }
+  .important-notice .notice-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--danger);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .important-notice p {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-1);
+    padding: 50px 24px 30px;
+    margin-top: 60px;
+  }
+  .footer-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-brand p {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin: 14px 0;
+    max-width: 320px;
+  }
+  .footer-col h6 {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 5px 0;
+    transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--accent); }
+  .footer-bottom {
+    max-width: 1600px;
+    margin: 40px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.05em;
+  }
+  .footer-bottom .sig {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .footer-bottom .sig .blip {
+    width: 6px; height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--success);
+    animation: pulse 1.6s infinite;
+  }
+
+  /* Section anchor link */
+  .anchor-link {
+    color: var(--text-faint);
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .section-head:hover .anchor-link { opacity: 1; }
+  .anchor-link:hover { color: var(--accent); }
+
+  /* Reading progress */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--amber));
+    z-index: 200;
+    transition: width 0.1s;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* Back to top */
+  .to-top {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    background: var(--panel);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    color: var(--accent);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.25s;
+    z-index: 90;
+    font-size: 14px;
+  }
+  .to-top.show { opacity: 1; transform: translateY(0); }
+  .to-top:hover { background: var(--accent); color: var(--bg-0); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1100px) {
+    .layout { grid-template-columns: 1fr; gap: 30px; }
+    .sidebar {
+      position: static;
+      max-height: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--bg-1);
+    }
+    .topbar-nav { display: none; }
+    .menu-toggle { display: grid; place-items: center; }
+    .topbar-nav.open {
+      display: flex;
+      position: absolute;
+      top: 64px; left: 0; right: 0;
+      flex-direction: column;
+      background: var(--bg-1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px;
+      gap: 2px;
+    }
+    .topbar-nav.open a { padding: 12px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { max-width: 360px; margin: 0 auto; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 110px 16px 60px; }
+    .layout { padding: 0 16px 60px; }
+    .topbar-inner { padding: 0 16px; gap: 12px; }
+    .brand-text small { display: none; }
+    .topbar-status { display: none; }
+    .feature-grid, .mission-grid { grid-template-columns: 1fr; }
+    .layer-table { font-size: 12px; }
+    .layer-table th, .layer-table td { padding: 10px 8px; }
+    .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .pullquote { font-size: 15px; padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ========== TOP BAR ========== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark"><i class="fa-solid fa-satellite-dish"></i></span>
+      <span class="brand-text">
+        GOD'S EYE VIEW
+        <small>// PUBLIC SIGNAL INTELLIGENCE</small>
+      </span>
+    </a>
+    <nav class="topbar-nav" id="topNav">
+      <a href="#quickstart">Quick Start</a>
+      <a href="#first-five">First Five</a>
+      <a href="#voice">Talk to It</a>
+      <a href="#layers">What's Live</a>
+      <a href="#missions">Missions</a>
+      <a href="#cockpit">Cockpit</a>
+      <a href="#hood">Under the Hood</a>
+      <a href="#keys">Keys</a>
+      <a href="#costs">Costs</a>
+      <a href="#contributing">Contributing</a>
+    </nav>
+    <div class="topbar-status">
+      <span class="dot"></span>
+      <span>SIGNALS LIVE</span>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="top">
+  <div class="hero-grid">
+    <div>
+      <span class="hero-eyebrow">
+        <span class="ci-dot"></span>
+        CI · MIT License · Local-First
+      </span>
+      <h1>God's Eye<br><span class="glitch">View</span></h1>
+      <p class="hero-tagline">
+        A spy-satellite simulator in your browser — then you realize the sources are public and the data is real.
+        <strong>Photorealistic 3D globe. Live aircraft, ships, satellites, earthquakes, traffic, and public cameras.</strong>
+        Hands-free voice control powered by a realtime AI agent.
+      </p>
+      <p class="hero-sub">// No place left behind.</p>
+      <div class="hero-cta">
+        <a href="#quickstart" class="btn btn-primary">
+          <i class="fa-solid fa-rocket"></i> Quick Start
+        </a>
+        <a href="#first-five" class="btn btn-ghost">
+          <i class="fa-solid fa-play"></i> First Five Minutes
+        </a>
+        <a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener" class="btn btn-ghost">
+          <i class="fa-brands fa-github"></i> View Source
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="corner-brackets"><span></span><span></span><span></span><span></span></div>
+      <div class="globe-frame"></div>
+      <div class="orbit-ring"></div>
+      <div class="reticle"></div>
+      <div class="hero-stats">
+        LAT <span>00°00'00"N</span> · LON <span>00°00'00"E</span> · ALT <span>GEO</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="meta-item">
+      <div class="label">YouTube Series</div>
+      <div class="value">God's Eye View — <strong>5M+ views</strong></div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Social Reach</div>
+      <div class="value"><strong>25M+</strong> across platforms</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">GitHub Trending</div>
+      <div class="value">Reached <strong>#1</strong> · Aug 2026</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Product Hunt</div>
+      <div class="value"><strong>#8</strong> Product of the Day</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Hunted By</div>
+      <div class="value">Chris Messina · creator of #</div>
+    </div>
+    <div class="meta-item">
+      <div class="label">Endorsed By</div>
+      <div class="value">Brendan Eich · JS / Mozilla / Brave</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== LAYOUT ========== -->
+<div class="layout">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-label">// Navigation</div>
+    <a href="#why"><i class="fa-solid fa-circle-question"></i> Why This Exists</a>
+    <a href="#does"><i class="fa-solid fa-list-check"></i> What It Does</a>
+    <a href="#quickstart"><i class="fa-solid fa-bolt"></i> Quick Start <span class="sub">02</span></a>
+    <a href="#first-five"><i class="fa-solid fa-clock"></i> First Five Minutes</a>
+    <a href="#cockpit"><i class="fa-solid fa-plane"></i> The Cockpit</a>
+    <a href="#voice"><i class="fa-solid fa-microphone"></i> Talk to It</a>
+    <a href="#layers"><i class="fa-solid fa-layer-group"></i> What's on the Globe</a>
+    <a href="#missions"><i class="fa-solid fa-crosshairs"></i> Field Missions</a>
+    <a href="#hood"><i class="fa-solid fa-gears"></i> Under the Hood</a>
+    <a href="#keys"><i class="fa-solid fa-key"></i> API Keys</a>
+    <a href="#costs"><i class="fa-solid fa-dollar-sign"></i> What It Costs</a>
+    <a href="#sharing"><i class="fa-solid fa-share-nodes"></i> Sharing an Instance</a>
+    <a href="#responsible"><i class="fa-solid fa-shield-halved"></i> Responsible & Open</a>
+    <a href="#next"><i class="fa-solid fa-compass"></i> What's Next</a>
+
+    <div class="sidebar-label" style="margin-top: 20px;">// Reference</div>
+    <a href="#shortcuts"><i class="fa-solid fa-keyboard"></i> Keyboard</a>
+    <a href="#architecture"><i class="fa-solid fa-folder-tree"></i> Source Map</a>
+    <a href="#important"><i class="fa-solid fa-triangle-exclamation"></i> Important Notice</a>
+  </aside>
+
+  <!-- ===== CONTENT ===== -->
+  <main class="content">
+
+    <!-- WHY -->
+    <section class="doc-section" id="why">
+      <div class="section-head">
+        <span class="section-num">01</span>
+        <h2>Why This Exists</h2>
+        <span class="section-tag">// ORIGIN</span>
+      </div>
+      <p class="section-intro">
+        God's Eye View brings public signals into one explorable globe. <strong>Track the world live. Talk to it. Break it. Extend it.</strong>
+      </p>
+      <p>
+        Flight transponders, ship beacons, orbital elements, seismographs, and public cameras already tell us a lot about the world. God's Eye View puts them in the same place, so you can move between a global picture and an individual aircraft, ship, or street. It runs locally in your browser, with source code you can inspect and extend.
+      </p>
+      <p>
+        Half the magic is that it looks like a forbidden cockpit. The other half is that <strong>every line of code is inspectable</strong>.
+      </p>
+      <div class="callout info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          Most feeds are live or regularly refreshed. Traffic is simulated along real roads using aggregate location data. CCTV camera poses and rocket launch trajectories are <strong>coarse estimates</strong> — labeled as such in the UI.
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT IT DOES -->
+    <section class="doc-section" id="does">
+      <div class="section-head">
+        <span class="section-num">02</span>
+        <h2>What This Thing Does</h2>
+        <span class="section-tag">// CAPABILITIES</span>
+      </div>
+      <p class="section-intro">
+        Start with the included data sources, then add your own. Each layer is a separate module.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <i class="fa-solid fa-plane-departure ico"></i>
+          <h4>Cockpit View</h4>
+          <p>Ride inside a tracked flight — the camera holds the terrain under you all the way down.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-tower-broadcast ico"></i>
+          <h4>Contacts</h4>
+          <p>A 250 km roster of everything near your target — step through live aircraft and drop into any cockpit.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-crosshairs ico"></i>
+          <h4>Click-to-Track Anything</h4>
+          <p>Camera locks on, draws a fading trail, surfaces full metadata — and a tracked fire or vessel hands you off to the nearest live camera in one click.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-pen-fancy ico"></i>
+          <h4>Voice Whiteboard</h4>
+          <p>Speak annotations onto the world — real boundary polygons, marks, and routes.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-warehouse ico"></i>
+          <h4>3D Hangar</h4>
+          <p>Real per-class aircraft models — 787, ATR-72, Citation, Bell 206, MQ-9 — and a tracked contact swaps from glyph to 3D model as you close in.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-palette ico"></i>
+          <h4>Reskin Reality</h4>
+          <p>GLSL sensor looks over the normal globe — CRT, NVG, FLIR/thermal, Noir, Snow.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-vector-square ico"></i>
+          <h4>Detection Overlay</h4>
+          <p>Screen-space bounding boxes and IDs on everything in view.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-helmet-safety ico"></i>
+          <h4>Military HUD</h4>
+          <p>Tactical heads-up display with intelligence-style telemetry.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-globe ico"></i>
+          <h4>Global Context</h4>
+          <p>Stage the full situational picture with one switch — and get your exact view back when you leave.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-clapperboard ico"></i>
+          <h4>Scene Director</h4>
+          <p>Capture cinematic camera tours for clips and demos.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-link ico"></i>
+          <h4>Share Links</h4>
+          <p>Camera, style, layers, and even one tracked target serialize into a URL — a live target is a handoff, not a bookmark.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-house ico"></i>
+          <h4>Reset Globe</h4>
+          <p>One control — or one sentence — back to the full Earth.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK START -->
+    <section class="doc-section" id="quickstart">
+      <div class="section-head">
+        <span class="section-num">03</span>
+        <h2>Quick Start</h2>
+        <span class="section-tag">// INSTALL</span>
+      </div>
+      <p class="section-intro">
+        Start without an account or API keys. Both paths open the same app with <strong>Esri satellite imagery and keyless terrain</strong>. OSM is the fallback if Esri is unreachable. Flights, military traffic, satellites, earthquakes, public cameras, radio, and launches are available without keys.
+      </p>
+
+      <div class="callout info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          For photorealistic 3D, add a <strong>Cesium ion token</strong> for eligible personal, non-commercial use, or a <strong>Google Maps key</strong> for the direct, metered route and in-app place search. Provider terms and quotas apply. Add keys through the app's <code style="color:var(--accent);font-family:var(--mono);">POWER UP</code> panel; <a href="#keys" class="inline-link">Keys & Costs</a> explains the options.
+        </div>
+      </div>
+
+      <div class="paths">
+        <div class="path-card">
+          <span class="path-badge"><i class="fa-solid fa-hand-pointer"></i> Path 1 — One Click</span>
+          <h4>No terminal required</h4>
+          <p class="path-desc">Install or update Pinokio to 8.2 or later, then click install.</p>
+          <ol>
+            <li>Install or update <strong>Pinokio</strong> to 8.2 or later.</li>
+            <li>Open <strong>God's Eye View</strong> in Pinokio.</li>
+            <li>Click <strong>Install</strong>, then <strong>Start</strong>.</li>
+          </ol>
+          <div class="path-note">
+            <i class="fa-solid fa-circle-info"></i> Available on Windows, macOS, and Linux. Version 8.2 fixes a previous launcher installation issue.
+          </div>
+        </div>
+
+        <div class="path-card">
+          <span class="path-badge"><i class="fa-solid fa-terminal"></i> Path 2 — Terminal</span>
+          <h4>Coding agent / local dev</h4>
+          <p class="path-desc">Use Node.js 24.x (24.14.0+) or 26.x. The setup doctor warns about Node 25 (EOL).</p>
+          <ol>
+            <li><code style="color:var(--accent);font-family:var(--mono);font-size:12px;">git clone</code> the repository.</li>
+            <li><code style="color:var(--accent);font-family:var(--mono);font-size:12px;">cd gods-eye-view</code></li>
+            <li><code style="color:var(--accent);font-family:var(--mono);font-size:12px;">npm ci</code></li>
+            <li><code style="color:var(--accent);font-family:var(--mono);font-size:12px;">npm run doctor</code></li>
+            <li><code style="color:var(--accent);font-family:var(--mono);font-size:12px;">npm run dev</code></li>
+          </ol>
+          <div class="path-note">
+            <i class="fa-solid fa-circle-info"></i> Open <code style="font-family:var(--mono);">http://localhost:4173</code>. Choose Live Contacts, Space Missions, Environmental, or Explore Manually from the first-run panel.
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span>terminal · bash</span>
+          <span class="lang">bash</span>
+        </div>
+        <pre><span class="tk-cmt"># Clone and run from source</span>
+<span class="tk-fn">git</span> clone https://github.com/bilawalsidhu/gods-eye-view.git
+<span class="tk-fn">cd</span> gods-eye-view
+<span class="tk-fn">npm</span> ci
+<span class="tk-fn">npm</span> run doctor     <span class="tk-cmt"># checks Node + provider routes</span>
+<span class="tk-fn">npm</span> run dev
+
+<span class="tk-cmt"># macOS shortcut: clears Vite cache, pulls keys from Keychain</span>
+./scripts/dev-fresh.sh</pre>
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+      </div>
+
+      <h3 class="subhead">Then power it up — in the app, not in a file</h3>
+      <p>Keys are <strong>upgrades, not prerequisites</strong>. When you want one, click the <code style="color:var(--accent);font-family:var(--mono);">POWER UP</code> chip in the bottom-right corner. Provider Settings lists every supported key, what it switches on, and where to get it. Paste, hit <code style="color:var(--accent);font-family:var(--mono);">SAVE KEYS</code>, and the app restarts itself with the new capability on. Once everything is configured the chip reads <code style="color:var(--accent);font-family:var(--mono);">POWERED UP</code> — and if a compact layout hides it, <code style="color:var(--accent);font-family:var(--mono);">?setup=1</code> reopens the same panel.</p>
+
+      <div class="callout warn">
+        <i class="fa-solid fa-key"></i>
+        <div>
+          <strong>Where keys land:</strong> Pinokio → the app's ignored <code style="font-family:var(--mono);">pinokio/ENVIRONMENT</code>; a terminal clone → the repo-root <code style="font-family:var(--mono);">.env</code>. Either file is made owner-only before a secret is written into it. These are local plaintext files, excluded from Git.
+          <br><br>
+          <strong>Keys you already have stay yours:</strong> values from your shell or the macOS Keychain show as configured externally and are read-only to the panel.
+        </div>
+      </div>
+
+      <div class="callout danger">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div>
+          The server binds to <strong>localhost</strong> on both paths, and Provider Settings answers requests only from your machine. Browser-side keys (Google Maps, Cesium ion) <strong>must be restricted at their providers</strong> — <code style="font-family:var(--mono);">SECURITY.md</code> shows how, and it carries the LAN-sharing rules alongside <a href="#keys" class="inline-link">Keys & Costs</a>.
+        </div>
+      </div>
+    </section>
+
+    <!-- FIRST FIVE MINUTES -->
+    <section class="doc-section" id="first-five">
+      <div class="section-head">
+        <span class="section-num">04</span>
+        <h2>The First Five Minutes</h2>
+        <span class="section-tag">// ONBOARDING</span>
+      </div>
+      <p class="section-intro">
+        Choose a first-run mission, or try these in order. Your starting basemap depends on the keys you've added.
+      </p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <i class="fa-solid fa-1 ico"></i>
+          <h4>Light up the sky</h4>
+          <p>Take the Live Contacts mission (or turn on Flights yourself) — thousands of live aircraft, gliding on real telemetry, detection mesh already reading the scene. Click one: the camera locks on, a trail draws behind it, and its live telemetry card comes up.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-2 ico"></i>
+          <h4>Take the controls</h4>
+          <p>Hit <code style="color:var(--accent);font-family:var(--mono);">COCKPIT</code> on your tracked plane and ride it down, switching sensors mid-flight: NVG into Ironbow FLIR.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-3 ico"></i>
+          <h4>Drop into a busy airport</h4>
+          <p>Search one and descend to the taxiways with 3D aircraft on — grounded contacts, taxi trails, the whole apron working in real time.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-4 ico"></i>
+          <h4>Look through a public camera</h4>
+          <p>Turn on CCTV over Austin, London, California, or Finland. The feeds aren't webcam embeds — they project into the 3D city. Cycle coverage to <code style="color:var(--accent);font-family:var(--mono);">VIEWSHED</code> and every camera draws its estimated coverage volume.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-5 ico"></i>
+          <h4>Track something in orbit</h4>
+          <p>Turn on Satellites and click the ISS — you ride along at orbital distance, orbit ring and all.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-6 ico"></i>
+          <h4>Switch the optics</h4>
+          <p>Tap <code style="color:var(--accent);font-family:var(--mono);">1–7</code> — CRT, NVG, FLIR — and the whole live planet re-renders through a different sensor.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-7 ico"></i>
+          <h4>Talk to it</h4>
+          <p><em>(needs OpenAI key)</em> "Take me to LAX and select the nearest airborne aircraft."</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-8 ico"></i>
+          <h4>Come home</h4>
+          <p>Hit Reset Globe — or just say "zoom out to a globe view."</p>
+        </div>
+      </div>
+
+      <h3 class="subhead" id="shortcuts">Keyboard Shortcuts</h3>
+      <div class="kbd-grid">
+        <div class="kbd-item"><span class="kbd">1–7</span><span class="kbd-desc">Visual styles</span></div>
+        <div class="kbd-item"><span class="kbd">H</span><span class="kbd-desc">HUD toggle</span></div>
+        <div class="kbd-item"><span class="kbd">D</span><span class="kbd-desc">Detection overlay</span></div>
+        <div class="kbd-item"><span class="kbd">C</span><span class="kbd-desc">Cockpit mode</span></div>
+        <div class="kbd-item"><span class="kbd">Esc</span><span class="kbd-desc">Exit / back</span></div>
+        <div class="kbd-item"><span class="kbd">Space</span><span class="kbd-desc">Hold-to-talk (voice)</span></div>
+      </div>
+    </section>
+
+    <!-- COCKPIT -->
+    <section class="doc-section" id="cockpit">
+      <div class="section-head">
+        <span class="section-num">05</span>
+        <h2>The Cockpit</h2>
+        <span class="section-tag">// RIDE-ALONG</span>
+      </div>
+      <p class="section-intro">
+        Every plane should let you do this.
+      </p>
+      <p>
+        Real-time cockpit mode, built from live flight data: the camera rides your contact with real terrain holding underneath, all the way down — sensor styles come along for the ride, and Contacts keeps the 250 km roster one click away: jump plane to plane and fall straight into the next cockpit.
+      </p>
+      <p>
+        The cockpit even carries its own briefing strip: <strong>nearby live signals, regional headlines, and real local weather</strong> — with an opt-in WX mode that renders volumetric clouds from actual observations around your aircraft.
+      </p>
+
+      <div class="pullquote">
+        "You're riding a real aircraft over real terrain — and you get to pick which sensor you see the world through."
+        <span class="attrib">// COCKPIT MODE DESIGN NOTE</span>
+      </div>
+    </section>
+
+    <!-- VOICE -->
+    <section class="doc-section" id="voice">
+      <div class="section-head">
+        <span class="section-num">06</span>
+        <h2>Talk to It</h2>
+        <span class="section-tag">// REALTIME AI AGENT</span>
+      </div>
+      <p class="section-intro">
+        Voice needs an OpenAI key. Without one the entire app still runs — the mic button just reports voice is unavailable. The same key drives the <strong>AI HUD summary</strong>: a terse, five-word intelligence-style readout of the current view that regenerates as you move.
+      </p>
+
+      <p>Click <code style="color:var(--accent);font-family:var(--mono);">GEV MIC</code>, grant the microphone, and just talk. This is more than a voice-controlled remote:</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <i class="fa-solid fa-brain ico"></i>
+          <h4>It knows what it's looking at</h4>
+          <p>The agent pulls live scene context before answering — including coordinates, street names, active layers, and view scale. Ask "what city is this?" mid-flight and it knows.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-bullseye ico"></i>
+          <h4>Entity Q&A</h4>
+          <p>Click any plane, ship, or datacenter and ask "what's this?" It answers using the object's live telemetry.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-eye ico"></i>
+          <h4>Visual grounding</h4>
+          <p>At street level, it reads a viewport screenshot to identify legible signage and building names, and is instructed never to hallucinate labels.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-film ico"></i>
+          <h4>Cinematic framing</h4>
+          <p>"Show me the planes overhead" pulls the camera back, angles it, and frames the live traffic like a director.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-lock ico"></i>
+          <h4>Honest and secure</h4>
+          <p>The agent only confirms actions that succeeded. Your <code style="color:var(--accent);font-family:var(--mono);">OPENAI_API_KEY</code> never touches the browser; the client only gets a short-lived session token.</p>
+        </div>
+      </div>
+
+      <div class="voice-section">
+        <h3 class="subhead" style="margin-top:0;">Twenty-eight tools, four jobs</h3>
+        <p style="margin-bottom:18px;">The commands below come straight from the product's voice test suite and tool playbook.</p>
+
+        <div class="voice-grid">
+          <div class="voice-block">
+            <div class="voice-cat"><i class="fa-solid fa-video"></i> Direct it — drone-operator camera verbs</div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Take me to Tokyo."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Orbit around this area slowly."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Draw the walking route from the Capitol to Zilker Park."</span> → <span class="cmd-text">"Fly the route we just drew."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Zoom out to a globe view."</span></div></div>
+          </div>
+
+          <div class="voice-block">
+            <div class="voice-cat"><i class="fa-solid fa-pen-fancy"></i> Annotate it — a whiteboard over the real world</div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Outline the state of Texas."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Annotate the Texas State Capitol and its grounds"</span> — draws the actual enclosing boundary, not a circle.</div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"How far is the Eiffel Tower from the Louvre?"</span> — a connector arrow appears and it speaks the distance.</div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div>Everything persists until you say <span class="cmd-text">"clear the map."</span></div></div>
+          </div>
+
+          <div class="voice-block">
+            <div class="voice-cat"><i class="fa-solid fa-magnifying-glass"></i> Interrogate it — analyst queries</div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"How many flights are over Texas right now?"</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Which ships are headed to Oakland?"</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"What is the biggest fire near Los Angeles?"</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Is anything flying above forty thousand feet?"</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"When does the ISS pass over next?"</span></div></div>
+          </div>
+
+          <div class="voice-block">
+            <div class="voice-cat"><i class="fa-solid fa-sliders"></i> Operate it — the whole console, hands-free</div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Switch to night vision and turn on the flights layer."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Turn on the camera viewsheds."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Play a news radio station near Austin."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Track that plane."</span> → <span class="cmd-text">"Enter Cockpit."</span></div></div>
+          </div>
+        </div>
+
+        <h3 class="subhead">Rapid-fire tier — one sentence each</h3>
+        <div class="voice-grid">
+          <div class="voice-block">
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Show me global infrastructure."</span> (stages the layers and pulls back to the globe)</div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Play Orbital Watch."</span> (a full cinematic scene)</div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Set detection density to fifty percent."</span></div></div>
+          </div>
+          <div class="voice-block">
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Next contact — helicopters only."</span> (mid-cockpit)</div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Show me space missions."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Switch to OSM."</span></div></div>
+          </div>
+          <div class="voice-block">
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Sharpen the image a touch."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"Switch to the tactical layout."</span></div></div>
+            <div class="voice-cmd"><i class="fa-solid fa-quote-left"></i><div><span class="cmd-text">"What's turned on right now?"</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <i class="fa-solid fa-radio"></i>
+        <div>
+          Ask for radio near anywhere and the globe starts broadcasting — every station is a real place you can fly to.
+        </div>
+      </div>
+    </section>
+
+    <!-- LAYERS -->
+    <section class="doc-section" id="layers">
+      <div class="section-head">
+        <span class="section-num">07</span>
+        <h2>What's on the Globe</h2>
+        <span class="section-tag">// 15 LAYERS</span>
+      </div>
+      <p class="section-intro">
+        Fifteen layers and map sources. Thirteen have a keyless path. Some offer additional capabilities with a provider key.
+      </p>
+
+      <div class="layer-table-wrap">
+        <table class="layer-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>What you get</th>
+              <th>Source</th>
+              <th>Auth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-map"></i> Map Stack</div></td>
+              <td>Esri satellite imagery, Google Photorealistic 3D, OSM, plus additional ion-hosted stacks</td>
+              <td class="source">Esri / Google / Ion / OSM</td>
+              <td>
+                <span class="auth-badge auth-green">🟢 Esri + OSM</span><br>
+                <span class="auth-badge auth-yellow" style="margin-top:4px;">🟡 ion 3D + terrain</span><br>
+                <span class="auth-badge auth-red" style="margin-top:4px;">🔴 direct Google</span>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-plane"></i> Live Flights</div></td>
+              <td>11,000+ live aircraft + route history</td>
+              <td class="source">OpenSky + adsb.lol</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span><br><span class="auth-badge auth-yellow" style="margin-top:4px;">🟡 optional</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-shield"></i> Military Flights</div></td>
+              <td>ADS-B military traffic in amber</td>
+              <td class="source">adsb.lol</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-ship"></i> Live Vessels</div></td>
+              <td>Thousands of ships worldwide</td>
+              <td class="source">AISStream</td>
+              <td><span class="auth-badge auth-yellow">🟡 Free key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-satellite"></i> Satellites</div></td>
+              <td>838-object catalog, color-coded by class with a live legend — the DENSE chip drops in the whole Starlink shell</td>
+              <td class="source">CelesTrak</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-globe"></i> Earthquakes</div></td>
+              <td>Global seismic activity, last 24h</td>
+              <td class="source">USGS</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-car"></i> Traffic</div></td>
+              <td>Simulated vehicles on OSM roads. With TomTom, live flow speeds drive the simulation and congestion colors below ~8 km/h; individual vehicle positions are not live observations</td>
+              <td class="source">TomTom + OSM</td>
+              <td><span class="auth-badge auth-green">🟢 Simulation</span><br><span class="auth-badge auth-yellow" style="margin-top:4px;">🟡 Live flow</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-video"></i> CCTV Mesh</div></td>
+              <td>~3,600 public cameras projected into 3D space — Austin · Texas (TxDOT) · California (Caltrans) · London (TfL) · Ontario (511) · Finland (Fintraffic) · British Columbia (DriveBC) · Estonia (Tallinn, Tarktee) · New South Wales (Live Traffic NSW) · Calgary. Positions are published; poses are estimated priors you calibrate by dragging a gizmo on the camera itself</td>
+              <td class="source">City APIs</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-broadcast-tower"></i> Radio</div></td>
+              <td>Geolocated world radio with an analog tuner — drag the needle across up to 750 stations and the globe flies to each broadcaster</td>
+              <td class="source">Radio Browser</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-bus"></i> Transit</div></td>
+              <td>Live buses, trams, metros, trains and ferries with delayed playback between reports, selected-vehicle trails, and mode-coloured DETECT labels — Boston, Austin, Minneapolis, Helsinki, the Netherlands, Norway, South East Queensland</td>
+              <td class="source">Operator GTFS-Realtime feeds</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-bicycle"></i> Bikeshare</div></td>
+              <td>Live station availability</td>
+              <td class="source">GBFS</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-route"></i> Directions</div></td>
+              <td>Click A and B on the globe for a street-following drive, walk or cycle route draped on the terrain with turn-by-turn steps — then FLY the camera along it. No key, no geocoder, no mic</td>
+              <td class="source">OSRM on FOSSGIS servers</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-fire"></i> Active Fires</div></td>
+              <td>Live NASA FIRMS detections, trailing 24h</td>
+              <td class="source">NASA FIRMS</td>
+              <td><span class="auth-badge auth-yellow">🟡 Free key</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-rocket"></i> Space Missions</div></td>
+              <td>Rolling 30-day launches with payload, stage, and recovery detail</td>
+              <td class="source">Launch Library 2</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span><br><span class="auth-badge auth-yellow" style="margin-top:4px;">🟡 optional</span></td>
+            </tr>
+            <tr>
+              <td><div class="layer-name"><i class="fa-solid fa-map-location-dot"></i> Mapped Installations</div></td>
+              <td>Viewport-bounded military-site context from community mapping — incomplete by nature, and labeled that way</td>
+              <td class="source">OpenStreetMap</td>
+              <td><span class="auth-badge auth-green">🟢 No key</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="subhead">The Basemap Ladder — what each tier buys you</h3>
+      <div class="ladder">
+        <div class="ladder-rung">
+          <div class="ladder-tier green"><i class="fa-solid fa-circle"></i></div>
+          <div class="ladder-content">
+            <div class="ladder-label">You have: nothing</div>
+            <div class="ladder-desc">Esri World Imagery satellite basemap + keyless terrain, in 2D. OSM takes over automatically if Esri is unreachable; if terrain is unavailable the globe continues without it.</div>
+          </div>
+        </div>
+        <div class="ladder-rung">
+          <div class="ladder-tier yellow"><i class="fa-solid fa-key"></i></div>
+          <div class="ladder-content">
+            <div class="ladder-label">A free Cesium ion token</div>
+            <div class="ladder-desc">Google Photorealistic 3D cities and world terrain — eligible personal, non-commercial use; current ion terms and quotas apply.</div>
+          </div>
+        </div>
+        <div class="ladder-rung">
+          <div class="ladder-tier red"><i class="fa-solid fa-credit-card"></i></div>
+          <div class="ladder-content">
+            <div class="ladder-label">A Google Maps key</div>
+            <div class="ladder-desc">The same 3D direct from Google, plus in-app place search — the billing-enabled, metered route.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          Also on the globe: neighborhood overlays · an optional cockpit WX cloud effect. Bundled static infrastructure: <strong>Datacenters (4,351)</strong>, <strong>Dams (704)</strong>, and <strong>Submarine Cables (712)</strong>.
+        </div>
+      </div>
+
+      <p style="margin-top:20px;">
+        Missing a layer you want? <strong>Open an issue</strong> — or add it and send the PR.
+      </p>
+    </section>
+
+    <!-- MISSIONS -->
+    <section class="doc-section" id="missions">
+      <div class="section-head">
+        <span class="section-num">08</span>
+        <h2>Field Missions</h2>
+        <span class="section-tag">// WALKTHROUGHS</span>
+      </div>
+      <p class="section-intro">Once the basics click, run these.</p>
+
+      <div class="mission-grid">
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-helicopter"></i></div>
+            <h4>Ask the planet</h4>
+          </div>
+          <p>"Why are all these military helicopters flying in circles?" Select a military track — it silently backfills ~24 h of real trace history — and see what it's been doing, resolved as stacked 3D loops.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-plane-arrival"></i></div>
+            <h4>Final approach</h4>
+          </div>
+          <p>Click-track an airliner lining up for a runway, hop into the cockpit, and ride it down.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-moon"></i></div>
+            <h4>Night watch</h4>
+          </div>
+          <p>Fly to your own city, switch to NVG, and let the detection mesh and HUD read the scene.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-anchor"></i></div>
+            <h4>Port call</h4>
+          </div>
+          <p>Vessels on over the Port of Long Beach. Click a tanker for its tactical card and wake trail — then hit NEAREST in the CCTV panel and look at the same water through a public camera.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-radio"></i></div>
+            <h4>Tokyo FM</h4>
+          </div>
+          <p>Orbit Shibuya with the Radio layer on — then drag the analog tuner needle: every position snaps to a real station and the globe flies to whoever's broadcasting.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-fire"></i></div>
+            <h4>Fire line</h4>
+          </div>
+          <p>FIRMS over California. Click a detection — the camera dives to it — read the intensity, then hit NEAREST in the CCTV panel for a ground view.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-person-walking"></i></div>
+            <h4>Ask for a walking route</h4>
+            <span class="voice-tag">VOICE</span>
+          </div>
+          <p>Tell the world where you want to go and watch a real street-following route trace itself through the 3D city — then "fly it": banked turns, eased ends, a camera that leads the path like a drone shot.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-ruler"></i></div>
+            <h4>Measure LAX to DFW</h4>
+            <span class="voice-tag">VOICE</span>
+          </div>
+          <p>"How far is LAX from DFW?" — an arrow spans the country, the distance lands in the caption, and the endpoints stay pinned to the real world as you orbit.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-rocket"></i></div>
+            <h4>Launch replay</h4>
+          </div>
+          <p>Open Space Missions, pick a launch from the last 30 days, and ride the T-minus countdown through ascent to orbit — scrub it at 0.25×–4×. Labeled RECONSTRUCTED ESTIMATE, because it is one.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-skull"></i></div>
+            <h4>Walk the boneyard</h4>
+          </div>
+          <p>Fly from regional context down into dense, fully resolved rows of retired aircraft.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-head">
+            <div class="mission-icon"><i class="fa-solid fa-industry"></i></div>
+            <h4>Orbit Three Gorges</h4>
+          </div>
+          <p>Sweep the dam and its terrain at a glance — then flip on the Dams layer and find 703 more.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- UNDER THE HOOD -->
+    <section class="doc-section" id="hood">
+      <div class="section-head">
+        <span class="section-num">09</span>
+        <h2>Under the Hood</h2>
+        <span class="section-tag">// ARCHITECTURE</span>
+      </div>
+      <p class="section-intro">How the globe handles live data.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <i class="fa-solid fa-compass ico"></i>
+          <h4>World-stable icons</h4>
+          <p>Aircraft and ships point along their true real-world heading at every camera angle — tracked or not, looking straight down or across the horizon — via per-frame screen-space course projection. No spinning, no viewport-locking.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-wave-square ico"></i>
+          <h4>Smooth motion from choppy data</h4>
+          <p>Live feeds arrive every 15–30s; the globe renders one interval behind real time and interpolates between known fixes. Dead reckoning fills the gaps.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-satellite ico"></i>
+          <h4>Honest satellites</h4>
+          <p>SGP4 propagation with orbit rings that stay locked to their satellites via GMST realignment — no drift, no per-second flicker.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-mountain ico"></i>
+          <h4>Sits on the real ground</h4>
+          <p>Entity heights are aligned to work with Google 3D tiles, so aircraft park on aprons and cameras stand on street corners instead of floating.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-database ico"></i>
+          <h4>Caching & request budgets</h4>
+          <p>An OpenSky credit governor, a TomTom daily tile budget, and disk-cached TLEs reduce repeated requests. These controls do not replace provider quotas or billing controls.</p>
+        </div>
+        <div class="feature-card">
+          <i class="fa-solid fa-server ico"></i>
+          <h4>Server-side credentials</h4>
+          <p>Every API that touches a private key (OpenAI, AISStream, OpenSky OAuth, camera frames) is brokered through a hardened server-side proxy with SSRF protection, response caps, and sanitized errors. The only keys the browser sees are Google Maps and Cesium ion (restrict both at the provider).</p>
+        </div>
+        <div class="feature-card" style="grid-column: 1 / -1;">
+          <i class="fa-solid fa-code ico"></i>
+          <h4>No framework</h4>
+          <p>Vanilla JavaScript, CesiumJS, and Vite — plus Google Photorealistic 3D Tiles for the planet and the OpenAI Realtime API for voice. Fast to read, fast to hack on.</p>
+        </div>
+      </div>
+
+      <h3 class="subhead" id="architecture">Source Map</h3>
+      <div class="arch-tree">
+<span class="dir">src/</span>
+├── <span class="file">main.js</span>                 <span class="cmt"># Bootstrap: Google 3D tiles, layer registration</span>
+├── <span class="file">ui.js</span>                   <span class="cmt"># Runtime UI — panels, HUD, styles, control facade</span>
+├── <span class="file">hud.js</span>                  <span class="cmt"># Intelligence HUD + AI scene summary</span>
+├── <span class="file">keySetup.js</span>             <span class="cmt"># POWER UP panel — in-app provider keys (dev server only)</span>
+├── <span class="file">mapStackController.js</span>   <span class="cmt"># Basemap switching — Google 3D / Esri / OSM / ion stacks</span>
+├── <span class="dir">voice/</span>                  <span class="cmt"># OpenAI Realtime session + 28 voice tools</span>
+├── <span class="dir">data/</span>                   <span class="cmt"># One module per layer + orchestration + context store</span>
+│   ├── <span class="file">iconOrientation.js</span>  <span class="cmt"># Screen-projected headings + horizon cull</span>
+│   └── <span class="dir">local_data/</span>         <span class="cmt"># Bundled datasets (per-folder provenance)</span>
+└── <span class="dir">scenes/</span>                 <span class="cmt"># Cinematic scene director</span>
+      </div>
+
+      <div class="callout info">
+        <i class="fa-solid fa-book"></i>
+        <div>See <code style="font-family:var(--mono);">docs/CURRENT-STATE.md</code> for the authoritative runtime reference.</div>
+      </div>
+    </section>
+
+    <!-- KEYS -->
+    <section class="doc-section" id="keys">
+      <div class="section-head">
+        <span class="section-num">10</span>
+        <h2>API Keys</h2>
+        <span class="section-tag">// PROVIDERS</span>
+      </div>
+      <p class="section-intro">
+        Use <code style="color:var(--accent);font-family:var(--mono);">POWER UP → Provider Settings</code> to add keys. The tables below explain what each provider enables; <strong>none is required to start</strong>.
+      </p>
+
+      <div class="keys-grid">
+        <div class="keys-col">
+          <h3 class="subhead">Choose the capabilities you want</h3>
+          <p style="font-size:13px;">Six keys. Four have a free tier, and the two <span class="auth-badge auth-red" style="margin:0 4px;">🔴</span> ones are metered.</p>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-globe"></i></div>
+            <div class="key-info">
+              <h5>Cesium ion</h5>
+              <p>🗺️ Google Photorealistic 3D, world terrain, and additional ion-hosted imagery stacks. Free Community plan for eligible individual, personal/non-commercial use; has quotas.</p>
+            </div>
+            <a href="https://cesium.com/ion" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card red">
+            <div class="key-icon"><i class="fa-brands fa-google"></i></div>
+            <div class="key-info">
+              <h5>Google Maps</h5>
+              <p>Direct Google Photorealistic 3D + Google place search (Map Tiles API). URL-restrict it.</p>
+            </div>
+            <a href="https://console.cloud.google.com" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card red">
+            <div class="key-icon"><i class="fa-solid fa-microphone"></i></div>
+            <div class="key-info">
+              <h5>OpenAI</h5>
+              <p>🎙️ The voice experience + AI HUD summary. The mini model works; the standard model is noticeably smarter. Want Gemini or another provider behind the mic? PRs welcome.</p>
+            </div>
+            <a href="https://platform.openai.com" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-ship"></i></div>
+            <div class="key-info">
+              <h5>AISStream</h5>
+              <p>🚢 Live global ships. Free signup.</p>
+            </div>
+            <a href="https://aisstream.io" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="key-info">
+              <h5>NASA FIRMS</h5>
+              <p>🔥 Live active fires. Free.</p>
+            </div>
+            <a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-traffic-light"></i></div>
+            <div class="key-info">
+              <h5>TomTom</h5>
+              <p>🚦 Live flow speeds and congestion colors for the simulated traffic layer. Free tier available.</p>
+            </div>
+            <a href="https://developer.tomtom.com" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+        </div>
+
+        <div class="keys-col">
+          <h3 class="subhead">Cherry on top</h3>
+          <p style="font-size:13px;">Add these if you need higher polling allowances.</p>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-plane"></i></div>
+            <div class="key-info">
+              <h5>OpenSky</h5>
+              <p>✈️ More flight-polling credits (anonymous works without).</p>
+            </div>
+            <a href="https://opensky-network.org" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="key-card yellow">
+            <div class="key-icon"><i class="fa-solid fa-rocket"></i></div>
+            <div class="key-info">
+              <h5>Launch Library 2</h5>
+              <p>🚀 Higher space-missions request allowance (works without).</p>
+            </div>
+            <a href="https://thespacedevs.com" target="_blank" rel="noopener" class="key-link">GET →</a>
+          </div>
+
+          <div class="callout info" style="margin-top:24px;">
+            <i class="fa-solid fa-stethoscope"></i>
+            <div>
+              <strong><code style="font-family:var(--mono);">npm run doctor</code></strong> reports Node/npm readiness, the primary provider routes, and where each configured provider was found <em>without printing credential values</em>.
+            </div>
+          </div>
+
+          <h3 class="subhead">What TomTom buys you</h3>
+          <p>Rush-hour density painted on the city — then dive from the jam straight into the camera watching it.</p>
+
+          <h3 class="subhead">Advanced: env vars & macOS Keychain</h3>
+          <p style="font-size:13px;">On macOS, the doctor's Keychain-aware result previews <code style="font-family:var(--mono);">./scripts/dev-fresh.sh</code>; plain <code style="font-family:var(--mono);">npm run dev</code> reads only explicit environment and Vite dotenv values.</p>
+          <p style="font-size:13px;">The OpenSky summary reports keyless anonymous access for explicit anon or an OAuth mode without a client pair, retains presence-only wording for a complete OAuth pair, and identifies selected Basic or auto mode without guessing which credentials runtime will accept. Basic and credentials-file modes remain advanced <code style="font-family:var(--mono);">dev-fresh.sh</code> configuration.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COSTS -->
+    <section class="doc-section" id="costs">
+      <div class="section-head">
+        <span class="section-num">11</span>
+        <h2>What It Actually Costs</h2>
+        <span class="section-tag">// HONEST NUMBERS</span>
+      </div>
+      <p class="section-intro">
+        Honest numbers, roughly, as of mid-2026 — always check the provider pricing pages.
+      </p>
+
+      <div class="cost-grid">
+        <div class="cost-card green">
+          <div class="cost-tier">🟢 Most Layers</div>
+          <h5>$0 · no signup</h5>
+          <p>OpenSky anon, USGS, CelesTrak, adsb.lol, city CCTV, Radio Browser, GBFS, Launch Library 2, bundled datasets.</p>
+        </div>
+        <div class="cost-card yellow">
+          <div class="cost-tier">🟡 The Free-Key Tier</div>
+          <h5>$0 with a signup</h5>
+          <p>AISStream, FIRMS, TomTom, OpenSky, plus Cesium ion for eligible personal/non-commercial use. Provider quotas and eligibility still apply.</p>
+        </div>
+        <div class="cost-card yellow">
+          <div class="cost-tier">🗺️ Google 3D Tiles</div>
+          <h5>Free through ion, metered direct</h5>
+          <p>Free through an eligible Cesium ion Community account within its quota; metered through a direct Google key. Use the direct route for GEV place search or commercial deployment, verify current provider terms, and set budget alerts where billing is enabled.</p>
+        </div>
+        <div class="cost-card red">
+          <div class="cost-tier">🔴 OpenAI Voice</div>
+          <h5>The one that costs real money</h5>
+          <p>So the app meters it for you. Realtime audio runs a few cents per active minute; an evening of heavy use is single-digit dollars. A live session-spend readout sits next to the mic, with an STD/MINI model toggle, a $2 warning, and a $5 hard cap that ends the session. The voice context window is kept deliberately short too.</p>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <i class="fa-solid fa-gift"></i>
+        <div>
+          <strong>Google's direct 3D route is surprisingly generous:</strong> the first 1,000 Photorealistic 3D Tiles sessions each month are currently free, and one root request supports roughly three hours of rendering. A solo user exploring sparingly can realistically stay inside the free usage cap. Billing must still be enabled, so restrict the key and set a quota or budget alert. Check Google's current pricing before relying on these figures.
+        </div>
+      </div>
+
+      <h3 class="subhead">The floor is low on purpose</h3>
+      <p>
+        Everything above is the deliberately cheap baseline — enough to get a real taste of geospatial intelligence, GEOINT, and OSINT without ever talking to a sales team. You'll also notice the ceiling: terrestrial AIS goes quiet mid-ocean and satellite AIS costs real money; premium imagery, SAR, and the deeper commercial feeds live behind enterprise contracts.
+      </p>
+      <p>
+        That's not a limit of the architecture — every layer here is a pattern you can point at your own data sources. <strong>This repo hands you the foundation; what you fuse into it is up to you.</strong>
+      </p>
+    </section>
+
+    <!-- SHARING -->
+    <section class="doc-section" id="sharing">
+      <div class="section-head">
+        <span class="section-num">12</span>
+        <h2>Sharing an Instance</h2>
+        <span class="section-tag">// SECURITY</span>
+      </div>
+      <p class="section-intro">
+        By default nobody else can reach your server — it binds to localhost.
+      </p>
+
+      <p>
+        To share on your LAN, opt in explicitly:
+      </p>
+
+      <div class="code-block">
+        <div class="code-head">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span>LAN sharing</span>
+          <span class="lang">bash</span>
+        </div>
+        <pre><span class="tk-cmt"># Terminal path</span>
+<span class="tk-fn">npm</span> run dev -- --host <span class="tk-num">0.0.0.0</span> --port <span class="tk-num">4173</span>
+
+<span class="tk-cmt"># macOS / Linux shortcut</span>
+HOST=<span class="tk-num">0.0.0.0</span> ./scripts/dev-fresh.sh
+
+<span class="tk-cmt"># Per-IP throttles (see .env.example)</span>
+GEV_RATELIMIT_OPENAI_PER_MIN=<span class="tk-num">10</span>
+GEV_RATELIMIT_GOOGLE_PER_MIN=<span class="tk-num">100</span></pre>
+        <button class="copy-btn" onclick="copyCode(this)">COPY</button>
+      </div>
+
+      <div class="callout danger">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+          <strong>A LAN-visible server brokers your configured API keys to anyone who can reach it.</strong> Set the per-IP throttles (<code style="font-family:var(--mono);">GEV_RATELIMIT_OPENAI_PER_MIN</code>, <code style="font-family:var(--mono);">GEV_RATELIMIT_GOOGLE_PER_MIN</code> — see <code style="font-family:var(--mono);">.env.example</code>) and, before anything else, configure provider quotas, usage limits, and billing alerts: <strong>app-level throttles are not billing caps</strong>, and a budget alert alone does not stop spending. Full threat model in <code style="font-family:var(--mono);">SECURITY.md</code>.
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <i class="fa-solid fa-lock"></i>
+        <div>
+          <strong>Provider Settings is disabled when the server is shared</strong>, so remote users cannot access the key-entry panel.
+          <br><br>
+          Pinokio LAN and Cloudflare sharing remain disabled for this launcher. Use a separately reviewed authentication proxy if remote access is required. <code style="font-family:var(--mono);">SECURITY.md</code> explains the restrictions and threat model.
+        </div>
+      </div>
+    </section>
+
+    <!-- RESPONSIBLE -->
+    <section class="doc-section" id="responsible">
+      <div class="section-head">
+        <span class="section-num">13</span>
+        <h2>Responsible & Open</h2>
+        <span class="section-tag">// ETHICS</span>
+      </div>
+      <p class="section-intro">
+        God's Eye View runs on public data, clear sources, and local-first execution. No secrets, no private datasets, no mystery scraping — anything involving a private key is brokered server-side.
+      </p>
+
+      <p>
+        It has the visual grammar of a classified ops room, built entirely from open signals and inspectable code.
+      </p>
+
+      <div class="callout danger" style="border-color: rgba(255,85,114,0.4); background: rgba(255,85,114,0.08);">
+        <i class="fa-solid fa-gavel"></i>
+        <div>
+          <strong>The line.</strong> This project models events, assets, infrastructure, and systems — aircraft, vessels, satellites, fires, cameras, cities. It does <strong>not</strong> build features for named-person search, face recognition, or tracking individuals, and pull requests that cross that line won't be merged. <strong>People are not a query type here.</strong>
+        </div>
+      </div>
+
+      <h3 class="subhead">Come build it</h3>
+      <p>
+        This is the canonical live 3D client from the project that kicked off the recent wave of spatial-intelligence tools — and it's a canvas: the layers here are the signals one person could find and fuse. Add a city pack, a data source, a style, a voice tool. It's the window through which you see the world; bring that window to others.
+      </p>
+
+      <div class="stats-strip">
+        <div class="stat-cell">
+          <div class="stat-val">MIT</div>
+          <div class="stat-label">License</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">15</div>
+          <div class="stat-label">Live Layers</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">28</div>
+          <div class="stat-label">Voice Tools</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">13/15</div>
+          <div class="stat-label">Keyless Paths</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-val">0</div>
+          <div class="stat-label">Frameworks</div>
+        </div>
+      </div>
+
+      <p style="font-size:13px;color:var(--text-faint);margin-top:20px;">
+        Status: An evolving open-source client for exploration and learning — a fast, hackable foundation, not a hardened production service. Released under the MIT License. Bundled and live datasets carry their own terms — see <code style="font-family:var(--mono);color:var(--accent);">DATA_SOURCES.md</code>. Security model: <code style="font-family:var(--mono);color:var(--accent);">SECURITY.md</code>. Want to contribute? <code style="font-family:var(--mono);color:var(--accent);">CONTRIBUTING.md</code>.
+      </p>
+      <p style="font-size:13px;color:var(--text-faint);">
+        Maintainers: <strong style="color:var(--text);">Bilawal Sidhu</strong> and <strong style="color:var(--text);">Sameh Khamis</strong> at <strong style="color:var(--text);">Halfpixel</strong>.
+      </p>
+      <p style="font-size:12px;color:var(--text-faint);margin-top:14px;">
+        Media note: the capture GIFs on the project page show Google Photorealistic 3D Tiles and live data layers, used promotionally with in-frame attribution; they aren't licensed for standalone reuse. Full source terms in <code style="font-family:var(--mono);">DATA_SOURCES.md</code>.
+      </p>
+    </section>
+
+    <!-- IMPORTANT NOTICE -->
+    <section class="doc-section" id="important">
+      <div class="section-head">
+        <span class="section-num">14</span>
+        <h2>Important</h2>
+        <span class="section-tag">// DISCLAIMER</span>
+      </div>
+
+      <div class="important-notice">
+        <div class="notice-label">
+          <i class="fa-solid fa-triangle-exclamation"></i> READ BEFORE USE
+        </div>
+        <p>
+          God's Eye View is an exploratory visualization of public and third-party data. Data may be delayed, incomplete, modeled, inferred, or wrong. <strong>Do not use it for flight or maritime navigation, emergency response, medical or health decisions, investment decisions, or other safety-critical or operational purposes.</strong> Verify important information with authoritative sources.
+        </p>
+      </div>
+    </section>
+
+    <!-- WHAT'S NEXT -->
+    <section class="doc-section" id="next">
+      <div class="section-head">
+        <span class="section-num">15</span>
+        <h2>What's Next</h2>
+        <span class="section-tag">// FUTURE</span>
+      </div>
+      <p class="section-intro">
+        First — thank you. To everyone who watched the God-view demos and went off to build their own, and to everyone who kept asking for the code: I'm grateful.
+      </p>
+
+      <p>
+        So here it is. Step inside the spy-thriller cockpit — except the data is real — and let's turn this into our shared sandbox for making sense of the world, and have fun doing it. This repo is the baseline, it stays open, and the whole point is for you to break things and bolt on layers we haven't thought of yet.
+      </p>
+
+      <div class="callout warn">
+        <i class="fa-solid fa-lightbulb"></i>
+        <div>
+          <strong>One heads-up from the inside:</strong> build in this space for a week and you learn that the present is the cheap part. The moment you try to go back in time — tiling, serving, and scrubbing what happened and what changed at any real resolution — the data gets expensive and the compute gets brutal. <em>That's the long game.</em>
+        </div>
+      </div>
+
+      <h3 class="subhead" id="contributing">Update — a hosted version is coming</h3>
+      <p>
+        We originally planned to keep this repository as the open-source client and build a separate professional product. Then the launch happened, and the loudest request wasn't another feature — it was <strong>"just give me a link."</strong>
+      </p>
+      <p>
+        So we're building an official hosted God's Eye View at <strong>Halfpixel</strong>: no installation, just open it in your browser. The hosted version is the easiest way into this open-source project. More soon.
+      </p>
+
+      <div class="pullquote" style="margin-top:40px;">
+        "Let's build this collective window through which we can see the world, baby. This is so freaking exciting."
+        <span class="attrib">// BILAWAL SIDHU · PROJECT MAINTAINER</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#top" class="brand">
+        <span class="brand-mark"><i class="fa-solid fa-satellite-dish"></i></span>
+        <span class="brand-text">GOD'S EYE VIEW<small>// PUBLIC SIGNAL INTELLIGENCE</small></span>
+      </a>
+      <p>An evolving open-source client for exploration and learning — a fast, hackable foundation, not a hardened production service. Released under the MIT License.</p>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener" class="btn btn-ghost" style="padding:8px 14px;font-size:12px;">
+          <i class="fa-brands fa-github"></i> GitHub
+        </a>
+        <a href="#" class="btn btn-ghost" style="padding:8px 14px;font-size:12px;">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h6>// Docs</h6>
+      <a href="#quickstart">Quick Start</a>
+      <a href="#first-five">First Five Minutes</a>
+      <a href="#voice">Voice Control</a>
+      <a href="#layers">Layers Reference</a>
+      <a href="#missions">Field Missions</a>
+      <a href="#hood">Architecture</a>
+    </div>
+    <div class="footer-col">
+      <h6>// Reference</h6>
+      <a href="#keys">API Keys</a>
+      <a href="#costs">Costs</a>
+      <a href="#sharing">Sharing & Security</a>
+      <a href="#shortcuts">Keyboard Shortcuts</a>
+      <a href="#architecture">Source Map</a>
+      <a href="#important">Important Notice</a>
+    </div>
+    <div class="footer-col">
+      <h6>// Project</h6>
+      <a href="#responsible">Responsible & Open</a>
+      <a href="#next">What's Next</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/CONTRIBUTING.md">Contributing</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/SECURITY.md">Security Model</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/DATA_SOURCES.md">Data Sources</a>
+      <a href="#contributing">Hosted Version</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="sig">
+      <span class="blip"></span>
+      <span>SIGNAL ACTIVE · LOCALHOST · BUILD 2026.08</span>
+    </div>
+    <div>© 2026 HALFPIXEL · MIT LICENSE · MAINTAINED BY BILAWAL SIDHU & SAMEH KHAMIS</div>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const topNav = document.getElementById('topNav');
+  menuToggle.addEventListener('click', () => {
+    topNav.classList.toggle('open');
+  });
+  topNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => topNav.classList.remove('open'));
+  });
+
+  // Active sidebar link on scroll
+  const sections = document.querySelectorAll('section.doc-section');
+  const sidebarLinks = document.querySelectorAll('.sidebar a');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        sidebarLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-100px 0px -70% 0px' });
+  sections.forEach(s => observer.observe(s));
+
+  // Reading progress bar
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / total) * 100;
+    progressBar.style.width = pct + '%';
+
+    // Back to top
+    const toTop = document.getElementById('toTop');
+    if (window.scrollY > 600) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+
+  document.getElementById('toTop').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Copy code
+  function copyCode(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'COPIED ✓';
+      setTimeout(() => { btn.textContent = 'COPY'; }, 1500);
+    });
+  }
+
+  // Smooth scroll for in-page links (fallback for older browsers)
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

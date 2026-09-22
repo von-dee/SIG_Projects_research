@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View · Advanced Inferences & Decision Intelligence</title>
+<meta name="description" content="What investment and business decisions your clients can make when 100+ data sources are fused into a single intelligence layer." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-0); color: var(--fg-0); line-height: 1.55; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  :root {
+    --bg-0: #0a0c0f; --bg-1: #0f1318; --bg-2: #141a21; --bg-3: #1b232c; --bg-card: #11161c;
+    --border: rgba(218, 165, 32, 0.12); --border-strong: rgba(218, 165, 32, 0.28);
+    --fg-0: #e8eaed; --fg-1: #b8bcc4; --fg-2: #7a8088; --fg-3: #4a5058;
+    --gold: #d4a52a; --gold-bright: #f5c842; --copper: #b87333;
+    --emerald: #2ecc71; --emerald-bright: #5ee394;
+    --danger: #e63946; --warning: #ff6b3d;
+    --cobalt: #3a7ca5; --violet: #b566ff; --cyan: #5fd3ff;
+    --grid-line: rgba(212, 165, 42, 0.05);
+    --radius: 12px; --radius-sm: 6px; --radius-lg: 18px; --maxw: 1240px;
+  }
+
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%); }
+  body::after { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 12% 18%, rgba(212, 165, 42, 0.08), transparent 38%), radial-gradient(circle at 88% 82%, rgba(95, 211, 255, 0.05), transparent 42%); pointer-events: none; z-index: 0; }
+
+  nav.topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(18px) saturate(140%); background: rgba(10, 12, 15, 0.72); border-bottom: 1px solid var(--border); }
+  nav.topbar .container { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; }
+  .brand .logo-mark { width: 32px; height: 32px; background: conic-gradient(from 180deg at 50% 50%, var(--gold), var(--copper), var(--gold-bright), var(--gold)); border-radius: 50%; box-shadow: 0 0 20px rgba(212, 165, 42, 0.45), inset 0 0 10px rgba(0,0,0,0.4); position: relative; }
+  .brand .logo-mark::after { content: ''; position: absolute; inset: 5px; border: 1.5px solid rgba(0,0,0,0.55); border-radius: 50%; border-top-color: transparent; border-right-color: transparent; }
+  .brand .tag { color: var(--fg-2); font-weight: 500; font-size: 11px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border: 1px solid var(--border); border-radius: 4px; }
+  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-links a { color: var(--fg-1); text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s ease; }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-cta { padding: 8px 16px; border-radius: 999px; background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 4px 16px rgba(212, 165, 42, 0.25); }
+  @media (max-width: 980px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  .quicknav { position: sticky; top: 57px; z-index: 30; background: rgba(15, 19, 24, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .quicknav::-webkit-scrollbar { display: none; }
+  .quicknav .container { display: flex; gap: 4px; padding: 8px 24px; }
+  .quicknav a { color: var(--fg-2); text-decoration: none; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; white-space: nowrap; transition: all .2s ease; }
+  .quicknav a:hover { color: var(--gold-bright); background: rgba(212, 165, 42, 0.06); }
+
+  section { position: relative; padding: 64px 0; z-index: 1; }
+  .section-head { max-width: 760px; margin-bottom: 40px; }
+  .section-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--gold); }
+  h2.section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px; }
+  h2.section-title .accent { color: var(--gold-bright); }
+  p.section-sub { color: var(--fg-1); font-size: 15px; max-width: 720px; }
+
+  .hero { position: relative; padding: 80px 0 50px; overflow: hidden; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 5px 12px; border-radius: 999px; background: rgba(95, 211, 255, 0.08); border: 1px solid rgba(95, 211, 255, 0.3); color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 20px; }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 58px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px; }
+  .hero h1 .accent { background: linear-gradient(135deg, var(--gold-bright) 0%, var(--copper) 60%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero h1 .glow { background: linear-gradient(135deg, #fff, var(--fg-1)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .lede { color: var(--fg-1); font-size: 16px; max-width: 640px; margin-bottom: 24px; }
+  .hero .lede strong { color: var(--fg-0); font-weight: 600; }
+  .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--border); }
+  .hero-stats .stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--gold-bright); }
+  .hero-stats .stat .lbl { font-size: 11px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* FUSION DIAGRAM */
+  .fusion-diagram { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 0; align-items: center; margin: 40px 0; padding: 32px; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); position: relative; overflow: hidden; }
+  .fusion-col { display: flex; flex-direction: column; gap: 8px; }
+  .fusion-col .fc-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; text-align: center; margin-bottom: 8px; }
+  .fusion-item { padding: 10px 14px; background: var(--bg-0); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--fg-1); text-align: center; transition: all .2s ease; }
+  .fusion-item:hover { border-color: var(--gold); color: var(--gold-bright); transform: scale(1.05); }
+  .fusion-arrow { font-size: 24px; color: var(--gold); text-align: center; padding: 0 8px; }
+  .fusion-result { padding: 20px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.12), rgba(184, 115, 51, 0.05)); border: 1px solid var(--gold); border-radius: var(--radius); text-align: center; }
+  .fusion-result .fr-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .fusion-result .fr-value { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); }
+  @media (max-width: 760px) { .fusion-diagram { grid-template-columns: 1fr; } .fusion-arrow { transform: rotate(90deg); padding: 8px 0; } }
+
+  /* INFERENCE CARDS */
+  .inf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+  .inf-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .inf-card:hover { border-color: var(--accent, var(--gold)); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .inf-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent, var(--gold)); }
+  .inf-card .inf-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .inf-card .inf-ico { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 22px; flex-shrink: 0; }
+  .inf-card .inf-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; color: var(--fg-0); line-height: 1.3; }
+  .inf-card .inf-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent, var(--gold)); font-weight: 600; margin-bottom: 2px; }
+  .inf-card .inf-desc { color: var(--fg-1); font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
+  .inf-card .inf-sources { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 14px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .src-chip { padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: rgba(95, 211, 255, 0.08); color: var(--cyan); border: 1px solid rgba(95, 211, 255, 0.2); }
+  .src-chip.plus { background: rgba(255,255,255,0.04); color: var(--fg-2); border: 1px solid var(--border); }
+  .inf-card .inf-confidence { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .conf-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); text-transform: uppercase; }
+  .conf-bar { display: inline-flex; gap: 2px; }
+  .conf-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-3); }
+  .conf-bar .dot.on { background: var(--emerald-bright); }
+  .conf-bar .dot.on.warn { background: var(--gold-bright); }
+  .conf-bar .dot.on.danger { background: var(--danger); }
+  .conf-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+  .conf-val.high { color: var(--emerald-bright); } .conf-val.med { color: var(--gold-bright); } .conf-val.low { color: var(--danger); }
+
+  .inf-card .inf-decisions { padding-top: 10px; border-top: 1px dashed var(--border); }
+  .inf-card .inf-decisions .dec-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .inf-card .inf-decisions ul { list-style: none; padding: 0; }
+  .inf-card .inf-decisions li { padding: 5px 0 5px 22px; position: relative; color: var(--fg-1); font-size: 12.5px; line-height: 1.5; }
+  .inf-card .inf-decisions li::before { content: '→'; position: absolute; left: 0; color: var(--accent, var(--gold)); font-weight: 700; }
+
+  /* DECISION MATRIX TABLE */
+  .matrix-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-card); overflow-x: auto; }
+  table.matrix { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 900px; }
+  table.matrix th { text-align: left; padding: 12px 14px; background: var(--bg-2); color: var(--fg-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.matrix td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--fg-1); vertical-align: top; }
+  table.matrix tr:last-child td { border-bottom: none; }
+  table.matrix tr:hover td { background: rgba(212, 165, 42, 0.03); }
+  .mx-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; }
+  .mx-conf { white-space: nowrap; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+  .mx-conf.high { color: var(--emerald-bright); } .mx-conf.med { color: var(--gold-bright); } .mx-conf.low { color: var(--danger); }
+
+  /* PLAYBOOK SCENARIOS */
+  .playbook-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; }
+  .playbook { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; transition: all .25s ease; position: relative; overflow: hidden; }
+  .playbook:hover { border-color: var(--border-strong); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .playbook .pb-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; margin-bottom: 10px; }
+  .playbook .pb-tag.invest { background: rgba(46, 204, 113, 0.12); color: var(--emerald-bright); border: 1px solid rgba(46, 204, 113, 0.25); }
+  .playbook .pb-tag.risk { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.25); }
+  .playbook .pb-tag.ops { background: rgba(95, 211, 255, 0.1); color: var(--cyan); border: 1px solid rgba(95, 211, 255, 0.25); }
+  .playbook .pb-tag.esg { background: rgba(181, 102, 255, 0.1); color: var(--violet); border: 1px solid rgba(181, 102, 255, 0.25); }
+  .playbook h4 { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; margin-bottom: 8px; color: var(--fg-0); }
+  .playbook .pb-sources { font-size: 12px; color: var(--fg-2); margin-bottom: 12px; }
+  .playbook .pb-sources code { font-size: 11px; }
+  .playbook .pb-narrative { color: var(--fg-1); font-size: 13px; line-height: 1.55; margin-bottom: 14px; }
+  .playbook .pb-action { padding: 12px 14px; background: var(--bg-0); border: 1px solid var(--border); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); }
+  .playbook .pb-action .pa-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold); text-transform: uppercase; margin-bottom: 4px; }
+  .playbook .pb-action .pa-text { color: var(--fg-0); font-size: 13px; font-weight: 500; }
+  .playbook .pb-alpha { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+  .playbook .pb-alpha .al-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); }
+  .playbook .pb-alpha .al-value { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; color: var(--emerald-bright); }
+
+  /* CALLOUTS */
+  .callout { background: linear-gradient(135deg, rgba(212, 165, 42, 0.06), rgba(184, 115, 51, 0.02)); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 18px 22px; margin: 24px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .callout .ico { font-size: 20px; flex-shrink: 0; }
+  .callout p { color: var(--fg-1); font-size: 13.5px; }
+  .callout.warning { background: linear-gradient(135deg, rgba(230, 57, 70, 0.06), transparent); border-color: rgba(230, 57, 70, 0.3); }
+  .callout.green { background: linear-gradient(135deg, rgba(46, 204, 113, 0.06), transparent); border-color: rgba(46, 204, 113, 0.3); }
+  .callout.cyan { background: linear-gradient(135deg, rgba(95, 211, 255, 0.06), transparent); border-color: rgba(95, 211, 255, 0.3); }
+
+  code { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; background: rgba(212, 165, 42, 0.08); color: var(--gold-bright); padding: 1px 5px; border-radius: 3px; }
+
+  /* CONFIDENCE FRAMEWORK */
+  .conf-framework { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 820px) { .conf-framework { grid-template-columns: 1fr; } }
+  .conf-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .conf-card.high { border-color: rgba(46, 204, 113, 0.3); } .conf-card.high::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--emerald); border-radius: var(--radius) var(--radius) 0 0; }
+  .conf-card.med { border-color: rgba(245, 200, 66, 0.3); }
+  .conf-card.low { border-color: rgba(230, 57, 70, 0.3); }
+  .conf-card h4 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .conf-card .cf-score { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .conf-card.high .cf-score { color: var(--emerald-bright); } .conf-card.med .cf-score { color: var(--gold-bright); } .conf-card.low .cf-score { color: var(--danger); }
+  .conf-card p { color: var(--fg-1); font-size: 12.5px; line-height: 1.5; margin-bottom: 10px; }
+  .conf-card ul { list-style: none; padding: 0; }
+  .conf-card li { padding: 4px 0 4px 18px; position: relative; color: var(--fg-1); font-size: 12px; }
+  .conf-card li::before { content: '▸'; position: absolute; left: 0; }
+
+  /* DECISION CATEGORY BADGES */
+  .dec-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; margin: 1px; }
+  .dec-badge.invest { background: rgba(46, 204, 113, 0.12); color: var(--emerald-bright); border: 1px solid rgba(46, 204, 113, 0.2); }
+  .dec-badge.risk { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.2); }
+  .dec-badge.ops { background: rgba(95, 211, 255, 0.1); color: var(--cyan); border: 1px solid rgba(95, 211, 255, 0.2); }
+  .dec-badge.esg { background: rgba(181, 102, 255, 0.1); color: var(--violet); border: 1px solid rgba(181, 102, 255, 0.2); }
+  .dec-badge.trade { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.2); }
+
+  footer { border-top: 1px solid var(--border); padding: 48px 0 32px; background: var(--bg-1); position: relative; z-index: 1; }
+  footer .container { text-align: center; }
+  footer p { color: var(--fg-2); font-size: 12.5px; margin-bottom: 8px; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo-mark"></div><div>God's Eye View<span style="color: var(--fg-3);"> · </span><span class="tag">DECISION INTELLIGENCE</span></div></div>
+    <div class="nav-links">
+      <a href="#fusion">The Fusion</a>
+      <a href="#inferences">Inferences</a>
+      <a href="#matrix">Decision Matrix</a>
+      <a href="#playbooks">Playbooks</a>
+      <a href="#confidence">Confidence</a>
+      <a href="#inferences" class="nav-cta">Explore</a>
+    </div>
+  </div>
+</nav>
+
+<div class="quicknav">
+  <div class="container">
+    <a href="#fusion">🔗 Data Fusion Engine</a>
+    <a href="#inferences">🧠 10 Advanced Inferences</a>
+    <a href="#matrix">📊 Decision Matrix</a>
+    <a href="#playbooks">🎯 8 Client Playbooks</a>
+    <a href="#confidence">📐 Confidence Framework</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow"><span class="dot"></span>100+ SOURCES · 10 INFERENCE ENGINES · INFINITE DECISIONS</div>
+    <h1><span class="glow">100 data sources are noise.</span><br/><span class="accent">The fusion</span> is intelligence.</h1>
+    <p class="lede">A single AIS feed tells you where a ship is. A single satellite image tells you what a mine looks like today. But when you <strong>cross-reference 100+ live sources</strong> — vessel queues, seismic activity, night lights, satellite thermal, trade flows, ownership chains, regulatory filings — you stop observing the world and start <strong>predicting</strong> it. Below: the inferences your clients can make, and the decisions they enable.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">10</div><div class="lbl">Inference Engines</div></div>
+      <div class="stat"><div class="num">100+</div><div class="lbl">Sources Cross-Referenced</div></div>
+      <div class="stat"><div class="num">25+</div><div class="lbl">Decision Types Enabled</div></div>
+      <div class="stat"><div class="num">8</div><div class="lbl">Client Playbooks</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THE FUSION ENGINE ===== -->
+<section id="fusion">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">The Fusion Engine</div>
+      <h2 class="section-title">One source is data. <span class="accent">Three sources</span> are intelligence.</h2>
+      <p class="section-sub">Every inference below works because God's Eye View fuses multiple independent data sources into a single cross-referenced picture. No single source tells the whole story — but the overlap creates signal that no one else can see.</p>
+    </div>
+
+    <div class="fusion-diagram reveal">
+      <div class="fusion-col">
+        <div class="fc-label">INPUT A</div>
+        <div class="fusion-item">🚢 AIS Vessel Tracking</div>
+        <div class="fusion-item">⚓ Port Call Records</div>
+        <div class="fusion-item">📊 UN Comtrade Flows</div>
+      </div>
+      <div class="fusion-arrow">+</div>
+      <div class="fusion-col">
+        <div class="fc-label">INPUT B</div>
+        <div class="fusion-item">🌃 NOAA Night Lights</div>
+        <div class="fusion-item">🔥 NASA FIRMS Fires</div>
+        <div class="fusion-item">🌍 USGS Earthquakes</div>
+      </div>
+      <div class="fusion-arrow">=</div>
+      <div class="fusion-col">
+        <div class="fc-label">INFERENCE</div>
+        <div class="fusion-result">
+          <div class="fr-label">PRE-ANNOUNCEMENT PRODUCTION ESTIMATE</div>
+          <div class="fr-value">"Escondida is producing 8% more copper than Q3 guidance — before BHP announces it"</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout cyan reveal">
+      <div class="ico">🧠</div>
+      <p><strong>Why fusion works:</strong> Each source is imperfect — AIS has gaps, satellite images are 3 days old, night lights are coarse. But each source's <em>weakness is different</em>. When you overlay them, the weaknesses cancel and the signal strengthens. A ship queue tells you about exports. Night lights tell you about smelter activity. Fires tell you about coal-seam combustion. None alone is enough. Together, they triangulate truth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10 ADVANCED INFERENCES ===== -->
+<section id="inferences" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">10 Advanced Inferences</div>
+      <h2 class="section-title">What your clients <span class="accent">can know</span> that nobody else can.</h2>
+      <p class="section-sub">Each inference combines 3+ independent data sources to produce a signal that no single source — and no competitor — can generate alone. Confidence ratings reflect the reliability of the cross-referenced signal.</p>
+    </div>
+
+    <div class="inf-grid">
+
+      <!-- INFERENCE 01 -->
+      <div class="inf-card reveal" style="--accent: var(--gold);">
+        <div class="inf-head">
+          <div class="inf-ico">📈</div>
+          <div><div class="inf-num">INFERENCE 01</div><div class="inf-title">Pre-Announcement Production Estimation</div></div>
+        </div>
+        <div class="inf-desc">Estimate a mine's quarterly output <strong>before the company reports it</strong>. Cross-reference departing bulkers, port stockpile volume from satellite imagery, and night-light intensity at the concentrator to triangulate actual production vs. company guidance.</div>
+        <div class="inf-sources">
+          <span class="src-chip">AIS Vessels</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Port Watch</span><span class="src-chip plus">+</span>
+          <span class="src-chip">NOAA Night Lights</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Satellite Imagery</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on warn"></span><span class="dot"></span></span>
+          <span class="conf-val high">HIGH (80-90%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Go long/short mining stock ahead of earnings — before the market prices it</li>
+            <li>Position commodity futures based on supply-tightening or supply-loosening signal</li>
+            <li>Alert fund managers when production deviates &gt;5% from guidance</li>
+            <li>Benchmark competitor output without waiting for quarterly reports</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 02 -->
+      <div class="inf-card reveal" style="--accent: var(--danger);">
+        <div class="inf-head">
+          <div class="inf-ico">⚡</div>
+          <div><div class="inf-num">INFERENCE 02</div><div class="inf-title">Supply Disruption Detection</div></div>
+        </div>
+        <div class="inf-desc">Detect a major mine going offline <strong>before it hits the news</strong>. When vessel departures from a port drop to zero, night lights at the mine dim, and rail telemetry goes quiet simultaneously — a disruption has occurred. The cause may be a strike, a tailings failure, a grid outage, or a weather event.</div>
+        <div class="inf-sources">
+          <span class="src-chip">AIS Vessels</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Night Lights Delta</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Rail Telemetry</span><span class="src-chip plus">+</span>
+          <span class="src-chip">FIFO Flight Tracking</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span>
+          <span class="conf-val high">VERY HIGH (90%+)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Buy commodity futures within minutes of a disruption signal, before price moves</li>
+            <li>Short the affected company's stock before the market learns of the disruption</li>
+            <li>Alert physical traders to secure alternative supply before premium spikes</li>
+            <li>Flag for supply chain managers: reroute, find alternates, activate contingencies</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 03 -->
+      <div class="inf-card reveal" style="--accent: var(--emerald);">
+        <div class="inf-head">
+          <div class="inf-ico">🏗️</div>
+          <div><div class="inf-num">INFERENCE 03</div><div class="inf-title">Tailings Dam Failure Probability</div></div>
+        </div>
+        <div class="inf-desc">Score every tailings dam's real-time failure risk by cross-referencing dam age/construction type from ICMM, seismic activity within 100km from USGS, recent rainfall from weather APIs, and visible wall degradation from satellite imagery. No single source predicts a failure — but the overlap identifies elevated risk windows.</div>
+        <div class="inf-sources">
+          <span class="src-chip">ICMM Tailings DB</span><span class="src-chip plus">+</span>
+          <span class="src-chip">USGS Earthquakes</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Weather/Rainfall</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Satellite Imagery</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot"></span><span class="dot"></span></span>
+          <span class="conf-val med">MEDIUM (55-70%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Insurance underwriters: adjust premiums and coverage limits in real-time</li>
+            <li>ESG officers: flag at-risk dams in portfolio for divestment review</li>
+            <li>Mining companies: prioritize dam inspections and emergency response readiness</li>
+            <li>Regulators: target inspection resources to highest-risk facilities</li>
+            <li>Short the operator's stock if a high-risk dam is in their portfolio</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 04 -->
+      <div class="inf-card reveal" style="--accent: var(--violet);">
+        <div class="inf-head">
+          <div class="inf-ico">🕵️</div>
+          <div><div class="inf-num">INFERENCE 04</div><div class="inf-title">Sanctions Evasion Pattern Detection</div></div>
+        </div>
+        <div class="inf-desc">Identify vessels deliberately obscuring their movements near sanctioned ports. When a bulker's AIS transponder goes dark for 48 hours in the Baltic Sea, then reappears at a Russian port, then its ownership chain traces through 4 shell companies in Cyprus and the UAE — you have a high-confidence sanctions evasion signal.</div>
+        <div class="inf-sources">
+          <span class="src-chip">AIS Dark Patterns</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Port Calls</span><span class="src-chip plus">+</span>
+          <span class="src-chip">OpenCorporates</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Bilateral Trade Flows</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on warn"></span><span class="dot"></span></span>
+          <span class="conf-val high">HIGH (75-85%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Compliance officers: screen supply chains for sanctions exposure before regulators do</li>
+            <li>Investors: divest from companies with sanctions-evading vessels in their supply chain</li>
+            <li>Government agencies: target sanctions enforcement resources on flagged vessels</li>
+            <li>Commodity traders: identify "shadow fleet" supply that depresses official prices</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 05 -->
+      <div class="inf-card reveal" style="--accent: var(--cyan);">
+        <div class="inf-head">
+          <div class="inf-ico">🏭</div>
+          <div><div class="inf-num">INFERENCE 05</div><div class="inf-title">Smelter &amp; Refinery Utilization Proxy</div></div>
+        </div>
+        <div class="inf-desc">Estimate a smelter's operating rate without any internal data. Cross-reference night-light intensity (power consumption proxy), thermal satellite signatures (heat = operating), inbound vessel deliveries (feedstock), and outbound vessel departures (finished metal). The combination constrains the utilization rate to a narrow band.</div>
+        <div class="inf-sources">
+          <span class="src-chip">NOAA Night Lights</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Sentinel-3 SLSTR Thermal</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Inbound/Outbound AIS</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Power Grid Data</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on warn"></span><span class="dot"></span></span>
+          <span class="conf-val high">MEDIUM-HIGH (70-80%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Metal traders: position long/short based on real-time utilization vs. market expectations</li>
+            <li>Equity analysts: forecast smelter company earnings ahead of reporting season</li>
+            <li>Supply chain managers: identify capacity bottlenecks before they cause delivery delays</li>
+            <li>Strategic planners: identify which smelters are mothballed vs. actively producing</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 06 -->
+      <div class="inf-card reveal" style="--accent: var(--cobalt);">
+        <div class="inf-head">
+          <div class="inf-ico">🔍</div>
+          <div><div class="inf-num">INFERENCE 06</div><div class="inf-title">Exploration Activity Detection</div></div>
+        </div>
+        <div class="inf-desc">Detect new exploration drilling <strong>before it's publicly announced</strong>. Fresh ground disturbance on satellite imagery, plus helicopter ADS-B tracks between drilling pads, plus new claim filings on SEDAR+/ASX — combined, these signals indicate active exploration at a specific location weeks before a junior miner announces results.</div>
+        <div class="inf-sources">
+          <span class="src-chip">Satellite (Fresh Disturbance)</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Helicopter ADS-B</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Claim Filings (SEDAR+/ASX)</span><span class="src-chip plus">+</span>
+          <span class="src-chip">MRDS Deposit Data</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot"></span><span class="dot"></span></span>
+          <span class="conf-val med">MEDIUM (60-70%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Junior mining investors: accumulate stock before drill results are announced</li>
+            <li>Major miners: identify competitive exploration in your strategic commodity regions</li>
+            <li>Land acquisition teams: stake adjacent claims before the rush</li>
+            <li>Analysts: forecast M&amp;A targets — where there's exploration, there's eventually a deal</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 07 -->
+      <div class="inf-card reveal" style="--accent: var(--warning);">
+        <div class="inf-head">
+          <div class="inf-ico">🌐</div>
+          <div><div class="inf-num">INFERENCE 07</div><div class="inf-title">Trade Flow Diversion Detection</div></div>
+        </div>
+        <div class="inf-desc">Detect when global commodity trade routes shift in real-time. When Chilean copper concentrate vessels start diverting from Qingdao to Indian ports, combined with declining China-bound AIS tracks and rising Indian smelter night-lights — you're seeing a structural trade shift weeks before customs data confirms it.</div>
+        <div class="inf-sources">
+          <span class="src-chip">AIS Route Tracking</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Night Lights at Destinations</span><span class="src-chip plus">+</span>
+          <span class="src-chip">UN Comtrade (lagging confirm)</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Port Call Records</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on warn"></span>
+          <span class="conf-val high">HIGH (85-90%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>FX traders: position in destination/emerging-market currencies ahead of customs confirmation</li>
+            <li>Shipping investors: identify demand shifts for specific routes and vessel classes</li>
+            <li>Strategic planners: identify new competitor nations entering the supply chain</li>
+            <li>Commodity desks: anticipate regional premia/discounts from flow shifts</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 08 -->
+      <div class="inf-card reveal" style="--accent: var(--danger);">
+        <div class="inf-head">
+          <div class="inf-ico">🌋</div>
+          <div><div class="inf-num">INFERENCE 08</div><div class="inf-title">Mine Closure &amp; Reopening Detection</div></div>
+        </div>
+        <div class="inf-desc">Determine whether a mine is operating or mothballed without any company disclosure. Night-light brightness drops below baseline, FIFO worker flights cease, vessel departures stop, coal-seam fires go cold (FIRMS), and rail telemetry goes quiet — the mine is closed. Reverse all signals and it's reopened. Detect within 7 days of the actual event.</div>
+        <div class="inf-sources">
+          <span class="src-chip">Night Lights (Delta)</span><span class="src-chip plus">+</span>
+          <span class="src-chip">FIFO Flight Tracking</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Vessel Departures</span><span class="src-chip plus">+</span>
+          <span class="src-chip">FIRMS Fire Activity</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span>
+          <span class="conf-val high">VERY HIGH (90%+)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Commodity traders: position on supply removal/addition before official announcement</li>
+            <li>Equity analysts: forecast production guidance changes ahead of earnings</li>
+            <li>M&amp;A teams: identify distressed/closed assets that may be available for acquisition</li>
+            <li>Government agencies: monitor strategic mineral production status in real-time</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 09 -->
+      <div class="inf-card reveal" style="--accent: var(--emerald);">
+        <div class="inf-head">
+          <div class="inf-ico">🌳</div>
+          <div><div class="inf-num">INFERENCE 09</div><div class="inf-title">Carbon &amp; Deforestation Liability Scoring</div></div>
+        </div>
+        <div class="inf-desc">Quantify a mine's true environmental cost by cross-referencing Global Forest Watch deforestation alerts within its concession boundary, FIRMS fire detections (slash-and-burn or spontaneous combustion), Sentinel-5P methane plumes over coal operations, and water-body changes from satellite imagery. Produce a carbon-liability score that precedes any ESG report.</div>
+        <div class="inf-sources">
+          <span class="src-chip">Global Forest Watch</span><span class="src-chip plus">+</span>
+          <span class="src-chip">NASA FIRMS</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Sentinel-5P Methane</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Mine Concession Boundaries</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on warn"></span></span>
+          <span class="conf-val high">HIGH (80-85%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>ESG fund managers: screen and divest from high-carbon-liability holdings before exposure hits</li>
+            <li>Insurers: price environmental liability coverage based on measured exposure</li>
+            <li>Mining companies: identify remediation priorities and benchmark against peers</li>
+            <li>Regulators: target enforcement using satellite-evidenced violations</li>
+            <li>Carbon credit traders: identify mine sites suitable for reforestation credit projects</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFERENCE 10 -->
+      <div class="inf-card reveal" style="--accent: var(--gold-bright);">
+        <div class="inf-head">
+          <div class="inf-ico">🤝</div>
+          <div><div class="inf-num">INFERENCE 10</div><div class="inf-title">M&amp;A and Corporate Activity Detection</div></div>
+        </div>
+        <div class="inf-desc">Detect imminent M&amp;A activity before it's announced. When a mining company's executives suddenly increase helicopter flights to a specific remote site, corporate jet traffic spikes between two company HQs, and the target's stock sees unusual options activity — triangulate these signals to predict a deal with surprising accuracy.</div>
+        <div class="inf-sources">
+          <span class="src-chip">ADS-B Flight Tracking</span><span class="src-chip plus">+</span>
+          <span class="src-chip">SEC EDGAR Filings</span><span class="src-chip plus">+</span>
+          <span class="src-chip">OpenCorporates Ownership</span><span class="src-chip plus">+</span>
+          <span class="src-chip">Stock Options Flow</span>
+        </div>
+        <div class="inf-confidence">
+          <span class="conf-label">CONFIDENCE</span>
+          <span class="conf-bar"><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot on warn"></span><span class="dot"></span><span class="dot"></span></span>
+          <span class="conf-val med">MEDIUM (50-65%)</span>
+        </div>
+        <div class="inf-decisions">
+          <div class="dec-label"><span>🎯</span> DECISIONS ENABLED</div>
+          <ul>
+            <li>Event-driven hedge funds: establish positions before deal announcement</li>
+            <li>M&amp;A advisors: identify potential targets and acquirers from physical movement patterns</li>
+            <li>Competitive intelligence teams: anticipate competitor acquisition strategies</li>
+            <li>Investor relations: prepare for unsolicited interest in your company</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== DECISION MATRIX ===== -->
+<section id="matrix">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Decision Matrix</div>
+      <h2 class="section-title">Every inference maps to <span class="accent">real decisions</span>.</h2>
+      <p class="section-sub">Below is the full matrix: which inference enables which investment and business decisions, and the confidence level your clients can place in each signal.</p>
+    </div>
+
+    <div class="matrix-wrap reveal">
+      <table class="matrix">
+        <thead><tr><th>Inference</th><th>Investment Decisions</th><th>Business Decisions</th><th>Confidence</th><th>Time Advantage</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="mx-name">📈 Production Estimation</td>
+            <td>Long/short stock ahead of earnings · Commodity futures positioning · Sector rotation signals</td>
+            <td>Supply chain planning · Competitor benchmarking · Procurement timing</td>
+            <td class="mx-conf high">HIGH 80-90%</td>
+            <td>2–6 weeks before official report</td>
+          </tr>
+          <tr>
+            <td class="mx-name">⚡ Supply Disruption</td>
+            <td>Buy commodity futures within minutes · Short affected operator · Long competitors</td>
+            <td>Activate contingency supply · Reroute logistics · Notify stakeholders</td>
+            <td class="mx-conf high">VERY HIGH 90%+</td>
+            <td>Hours to days before news</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🏗️ Tailings Risk</td>
+            <td>Short high-risk operator stock · Divest ESG-exposed holdings · Long insurance sector</td>
+            <td>Adjust insurance premiums · Prioritize dam inspections · Emergency response readiness</td>
+            <td class="mx-conf med">MEDIUM 55-70%</td>
+            <td>Weeks to months of lead time</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🕵️ Sanctions Evasion</td>
+            <td>Divest sanctions-exposed companies · Trade "shadow fleet" supply discounts · Long compliance sector</td>
+            <td>Supply chain compliance screening · Regulatory reporting · Vendor due diligence</td>
+            <td class="mx-conf high">HIGH 75-85%</td>
+            <td>Weeks to months before enforcement</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🏭 Smelter Utilization</td>
+            <td>Metal futures positioning · Smelter company earnings forecast · Long/short concentrate traders</td>
+            <td>Capacity planning · Identify bottlenecks · Strategic sourcing</td>
+            <td class="mx-conf high">MED-HIGH 70-80%</td>
+            <td>1–3 months before official stats</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🔍 Exploration Detection</td>
+            <td>Accumulate junior miner stock pre-results · Position in exploration regions</td>
+            <td>Competitive intelligence · Land acquisition · M&amp;A target identification</td>
+            <td class="mx-conf med">MEDIUM 60-70%</td>
+            <td>2–8 weeks before announcement</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🌐 Trade Diversion</td>
+            <td>FX positioning in destination currencies · Shipping stock rotation · Regional premia trades</td>
+            <td>Strategic market entry · Logistics planning · Competitive route analysis</td>
+            <td class="mx-conf high">HIGH 85-90%</td>
+            <td>4–8 weeks before customs data</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🌋 Mine Closure/Reopening</td>
+            <td>Commodity futures on supply change · Stock positioning on guidance deviation</td>
+            <td>Supply monitoring · Strategic reserve planning · Competitive tracking</td>
+            <td class="mx-conf high">VERY HIGH 90%+</td>
+            <td>1–4 weeks before announcement</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🌳 Carbon Liability</td>
+            <td>ESG screening · Divest high-carbon holdings · Long carbon credit projects</td>
+            <td>Environmental compliance · Remediation prioritization · Insurance pricing</td>
+            <td class="mx-conf high">HIGH 80-85%</td>
+            <td>Months before ESG reports</td>
+          </tr>
+          <tr>
+            <td class="mx-name">🤝 M&amp;A Detection</td>
+            <td>Event-driven positions pre-announcement · Options strategies</td>
+            <td>M&amp;A target identification · Competitive intelligence · IR preparation</td>
+            <td class="mx-conf med">MEDIUM 50-65%</td>
+            <td>Days to weeks before deal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout green reveal" style="margin-top: 24px;">
+      <div class="ico">⏱️</div>
+      <p><strong>The time advantage is the product.</strong> Every inference above gives your client days, weeks, or months of lead time before the rest of the market learns what happened. In commodity trading, a 48-hour head start on a supply disruption is worth millions. In ESG screening, a 3-month lead on carbon liability prevents reputational damage. The data is free — the <em>fusion</em> and the <em>speed</em> are what clients pay for.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLIENT PLAYBOOKS ===== -->
+<section id="playbooks" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Client Playbooks</div>
+      <h2 class="section-title">8 real-world scenarios your clients <span class="accent">run today</span>.</h2>
+      <p class="section-sub">Each playbook shows the specific sources fused, the narrative the client constructs, and the action they take — with a quantified alpha or value estimate.</p>
+    </div>
+
+    <div class="playbook-grid">
+
+      <div class="playbook reveal">
+        <div class="pb-tag invest">HEDGE FUND</div>
+        <h4>📈 Iron Ore Supply Surge Signal</h4>
+        <div class="pb-sources">Sources: <code>AIS</code> + <code>PortWatch</code> + <code>Night Lights</code> + <code>Satellite Stockpiles</code></div>
+        <div class="pb-narrative">"Port Hedland has 47 bulkers anchored — 35% above the 7-day rolling average. Night lights at Pilbara mines are 12% brighter than last month. Satellite imagery shows stockpile volume at the port has grown 8%. BHP is producing more iron ore than their Q3 guidance suggests. The market hasn't priced this yet."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Short iron ore futures. Long BHP ahead of earnings beat. Position 48 hours before BHP's production report.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">EST. ALPHA</span><span class="al-value">2–5% per trade</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag risk">SUPPLY CHAIN</div>
+        <h4>⚡ Escondida Strike Detection</h4>
+        <div class="pb-sources">Sources: <code>AIS</code> + <code>Night Lights Delta</code> + <code>OpenSky FIFO Flights</code> + <code>Rail Telemetry</code></div>
+        <div class="pb-narrative">"Vessel departures from Antofagasta dropped to zero in the last 36 hours. Night lights at Escondida concentrator dimmed 40% below baseline. FIFO charter flights from Santiago to the mine stopped 2 days ago. Rail cars to the port are stationary. A disruption has occurred — likely a strike or grid outage — and it hasn't hit the news yet."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Buy copper futures immediately. Alert physical trading desk to secure alternative supply from Peru before premium spikes. Short BHP if strike extends &gt;7 days.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">TIME ADVANTAGE</span><span class="al-value">12–48 hours</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag esg">ESG OFFICER</div>
+        <h4>🌱 Vale Tailings Risk Screen</h4>
+        <div class="pb-sources">Sources: <code>ICMM</code> + <code>USGS Earthquakes</code> + <code>Rainfall/Open-Meteo</code> + <code>Satellite Imagery</code></div>
+        <div class="pb-narrative">"A M4.2 earthquake occurred 22km from Vale's Brumadhino-area TSF #3 yesterday. 72-hour rainfall total is 180mm — above the 95th percentile. Satellite imagery shows new wall cracks visible in last Sentinel-2 pass. The dam's consequence classification is 'Extreme'. Combined risk score: 78/100 — elevated. Recommend immediate inspection and community alert."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Trigger emergency inspection protocol. Alert downstream communities. Review insurance coverage. Consider divestment from Vale holdings until risk normalizes.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">RISK MITIGATION</span><span class="al-value">Pre-emptive</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag invest">COMPLIANCE</div>
+        <h4>🕵️ Shadow Fleet Sanctions Screen</h4>
+        <div class="pb-sources">Sources: <code>AIS Dark Patterns</code> + <code>Port Calls</code> + <code>OpenCorporates</code> + <code>UN Comtrade</code></div>
+        <div class="pb-narrative">"Vessel IMO 9237482 went dark for 54 hours in the Baltic, reappeared at Ust-Luga (Russia), loaded crude, went dark again, reappeared at port in Gujarat (India). Ownership chain: Liberia-flagged, managed by a company in Dubai, beneficial owner is a Cypriot shell that also owns 3 other 'dark fleet' tankers. Your client's supply chain includes this vessel."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Flag for compliance review. Suspend shipments on this vessel. File a SAR (Suspicious Activity Report). Divest from any counterparty using this fleet. Notify the board.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">COMPLIANCE VALUE</span><span class="al-value">Regulatory shield</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag ops">OPERATIONS</div>
+        <h4>🏭 Nickel Smelter Bottleneck</h4>
+        <div class="pb-sources">Sources: <code>NOAA Night Lights</code> + <code>Thermal Satellite</code> + <code>Inbound AIS</code> + <code>Power Grid</code></div>
+        <div class="pb-narrative">"Indonesian Morowali smelter complex shows 30% drop in thermal signature over 2 weeks. Night lights down 18%. 12 inbound nickel ore bulkers are anchored and waiting — up from 3 last month. The smelter is running at reduced capacity, likely due to power grid issues. Nickel pig iron output is constrained; LME nickel price hasn't reflected this yet."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Procurement: lock in nickel supply at current price before premium hits. Trading: long nickel futures. Strategy: identify alternative NPI suppliers in Philippines.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">COST SAVINGS</span><span class="al-value">$2M–$10M</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag invest">JUNIOR MINING</div>
+        <h4>🔍 Exploration Discovery Signal</h4>
+        <div class="pb-sources">Sources: <code>Sentinel-2 Disturbance</code> + <code>Helicopter ADS-B</code> + <code>SEDAR+ Filings</code> + <code>MRDS Geology</code></div>
+        <div class="pb-narrative">"Fresh ground disturbance detected at a remote site in Yukon Territory — 4 new drill pads visible in Sentinel-2 imagery from last week. Helicopter ADS-B shows 3 daily round-trips from Whitehorse to the site. SEDAR+ shows a small junior miner filed a NI 43-101 technical report 2 weeks ago. The geological context (from MRDS) indicates this is a known gold-bearing greenstone belt. Drill results are likely pending."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Accumulate the junior miner's stock before drill results are announced. Stake adjacent claims. Alert M&amp;A team — this could be a takeover target for a major gold producer.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">POTENTIAL UPSIDE</span><span class="al-value">50–200% on discovery</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag trade">TRADING DESK</div>
+        <h4>🌐 Copper Trade Diversion Signal</h4>
+        <div class="pb-sources">Sources: <code>AIS Route Tracking</code> + <code>Destination Night Lights</code> + <code>UN Comtrade</code> + <code>Port Calls</code></div>
+        <div class="pb-narrative">"Over the last 30 days, 14 Chilean copper concentrate bulkers diverted from Qingdao (China) to Mundra (India). Indian smelter night lights are up 22%. China-bound copper concentrate vessel count is down 18% from the same period. This suggests a structural shift — Indian smelters are winning market share from Chinese smelters for Chilean concentrate. Customs data won't confirm this for 6–8 weeks."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Long INR/short CNY. Long Indian smelter companies (Hindalco, Vedanta). Short Chinese copper concentrate traders. Anticipate Shanghai copper premium widening.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">TIME ADVANTAGE</span><span class="al-value">6–8 weeks</span></div>
+      </div>
+
+      <div class="playbook reveal">
+        <div class="pb-tag risk">INSURANCE</div>
+        <h4>🛡️ Coal Mine Risk Repricing</h4>
+        <div class="pb-sources">Sources: <code>Mine Database</code> + <code>USGS Earthquakes</code> + <code>FIRMS Fires</code> + <code>Tailings DB</code> + <code>Deforestation</code></div>
+        <div class="pb-narrative">"A coal mine in Jharia, India has 47 active fire detections (FIRMS) within its boundary — up from 12 last quarter. 3 seismic events (M3+) within 50km in the last 30 days. Its tailings dam is 42 years old with 'High' consequence classification. Deforestation within the concession is up 15% year-over-year. Combined risk score: 84/100. Current insurance premium does not reflect this exposure."</div>
+        <div class="pb-action">
+          <div class="pa-label">ACTION</div>
+          <div class="pa-text">Reprice the insurance premium — increase by 40-60%. Add coal-seam fire exclusion clause. Require remediation plan as condition of renewal. If uninsured, exit the policy on next renewal.</div>
+        </div>
+        <div class="pb-alpha"><span class="al-label">LOSS AVOIDANCE</span><span class="al-value">$5M–$50M</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONFIDENCE FRAMEWORK ===== -->
+<section id="confidence">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Confidence Framework</div>
+      <h2 class="section-title">How to <span class="accent">trust</span> a fused signal.</h2>
+      <p class="section-sub">Not every inference is equally reliable. The framework below helps clients calibrate how much capital or decision weight to place on each signal. Three sources agreeing = a trade. Five sources agreeing = a strategic decision.</p>
+    </div>
+
+    <div class="conf-framework reveal">
+      <div class="conf-card high">
+        <h4>HIGH CONFIDENCE</h4>
+        <div class="cf-score">80–100%</div>
+        <p>Multiple independent sources agree. Signal is measurable, verifiable, and has been backtested against historical events. Safe for capital allocation.</p>
+        <ul>
+          <li>Supply disruption (vessels + lights + rail = 0)</li>
+          <li>Mine closure/reopening (4+ source delta)</li>
+          <li>Trade flow diversion (AIS + port calls confirm)</li>
+          <li>Production estimation (3+ sources triangulate)</li>
+        </ul>
+      </div>
+      <div class="conf-card med">
+        <h4>MEDIUM CONFIDENCE</h4>
+        <div class="cf-score">55–79%</div>
+        <p>2–3 sources agree but one or more have latency, resolution limits, or alternative explanations. Use for screening and hypothesis formation, not bare capital allocation.</p>
+        <ul>
+          <li>Tailings risk (no single factor predicts failure)</li>
+          <li>Smelter utilization (night lights are coarse)</li>
+          <li>Exploration detection (could be private drilling)</li>
+          <li>M&amp;A prediction (many false positives)</li>
+        </ul>
+      </div>
+      <div class="conf-card low">
+        <h4>LOW CONFIDENCE</h4>
+        <div class="cf-score">&lt;55%</div>
+        <p>Single-source or highly interpretive signals. Useful as early-warning hypotheses that require human verification before any action. Never trade on these alone.</p>
+        <ul>
+          <li>Single satellite image interpretation</li>
+          <li>One vessel going dark (could be technical)</li>
+          <li>Stock options flow without physical confirmation</li>
+          <li>Any signal with &lt;3 source agreement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warning reveal" style="margin-top: 24px;">
+      <div class="ico">⚠️</div>
+      <p><strong>Critical rule:</strong> No inference — no matter how many sources agree — is a guarantee. Satellite data is delayed. AIS has coverage gaps. Night lights are coarse. Earthquakes don't cause tailings failures by themselves. Every fused signal is a <strong>probability</strong>, not a certainty. Clients must layer their own domain expertise on top. The system gives you the picture; the human makes the call.</p>
+    </div>
+
+    <div class="callout cyan reveal">
+      <div class="ico">📐</div>
+      <p><strong>The 3-source rule:</strong> As a general principle, an inference is actionable when <strong>3 or more independent data sources</strong> agree on the same narrative. Two sources agreeing is a hypothesis. Three sources agreeing is a signal. Five sources agreeing is a decision. This is why God's Eye View fuses 100+ sources — the more you cross-reference, the narrower the confidence interval becomes.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 · God's Eye View · Decision Intelligence Framework</p>
+    <p style="font-size: 11px;">All inferences are probabilistic estimates based on public and commercial data sources. Data may be delayed, incomplete, or modeled. Not investment advice. Verify with authoritative sources before capital allocation.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+
+</body>
+</html>

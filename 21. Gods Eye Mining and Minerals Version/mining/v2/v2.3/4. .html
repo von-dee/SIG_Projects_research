@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View · Business Models & Revenue Streams</title>
+<meta name="description" content="Monetization strategies, business models, and revenue streams for operators building on the God's Eye View open-source platform." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-0); color: var(--fg-0); line-height: 1.55; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  :root {
+    --bg-0: #0a0c0f; --bg-1: #0f1318; --bg-2: #141a21; --bg-3: #1b232c; --bg-card: #11161c;
+    --border: rgba(218, 165, 32, 0.12); --border-strong: rgba(218, 165, 32, 0.28);
+    --fg-0: #e8eaed; --fg-1: #b8bcc4; --fg-2: #7a8088; --fg-3: #4a5058;
+    --gold: #d4a52a; --gold-bright: #f5c842; --copper: #b87333;
+    --emerald: #2ecc71; --emerald-bright: #5ee394;
+    --danger: #e63946; --warning: #ff6b3d;
+    --cobalt: #3a7ca5; --violet: #b566ff;
+    --grid-line: rgba(212, 165, 42, 0.05);
+    --radius: 12px; --radius-sm: 6px; --radius-lg: 18px; --maxw: 1240px;
+  }
+
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%); }
+  body::after { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 12% 18%, rgba(212, 165, 42, 0.08), transparent 38%), radial-gradient(circle at 88% 82%, rgba(46, 204, 113, 0.05), transparent 42%); pointer-events: none; z-index: 0; }
+
+  nav.topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(18px) saturate(140%); background: rgba(10, 12, 15, 0.72); border-bottom: 1px solid var(--border); }
+  nav.topbar .container { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; }
+  .brand .logo-mark { width: 32px; height: 32px; background: conic-gradient(from 180deg at 50% 50%, var(--gold), var(--copper), var(--gold-bright), var(--gold)); border-radius: 50%; box-shadow: 0 0 20px rgba(212, 165, 42, 0.45), inset 0 0 10px rgba(0,0,0,0.4); position: relative; }
+  .brand .logo-mark::after { content: ''; position: absolute; inset: 5px; border: 1.5px solid rgba(0,0,0,0.55); border-radius: 50%; border-top-color: transparent; border-right-color: transparent; }
+  .brand .tag { color: var(--fg-2); font-weight: 500; font-size: 11px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border: 1px solid var(--border); border-radius: 4px; }
+  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-links a { color: var(--fg-1); text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s ease; }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-cta { padding: 8px 16px; border-radius: 999px; background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 4px 16px rgba(212, 165, 42, 0.25); }
+  @media (max-width: 980px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  .quicknav { position: sticky; top: 57px; z-index: 30; background: rgba(15, 19, 24, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .quicknav::-webkit-scrollbar { display: none; }
+  .quicknav .container { display: flex; gap: 4px; padding: 8px 24px; }
+  .quicknav a { color: var(--fg-2); text-decoration: none; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; white-space: nowrap; transition: all .2s ease; }
+  .quicknav a:hover { color: var(--gold-bright); background: rgba(212, 165, 42, 0.06); }
+
+  section { position: relative; padding: 64px 0; z-index: 1; }
+  .section-head { max-width: 760px; margin-bottom: 40px; }
+  .section-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--gold); }
+  h2.section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px; }
+  h2.section-title .accent { color: var(--gold-bright); }
+  p.section-sub { color: var(--fg-1); font-size: 15px; max-width: 720px; }
+
+  .hero { position: relative; padding: 80px 0 50px; overflow: hidden; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 5px 12px; border-radius: 999px; background: rgba(46, 204, 113, 0.08); border: 1px solid rgba(46, 204, 113, 0.3); color: var(--emerald-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 20px; }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald-bright); box-shadow: 0 0 10px var(--emerald-bright); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 58px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px; }
+  .hero h1 .accent { background: linear-gradient(135deg, var(--gold-bright) 0%, var(--copper) 60%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero h1 .glow { background: linear-gradient(135deg, #fff, var(--fg-1)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .lede { color: var(--fg-1); font-size: 16px; max-width: 620px; margin-bottom: 24px; }
+  .hero .lede strong { color: var(--fg-0); font-weight: 600; }
+  .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--border); }
+  .hero-stats .stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--emerald-bright); }
+  .hero-stats .stat .lbl { font-size: 11px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; text-decoration: none; transition: all .2s ease; cursor: pointer; border: none; }
+  .btn-primary { background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; box-shadow: 0 4px 24px rgba(212, 165, 42, 0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(212, 165, 42, 0.45); }
+  .btn-ghost { background: rgba(255,255,255,0.03); color: var(--fg-0); border: 1px solid var(--border-strong); }
+  .btn-ghost:hover { background: rgba(212, 165, 42, 0.08); border-color: var(--gold); }
+
+  /* OVERVIEW CARDS */
+  .biz-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .biz-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .biz-card:hover { border-color: var(--accent, var(--gold)); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .biz-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent, var(--gold)); }
+  .biz-card .biz-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .biz-card .biz-ico { width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 22px; flex-shrink: 0; }
+  .biz-card .biz-title { font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600; color: var(--fg-0); line-height: 1.3; }
+  .biz-card .biz-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent, var(--gold)); font-weight: 600; margin-bottom: 2px; }
+  .biz-card .biz-desc { color: var(--fg-1); font-size: 13px; line-height: 1.5; margin-bottom: 16px; }
+  .biz-card .biz-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 14px; border-top: 1px dashed var(--border); }
+  .biz-card .biz-metric .mlbl { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.08em; }
+  .biz-card .biz-metric .mval { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 700; color: var(--accent, var(--gold-bright)); margin-top: 2px; }
+  .biz-card .biz-metric .mval.green { color: var(--emerald-bright); }
+  .biz-card .biz-metric .mval.red { color: #ff7785; }
+  .biz-card .biz-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+  .biz-tag { padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; }
+  .biz-tag.easy { background: rgba(46, 204, 113, 0.1); color: var(--emerald-bright); border: 1px solid rgba(46, 204, 113, 0.2); }
+  .biz-tag.med { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.2); }
+  .biz-tag.hard { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.2); }
+  .biz-tag.fast { background: rgba(95, 211, 255, 0.1); color: #5fd3ff; border: 1px solid rgba(95, 211, 255, 0.2); }
+  .biz-tag.slow { background: rgba(181, 102, 255, 0.1); color: #b566ff; border: 1px solid rgba(181, 102, 255, 0.2); }
+
+  /* DETAILED MODEL SECTIONS */
+  .model-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .model-section:hover { border-color: var(--border-strong); }
+  .model-section .ms-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid var(--border-strong); }
+  .model-section .ms-ico { width: 52px; height: 52px; border-radius: 12px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 26px; flex-shrink: 0; }
+  .model-section .ms-title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600; color: var(--fg-0); }
+  .model-section .ms-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold); font-weight: 600; margin-bottom: 4px; }
+  .model-section .ms-tagline { color: var(--fg-2); font-size: 13.5px; margin-top: 4px; }
+  .model-section .ms-revenue-bar { margin-left: auto; text-align: right; }
+  .model-section .ms-revenue-bar .rlbl { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); text-transform: uppercase; }
+  .model-section .ms-revenue-bar .rval { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: var(--emerald-bright); }
+
+  .model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 820px) { .model-grid { grid-template-columns: 1fr; } }
+  .model-block { background: var(--bg-0); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; }
+  .model-block h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .model-block h4 .ico { font-size: 14px; }
+  .model-block ul { list-style: none; padding: 0; }
+  .model-block ul li { padding: 6px 0 6px 22px; position: relative; color: var(--fg-1); font-size: 13px; line-height: 1.5; }
+  .model-block ul li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); }
+  .model-block ol { padding-left: 0; counter-reset: step; list-style: none; }
+  .model-block ol li { counter-increment: step; padding: 8px 0 8px 32px; position: relative; color: var(--fg-1); font-size: 13px; line-height: 1.5; border-bottom: 1px dashed var(--border); }
+  .model-block ol li:last-child { border-bottom: none; }
+  .model-block ol li::before { content: counter(step); position: absolute; left: 0; top: 8px; width: 22px; height: 22px; border-radius: 50%; background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; display: grid; place-items: center; font-weight: 700; }
+
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .pricing-tier { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+  .pricing-tier.featured { border-color: var(--gold); background: linear-gradient(135deg, rgba(212, 165, 42, 0.08), rgba(184, 115, 51, 0.03)); }
+  .pricing-tier .pt-name { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; }
+  .pricing-tier .pt-price { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold-bright); margin: 4px 0; }
+  .pricing-tier .pt-desc { font-size: 11px; color: var(--fg-2); }
+
+  /* COMPARISON TABLE */
+  .comp-table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-card); overflow-x: auto; }
+  table.comp-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 800px; }
+  table.comp-table th { text-align: left; padding: 12px 14px; background: var(--bg-2); color: var(--fg-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.comp-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--fg-1); vertical-align: top; }
+  table.comp-table tr:last-child td { border-bottom: none; }
+  table.comp-table tr:hover td { background: rgba(212, 165, 42, 0.03); }
+  .comp-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; }
+  .comp-rev { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--emerald-bright); white-space: nowrap; }
+  .comp-cost { font-family: 'JetBrains Mono', monospace; color: var(--fg-1); white-space: nowrap; }
+  .comp-time { white-space: nowrap; }
+  .diff-bar { display: inline-flex; gap: 2px; }
+  .diff-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bg-3); }
+  .diff-bar .dot.on { background: var(--gold-bright); }
+  .diff-bar .dot.on.hard { background: var(--danger); }
+
+  /* CALLOUTS */
+  .callout { background: linear-gradient(135deg, rgba(212, 165, 42, 0.06), rgba(184, 115, 51, 0.02)); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 18px 22px; margin: 24px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .callout .ico { font-size: 20px; flex-shrink: 0; }
+  .callout p { color: var(--fg-1); font-size: 13.5px; }
+  .callout.warning { background: linear-gradient(135deg, rgba(230, 57, 70, 0.06), transparent); border-color: rgba(230, 57, 70, 0.3); }
+  .callout.green { background: linear-gradient(135deg, rgba(46, 204, 113, 0.06), transparent); border-color: rgba(46, 204, 113, 0.3); }
+  .callout.violet { background: linear-gradient(135deg, rgba(181, 102, 255, 0.06), transparent); border-color: rgba(181, 102, 255, 0.3); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, var(--gold), var(--copper), transparent); }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-item::before { content: ''; position: absolute; left: -28px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--gold); border: 2px solid var(--bg-0); box-shadow: 0 0 12px rgba(212, 165, 42, 0.4); }
+  .tl-item .tl-phase { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+  .tl-item h4 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--fg-0); }
+  .tl-item p { color: var(--fg-1); font-size: 13px; line-height: 1.5; }
+  .tl-item .tl-revenue { display: inline-block; margin-top: 6px; padding: 3px 10px; border-radius: 4px; background: rgba(46, 204, 113, 0.1); color: var(--emerald-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+
+  code { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; background: rgba(212, 165, 42, 0.08); color: var(--gold-bright); padding: 1px 5px; border-radius: 3px; }
+
+  .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; background: rgba(212, 165, 42, 0.1); color: var(--gold-bright); border: 1px solid var(--border-strong); }
+
+  footer { border-top: 1px solid var(--border); padding: 48px 0 32px; background: var(--bg-1); position: relative; z-index: 1; }
+  footer .container { text-align: center; }
+  footer p { color: var(--fg-2); font-size: 12.5px; margin-bottom: 8px; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo-mark"></div><div>God's Eye View<span style="color: var(--fg-3);"> · </span><span class="tag">REVENUE MODELS</span></div></div>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#models">Business Models</a>
+      <a href="#comparison">Comparison</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#legal">Legal</a>
+      <a href="#models" class="nav-cta">Start Earning</a>
+    </div>
+  </div>
+</nav>
+
+<div class="quicknav">
+  <div class="container">
+    <a href="#overview">📊 Overview</a>
+    <a href="#models">💼 12 Business Models</a>
+    <a href="#comparison">⚖️ Comparison Table</a>
+    <a href="#pricing">💰 Pricing Playbook</a>
+    <a href="#roadmap">🗺️ 12-Month Roadmap</a>
+    <a href="#legal">⚖️ Legal &amp; Ethics</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow"><span class="dot"></span>MONETIZATION · 12 MODELS · MIT-LICENSED OPEN SOURCE</div>
+    <h1><span class="glow">Turn the globe</span><br/>into a <span class="accent">revenue engine.</span></h1>
+    <p class="lede">God's Eye View is MIT-licensed — you can build, host, resell, and profit from it freely. Below are <strong>12 detailed business models</strong> with revenue projections, startup costs, difficulty ratings, and step-by-step launch plans for each.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">$50K–$5M</div><div class="lbl">Annual Revenue Potential</div></div>
+      <div class="stat"><div class="num">$0–$50K</div><div class="lbl">Startup Cost Range</div></div>
+      <div class="stat"><div class="num">12</div><div class="lbl">Distinct Business Models</div></div>
+      <div class="stat"><div class="num">MIT</div><div class="lbl">License — Commercial OK</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="overview">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">The Opportunity</div>
+      <h2 class="section-title">An open-source platform with a <span class="accent">commercial ceiling</span>.</h2>
+      <p class="section-sub">The MIT License lets you build commercial products on God's Eye View without asking permission, paying royalties, or open-sourcing your own code. You can host it, rebrand it, bolt on premium data, sell it to enterprises, or use it as the backbone for an intelligence service. The floor is free; the ceiling is whatever your market will pay.</p>
+    </div>
+
+    <div class="callout green reveal">
+      <div class="ico">📜</div>
+      <p><strong>MIT License summary:</strong> You can <strong>use</strong> commercially, <strong>modify</strong>, <strong>distribute</strong>, <strong>private-use</strong>, and <strong>sell</strong> — as long as you include the original copyright notice. No copyleft. No royalty. No share-alike. You keep 100% of your revenue. The only constraint: bundled datasets carry their own terms (see <code>DATA_SOURCES.md</code>), so check each data source's license before reselling.</p>
+    </div>
+
+    <div class="callout warning reveal">
+      <div class="ico">⚠️</div>
+      <p><strong>The one line you cannot cross:</strong> The project explicitly forbids features for named-person search, face recognition, or tracking individuals. Any business model that monetizes person-level surveillance will be rejected upstream and is not viable on this platform. <strong>People are not a query type.</strong></p>
+    </div>
+  </div>
+</section>
+
+<section id="models" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">The 12 Business Models</div>
+      <h2 class="section-title">Pick your <span class="accent">revenue path</span>.</h2>
+      <p class="section-sub">Each model is independent — you can start with one and stack others over time. Revenue ranges are annual, based on realistic market sizes for the mining/minerals/intelligence vertical. Click a card to jump to its full breakdown below.</p>
+    </div>
+
+    <div class="biz-grid">
+      <!-- 01 -->
+      <div class="biz-card reveal" style="--accent: var(--gold);" onclick="document.getElementById('m01').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🌐</div><div><div class="biz-num">MODEL 01</div><div class="biz-title">Hosted SaaS Platform</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag slow">3–6 MO TO REV</span></div>
+        <div class="biz-desc">Host a managed instance. Users pay monthly for no-install access with premium 3D tiles, voice, and saved scenes.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$200K–$2M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$5K–$30K</div></div>
+        </div>
+      </div>
+
+      <!-- 02 -->
+      <div class="biz-card reveal" style="--accent: var(--copper);" onclick="document.getElementById('m02').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">⚙️</div><div><div class="biz-num">MODEL 02</div><div class="biz-title">Custom Layer Consulting</div></div></div>
+        <div class="biz-tags"><span class="biz-tag easy">EASY</span><span class="biz-tag fast">2–4 WK TO REV</span></div>
+        <div class="biz-desc">Build bespoke data layers for mining companies — their fleet GPS, private tailings monitoring, concession boundaries.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$100K–$500K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval green">$0–$2K</div></div>
+        </div>
+      </div>
+
+      <!-- 03 -->
+      <div class="biz-card reveal" style="--accent: var(--emerald);" onclick="document.getElementById('m03').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">📊</div><div><div class="biz-num">MODEL 03</div><div class="biz-title">Premium Data Subscriptions</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag slow">2–4 MO TO REV</span></div>
+        <div class="biz-desc">Fuse commercial feeds (S&P Global, WoodMac, ICEYE SAR) behind a paywall. Users pay for access to premium layers.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$300K–$3M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$10K–$50K</div></div>
+        </div>
+      </div>
+
+      <!-- 04 -->
+      <div class="biz-card reveal" style="--accent: var(--cobalt);" onclick="document.getElementById('m04').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">📡</div><div><div class="biz-num">MODEL 04</div><div class="biz-title">Commodity Intelligence Alerts</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag fast">4–8 WK TO REV</span></div>
+        <div class="biz-desc">Vessel queues at Port Hedland = iron ore supply signal. Sell real-time alerts to commodity traders &amp; hedge funds.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$150K–$1M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval green">$1K–$5K</div></div>
+        </div>
+      </div>
+
+      <!-- 05 -->
+      <div class="biz-card reveal" style="--accent: var(--violet);" onclick="document.getElementById('m05').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🌱</div><div><div class="biz-num">MODEL 05</div><div class="biz-title">ESG Monitoring Service</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag slow">3–6 MO TO REV</span></div>
+        <div class="biz-desc">Tailings dam stability, deforestation near concessions, water contamination, fire detections — packaged for ESG officers &amp; insurers.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$200K–$1.5M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$3K–$15K</div></div>
+        </div>
+      </div>
+
+      <!-- 06 -->
+      <div class="biz-card reveal" style="--accent: var(--warning);" onclick="document.getElementById('m06').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🎬</div><div><div class="biz-num">MODEL 06</div><div class="biz-title">Media &amp; Content Production</div></div></div>
+        <div class="biz-tags"><span class="biz-tag easy">EASY</span><span class="biz-tag fast">1–2 WK TO REV</span></div>
+        <div class="biz-desc">Use the cinematic scene director to produce documentary footage, news explainers, and branded content. Sell to media outlets.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$50K–$300K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval green">$0–$500</div></div>
+        </div>
+      </div>
+
+      <!-- 07 -->
+      <div class="biz-card reveal" style="--accent: var(--danger);" onclick="document.getElementById('m07').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🏛️</div><div><div class="biz-num">MODEL 07</div><div class="biz-title">Government &amp; Defense GEOINT</div></div></div>
+        <div class="biz-tags"><span class="biz-tag hard">HARD</span><span class="biz-tag slow">6–12 MO TO REV</span></div>
+        <div class="biz-desc">License or deploy for government agencies — critical mineral supply chain monitoring, port activity, sanctions evasion.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$500K–$5M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$20K–$80K</div></div>
+        </div>
+      </div>
+
+      <!-- 08 -->
+      <div class="biz-card reveal" style="--accent: var(--gold-bright);" onclick="document.getElementById('m08').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🛡️</div><div><div class="biz-num">MODEL 08</div><div class="biz-title">Insurance Risk Scoring</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag slow">4–8 MO TO REV</span></div>
+        <div class="biz-desc">Tailings dam failure risk, seismic exposure, flood paths, fire proximity — scored &amp; sold to mining insurers as data products.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$200K–$1M</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$5K–$20K</div></div>
+        </div>
+      </div>
+
+      <!-- 09 -->
+      <div class="biz-card reveal" style="--accent: #5fd3ff;" onclick="document.getElementById('m09').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🎓</div><div><div class="biz-num">MODEL 09</div><div class="biz-title">Training &amp; Certification</div></div></div>
+        <div class="biz-tags"><span class="biz-tag easy">EASY</span><span class="biz-tag fast">2–4 WK TO REV</span></div>
+        <div class="biz-desc">Create courses teaching geospatial intelligence, OSINT, and mineral exploration using GEV. Sell to universities &amp; professionals.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$40K–$200K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval green">$0–$1K</div></div>
+        </div>
+      </div>
+
+      <!-- 10 -->
+      <div class="biz-card reveal" style="--accent: var(--copper);" onclick="document.getElementById('m10').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🏢</div><div><div class="biz-num">MODEL 10</div><div class="biz-title">Enterprise White-Label</div></div></div>
+        <div class="biz-tags"><span class="biz-tag hard">HARD</span><span class="biz-tag slow">6–12 MO TO REV</span></div>
+        <div class="biz-desc">Rebrand and deploy on-premise for a major mining company. They get a private globe; you get a six-figure license.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Per-Deal Revenue</div><div class="mval green">$100K–$500K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$10K–$40K</div></div>
+        </div>
+      </div>
+
+      <!-- 11 -->
+      <div class="biz-card reveal" style="--accent: var(--emerald);" onclick="document.getElementById('m11').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">📰</div><div><div class="biz-num">MODEL 11</div><div class="biz-title">Paid Intelligence Newsletter</div></div></div>
+        <div class="biz-tags"><span class="biz-tag easy">EASY</span><span class="biz-tag fast">2–3 WK TO REV</span></div>
+        <div class="biz-desc">Weekly geo-intelligence briefs: port congestion, mine disruptions, sanctions evasion, tailings failures. Substack/Patreon model.</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$30K–$150K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval green">$0–$300</div></div>
+        </div>
+      </div>
+
+      <!-- 12 -->
+      <div class="biz-card reveal" style="--accent: var(--violet);" onclick="document.getElementById('m12').scrollIntoView({behavior:'smooth'})">
+        <div class="biz-head"><div class="biz-ico">🔌</div><div><div class="biz-num">MODEL 12</div><div class="biz-title">API &amp; Data Marketplace</div></div></div>
+        <div class="biz-tags"><span class="biz-tag med">MEDIUM</span><span class="biz-tag slow">3–6 MO TO REV</span></div>
+        <div class="biz-desc">Expose fused/normalized data as an API. Developers pay per-call for "vessels near port X" or "fires within 50km of mine Y."</div>
+        <div class="biz-metrics">
+          <div class="biz-metric"><div class="mlbl">Annual Revenue</div><div class="mval green">$100K–$800K</div></div>
+          <div class="biz-metric"><div class="mlbl">Startup Cost</div><div class="mval red">$5K–$20K</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DETAILED MODELS ===== -->
+<section id="detailed">
+  <div class="container">
+
+    <!-- MODEL 01 -->
+    <div class="model-section reveal" id="m01">
+      <div class="ms-head">
+        <div class="ms-ico">🌐</div>
+        <div>
+          <div class="ms-num">MODEL 01</div>
+          <div class="ms-title">Hosted SaaS Platform</div>
+          <div class="ms-tagline">The "just give me a link" play — the most requested feature from the community.</div>
+        </div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$200K–$2M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Host a managed instance on AWS/GCP with autoscaling</li>
+            <li>Swap non-commercial API keys for commercial equivalents</li>
+            <li>Add user accounts, saved scenes, team workspaces</li>
+            <li>Charge monthly per seat — like a Bloomberg terminal for mining</li>
+            <li>Offer free tier (Esri 2D only) to drive signups</li>
+            <li>Meter OpenAI voice costs per-user with hard caps</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Set up Kubernetes cluster with Cesium ion + Google Maps commercial keys</li>
+            <li>Build auth layer (Auth0/Clerk) + Stripe billing + per-user rate limits</li>
+            <li>Add workspace persistence (Postgres for saved scenes, share links)</li>
+            <li>Replace free CCTV/ADS-B with commercial feeds where ToS requires</li>
+            <li>Launch landing page with free tier + paid tiers</li>
+            <li>Run content marketing: "Track every copper mine on Earth"</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">FREE</div><div class="pt-price">$0</div><div class="pt-desc">Esri 2D, 3 layers, no voice</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">PRO</div><div class="pt-price">$49/mo</div><div class="pt-desc">3D tiles, voice, all layers</div></div>
+            <div class="pricing-tier"><div class="pt-name">TEAM</div><div class="pt-price">$199/mo</div><div class="pt-desc">5 seats, shared scenes, API</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>API costs scale with users — must meter aggressively</li>
+            <li>Google 3D Tiles commercial pricing can spike</li>
+            <li>Must swap all non-commercial data sources for commercial licenses</li>
+            <li>Need DPA/GDPR compliance for EU users</li>
+            <li>Uptime SLA expectations from paying customers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 02 -->
+    <div class="model-section reveal" id="m02">
+      <div class="ms-head">
+        <div class="ms-ico">⚙️</div>
+        <div><div class="ms-num">MODEL 02</div><div class="ms-title">Custom Layer Consulting</div><div class="ms-tagline">Fastest path to revenue — no infrastructure, just your time and coding skill.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$100K–$500K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Mining company says "show our haul trucks on the globe"</li>
+            <li>You build a <code>src/data/clientFleet.js</code> module consuming their GPS API</li>
+            <li>Deliver as a private fork or a PR into their internal repo</li>
+            <li>Charge $15K–$75K per custom layer build</li>
+            <li>Offer monthly retainer for maintenance &amp; new data sources</li>
+            <li>Stack: one client = 2–4 layers = $40K–$150K</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Create a portfolio: build 3 demo layers (e.g. fleet tracking, tailings monitor, port congestion)</li>
+            <li>Record 2-min demo videos showing each layer in action</li>
+            <li>LinkedIn outreach to: Mine Ops Managers, Head of Digital, CTO at mid-tier miners</li>
+            <li>Offer free 30-min "what could GEV do for your operation" audit</li>
+            <li>Propose scoped SOW: "Integrate your fleet telemetry — 3 weeks, $35K"</li>
+            <li>Deliver, get testimonial, ask for referral to next mine</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">SINGLE LAYER</div><div class="pt-price">$15K–$35K</div><div class="pt-desc">One data source, one module</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">INTEGRATION PKG</div><div class="pt-price">$50K–$100K</div><div class="pt-desc">3–5 layers + voice tools</div></div>
+            <div class="pricing-tier"><div class="pt-name">RETAINER</div><div class="pt-price">$5K/mo</div><div class="pt-desc">Maintenance + new sources</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Client data stays private — cannot reuse for other clients</li>
+            <li>Time-bounded — only scales with headcount</li>
+            <li>Requires mining industry connections or aggressive outreach</li>
+            <li>AI coding agents are commoditizing the build — differentiate with domain expertise</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 03 -->
+    <div class="model-section reveal" id="m03">
+      <div class="ms-head">
+        <div class="ms-ico">📊</div>
+        <div><div class="ms-num">MODEL 03</div><div class="ms-title">Premium Data Subscriptions</div><div class="ms-tagline">Fuse expensive commercial feeds, sell access at a markup. The Bloomberg model.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$300K–$3M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>License S&P Global, WoodMac, or ICEYE SAR data (enterprise contracts)</li>
+            <li>Fuse into GEV as premium layers behind a paywall</li>
+            <li>Sell access to fund managers, mining strategists, commodity desks</li>
+            <li>Charge $500–$2,000/month per seat for premium layer access</li>
+            <li>Aggregate demand — one S&P license serves N paying users</li>
+            <li>Margin: pay $100K/yr for data, sell to 50 users @ $1K/mo = $600K</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Negotiate a redistributable license with 1-2 commercial data providers</li>
+            <li>Build server-side proxy that injects your key, meters per-user calls</li>
+            <li>Add entitlement system: free users see layer exists, can't toggle it</li>
+            <li>Create a "premium layer catalog" marketing page</li>
+            <li>Target commodity hedge funds with $1B+ AUM — they pay $50K/yr for a Bloomberg terminal</li>
+            <li>Start with one premium layer (e.g. S&P mine production), expand from there</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">SINGLE LAYER</div><div class="pt-price">$500/mo</div><div class="pt-desc">One premium feed</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">ALL-ACCESS</div><div class="pt-price">$2,000/mo</div><div class="pt-desc">Every premium layer</div></div>
+            <div class="pricing-tier"><div class="pt-name">ENTERPRISE</div><div class="pt-price">$5K/mo</div><div class="pt-desc">10 seats + API access</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Upfront data licensing costs ($50K–$200K/yr minimum)</li>
+            <li>Redistribution rights are heavily restricted — read the fine print</li>
+            <li>Enterprise sales cycle: 3–6 months to close first deal</li>
+            <li>Churn risk if a user can get the same feed cheaper elsewhere</li>
+            <li>Must offer unique value beyond raw data — fusion &amp; visualization is the moat</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 04 -->
+    <div class="model-section reveal" id="m04">
+      <div class="ms-head">
+        <div class="ms-ico">📡</div>
+        <div><div class="ms-num">MODEL 04</div><div class="ms-title">Commodity Intelligence Alerts</div><div class="ms-tagline">Vessel queues = supply signals. Sell signals to traders who profit from them.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$150K–$1M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Monitor vessel queues at major ports (Port Hedland, Tubarão, Qingdao)</li>
+            <li>Count departing bulkers hourly as a proxy for export volume</li>
+            <li>Cross-reference with mine production data for supply inference</li>
+            <li>Detect anomalies: "25% more bulkers departing Hedland vs 7-day avg"</li>
+            <li>Push real-time alerts via Slack/Discord webhook, email, SMS</li>
+            <li>Sell to commodity hedge funds, physical traders, analysts</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Build <code>src/data/portMonitor.js</code> that counts vessels in port polygons</li>
+            <li>Set baseline (7-day rolling average) for each major port</li>
+            <li>Alert when deviation &gt; 2σ from baseline</li>
+            <li>Backtest: did "Hedland bulker surge" predict iron ore price moves?</li>
+            <li>Publish 3 free alerts on Twitter → build audience → sell premium tier</li>
+            <li>Target: 100 subscribers @ $150/mo = $180K/yr MRR</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">ALERTS</div><div class="pt-price">$150/mo</div><div class="pt-desc">Slack + email alerts</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">DESK</div><div class="pt-price">$500/mo</div><div class="pt-desc">Alerts + dashboard + API</div></div>
+            <div class="pricing-tier"><div class="pt-name">FUND</div><div class="pt-price">$2K/mo</div><div class="pt-desc">Custom signals, 10 seats</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Not investment advice — must include disclaimers</li>
+            <li>Traders are fickle; one bad signal = churn</li>
+            <li>Competing with established commodity intelligence desks (CRU, WoodMac)</li>
+            <li>Need to prove signal value with backtested performance data</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 05 -->
+    <div class="model-section reveal" id="m05">
+      <div class="ms-head">
+        <div class="ms-ico">🌱</div>
+        <div><div class="ms-num">MODEL 05</div><div class="ms-title">ESG Monitoring Service</div><div class="ms-tagline">Every publicly traded miner must report ESG. Build the tool that makes it visible.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$200K–$1.5M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Monitor all 704 tailings dams for seismic activity within 100km</li>
+            <li>Track deforestation (Global Forest Watch alerts) near mine concessions</li>
+            <li>Monitor fire detections (FIRMS) near coal waste dumps</li>
+            <li>Track water discharge temperature via FLIR at mine outflows</li>
+            <li>Generate monthly ESG risk reports per mine site</li>
+            <li>Sell to: ESG officers at mining companies, asset managers, insurers, regulators</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Build <code>src/data/esgMonitor.js</code> that cross-references tailings + earthquakes + fires + deforestation</li>
+            <li>Score each mine: 0–100 ESG risk index based on weighted factors</li>
+            <li>Generate PDF report per mine with annotated globe screenshots</li>
+            <li>Build a "ESG risk leaderboard" page (public — drives SEO &amp; leads)</li>
+            <li>Outreach to: ESG officers at Top 40 mining companies (they have budgets)</li>
+            <li>Also pitch to ESG-focused ETFs who need to monitor holdings</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">REPORT</div><div class="pt-price">$500/report</div><div class="pt-desc">One mine, monthly</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">MONITOR</div><div class="pt-price">$2K/mo</div><div class="pt-desc">10 mines, real-time</div></div>
+            <div class="pricing-tier"><div class="pt-name">PORTFOLIO</div><div class="pt-price">$10K/mo</div><div class="pt-desc">100+ mines, full suite</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>ESG is a crowded space — differentiate with real-time satellite evidence</li>
+            <li>Must not overstate risk (defamation risk if you mislabel a dam as "failing")</li>
+            <li>Need legal review of report language</li>
+            <li>Satellite data has latency (3 days for Sentinel-2) — be honest about it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 06 -->
+    <div class="model-section reveal" id="m06">
+      <div class="ms-head">
+        <div class="ms-ico">🎬</div>
+        <div><div class="ms-num">MODEL 06</div><div class="ms-title">Media &amp; Content Production</div><div class="ms-tagline">The scene director is a film studio. Sell the footage.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$50K–$300K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Use the Scene Director to capture cinematic flythroughs</li>
+            <li>Produce 30-sec to 5-min clips: "The Suez Canal Blockage Explained"</li>
+            <li>Switch sensor modes mid-clip (CRT → NVG → FLIR) for visual impact</li>
+            <li>Sell footage to: news outlets, YouTube channels, documentary producers</li>
+            <li>Offer branded content: mining companies want PR videos of their operations</li>
+            <li>Build a stock footage library — "aerial mine footage"</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Produce 10 demo clips covering trending stories (Nepal flood, Suez, Brumadinho)</li>
+            <li>Publish to YouTube with proper attribution — build audience</li>
+            <li>Pitch to: mining news sites (Mining.com, Reuters Metals) as a contributor</li>
+            <li>Outreach to mining company PR/IR teams — they need visuals for earnings calls</li>
+            <li>Offer a "crisis response" service: when a mine fails, produce a 2-min explainer in 4 hours</li>
+            <li>License clips at $500–$5,000 per clip depending on exclusivity</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">STOCK CLIP</div><div class="pt-price">$500</div><div class="pt-desc">Non-exclusive, one use</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">CUSTOM</div><div class="pt-price">$2K–$10K</div><div class="pt-desc">Bespoke flythrough</div></div>
+            <div class="pricing-tier"><div class="pt-name">CRISIS</div><div class="pt-price">$15K</div><div class="pt-desc">4-hour turnaround, exclusive</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Must include on-screen attribution per GEV media guidelines</li>
+            <li>Cannot reuse promotional GIFs standalone without permission</li>
+            <li>Google 3D tiles footage has separate licensing — check commercial use</li>
+            <li>Low barrier to entry — compete on speed, quality, and domain expertise</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 07 -->
+    <div class="model-section reveal" id="m07">
+      <div class="ms-head">
+        <div class="ms-ico">🏛️</div>
+        <div><div class="ms-num">MODEL 07</div><div class="ms-title">Government &amp; Defense GEOINT</div><div class="ms-tagline">The highest ceiling — but the hardest to enter. Critical mineral supply chains are a national security priority.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$500K–$5M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Deploy GEV as a SOC2/FedRAMP-ready instance for government agencies</li>
+            <li>Use cases: critical mineral supply chain, sanctions evasion (dark AIS), port activity, foreign mine monitoring</li>
+            <li>Integrate with classified feeds (via JWICS/SIPR if cleared)</li>
+            <li>Bid on DARPA, IARPA, DIU, and SOCOM contracts for GEOINT tooling</li>
+            <li>License to national geological surveys for sovereign mineral mapping</li>
+            <li>Charge $500K–$2M/yr per agency license + integration + support</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Incorporate as a defense contractor entity (C-corp, US-based preferred)</li>
+            <li>Obtain facilities clearance (FCL) at SECRET level — requires US citizen employees</li>
+            <li>Register on SAM.gov for federal contracting</li>
+            <li>Target DIU (Defense Innovation Unit) commercial solutions openings</li>
+            <li>Partner with a traditional defense prime (Lockheed, Booz Allen, SAIC) as subcontractor</li>
+            <li>Build a cleared, on-prem version of GEV with no external API calls</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">PILOT</div><div class="pt-price">$250K</div><div class="pt-desc">3-month DIU pilot</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">PRODUCTION</div><div class="pt-price">$1M/yr</div><div class="pt-desc">Per agency, unclassified</div></div>
+            <div class="pricing-tier"><div class="pt-name">CLASSIFIED</div><div class="pt-price">$2M+/yr</div><div class="pt-desc">With cleared support team</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Requires security clearances — 6–12 month process</li>
+            <li>Must comply with CMMC/NIST 800-171 cybersecurity standards</li>
+            <li>Cannot use non-commercial data feeds in government context</li>
+            <li>Long sales cycle (12–18 months for first contract)</li>
+            <li>Strict separation from the open-source repo — no code sharing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 08 -->
+    <div class="model-section reveal" id="m08">
+      <div class="ms-head">
+        <div class="ms-ico">🛡️</div>
+        <div><div class="ms-num">MODEL 08</div><div class="ms-title">Insurance Risk Scoring</div><div class="ms-tagline">Insurers need to price mine-site risk. You have the data to score it.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$200K–$1M</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Score every mine site 0–100 on: seismic exposure, tailings dam age, flood path, fire proximity, slope stability</li>
+            <li>Pull from: USGS earthquakes, ICMM tailings database, FIRMS fires, terrain data</li>
+            <li>Generate risk scores quarterly + after major events (M5+ within 50km)</li>
+            <li>Sell to: mining insurers (AIG, Zurich, Munich Re), reinsurance, underwriters</li>
+            <li>Also sell to mining companies for their own internal risk dashboards</li>
+            <li>Charge per-site or portfolio pricing</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Build <code>src/data/riskScore.js</code> that computes a weighted risk index per mine</li>
+            <li>Backtest: did your risk score predict Brumadinho, Cadia, Jagersfontein?</li>
+            <li>Publish a "Top 50 Riskiest Tailings Dams" report (drives inbound)</li>
+            <li>Target: chief underwriters at mining insurance teams</li>
+            <li>Offer free trial: "we'll score your 10 highest-exposure sites for free"</li>
+            <li>Close annual data licensing deal</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">PER SITE</div><div class="pt-price">$200/yr</div><div class="pt-desc">Quarterly risk score</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">PORTFOLIO</div><div class="pt-price">$50K/yr</div><div class="pt-desc">500 sites, real-time alerts</div></div>
+            <div class="pricing-tier"><div class="pt-name">CUSTOM</div><div class="pt-price">$150K/yr</div><div class="pt-desc">Reinsurer, full globe</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Risk models can be wrong — must include "not a guarantee" disclaimers</li>
+            <li>Insurers are conservative buyers — long sales cycle</li>
+            <li>Need actuarial credibility — partner with a credentialed actuary</li>
+            <li>Satellite data latency means risk scores are always backward-looking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 09 -->
+    <div class="model-section reveal" id="m09">
+      <div class="ms-head">
+        <div class="ms-ico">🎓</div>
+        <div><div class="ms-num">MODEL 09</div><div class="ms-title">Training &amp; Certification</div><div class="ms-tagline">You know the tool better than almost anyone. Teach what you know.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$40K–$200K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Create a "God's Eye View Certified Operator" curriculum</li>
+            <li>3 levels: Explorer, Analyst, Developer</li>
+            <li>Explorer: navigation, layers, voice, missions ($99 course)</li>
+            <li>Analyst: data interpretation, OSINT, commodity inference ($299 course)</li>
+            <li>Developer: layer building, voice tools, server proxy ($499 course)</li>
+            <li>Sell on Udemy, Teachable, or your own site. Corporate training = $5K/day</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Record a free "Getting Started with GEV" YouTube series (10 × 10-min videos)</li>
+            <li>Build a paid course platform (Teachable/Kajabi at $40/mo)</li>
+            <li>Create the Explorer course first (fastest to market)</li>
+            <li>Offer a free module → upsell to full course</li>
+            <li>Target: geology students, mining analysts, OSINT hobbyists</li>
+            <li>Reach out to university geoscience departments for site licenses</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">EXPLORER</div><div class="pt-price">$99</div><div class="pt-desc">Self-paced course</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">ANALYST</div><div class="pt-price">$299</div><div class="pt-desc">+ certification exam</div></div>
+            <div class="pricing-tier"><div class="pt-name">CORPORATE</div><div class="pt-price">$5K/day</div><div class="pt-desc">On-site training, 10 ppl</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Course content goes stale as GEV evolves</li>
+            <li>AI coding agents reduce demand for "developer" tier</li>
+            <li>Low barrier — anyone can make a course</li>
+            <li>Need to maintain certification credibility with exams</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 10 -->
+    <div class="model-section reveal" id="m10">
+      <div class="ms-head">
+        <div class="ms-ico">🏢</div>
+        <div><div class="ms-num">MODEL 10</div><div class="ms-title">Enterprise White-Label</div><div class="ms-tagline">Sell the whole globe, rebranded, on their servers. One deal = one year of revenue.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">PER DEAL</div><div class="rval">$100K–$500K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>A major miner (BHP, Rio Tinto, Glencore) wants their own private globe</li>
+            <li>You deploy GEV on their VPC (AWS/Azure private subnet)</li>
+            <li>Rebrand UI with their logo, colors, terminology</li>
+            <li>Integrate their internal data: private fleet, private IoT, internal boreholes</li>
+            <li>Add SSO (SAML/OIDC), RBAC, audit logging</li>
+            <li>Charge $100K–$500K setup + $50K–$100K/yr support &amp; maintenance</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Package GEV as a Docker Compose / Helm chart for one-command deploy</li>
+            <li>Add SSO, RBAC, audit log, and branding config options</li>
+            <li>Create a "GEV Enterprise" pitch deck with ROI: "unify your 12 data silos into one globe"</li>
+            <li>Target: Head of Digital Transformation / CIO at Top 40 miners</li>
+            <li>Get onto a procurement shortlist — partner with Accenture/Deloitte if needed</li>
+            <li>Close one deal, deliver, use as reference for the next</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">SMALL</div><div class="pt-price">$100K</div><div class="pt-desc">Mid-tier miner, 1 site</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">MAJOR</div><div class="pt-price">$300K</div><div class="pt-desc">Top 40 miner, multi-site</div></div>
+            <div class="pricing-tier"><div class="pt-name">SUPPORT</div><div class="pt-price">$75K/yr</div><div class="pt-desc">SLA, updates, training</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Enterprise procurement takes 6–18 months</li>
+            <li>Must handle their data security requirements (ISO 27001, SOC 2)</li>
+            <li>Customization scope creep — fix-bid contracts can lose money</li>
+            <li>One client = concentration risk; need 3+ before it's sustainable</li>
+            <li>Must not merge proprietary client code into the open-source repo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 11 -->
+    <div class="model-section reveal" id="m11">
+      <div class="ms-head">
+        <div class="ms-ico">📰</div>
+        <div><div class="ms-num">MODEL 11</div><div class="ms-title">Paid Intelligence Newsletter</div><div class="ms-tagline">Build an audience, then monetize it. The cheapest model to start.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$30K–$150K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Weekly email: "This week on the globe" — 5 stories with annotated screenshots</li>
+            <li>Topics: port congestion, mine disruptions, sanctions evasion, tailings incidents, launch replay</li>
+            <li>Free tier: 2 of 5 stories. Paid tier ($15/mo): all 5 + data appendix</li>
+            <li>Use the Scene Director to capture unique visual angles no one else has</li>
+            <li>Build toward 1,000 paid subscribers @ $15/mo = $180K/yr</li>
+            <li>Stack with: sponsored content from mining service companies ($2K/email)</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Pick a publishing platform (Substack, Ghost, beehiiv)</li>
+            <li>Write your first 4 issues before launch — build a buffer</li>
+            <li>Publish 3 free issues to build an audience (Twitter/LinkedIn promotion)</li>
+            <li>Launch paid tier at $10–$15/mo with issue #5</li>
+            <li>Cross-promote with mining Twitter/LinkedIn accounts</li>
+            <li>Pitch sponsors: "1,000 mining professionals read this weekly"</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">FREE</div><div class="pt-price">$0</div><div class="pt-desc">2 of 5 stories</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">PREMIUM</div><div class="pt-price">$15/mo</div><div class="pt-desc">All stories + data</div></div>
+            <div class="pricing-tier"><div class="pt-name">SPONSOR</div><div class="pt-price">$2K/email</div><div class="pt-desc">One sponsored slot</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Content treadmill — must publish every week or lose subscribers</li>
+            <li>Satellite screenshots may need attribution/licensing</li>
+            <li>Building an audience takes time (3–6 months before meaningful revenue)</li>
+            <li>Competition from established mining news (Mining.com, Reuters)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL 12 -->
+    <div class="model-section reveal" id="m12">
+      <div class="ms-head">
+        <div class="ms-ico">🔌</div>
+        <div><div class="ms-num">MODEL 12</div><div class="ms-title">API &amp; Data Marketplace</div><div class="ms-tagline">Turn the fusion engine into a JSON endpoint. Developers pay per call.</div></div>
+        <div class="ms-revenue-bar"><div class="rlbl">ANNUAL REV</div><div class="rval">$100K–$800K</div></div>
+      </div>
+      <div class="model-grid">
+        <div class="model-block">
+          <h4><span class="ico">📋</span> HOW IT WORKS</h4>
+          <ul>
+            <li>Expose normalized data via REST/GraphQL API</li>
+            <li>Endpoints: <code>/vessels/near?port=hedland</code>, <code>/fires/within?lat=...&amp;radius=50</code></li>
+            <li>Charge per-1,000-calls or monthly tier</li>
+            <li>Fuse multiple public sources into one clean API — that's the value</li>
+            <li>Also list on data marketplaces (AWS Data Exchange, Snowflake)</li>
+            <li>Developers build apps on your API; you become the data layer</li>
+          </ul>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">🚀</span> LAUNCH STEPS</h4>
+          <ol>
+            <li>Build an API gateway with rate limiting (Kong, AWS API Gateway)</li>
+            <li>Design clean OpenAPI spec — every GEV layer as an endpoint</li>
+            <li>Set up Stripe metered billing</li>
+            <li>Publish on RapidAPI, AWS Data Exchange, Snowflake Marketplace</li>
+            <li>Write API docs site with interactive examples</li>
+            <li>Target: developers building mining/logistics/ESG apps who need data without building the fusion</li>
+          </ol>
+        </div>
+      </div>
+      <div class="model-grid" style="margin-top: 14px;">
+        <div class="model-block">
+          <h4><span class="ico">💵</span> PRICING</h4>
+          <div class="pricing-grid">
+            <div class="pricing-tier"><div class="pt-name">FREE</div><div class="pt-price">$0</div><div class="pt-desc">1K calls/mo, attribution req</div></div>
+            <div class="pricing-tier featured"><div class="pt-name">PRO</div><div class="pt-price">$99/mo</div><div class="pt-desc">50K calls/mo</div></div>
+            <div class="pricing-tier"><div class="pt-name">SCALE</div><div class="pt-price">$499/mo</div><div class="pt-desc">500K calls, no limits</div></div>
+          </div>
+        </div>
+        <div class="model-block">
+          <h4><span class="ico">⚠️</span> KEY RISKS</h4>
+          <ul>
+            <li>Must check each upstream data source's API redistribution rights</li>
+            <li>Some free sources (AISStream, adsb.lol) restrict commercial API resale</li>
+            <li>Infrastructure cost scales with usage — need caching layers</li>
+            <li>API reliability becomes your problem — need uptime monitoring</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== COMPARISON TABLE ===== -->
+<section id="comparison" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Side-by-Side</div>
+      <h2 class="section-title">Which model <span class="accent">fits you</span>?</h2>
+      <p class="section-sub">Compare all 12 models by revenue potential, startup cost, time to first dollar, and difficulty. Green dots = easy/cheap; red dots = hard/expensive.</p>
+    </div>
+
+    <div class="comp-table-wrap reveal">
+      <table class="comp-table">
+        <thead><tr><th>#</th><th>Model</th><th>Annual Revenue</th><th>Startup Cost</th><th>Time to Rev</th><th>Difficulty</th><th>Scalability</th></tr></thead>
+        <tbody>
+          <tr><td>01</td><td class="comp-name">🌐 Hosted SaaS</td><td class="comp-rev">$200K–$2M</td><td class="comp-cost">$5K–$30K</td><td class="comp-time">3–6 mo</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span></td></tr>
+          <tr><td>02</td><td class="comp-name">⚙️ Custom Consulting</td><td class="comp-rev">$100K–$500K</td><td class="comp-cost">$0–$2K</td><td class="comp-time">2–4 wk</td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td></tr>
+          <tr><td>03</td><td class="comp-name">📊 Premium Data Subs</td><td class="comp-rev">$300K–$3M</td><td class="comp-cost">$10K–$50K</td><td class="comp-time">2–4 mo</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span></td></tr>
+          <tr><td>04</td><td class="comp-name">📡 Commodity Alerts</td><td class="comp-rev">$150K–$1M</td><td class="comp-cost">$1K–$5K</td><td class="comp-time">4–8 wk</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></td></tr>
+          <tr><td>05</td><td class="comp-name">🌱 ESG Monitoring</td><td class="comp-rev">$200K–$1.5M</td><td class="comp-cost">$3K–$15K</td><td class="comp-time">3–6 mo</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></td></tr>
+          <tr><td>06</td><td class="comp-name">🎬 Media Production</td><td class="comp-rev">$50K–$300K</td><td class="comp-cost">$0–$500</td><td class="comp-time">1–2 wk</td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td></tr>
+          <tr><td>07</td><td class="comp-name">🏛️ Gov/Defense GEOINT</td><td class="comp-rev">$500K–$5M</td><td class="comp-cost">$20K–$80K</td><td class="comp-time">6–12 mo</td><td><span class="diff-bar"><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot on hard"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span></td></tr>
+          <tr><td>08</td><td class="comp-name">🛡️ Insurance Risk</td><td class="comp-rev">$200K–$1M</td><td class="comp-cost">$5K–$20K</td><td class="comp-time">4–8 mo</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></td></tr>
+          <tr><td>09</td><td class="comp-name">🎓 Training/Cert</td><td class="comp-rev">$40K–$200K</td><td class="comp-cost">$0–$1K</td><td class="comp-time">2–4 wk</td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td></tr>
+          <tr><td>10</td><td class="comp-name">🏢 Enterprise White-Label</td><td class="comp-rev">$100K–$500K/deal</td><td class="comp-cost">$10K–$40K</td><td class="comp-time">6–12 mo</td><td><span class="diff-bar"><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot on hard"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span></td></tr>
+          <tr><td>11</td><td class="comp-name">📰 Intelligence Newsletter</td><td class="comp-rev">$30K–$150K</td><td class="comp-cost">$0–$300</td><td class="comp-time">2–3 wk</td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span></td></tr>
+          <tr><td>12</td><td class="comp-name">🔌 API Marketplace</td><td class="comp-rev">$100K–$800K</td><td class="comp-cost">$5K–$20K</td><td class="comp-time">3–6 mo</td><td><span class="diff-bar"><span class="dot on med"></span><span class="dot on med"></span><span class="dot on med"></span><span class="dot"></span><span class="dot"></span></span></td><td><span class="diff-bar"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout green reveal" style="margin-top: 24px;">
+      <div class="ico">🧩</div>
+      <p><strong>Stack models for compounding revenue.</strong> The most profitable operators run 3+ models simultaneously. Example: <strong>Consulting (Model 02)</strong> funds your runway → build <strong>ESG Monitoring (Model 05)</strong> as a product from client work → launch <strong>Newsletter (Model 11)</strong> to market it → add <strong>API (Model 12)</strong> for developers → eventually raise a <strong>Hosted SaaS (Model 01)</strong> round.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING PLAYBOOK ===== -->
+<section id="pricing">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Pricing Playbook</div>
+      <h2 class="section-title">How to <span class="accent">price</span> without leaving money on the table.</h2>
+      <p class="section-sub">Real-world pricing frameworks for each model tier. The rule: charge for the <em>outcome</em>, not the <em>access</em>.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-block reveal">
+        <h4><span class="ico">🎯</span> VALUE-BASED PRICING</h4>
+        <ul>
+          <li>If your port-congestion alert saves a trader $100K on one position, charge $500/mo — it's a no-brainer</li>
+          <li>If your ESG report prevents a $2M regulatory fine, charge $2K/mo — it's cheap insurance</li>
+          <li>If your white-label deploy unifies 12 data silos a $200K/yr analyst was maintaining, charge $300K</li>
+          <li>Never price by "cost + margin" — price by <strong>value delivered</strong></li>
+        </ul>
+      </div>
+      <div class="model-block reveal">
+        <h4><span class="ico">📈</span> TIER PSYCHOLOGY</h4>
+        <ul>
+          <li>Always offer 3 tiers — the middle one should be the "obvious choice"</li>
+          <li>Free tier must be useful enough to hook, limited enough to upgrade</li>
+          <li>The expensive tier makes the middle one look reasonable (decoy effect)</li>
+          <li>Annual prepay at 20% discount improves cash flow &amp; reduces churn</li>
+          <li>Enterprise: "Contact us" — never show a price above $2,000/mo</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout violet reveal" style="margin-top: 20px;">
+      <div class="ico">💡</div>
+      <p><strong>The "Land and Expand" pattern:</strong> Start with a $500 pilot (Model 02 or 06). Deliver something impressive in 2 weeks. Then propose the $50K/yr platform (Model 01 or 05). Mining companies have budgets — but they buy trust first, then scope. Your first deal is always smaller than your second.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ROADMAP ===== -->
+<section id="roadmap" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">12-Month Roadmap</div>
+      <h2 class="section-title">From <span class="accent">$0 to $100K</span> in 12 months.</h2>
+      <p class="section-sub">A realistic roadmap for a solo operator or small team, stacking models in sequence. Assumes ~20 hrs/week of effort.</p>
+    </div>
+
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-phase">MONTHS 1–2 · LAUNCH</div>
+        <h4>Start with Consulting (Model 02) + Newsletter (Model 11)</h4>
+        <p>Build 3 demo layers. Publish your first 4 newsletter issues. Do 50 LinkedIn outreaches to mining ops managers. Land your first $10K–$25K consulting gig. Publish 2 free clips on YouTube (Model 06).</p>
+        <span class="tl-revenue">TARGET: $10K–$25K</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">MONTHS 3–4 · PRODUCTIZE</div>
+        <h4>Convert consulting work into a product</h4>
+        <p>Whatever you built for client #1, generalize it into a reusable layer. If it was tailings monitoring → that's Model 05 (ESG). If it was fleet tracking → that's Model 02 at scale. Launch paid newsletter tier. Sell first media clip.</p>
+        <span class="tl-revenue">TARGET: $25K–$50K cumulative</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">MONTHS 5–7 · SCALE</div>
+        <h4>Add Alerts (Model 04) + Training (Model 09)</h4>
+        <p>Build commodity alert system from port-monitoring work. Launch your Explorer course on Udemy. Land consulting client #2 and #3. Newsletter hits 500 subscribers, 50 paid. First ESG monitoring retainer signed.</p>
+        <span class="tl-revenue">TARGET: $50K–$100K cumulative</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">MONTHS 8–10 · PLATFORM</div>
+        <h4>Soft-launch Hosted SaaS (Model 01)</h4>
+        <p>Your consulting clients don't want to self-host — offer a managed instance. Set up Stripe, auth, per-user metering. Migrate 2 consulting clients to $500/mo hosted. Newsletter hits 1,000 subscribers. Begin enterprise white-label conversations (Model 10) — these take 6+ months to close.</p>
+        <span class="tl-revenue">TARGET: $100K–$200K cumulative</span>
+      </div>
+      <div class="tl-item">
+        <div class="tl-phase">MONTHS 11–12 · EXPAND</div>
+        <h4>Add API (Model 12) + Insurance scoring (Model 08)</h4>
+        <p>Expose your fused data as an API on RapidAPI. Build risk-score product from ESG monitoring work. Pitch to 3 mining insurers. First enterprise white-label deal closes. Consider raising a seed round to scale Model 01 + Model 07.</p>
+        <span class="tl-revenue">TARGET: $150K–$300K cumulative ARR</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEGAL ===== -->
+<section id="legal">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Legal &amp; Ethics</div>
+      <h2 class="section-title">Stay <span class="accent">on the right side</span> of the line.</h2>
+      <p class="section-sub">The MIT license gives you broad commercial rights, but data sources, privacy laws, and the project's own ethical guardrails still apply.</p>
+    </div>
+
+    <div class="model-grid">
+      <div class="model-block reveal">
+        <h4><span class="ico">📜</span> LICENSE COMPLIANCE</h4>
+        <ul>
+          <li>MIT License: include the original copyright &amp; permission notice in your product</li>
+          <li>You are NOT required to open-source your modifications</li>
+          <li>Bundled datasets in <code>local_data/</code> have their own licenses — check each</li>
+          <li>Each upstream data source (USGS, AISStream, etc.) has its own ToS — read before reselling</li>
+          <li>Some free sources prohibit commercial API resale (AISStream, adsb.lol) — upgrade to commercial tier</li>
+          <li>Google 3D Tiles commercial use requires a direct Google Maps key — not the free Cesium ion path</li>
+        </ul>
+      </div>
+      <div class="model-block reveal">
+        <h4><span class="ico">⚖️</span> DATA PRIVACY</h4>
+        <ul>
+          <li>GDPR: if you serve EU users, need DPA, cookie consent, data subject access</li>
+          <li>Do not store individual person data — GEV models systems, not people</li>
+          <li>CCTV feeds are public, but republishing them commercially may need city permission</li>
+          <li>Vessel AIS data is public — but some operators pay for "dark AIS" detection (legal)</li>
+          <li>If hosting user-uploaded data, need a data processing agreement</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="model-grid" style="margin-top: 14px;">
+      <div class="model-block reveal">
+        <h4><span class="ico">🚫</span> THE LINE</h4>
+        <ul>
+          <li>No named-person search, face recognition, or individual tracking — ever</li>
+          <li>No person-level surveillance features — the upstream project will reject PRs</li>
+          <li>If a client asks for "track my workers" — decline and offer "track my assets" instead</li>
+          <li>ALPR (license plate) integrations exist as community PRs — assess your jurisdiction's laws before deploying</li>
+          <li>SDR radio monitoring of police frequencies is legal in some jurisdictions, illegal in others</li>
+        </ul>
+      </div>
+      <div class="model-block reveal">
+        <h4><span class="ico">🛡️</span> LIABILITY</h4>
+        <ul>
+          <li>Data is delayed, incomplete, modeled, or wrong — include this disclaimer everywhere</li>
+          <li>"Not for navigation, emergency response, safety-critical decisions" — put it in your ToS</li>
+          <li>If selling risk scores (Model 08), add "not a guarantee, not insurance advice"</li>
+          <li>If selling commodity alerts (Model 04), add "not investment advice"</li>
+          <li>Get professional liability insurance if serving enterprise clients</li>
+          <li>Form an LLC/corp to shield personal assets</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warning reveal" style="margin-top: 24px;">
+      <div class="ico">⚠️</div>
+      <p><strong>This document is not legal advice.</strong> Consult a technology/data attorney in your jurisdiction before launching any commercial product. Data licensing, privacy compliance, and liability terms vary by country and use case. The models above are revenue strategies, not legal recommendations.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 · God's Eye View Revenue Models · Built on the MIT-licensed open-source platform</p>
+    <p style="font-size: 11px;">Revenue ranges are estimates based on market analysis of the mining/minerals/intelligence vertical. Your results will vary. This is not financial or legal advice.</p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View — 100 Use Cases</title>
+<meta name="description" content="50 voice-driven and 50 hands-on use cases for God's Eye View — the spy-satellite simulator in your browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --bg-0: #05080d;
+    --bg-1: #0a0f17;
+    --bg-2: #0e1420;
+    --bg-3: #131b2a;
+    --panel: rgba(14, 20, 32, 0.72);
+    --border: rgba(120, 180, 220, 0.12);
+    --border-strong: rgba(120, 200, 255, 0.28);
+    --text: #d8e6f3;
+    --text-dim: #8a9bad;
+    --text-faint: #56697c;
+    --accent: #00e5ff;
+    --accent-dim: #00b8cc;
+    --amber: #ffb547;
+    --amber-dim: #cc8c2e;
+    --danger: #ff5572;
+    --success: #4ade80;
+    --warn: #fbbf24;
+    --military: #ff9d3c;
+    --grid: rgba(0, 229, 255, 0.06);
+    --glow: 0 0 24px rgba(0, 229, 255, 0.25);
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --display: 'Orbitron', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+  body {
+    background: var(--bg-0);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 229, 255, 0.08), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255, 181, 71, 0.05), transparent 60%),
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 60px 60px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 60px 60px,
+      var(--bg-0);
+    z-index: -2;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,229,255,0.015) 3px, rgba(0,0,0,0) 4px);
+    z-index: -1;
+    pointer-events: none;
+    mix-blend-mode: screen;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb { background: linear-gradient(var(--accent-dim), var(--amber-dim)); border-radius: 5px; border: 2px solid var(--bg-1); }
+  ::selection { background: var(--accent); color: var(--bg-0); }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(5, 8, 13, 0.85);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: 1600px; margin: 0 auto;
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; gap: 24px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--display); font-weight: 700;
+    font-size: 15px; letter-spacing: 0.15em;
+    color: var(--text); text-transform: uppercase;
+    text-decoration: none; flex-shrink: 0;
+  }
+  .brand-mark {
+    width: 32px; height: 32px; position: relative;
+    display: grid; place-items: center;
+  }
+  .brand-mark::before, .brand-mark::after {
+    content: ''; position: absolute; inset: 0;
+    border: 1.5px solid var(--accent); border-radius: 50%;
+  }
+  .brand-mark::after { inset: 6px; border-color: var(--amber); animation: pulse 2.4s ease-in-out infinite; }
+  .brand-mark i { color: var(--accent); font-size: 11px; z-index: 1; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(0.85);} }
+  .brand-text { display: flex; flex-direction: column; line-height: 1; gap: 2px; }
+  .brand-text small { font-family: var(--mono); font-size: 9px; color: var(--accent); letter-spacing: 0.25em; font-weight: 500; }
+  .topbar-nav { display: flex; gap: 4px; margin-left: auto; align-items: center; }
+  .topbar-nav a {
+    color: var(--text-dim); text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 8px 12px; border-radius: 6px;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .topbar-nav a:hover { color: var(--accent); background: rgba(0,229,255,0.06); }
+  .topbar-status {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border: 1px solid var(--border-strong);
+    border-radius: 4px; font-family: var(--mono);
+    font-size: 11px; color: var(--success);
+    background: rgba(74,222,128,0.06);
+  }
+  .topbar-status .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); animation: pulse 1.6s ease-in-out infinite; }
+  .menu-toggle { display: none; background: none; border: 1px solid var(--border-strong); color: var(--text); width: 38px; height: 38px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    padding: 130px 24px 60px;
+    max-width: 1600px; margin: 0 auto;
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 14px; border: 1px solid var(--border-strong);
+    background: rgba(0,229,255,0.04); border-radius: 100px;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.18em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  .hero-eyebrow .ci-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px var(--success); }
+  .hero h1 {
+    font-family: var(--display);
+    font-size: clamp(38px, 6vw, 76px);
+    font-weight: 900; line-height: 0.95;
+    letter-spacing: -0.02em; margin-bottom: 22px;
+    background: linear-gradient(180deg, #fff 0%, var(--accent) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero-tagline {
+    font-size: 19px; color: var(--text-dim);
+    max-width: 680px; margin-bottom: 16px; line-height: 1.5;
+  }
+  .hero-tagline strong { color: var(--text); font-weight: 600; }
+  .hero-sub {
+    font-family: var(--mono); font-size: 13px;
+    color: var(--accent); letter-spacing: 0.04em; margin-bottom: 32px;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin-top: 40px;
+    padding-top: 32px; border-top: 1px solid var(--border);
+  }
+  .stat-block {
+    padding: 4px 0;
+  }
+  .stat-block .label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-faint); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .stat-block .value {
+    font-family: var(--display); font-size: 26px;
+    font-weight: 700; color: var(--accent); line-height: 1;
+  }
+  .stat-block .sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-wrap {
+    max-width: 1600px; margin: 0 auto;
+    padding: 40px 24px;
+  }
+  .section-head {
+    display: flex; align-items: baseline; gap: 16px;
+    margin-bottom: 8px; flex-wrap: wrap;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--accent); letter-spacing: 0.15em;
+    padding: 4px 8px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: rgba(0,229,255,0.04);
+  }
+  .section-head h2 {
+    font-family: var(--display);
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 700; letter-spacing: -0.01em; color: var(--text);
+  }
+  .section-tag {
+    margin-left: auto; font-family: var(--mono);
+    font-size: 10px; color: var(--text-faint); letter-spacing: 0.1em;
+  }
+  .section-intro {
+    color: var(--text-dim); font-size: 17px;
+    max-width: 780px; margin-bottom: 28px;
+  }
+  .section-intro strong { color: var(--text); }
+
+  /* Mode toggle pill */
+  .mode-pills {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .mode-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border: 1px solid var(--border-strong);
+    background: rgba(0,229,255,0.04); border-radius: 100px;
+    font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.1em; color: var(--accent);
+    text-transform: uppercase; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mode-pill:hover { background: rgba(0,229,255,0.1); }
+  .mode-pill.amber { color: var(--amber); background: rgba(255,181,71,0.04); border-color: rgba(255,181,71,0.3); }
+  .mode-pill.amber:hover { background: rgba(255,181,71,0.1); }
+  .mode-pill i { font-size: 12px; }
+
+  /* Category filter */
+  .filter-bar {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 28px; padding: 16px;
+    background: var(--panel); backdrop-filter: blur(8px);
+    border: 1px solid var(--border); border-radius: 10px;
+    align-items: center;
+  }
+  .filter-bar .filter-label {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--text-faint); letter-spacing: 0.15em;
+    text-transform: uppercase; margin-right: 4px;
+  }
+  .filter-chip {
+    padding: 6px 12px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-dim);
+    font-size: 12px; font-weight: 500;
+    border-radius: 100px; cursor: pointer;
+    transition: all 0.15s; font-family: var(--sans);
+  }
+  .filter-chip:hover { color: var(--text); border-color: var(--border-strong); }
+  .filter-chip.active {
+    background: var(--accent); color: var(--bg-0);
+    border-color: var(--accent); font-weight: 700;
+  }
+  .filter-chip.active.amber { background: var(--amber); border-color: var(--amber); }
+
+  /* Use case grid */
+  .uc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .uc-card {
+    background: linear-gradient(180deg, rgba(14,20,32,0.6), rgba(10,15,23,0.6));
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px;
+    transition: all 0.25s; position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .uc-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 30px; height: 1px; background: var(--accent);
+    transition: width 0.3s;
+  }
+  .uc-card.amber::before { background: var(--amber); }
+  .uc-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+  .uc-card:hover::before { width: 100%; }
+
+  .uc-head {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .uc-num {
+    font-family: var(--mono); font-size: 11px;
+    font-weight: 700; color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid var(--border-strong);
+    padding: 3px 7px; border-radius: 3px;
+    letter-spacing: 0.05em; flex-shrink: 0;
+    line-height: 1.4;
+  }
+  .uc-card.amber .uc-num {
+    color: var(--amber); background: rgba(255,181,71,0.08);
+    border-color: rgba(255,181,71,0.3);
+  }
+  .uc-icon {
+    font-size: 16px; color: var(--accent);
+    margin-left: auto; flex-shrink: 0;
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+    background: rgba(0,229,255,0.06);
+    border-radius: 6px;
+  }
+  .uc-card.amber .uc-icon { color: var(--amber); background: rgba(255,181,71,0.06); }
+
+  .uc-title {
+    font-size: 15px; font-weight: 700;
+    color: var(--text); margin-bottom: 6px;
+    line-height: 1.35; flex: 1;
+  }
+  .uc-desc {
+    font-size: 13px; color: var(--text-dim);
+    line-height: 1.5; margin-bottom: 12px;
+  }
+  .uc-desc strong { color: var(--text); }
+  .uc-cmd {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px; background: rgba(0,229,255,0.04);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    font-family: var(--mono); font-size: 12px;
+    color: var(--text); font-style: italic;
+    line-height: 1.45;
+  }
+  .uc-card.amber .uc-cmd {
+    background: rgba(255,181,71,0.04);
+    border-left-color: var(--amber);
+  }
+  .uc-cmd i { color: var(--accent); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+  .uc-card.amber .uc-cmd i { color: var(--amber); }
+  .uc-cmd .cmd-text { flex: 1; }
+
+  .uc-foot {
+    margin-top: auto; padding-top: 10px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+    align-items: center;
+  }
+  .uc-tag {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 3px;
+    background: rgba(120,180,220,0.08);
+    color: var(--text-faint);
+    border: 1px solid var(--border);
+  }
+  .uc-tag.cat { color: var(--accent); background: rgba(0,229,255,0.06); border-color: rgba(0,229,255,0.2); }
+  .uc-card.amber .uc-tag.cat { color: var(--amber); background: rgba(255,181,71,0.06); border-color: rgba(255,181,71,0.2); }
+  .uc-tag.key { color: var(--warn); background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); }
+
+  /* Divider */
+  .divider {
+    max-width: 1600px; margin: 60px auto 0;
+    padding: 0 24px;
+  }
+  .divider-inner {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+    position: relative;
+  }
+  .divider-inner::before {
+    content: '◆';
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--accent); font-size: 12px;
+    background: var(--bg-0); padding: 0 12px;
+  }
+
+  /* Callout */
+  .callout {
+    display: flex; gap: 14px;
+    padding: 16px 18px; border-radius: 8px;
+    margin: 18px 0; border: 1px solid;
+    font-size: 14px; line-height: 1.55;
+  }
+  .callout i { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .callout.info { background: rgba(0,229,255,0.06); border-color: rgba(0,229,255,0.25); }
+  .callout.info i { color: var(--accent); }
+  .callout.warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); }
+  .callout.warn i { color: var(--warn); }
+  .callout strong { color: var(--text); }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg-1);
+    padding: 40px 24px 24px; margin-top: 60px;
+  }
+  .footer-inner {
+    max-width: 1600px; margin: 0 auto;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 16px;
+  }
+  .footer-inner p {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--text-faint); letter-spacing: 0.05em;
+  }
+  .footer-inner .sig {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .blip { width: 6px; height: 6px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); animation: pulse 1.6s infinite; }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed; top: 0; left: 0;
+    height: 2px; background: linear-gradient(90deg, var(--accent), var(--amber));
+    z-index: 200; transition: width 0.1s;
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  /* Back to top */
+  .to-top {
+    position: fixed; bottom: 24px; right: 24px;
+    width: 44px; height: 44px;
+    background: var(--panel); backdrop-filter: blur(8px);
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    color: var(--accent); display: grid; place-items: center;
+    cursor: pointer; opacity: 0; transform: translateY(20px);
+    transition: all 0.25s; z-index: 90; font-size: 14px;
+  }
+  .to-top.show { opacity: 1; transform: translateY(0); }
+  .to-top:hover { background: var(--accent); color: var(--bg-0); }
+
+  @media (max-width: 900px) {
+    .topbar-nav { display: none; }
+    .menu-toggle { display: grid; place-items: center; }
+    .topbar-nav.open {
+      display: flex; position: absolute;
+      top: 64px; left: 0; right: 0;
+      flex-direction: column; background: var(--bg-1);
+      border-bottom: 1px solid var(--border); padding: 14px; gap: 2px;
+    }
+    .topbar-nav.open a { padding: 12px; }
+    .topbar-status { display: none; }
+  }
+  @media (max-width: 640px) {
+    .hero { padding: 100px 16px 50px; }
+    .section-wrap { padding: 30px 16px; }
+    .uc-grid { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark"><i class="fa-solid fa-satellite-dish"></i></span>
+      <span class="brand-text">GOD'S EYE VIEW<small>// 100 USE CASES</small></span>
+    </a>
+    <nav class="topbar-nav" id="topNav">
+      <a href="#voice">Voice · 50</a>
+      <a href="#hands">Hands-On · 50</a>
+      <a href="#compare">Compare</a>
+      <a href="#tips">Pro Tips</a>
+    </nav>
+    <div class="topbar-status">
+      <span class="dot"></span>
+      <span>SIGNALS LIVE</span>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <span class="hero-eyebrow">
+    <span class="ci-dot"></span>
+    FIELD MANUAL · 100 OPERATIONAL USE CASES
+  </span>
+  <h1>100 Ways to Use<br>God's Eye View</h1>
+  <p class="hero-tagline">
+    Half you can <strong>talk to</strong>. Half you can <strong>drive by hand</strong>. Together they cover the full surface area of the world's public signals — from a single cockpit all the way out to a global situational picture.
+  </p>
+  <p class="hero-sub">// VOICE NEEDS OPENAI KEY · HANDS-ON WORKS KEYLESS</p>
+
+  <div class="hero-stats">
+    <div class="stat-block">
+      <div class="label">Voice Use Cases</div>
+      <div class="value">50</div>
+      <div class="sub">Speak to the world</div>
+    </div>
+    <div class="stat-block">
+      <div class="label">Hands-On Use Cases</div>
+      <div class="value">50</div>
+      <div class="sub">Mouse + keyboard only</div>
+    </div>
+    <div class="stat-block">
+      <div class="label">Total</div>
+      <div class="value">100</div>
+      <div class="sub">Operational patterns</div>
+    </div>
+    <div class="stat-block">
+      <div class="label">Keyless</div>
+      <div class="value">85+</div>
+      <div class="sub">Work without any API key</div>
+    </div>
+    <div class="stat-block">
+      <div class="label">Voice Tools</div>
+      <div class="value">28</div>
+      <div class="sub">Behind the mic</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VOICE SECTION ===== -->
+<section class="section-wrap" id="voice">
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <h2>Voice Use Cases</h2>
+    <span class="section-tag">// 50 · OPENAI REALTIME</span>
+  </div>
+  <p class="section-intro">
+    Click <strong>GEV MIC</strong>, grant the microphone, and talk. The agent pulls live scene context, runs 28 tools, and only confirms what actually succeeded. <strong>Your OpenAI key never touches the browser.</strong>
+  </p>
+
+  <div class="mode-pills">
+    <span class="mode-pill"><i class="fa-solid fa-microphone"></i> Press to talk · or hold Space</span>
+    <span class="mode-pill amber"><i class="fa-solid fa-brain"></i> Knows what it's looking at</span>
+    <span class="mode-pill"><i class="fa-solid fa-shield-halved"></i> Short-lived session token</span>
+  </div>
+
+  <div class="filter-bar" id="voiceFilter">
+    <span class="filter-label">// Filter:</span>
+    <button class="filter-chip active" data-cat="all">All · 50</button>
+    <button class="filter-chip" data-cat="navigate">Navigate · 11</button>
+    <button class="filter-chip" data-cat="annotate">Annotate · 8</button>
+    <button class="filter-chip" data-cat="interrogate">Interrogate · 11</button>
+    <button class="filter-chip" data-cat="operate">Operate · 12</button>
+    <button class="filter-chip" data-cat="direct">Direct · 5</button>
+    <button class="filter-chip" data-cat="cinematic">Cinematic · 3</button>
+  </div>
+
+  <div class="uc-grid" id="voiceGrid">
+
+    <!-- 1 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">01</span>
+        <div class="uc-title">Fly me to a city</div>
+        <div class="uc-icon"><i class="fa-solid fa-city"></i></div>
+      </div>
+      <div class="uc-desc">Instant camera flight to any named city. The agent frames a city overview on arrival.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Take me to Tokyo."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">02</span>
+        <div class="uc-title">Go to a port</div>
+        <div class="uc-icon"><i class="fa-solid fa-anchor"></i></div>
+      </div>
+      <div class="uc-desc">Voice-piloted jump to a maritime hub — vessels layer comes alive on arrival.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you take me to Rotterdam?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 3 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">03</span>
+        <div class="uc-title">Find the busiest US airport</div>
+        <div class="uc-icon"><i class="fa-solid fa-plane-departure"></i></div>
+      </div>
+      <div class="uc-desc">Ask in natural language — it picks Hartsfield–Jackson Atlanta and flies you there.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Take me to the busiest airport in the United States."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">04</span>
+        <div class="uc-title">Visit a chokepoint</div>
+        <div class="uc-icon"><i class="fa-solid fa-water"></i></div>
+      </div>
+      <div class="uc-desc">Jump to strategic waterways — Strait of Hormuz, Suez, Gibraltar — and read what's moving.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Hey, take me to the Strait of Hormuz."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">05</span>
+        <div class="uc-title">Go to Area 51</div>
+        <div class="uc-icon"><i class="fa-solid fa-ufo"></i></div>
+      </div>
+      <div class="uc-desc">Drop into restricted airspace and watch Janet traffic loop the perimeter.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Please take me to Area 51."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">06</span>
+        <div class="uc-title">Find dense infrastructure</div>
+        <div class="uc-icon"><i class="fa-solid fa-network-wired"></i></div>
+      </div>
+      <div class="uc-desc">Ask for a hub of something — undersea cables, datacenters — and the globe flies you there.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Take me to a place with the densest coverage of undersea cables."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 7 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">07</span>
+        <div class="uc-title">Go to London</div>
+        <div class="uc-icon"><i class="fa-solid fa-tower-observation"></i></div>
+      </div>
+      <div class="uc-desc">City overview framing — perfect for jumping straight into CCTV coverage.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Hey, can you take me to London, please?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 8 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">08</span>
+        <div class="uc-title">Go to Shibuya</div>
+        <div class="uc-icon"><i class="fa-solid fa-location-dot"></i></div>
+      </div>
+      <div class="uc-desc">District-level navigation — pairs well with the Radio layer's analog tuner.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Take me to Shibuya."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 9 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">09</span>
+        <div class="uc-title">Zoom out to a globe view</div>
+        <div class="uc-icon"><i class="fa-solid fa-earth-americas"></i></div>
+      </div>
+      <div class="uc-desc">Voice-driven Reset Globe. One sentence and you're back at the full Earth.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Zoom out to a globe view."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 10 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">10</span>
+        <div class="uc-title">Take me to LAX, select nearest aircraft</div>
+        <div class="uc-icon"><i class="fa-solid fa-plane"></i></div>
+      </div>
+      <div class="uc-desc">Compound request — fly to an airport <em>and</em> lock onto a live contact in one breath.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Take me to LAX and select the nearest airborne aircraft."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span></div>
+    </div>
+
+    <!-- 11 -->
+    <div class="uc-card" data-cat="navigate">
+      <div class="uc-head">
+        <span class="uc-num">11</span>
+        <div class="uc-title">Show me the planes overhead</div>
+        <div class="uc-icon"><i class="fa-solid fa-up-long"></i></div>
+      </div>
+      <div class="uc-desc">Asks for local traffic and the agent pulls the camera back to frame it cinematically.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Show me the planes overhead."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Navigate</span><span class="uc-tag cat">Cinematic</span></div>
+    </div>
+
+    <!-- 12 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">12</span>
+        <div class="uc-title">Outline a US state</div>
+        <div class="uc-icon"><i class="fa-solid fa-draw-polygon"></i></div>
+      </div>
+      <div class="uc-desc">Draws the actual enclosing boundary polygon — not a circle — pinned to the real world.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Outline the state of Texas."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 13 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">13</span>
+        <div class="uc-title">Annotate a landmark & grounds</div>
+        <div class="uc-icon"><i class="fa-solid fa-landmark"></i></div>
+      </div>
+      <div class="uc-desc">Real boundary around the Texas State Capitol and its surrounding grounds, persisting on the map.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Annotate the Texas State Capitol and its grounds."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 14 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">14</span>
+        <div class="uc-title">Mark the Port of Rotterdam</div>
+        <div class="uc-icon"><i class="fa-solid fa-bookmark"></i></div>
+      </div>
+      <div class="uc-desc">Drop a label on a feature, then chain it into a slow camera orbit.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Mark the port of Rotterdam and start a camera orbit around it."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span><span class="uc-tag cat">Cinematic</span></div>
+    </div>
+
+    <!-- 15 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">15</span>
+        <div class="uc-title">Measure landmark-to-landmark distance</div>
+        <div class="uc-icon"><i class="fa-solid fa-ruler"></i></div>
+      </div>
+      <div class="uc-desc">A connector arrow spans the world, the distance lands in the caption, endpoints stay pinned.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"How far is the Eiffel Tower from the Louvre?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 16 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">16</span>
+        <div class="uc-title">Measure airport-to-airport</div>
+        <div class="uc-icon"><i class="fa-solid fa-ruler-horizontal"></i></div>
+      </div>
+      <div class="uc-desc">Great-circle distance between LAX and DFW — arrow stays pinned as you orbit the globe.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"How far is LAX from DFW?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 17 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">17</span>
+        <div class="uc-title">Draw a walking route between two places</div>
+        <div class="uc-icon"><i class="fa-solid fa-route"></i></div>
+      </div>
+      <div class="uc-desc">Street-following walking route drapes on the terrain with turn-by-turn steps.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Draw the walking route from the Capitol to Zilker Park."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 18 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">18</span>
+        <div class="uc-title">Draw a route from port to port</div>
+        <div class="uc-icon"><i class="fa-solid fa-road"></i></div>
+      </div>
+      <div class="uc-desc">Multi-modal routing — Rotterdam to Antwerp with a distance readout in the caption.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Draw me a route from the port of Rotterdam to Antwerp."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 19 -->
+    <div class="uc-card" data-cat="annotate">
+      <div class="uc-head">
+        <span class="uc-num">19</span>
+        <div class="uc-title">Clear all annotations</div>
+        <div class="uc-icon"><i class="fa-solid fa-eraser"></i></div>
+      </div>
+      <div class="uc-desc">Wipes polygons, routes, marks, and arrows in one sentence. Persistence is yours to revoke.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Please clear all annotations."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Annotate</span></div>
+    </div>
+
+    <!-- 20 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">20</span>
+        <div class="uc-title">Count flights over a region</div>
+        <div class="uc-icon"><i class="fa-solid fa-hashtag"></i></div>
+      </div>
+      <div class="uc-desc">Real-time count of airborne aircraft inside an outlined region.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"How many flights are over Texas right now?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 21 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">21</span>
+        <div class="uc-title">Which ships are headed to a port?</div>
+        <div class="uc-icon"><i class="fa-solid fa-ship"></i></div>
+      </div>
+      <div class="uc-desc">Filters live AIS contacts by destination — analysts' question, plain English.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Which ships are headed to Oakland?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 22 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">22</span>
+        <div class="uc-title">Biggest fire near a city</div>
+        <div class="uc-icon"><i class="fa-solid fa-fire"></i></div>
+      </div>
+      <div class="uc-desc">Pulls NASA FIRMS detections and ranks them by intensity around a named place.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"What is the biggest fire near Los Angeles?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span><span class="uc-tag key">FIRMS</span></div>
+    </div>
+
+    <!-- 23 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">23</span>
+        <div class="uc-title">Anything flying above 40,000 ft?</div>
+        <div class="uc-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></div>
+      </div>
+      <div class="uc-desc">Altitude-threshold query across live contacts — find the high flyers in one sentence.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Is anything flying above forty thousand feet?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 24 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">24</span>
+        <div class="uc-title">When does the ISS pass over next?</div>
+        <div class="uc-icon"><i class="fa-solid fa-satellite"></i></div>
+      </div>
+      <div class="uc-desc">SGP4 propagation answers the orbital question everyone asks.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"When does the ISS pass over next?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 25 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">25</span>
+        <div class="uc-title">What's this? (entity Q&A)</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-question"></i></div>
+      </div>
+      <div class="uc-desc">Click any plane, ship, or datacenter, then ask — it answers from live telemetry.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"What's this?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 26 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">26</span>
+        <div class="uc-title">What city is this?</div>
+        <div class="uc-icon"><i class="fa-solid fa-map"></i></div>
+      </div>
+      <div class="uc-desc">Mid-flight, mid-orbit — the agent pulls coordinates and street names to answer.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"What city is this?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 27 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">27</span>
+        <div class="uc-title">Tell me about this Air Force Base</div>
+        <div class="uc-icon"><i class="fa-solid fa-jet-fighter"></i></div>
+      </div>
+      <div class="uc-desc">World-knowledge Q&A grounded in the live scene — Laughlin AFB and its training role.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you please tell me a little bit about this Air Force base?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 28 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">28</span>
+        <div class="uc-title">Tell me about its significance</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-info"></i></div>
+      </div>
+      <div class="uc-desc">Follow-up contextual questions — chain them to drill into a place's role.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you tell me a little bit about its significance?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 29 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">29</span>
+        <div class="uc-title">Fun facts about Delta Airlines</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-info"></i></div>
+      </div>
+      <div class="uc-desc">General-knowledge Q&A while riding a tracked airliner in cockpit view.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Got any fun facts about Delta Airlines for me?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 30 -->
+    <div class="uc-card" data-cat="interrogate">
+      <div class="uc-head">
+        <span class="uc-num">30</span>
+        <div class="uc-title">Tell me about Rotterdam</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-info"></i></div>
+      </div>
+      <div class="uc-desc">Place briefings while the camera orbits the location you asked about.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you tell me a little bit about Rotterdam?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 31 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">31</span>
+        <div class="uc-title">Turn on the vessels layer</div>
+        <div class="uc-icon"><i class="fa-solid fa-ship"></i></div>
+      </div>
+      <div class="uc-desc">Hands-free layer toggle — works for any of the 15 layers.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Hey, please turn on vessels."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span><span class="uc-tag key">AISStream</span></div>
+    </div>
+
+    <!-- 32 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">32</span>
+        <div class="uc-title">Switch sensor + enable flights</div>
+        <div class="uc-icon"><i class="fa-solid fa-sliders"></i></div>
+      </div>
+      <div class="uc-desc">Compound command — change visual style and toggle a layer in one breath.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Switch to night vision and turn on the flights layer."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 33 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">33</span>
+        <div class="uc-title">Turn on camera viewsheds</div>
+        <div class="uc-icon"><i class="fa-solid fa-eye"></i></div>
+      </div>
+      <div class="uc-desc">Every CCTV camera draws its estimated coverage volume — where it reaches, where it goes blind.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Turn on the camera viewsheds."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 34 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">34</span>
+        <div class="uc-title">Play a news radio station near Austin</div>
+        <div class="uc-icon"><i class="fa-solid fa-radio"></i></div>
+      </div>
+      <div class="uc-desc">Voice picks a real broadcaster near a place — the globe starts broadcasting.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Play a news radio station near Austin."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 35 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">35</span>
+        <div class="uc-title">Track that plane → Enter Cockpit</div>
+        <div class="uc-icon"><i class="fa-solid fa-crosshairs"></i></div>
+      </div>
+      <div class="uc-desc">Two-step chain — lock onto the in-view contact, then drop into cockpit mode.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Track that plane." → "Enter Cockpit."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 36 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">36</span>
+        <div class="uc-title">Turn on traffic + CCTV together</div>
+        <div class="uc-icon"><i class="fa-solid fa-traffic-light"></i></div>
+      </div>
+      <div class="uc-desc">Layer stacking by voice — paint rush-hour density over a city's cameras.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you turn on traffic mode and CCTV mode, please?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 37 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">37</span>
+        <div class="uc-title">Show me global infrastructure</div>
+        <div class="uc-icon"><i class="fa-solid fa-globe"></i></div>
+      </div>
+      <div class="uc-desc">Stages the right layers and pulls back to a global situational picture.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Show me global infrastructure."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 38 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">38</span>
+        <div class="uc-title">Show me space missions</div>
+        <div class="uc-icon"><i class="fa-solid fa-rocket"></i></div>
+      </div>
+      <div class="uc-desc">Rolling 30-day launch manifest with payload, stage, and recovery detail.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Show me space missions."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 39 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">39</span>
+        <div class="uc-title">Switch to OSM basemap</div>
+        <div class="uc-icon"><i class="fa-solid fa-map"></i></div>
+      </div>
+      <div class="uc-desc">Voice-driven basemap swap — Esri → OSM, no clicking through the ladder.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Switch to OSM."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 40 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">40</span>
+        <div class="uc-title">Sharpen the image</div>
+        <div class="uc-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      </div>
+      <div class="uc-desc">Fine-tune the sensor look — "a touch" is understood as a small step.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Sharpen the image a touch."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 41 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">41</span>
+        <div class="uc-title">Switch to the tactical layout</div>
+        <div class="uc-icon"><i class="fa-solid fa-grip"></i></div>
+      </div>
+      <div class="uc-desc">Reskin the UI to the ops-room grammar — full HUD, detection overlay, dense readouts.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Switch to the tactical layout."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 42 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">42</span>
+        <div class="uc-title">What's turned on right now?</div>
+        <div class="uc-icon"><i class="fa-solid fa-list-check"></i></div>
+      </div>
+      <div class="uc-desc">State introspection — the agent lists your active layers and current view.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"What's turned on right now?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span></div>
+    </div>
+
+    <!-- 43 -->
+    <div class="uc-card" data-cat="direct">
+      <div class="uc-head">
+        <span class="uc-num">43</span>
+        <div class="uc-title">Orbit this area slowly</div>
+        <div class="uc-icon"><i class="fa-solid fa-arrows-rotate"></i></div>
+      </div>
+      <div class="uc-desc">Drone-operator verb — slow cinematic orbit around the current focus.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Orbit around this area slowly."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Direct</span></div>
+    </div>
+
+    <!-- 44 -->
+    <div class="uc-card" data-cat="direct">
+      <div class="uc-head">
+        <span class="uc-num">44</span>
+        <div class="uc-title">Fly the route we just drew</div>
+        <div class="uc-icon"><i class="fa-solid fa-paper-plane"></i></div>
+      </div>
+      <div class="uc-desc">Banked turns, eased ends, the camera leading the path like a drone shot.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Fly the route we just drew."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Direct</span></div>
+    </div>
+
+    <!-- 45 -->
+    <div class="uc-card" data-cat="direct">
+      <div class="uc-head">
+        <span class="uc-num">45</span>
+        <div class="uc-title">Set detection density to 50%</div>
+        <div class="uc-icon"><i class="fa-solid fa-gauge-high"></i></div>
+      </div>
+      <div class="uc-desc">Tune the screen-space detection overlay — fewer boxes when the scene gets busy.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Set detection density to fifty percent."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Direct</span></div>
+    </div>
+
+    <!-- 46 -->
+    <div class="uc-card" data-cat="direct">
+      <div class="uc-head">
+        <span class="uc-num">46</span>
+        <div class="uc-title">Next contact — helicopters only</div>
+        <div class="uc-icon"><i class="fa-solid fa-helicopter"></i></div>
+      </div>
+      <div class="uc-desc">Mid-cockpit filter — jump to the next rotary contact in the 250 km roster.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Next contact — helicopters only."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Direct</span></div>
+    </div>
+
+    <!-- 47 -->
+    <div class="uc-card" data-cat="cinematic">
+      <div class="uc-head">
+        <span class="uc-num">47</span>
+        <div class="uc-title">Play Orbital Watch</div>
+        <div class="uc-icon"><i class="fa-solid fa-film"></i></div>
+      </div>
+      <div class="uc-desc">A full cinematic scene — staged layers, camera moves, ready to screen-record.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Play Orbital Watch."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Cinematic</span></div>
+    </div>
+
+    <!-- 48 -->
+    <div class="uc-card" data-cat="cinematic">
+      <div class="uc-head">
+        <span class="uc-num">48</span>
+        <div class="uc-title">Ask about the energy situation in France</div>
+        <div class="uc-icon"><i class="fa-solid fa-bolt"></i></div>
+      </div>
+      <div class="uc-desc">Voice Q&A with world knowledge — nuclear grid, datacenter clustering, subsea hubs.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Can you tell me more about the energy situation in France?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Cinematic</span><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 49 -->
+    <div class="uc-card" data-cat="cinematic">
+      <div class="uc-head">
+        <span class="uc-num">49</span>
+        <div class="uc-title">Why are these helicopters circling?</div>
+        <div class="uc-icon"><i class="fa-solid fa-helicopter-symbol"></i></div>
+      </div>
+      <div class="uc-desc">Select a military track and ask — it backfills ~24h of real trace history as stacked 3D loops.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Why are all these military helicopters flying in circles?"</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Cinematic</span><span class="uc-tag cat">Interrogate</span></div>
+    </div>
+
+    <!-- 50 -->
+    <div class="uc-card" data-cat="operate">
+      <div class="uc-head">
+        <span class="uc-num">50</span>
+        <div class="uc-title">Set me up for night watch</div>
+        <div class="uc-icon"><i class="fa-solid fa-moon"></i></div>
+      </div>
+      <div class="uc-desc">Compound mission stage — NVG sensor, detection mesh, HUD, and a vector to your city.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-quote-left"></i><span class="cmd-text">"Set me up for night watch over my city."</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Operate</span><span class="uc-tag cat">Cinematic</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider"><div class="divider-inner"></div></div>
+
+<!-- ===== HANDS-ON SECTION ===== -->
+<section class="section-wrap" id="hands">
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <h2>Hands-On Use Cases</h2>
+    <span class="section-tag">// 50 · NO MIC NEEDED</span>
+  </div>
+  <p class="section-intro">
+    Everything below works <strong>without a microphone, without an OpenAI key, and most work without any key at all</strong>. Mouse, keyboard, and the in-app panels are the entire interface.
+  </p>
+
+  <div class="mode-pills">
+    <span class="mode-pill amber"><i class="fa-solid fa-computer-mouse"></i> Click · drag · scroll</span>
+    <span class="mode-pill amber"><i class="fa-solid fa-keyboard"></i> 1–7 · H · D · C · Esc</span>
+    <span class="mode-pill"><i class="fa-solid fa-unlock"></i> Keyless paths for 13/15 layers</span>
+  </div>
+
+  <div class="filter-bar" id="handsFilter">
+    <span class="filter-label">// Filter:</span>
+    <button class="filter-chip active amber" data-cat="all">All · 50</button>
+    <button class="filter-chip" data-cat="track">Track & Follow · 9</button>
+    <button class="filter-chip" data-cat="layers">Layers & Toggles · 11</button>
+    <button class="filter-chip" data-cat="camera">Camera & View · 8</button>
+    <button class="filter-chip" data-cat="display">Display & Style · 7</button>
+    <button class="filter-chip" data-cat="discover">Search & Discover · 6</button>
+    <button class="filter-chip" data-cat="draw">Draw & Annotate · 4</button>
+    <button class="filter-chip" data-cat="scenes">Scene Director · 3</button>
+    <button class="filter-chip" data-cat="keys">Setup & Share · 2</button>
+  </div>
+
+  <div class="uc-grid" id="handsGrid">
+
+    <!-- 1 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">01</span>
+        <div class="uc-title">Click-to-track any aircraft</div>
+        <div class="uc-icon"><i class="fa-solid fa-crosshairs"></i></div>
+      </div>
+      <div class="uc-desc">Camera locks on, a fading trail draws behind it, and a live telemetry card surfaces.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Click any flight glyph in the live layer.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">02</span>
+        <div class="uc-title">Ride a tracked flight in cockpit</div>
+        <div class="uc-icon"><i class="fa-solid fa-plane"></i></div>
+      </div>
+      <div class="uc-desc">Hit COCKPIT on a tracked plane — the camera rides it down with terrain holding underneath.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Track a plane → click COCKPIT.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 3 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">03</span>
+        <div class="uc-title">Step through the 250 km contacts roster</div>
+        <div class="uc-icon"><i class="fa-solid fa-list"></i></div>
+      </div>
+      <div class="uc-desc">Contacts menu shows all commercial, military, and vessel traffic near your target. Jump plane to plane.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Context menu → Contacts → click any track.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">04</span>
+        <div class="uc-title">Track the ISS at orbital distance</div>
+        <div class="uc-icon"><i class="fa-solid fa-satellite"></i></div>
+      </div>
+      <div class="uc-desc">Turn on Satellites, click ISS — you ride along at orbital distance with the orbit ring drawn.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Enable Satellites → click ISS.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">05</span>
+        <div class="uc-title">Click a vessel for tactical card + wake</div>
+        <div class="uc-icon"><i class="fa-solid fa-ship"></i></div>
+      </div>
+      <div class="uc-desc">Lock onto a tanker over Long Beach — speed, heading, destination, and a trailing wake trail.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Enable Vessels → click any ship.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span><span class="uc-tag key">AISStream</span></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">06</span>
+        <div class="uc-title">Track a fire → hand off to nearest CCTV</div>
+        <div class="uc-icon"><i class="fa-solid fa-fire"></i></div>
+      </div>
+      <div class="uc-desc">Click a FIRMS detection, the camera dives, then hit NEAREST in the CCTV panel for a ground view.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Click fire detection → CCTV panel → NEAREST.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span><span class="uc-tag key">FIRMS</span></div>
+    </div>
+
+    <!-- 7 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">07</span>
+        <div class="uc-title">Swap glyph to 3D model on close-in</div>
+        <div class="uc-icon"><i class="fa-solid fa-cube"></i></div>
+      </div>
+      <div class="uc-desc">As you close in on a tracked contact it swaps from a 2D glyph to a real per-class 3D aircraft model.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Track a flight → descend toward it.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 8 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">08</span>
+        <div class="uc-title">Calibrate a CCTV camera pose by gizmo</div>
+        <div class="uc-icon"><i class="fa-solid fa-video"></i></div>
+      </div>
+      <div class="uc-desc">Camera positions are published; poses are estimated priors — drag the gizmo on the camera to refine.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Click CCTV camera → drag pose gizmo.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 9 -->
+    <div class="uc-card amber" data-cat="track">
+      <div class="uc-head">
+        <span class="uc-num">09</span>
+        <div class="uc-title">Backfill 24h of military trace history</div>
+        <div class="uc-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+      </div>
+      <div class="uc-desc">Select a military track and it silently backfills ~24h of real trace history as stacked 3D loops.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Enable Military Flights → click amber track → wait.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Track</span></div>
+    </div>
+
+    <!-- 10 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">10</span>
+        <div class="uc-title">Toggle Live Flights</div>
+        <div class="uc-icon"><i class="fa-solid fa-plane"></i></div>
+      </div>
+      <div class="uc-desc">11,000+ live aircraft + route history from OpenSky and adsb.lol. Keyless.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Flights.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 11 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">11</span>
+        <div class="uc-title">Toggle Military Flights</div>
+        <div class="uc-icon"><i class="fa-solid fa-shield"></i></div>
+      </div>
+      <div class="uc-desc">ADS-B military traffic in amber — distinct from commercial air traffic at every zoom level.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Military Flights.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 12 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">12</span>
+        <div class="uc-title">Toggle Active Fires (NASA FIRMS)</div>
+        <div class="uc-icon"><i class="fa-solid fa-fire"></i></div>
+      </div>
+      <div class="uc-desc">Live thermal detections from space, trailing 24h. Click any hotspot for intensity.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Active Fires.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span><span class="uc-tag key">FIRMS</span></div>
+    </div>
+
+    <!-- 13 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">13</span>
+        <div class="uc-title">Toggle Earthquakes (USGS)</div>
+        <div class="uc-icon"><i class="fa-solid fa-house-crack"></i></div>
+      </div>
+      <div class="uc-desc">Global seismic activity, last 24h. Click a marker for magnitude, depth, and affected regions.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Earthquakes.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 14 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">14</span>
+        <div class="uc-title">Toggle Datacenters (4,351 sites)</div>
+        <div class="uc-icon"><i class="fa-solid fa-server"></i></div>
+      </div>
+      <div class="uc-desc">Bundled static infrastructure — worldwide datacenter footprint with attribution.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Datacenters.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 15 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">15</span>
+        <div class="uc-title">Toggle Submarine Cables (712)</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+      </div>
+      <div class="uc-desc">The physical internet — landing hubs, transoceanic routes, the planet's nervous system.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Submarine Cables.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 16 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">16</span>
+        <div class="uc-title">Toggle Dams (704)</div>
+        <div class="uc-icon"><i class="fa-solid fa-industry"></i></div>
+      </div>
+      <div class="uc-desc">Sweep Three Gorges at a glance, then find 703 more across the globe.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Dams.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 17 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">17</span>
+        <div class="uc-title">Toggle Mapped Installations</div>
+        <div class="uc-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+      </div>
+      <div class="uc-desc">Viewport-bounded military-site context from community mapping — incomplete, labeled that way.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Mapped Installations.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 18 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">18</span>
+        <div class="uc-title">Toggle Bikeshare (GBFS)</div>
+        <div class="uc-icon"><i class="fa-solid fa-bicycle"></i></div>
+      </div>
+      <div class="uc-desc">Live station availability across cities that publish GBFS feeds.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Bikeshare.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 19 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">19</span>
+        <div class="uc-title">Toggle Transit (GTFS-Realtime)</div>
+        <div class="uc-icon"><i class="fa-solid fa-bus"></i></div>
+      </div>
+      <div class="uc-desc">Live buses, trams, metros, trains, ferries — delayed playback, mode-coloured DETECT labels.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Left panel → Data Layers → Transit.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 20 -->
+    <div class="uc-card amber" data-cat="layers">
+      <div class="uc-head">
+        <span class="uc-num">20</span>
+        <div class="uc-title">Drop the DENSE chip — full Starlink shell</div>
+        <div class="uc-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+      </div>
+      <div class="uc-desc">838-object satellite catalog, color-coded by class. DENSE drops the whole Starlink shell.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Satellites layer → click DENSE chip.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Layers</span></div>
+    </div>
+
+    <!-- 21 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">21</span>
+        <div class="uc-title">Press 1–7 to switch sensors</div>
+        <div class="uc-icon"><i class="fa-solid fa-eye"></i></div>
+      </div>
+      <div class="uc-desc">CRT, NVG, FLIR/thermal, Ironbow, Noir, Snow — the whole live planet re-renders instantly.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Press 1, 2, 3, 4, 5, 6, or 7.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 22 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">22</span>
+        <div class="uc-title">Press H to toggle the Military HUD</div>
+        <div class="uc-icon"><i class="fa-solid fa-helmet-safety"></i></div>
+      </div>
+      <div class="uc-desc">Tactical heads-up display with intelligence-style telemetry over the live scene.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Press H.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 23 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">23</span>
+        <div class="uc-title">Press D to toggle detection overlay</div>
+        <div class="uc-icon"><i class="fa-solid fa-vector-square"></i></div>
+      </div>
+      <div class="uc-desc">Screen-space bounding boxes and IDs on everything in view — adjust density in Display.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Press D.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 24 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">24</span>
+        <div class="uc-title">Press C to enter cockpit</div>
+        <div class="uc-icon"><i class="fa-solid fa-plane-lock"></i></div>
+      </div>
+      <div class="uc-desc">Keyboard shortcut into cockpit mode — same as the COCKPIT button on the tracked card.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Track something → press C.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 25 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">25</span>
+        <div class="uc-title">Press Esc to exit / back out</div>
+        <div class="uc-icon"><i class="fa-solid fa-arrow-left-long"></i></div>
+      </div>
+      <div class="uc-desc">Universal escape — exits cockpit, drops track, closes panels.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Press Esc.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 26 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">26</span>
+        <div class="uc-title">Cycle CCTV coverage to VIEWSHED</div>
+        <div class="uc-icon"><i class="fa-solid fa-eye-low-vision"></i></div>
+      </div>
+      <div class="uc-desc">Every camera draws its estimated coverage volume — where it reaches, where it goes blind.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">CCTV panel → cycle Coverage → VIEWSHED.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 27 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">27</span>
+        <div class="uc-title">Hit NEAREST for ground-view handoff</div>
+        <div class="uc-icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+      </div>
+      <div class="uc-desc">Tracked a vessel or fire? NEAREST in the CCTV panel hands you off to the closest public camera.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Track target → CCTV panel → NEAREST.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span></div>
+    </div>
+
+    <!-- 28 -->
+    <div class="uc-card amber" data-cat="camera">
+      <div class="uc-head">
+        <span class="uc-num">28</span>
+        <div class="uc-title">Hold Space for push-to-talk</div>
+        <div class="uc-icon"><i class="fa-solid fa-microphone"></i></div>
+      </div>
+      <div class="uc-desc">Don't want to click the mic? Hold the spacebar, speak, release. Same OpenAI session.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-keyboard"></i><span class="cmd-text">Hold Space → speak → release.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Camera</span><span class="uc-tag key">OpenAI</span></div>
+    </div>
+
+    <!-- 29 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">29</span>
+        <div class="uc-title">Switch basemap to OSM</div>
+        <div class="uc-icon"><i class="fa-solid fa-map"></i></div>
+      </div>
+      <div class="uc-desc">The traditional 2D map view — familiar mapping app aesthetic, keyless fallback.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Bottom bar → Map Source → OSM.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 30 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">30</span>
+        <div class="uc-title">Switch to Bing labels overlay</div>
+        <div class="uc-icon"><i class="fa-solid fa-tag"></i></div>
+      </div>
+      <div class="uc-desc">2D map with geopolitical outlines — borders and labels over the satellite base.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Bottom bar → Map Source → Bing labels.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 31 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">31</span>
+        <div class="uc-title">Adjust label density</div>
+        <div class="uc-icon"><i class="fa-solid fa-tags"></i></div>
+      </div>
+      <div class="uc-desc">Labels get dense at globe view — tune how many you want to see in Display Settings.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Right panel → Display → Labels slider.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 32 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">32</span>
+        <div class="uc-title">Change reticle appearance</div>
+        <div class="uc-icon"><i class="fa-solid fa-circle-dot"></i></div>
+      </div>
+      <div class="uc-desc">Scope-like hard edge, feathered fade, or somewhere in between — your call.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Right panel → Display → Reticle.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 33 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">33</span>
+        <div class="uc-title">Toggle celestial mode</div>
+        <div class="uc-icon"><i class="fa-solid fa-sun"></i></div>
+      </div>
+      <div class="uc-desc">At globe view, see where the sun and moon are as you rotate around the planet.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Right panel → Display → Celestial.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 34 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">34</span>
+        <div class="uc-title">Switch to tactical / minimalist UI</div>
+        <div class="uc-icon"><i class="fa-solid fa-grip"></i></div>
+      </div>
+      <div class="uc-desc">Tactical mode leans into the spy-satellite branding. Minimalist drops the chrome entirely.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Right panel → Display → Layout.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 35 -->
+    <div class="uc-card amber" data-cat="display">
+      <div class="uc-head">
+        <span class="uc-num">35</span>
+        <div class="uc-title">Exit Clean View for max minimalism</div>
+        <div class="uc-icon"><i class="fa-solid fa-expand"></i></div>
+      </div>
+      <div class="uc-desc">Make absolutely everything disappear — just the globe, the data, and your cursor.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Right panel → Display → Exit Clean View.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Display</span></div>
+    </div>
+
+    <!-- 36 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">36</span>
+        <div class="uc-title">Search any location by name</div>
+        <div class="uc-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+      </div>
+      <div class="uc-desc">Type "SFO airport" — the globe flies you there. (Place search needs Google key.)</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Search bar → type a place → Enter.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span><span class="uc-tag key">Google</span></div>
+    </div>
+
+    <!-- 37 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">37</span>
+        <div class="uc-title">Use a city preset</div>
+        <div class="uc-icon"><i class="fa-solid fa-bookmark"></i></div>
+      </div>
+      <div class="uc-desc">Austin, London, Tokyo, Rotterdam — preset locations get you to the action fast.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Click a preset chip on the bottom bar.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span></div>
+    </div>
+
+    <!-- 38 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">38</span>
+        <div class="uc-title">Drag the radio tuner needle</div>
+        <div class="uc-icon"><i class="fa-solid fa-radio"></i></div>
+      </div>
+      <div class="uc-desc">Analog tuner across up to 750 stations — every position snaps to a real broadcaster.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Enable Radio → drag tuner needle.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span></div>
+    </div>
+
+    <!-- 39 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">39</span>
+        <div class="uc-title">Hover a CCTV camera for preview</div>
+        <div class="uc-icon"><i class="fa-solid fa-eye"></i></div>
+      </div>
+      <div class="uc-desc">Rest the cursor on any camera dot for a second — a still preview pops up before you commit.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Enable CCTV → hover any camera.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span></div>
+    </div>
+
+    <!-- 40 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">40</span>
+        <div class="uc-title">Click A and B on the globe for directions</div>
+        <div class="uc-icon"><i class="fa-solid fa-route"></i></div>
+      </div>
+      <div class="uc-desc">Street-following drive, walk or cycle route draped on terrain with turn-by-turn steps.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Directions tool → click A → click B.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span></div>
+    </div>
+
+    <!-- 41 -->
+    <div class="uc-card amber" data-cat="discover">
+      <div class="uc-head">
+        <span class="uc-num">41</span>
+        <div class="uc-title">Scrub a Space Mission replay 0.25×–4×</div>
+        <div class="uc-icon"><i class="fa-solid fa-rocket"></i></div>
+      </div>
+      <div class="uc-desc">Pick a launch from the last 30 days and ride T-minus through ascent. Labeled RECONSTRUCTED ESTIMATE.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Space Missions → pick launch → scrub timeline.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Discover</span></div>
+    </div>
+
+    <!-- 42 -->
+    <div class="uc-card amber" data-cat="draw">
+      <div class="uc-head">
+        <span class="uc-num">42</span>
+        <div class="uc-title">Draw an Area polygon by hand</div>
+        <div class="uc-icon"><i class="fa-solid fa-draw-polygon"></i></div>
+      </div>
+      <div class="uc-desc">Display → Draw → Area. Click vertices on the real world, double-click to finish, label it.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Display → Draw → Area → click vertices → double-click.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Draw</span></div>
+    </div>
+
+    <!-- 43 -->
+    <div class="uc-card amber" data-cat="draw">
+      <div class="uc-head">
+        <span class="uc-num">43</span>
+        <div class="uc-title">Draw a Line on the real world</div>
+        <div class="uc-icon"><i class="fa-solid fa-minus"></i></div>
+      </div>
+      <div class="uc-desc">Same whiteboard as voice annotations — clicking instead of speaking. Same persistence.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Display → Draw → Line → click vertices.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Draw</span></div>
+    </div>
+
+    <!-- 44 -->
+    <div class="uc-card amber" data-cat="draw">
+      <div class="uc-head">
+        <span class="uc-num">44</span>
+        <div class="uc-title">Drop a labeled Pin</div>
+        <div class="uc-icon"><i class="fa-solid fa-thumbtack"></i></div>
+      </div>
+      <div class="uc-desc">Mark a single point with a label — no microphone, no API key, no geocoder.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Display → Draw → Pin → click → label.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Draw</span></div>
+    </div>
+
+    <!-- 45 -->
+    <div class="uc-card amber" data-cat="draw">
+      <div class="uc-head">
+        <span class="uc-num">45</span>
+        <div class="uc-title">Toggle the opt-in cockpit WX cloud effect</div>
+        <div class="uc-icon"><i class="fa-solid fa-cloud"></i></div>
+      </div>
+      <div class="uc-desc">Volumetric clouds rendered from actual observations around your tracked aircraft.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Cockpit mode → Display → WX toggle.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Draw</span></div>
+    </div>
+
+    <!-- 46 -->
+    <div class="uc-card amber" data-cat="scenes">
+      <div class="uc-head">
+        <span class="uc-num">46</span>
+        <div class="uc-title">Create a cinematic scene & capture shots</div>
+        <div class="uc-icon"><i class="fa-solid fa-clapperboard"></i></div>
+      </div>
+      <div class="uc-desc">Frame exactly where you want the camera, click Capture Shot. Build a sequence of shots.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Scenes → New → frame → Capture Shot.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Scenes</span></div>
+    </div>
+
+    <!-- 47 -->
+    <div class="uc-card amber" data-cat="scenes">
+      <div class="uc-head">
+        <span class="uc-num">47</span>
+        <div class="uc-title">Update an existing shot</div>
+        <div class="uc-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+      </div>
+      <div class="uc-desc">Reframe a shot you already captured — no need to start over.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Scenes → select shot → reframe → Update Shot.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Scenes</span></div>
+    </div>
+
+    <!-- 48 -->
+    <div class="uc-card amber" data-cat="scenes">
+      <div class="uc-head">
+        <span class="uc-num">48</span>
+        <div class="uc-title">Play back a scene and screen-record</div>
+        <div class="uc-icon"><i class="fa-solid fa-play"></i></div>
+      </div>
+      <div class="uc-desc">Hit Start and the camera moves shot to shot to shot — perfect for video captures.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Scenes → Start. Esc to exit.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Scenes</span></div>
+    </div>
+
+    <!-- 49 -->
+    <div class="uc-card amber" data-cat="keys">
+      <div class="uc-head">
+        <span class="uc-num">49</span>
+        <div class="uc-title">Click POWER UP to add keys in-app</div>
+        <div class="uc-icon"><i class="fa-solid fa-key"></i></div>
+      </div>
+      <div class="uc-desc">Bottom-right chip → Provider Settings. Paste, hit SAVE KEYS, the app restarts with new capability.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Click POWER UP chip → Provider Settings.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Setup</span></div>
+    </div>
+
+    <!-- 50 -->
+    <div class="uc-card amber" data-cat="keys">
+      <div class="uc-head">
+        <span class="uc-num">50</span>
+        <div class="uc-title">Serialize a live target into a share URL</div>
+        <div class="uc-icon"><i class="fa-solid fa-link"></i></div>
+      </div>
+      <div class="uc-desc">Camera, style, layers, and one tracked target serialize into a URL — a live target is a handoff.</div>
+      <div class="uc-cmd"><i class="fa-solid fa-hand-pointer"></i><span class="cmd-text">Track something → Share → copy URL.</span></div>
+      <div class="uc-foot"><span class="uc-tag cat">Setup</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DIVIDER -->
+<div class="divider"><div class="divider-inner"></div></div>
+
+<!-- ===== COMPARE SECTION ===== -->
+<section class="section-wrap" id="compare">
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <h2>Voice vs. Hands-On</h2>
+    <span class="section-tag">// WHEN TO USE WHICH</span>
+  </div>
+  <p class="section-intro">
+    They aren't competitors — they're two interfaces to the same 28 tools. Use them together; the agent state and the panel state are the same state.
+  </p>
+
+  <div class="uc-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    <div class="uc-card">
+      <div class="uc-head">
+        <span class="uc-num"><i class="fa-solid fa-microphone"></i></span>
+        <div class="uc-title">Reach for voice when…</div>
+      </div>
+      <div class="uc-desc" style="font-size:13.5px;">
+        <strong>·</strong> You want a compound action in one breath ("take me to LAX and select the nearest aircraft")<br>
+        <strong>·</strong> You're mid-cockpit and your hands are off the mouse<br>
+        <strong>·</strong> You want a place briefing while you look at it<br>
+        <strong>·</strong> You want a real boundary polygon, not a hand-drawn circle<br>
+        <strong>·</strong> You're screen-recording and want a director's hand<br>
+        <strong>·</strong> You want to interrogate the live scene ("how many flights over Texas?")
+      </div>
+      <div class="uc-foot"><span class="uc-tag key">OpenAI Key</span></div>
+    </div>
+
+    <div class="uc-card amber">
+      <div class="uc-head">
+        <span class="uc-num"><i class="fa-solid fa-computer-mouse"></i></span>
+        <div class="uc-title">Reach for hands-on when…</div>
+      </div>
+      <div class="uc-desc" style="font-size:13.5px;">
+        <strong>·</strong> You're exploring with no keys configured<br>
+        <strong>·</strong> You want pixel-precise framing for a screen capture<br>
+        <strong>·</strong> You're calibrating a CCTV pose gizmo<br>
+        <strong>·</strong> You want to scrub a Space Mission timeline<br>
+        <strong>·</strong> You're drawing exact vertices on the real world<br>
+        <strong>·</strong> You want to step through the 250 km contacts roster one by one
+      </div>
+      <div class="uc-foot"><span class="uc-tag cat">Keyless Friendly</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIPS SECTION ===== -->
+<section class="section-wrap" id="tips">
+  <div class="section-head">
+    <span class="section-num">04</span>
+    <h2>Pro Tips</h2>
+    <span class="section-tag">// OPERATOR NOTES</span>
+  </div>
+
+  <div class="callout info">
+    <i class="fa-solid fa-lightbulb"></i>
+    <div>
+      <strong>Chain commands.</strong> "Take me to Rotterdam" → "Mark the port" → "Start a slow orbit" → "Tell me about it" → "Draw a route to Antwerp" → "Fly that route." Each one builds on the last. The agent keeps context.
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <div>
+      <strong>Terrain warm-up matters.</strong> First visit to a region? Planes and cameras may clip into the ground until the 3D tiles load. Chill in the area for a few seconds before tracking a landing airliner.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <i class="fa-solid fa-circle-info"></i>
+    <div>
+      <strong>Try the rapid-fire tier.</strong> "Show me global infrastructure." "Play Orbital Watch." "Set detection density to fifty percent." "Next contact — helicopters only." One sentence each, full mission stage.
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <i class="fa-solid fa-key"></i>
+    <div>
+      <strong>Voice is the only thing that costs real money.</strong> A live session-spend readout sits next to the mic, with a $2 warning and a $5 hard cap. Toggle STD/Mini to trade quality for cost.
+    </div>
+  </div>
+
+  <div class="callout info">
+    <i class="fa-solid fa-shield-halved"></i>
+    <div>
+      <strong>The agent is honest.</strong> It only confirms actions that succeeded. If a layer didn't toggle or a route didn't draw, it says so — no false confirmations.
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <div>
+      <strong>Responsible use.</strong> No named-person search. No face recognition. No tracking individuals. People are not a query type here. PRs that cross that line won't be merged.
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="sig">
+      <span class="blip"></span>
+      <p>SIGNAL ACTIVE · LOCALHOST · 100 USE CASES · MIT LICENSE</p>
+    </div>
+    <p>© 2026 HALFPIXEL · MAINTAINED BY BILAWAL SIDHU & SAMEH KHAMIS</p>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script>
+  // Mobile menu toggle
+  const menuToggle = document.getElementById('menuToggle');
+  const topNav = document.getElementById('topNav');
+  menuToggle.addEventListener('click', () => topNav.classList.toggle('open'));
+  topNav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => topNav.classList.remove('open'));
+  });
+
+  // Category filtering for both grids
+  function setupFilter(filterBarId, gridId) {
+    const bar = document.getElementById(filterBarId);
+    const grid = document.getElementById(gridId);
+    const chips = bar.querySelectorAll('.filter-chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => {
+          c.classList.remove('active');
+          c.classList.remove('amber');
+        });
+        chip.classList.add('active');
+        if (gridId === 'handsGrid') chip.classList.add('amber');
+        const cat = chip.dataset.cat;
+        grid.querySelectorAll('.uc-card').forEach(card => {
+          const show = (cat === 'all' || card.dataset.cat === cat);
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  }
+  setupFilter('voiceFilter', 'voiceGrid');
+  setupFilter('handsFilter', 'handsGrid');
+
+  // Reading progress bar
+  const progressBar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (window.scrollY / total) * 100;
+    progressBar.style.width = pct + '%';
+
+    const toTop = document.getElementById('toTop');
+    if (window.scrollY > 600) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+
+  document.getElementById('toTop').addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>

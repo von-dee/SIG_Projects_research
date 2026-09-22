@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View · Mining & Mineral Intelligence Platform</title>
+<meta name="description" content="A real-time 3D globe for global mining, minerals, and earth-resource intelligence — built from public signals." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ---------- Reset & Base ---------- */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-0);
+    color: var(--fg-0);
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Mining-inspired Palette ---------- */
+  :root {
+    --bg-0: #0a0c0f;
+    --bg-1: #0f1318;
+    --bg-2: #141a21;
+    --bg-3: #1b232c;
+    --bg-card: #11161c;
+    --border: rgba(218, 165, 32, 0.12);
+    --border-strong: rgba(218, 165, 32, 0.28);
+
+    --fg-0: #e8eaed;
+    --fg-1: #b8bcc4;
+    --fg-2: #7a8088;
+    --fg-3: #4a5058;
+
+    --gold: #d4a52a;       /* primary mineral */
+    --gold-bright: #f5c842;
+    --copper: #b87333;     /* copper */
+    --iron: #8c6a4f;       /* iron ore */
+    --lithium: #c0d8e8;    /* lithium/silver */
+    --uranium: #7fd957;    /* uranium glow */
+    --cobalt: #3a7ca5;     /* cobalt blue */
+    --rare-earth: #b566ff; /* rare earth elements */
+    --emerald: #2ecc71;    /* greenstone belts */
+    --warning: #ff6b3d;
+    --danger: #e63946;
+
+    --grid-line: rgba(212, 165, 42, 0.06);
+
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-lg: 22px;
+    --maxw: 1280px;
+  }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Background Grid ---------- */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  }
+
+  /* ---------- Topo contour overlay ---------- */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(212, 165, 42, 0.08), transparent 38%),
+      radial-gradient(circle at 88% 82%, rgba(184, 115, 51, 0.06), transparent 42%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ---------- Top Nav ---------- */
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(18px) saturate(140%);
+    background: rgba(10, 12, 15, 0.72);
+    border-bottom: 1px solid var(--border);
+  }
+  nav.topbar .container {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
+  .brand .logo-mark {
+    width: 34px; height: 34px;
+    background: conic-gradient(from 180deg at 50% 50%, var(--gold), var(--copper), var(--gold-bright), var(--gold));
+    border-radius: 50%;
+    box-shadow: 0 0 24px rgba(212, 165, 42, 0.45), inset 0 0 12px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  .brand .logo-mark::after {
+    content: ''; position: absolute; inset: 6px;
+    border: 1.5px solid rgba(0,0,0,0.55); border-radius: 50%;
+    border-top-color: transparent; border-right-color: transparent;
+  }
+  .brand .tag { color: var(--fg-2); font-weight: 500; font-size: 12px; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; border: 1px solid var(--border); border-radius: 4px; }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links a {
+    color: var(--fg-1); text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: color .2s ease;
+    position: relative;
+  }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-cta {
+    padding: 9px 18px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--gold), var(--copper));
+    color: #0a0c0f; font-weight: 700; font-size: 13px;
+    text-decoration: none; transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 4px 20px rgba(212, 165, 42, 0.25);
+  }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(212, 165, 42, 0.4); }
+
+  @media (max-width: 880px) {
+    .nav-links a:not(.nav-cta) { display: none; }
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 110px 0 80px;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 60px; align-items: center;
+  }
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 14px; border-radius: 999px;
+    background: rgba(212, 165, 42, 0.08); border: 1px solid var(--border-strong);
+    color: var(--gold-bright);
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.05em;
+    margin-bottom: 26px;
+  }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-bright); box-shadow: 0 0 12px var(--gold-bright); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(38px, 6vw, 76px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    margin-bottom: 24px;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--copper) 60%, var(--gold) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero h1 .glow {
+    background: linear-gradient(135deg, #fff, var(--fg-1));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero .lede {
+    color: var(--fg-1); font-size: 18px; max-width: 580px; margin-bottom: 32px;
+  }
+  .hero .lede strong { color: var(--fg-0); font-weight: 600; }
+
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 36px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 22px; border-radius: 10px;
+    font-weight: 600; font-size: 14px; text-decoration: none;
+    transition: all .2s ease; cursor: pointer; border: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold), var(--copper));
+    color: #0a0c0f;
+    box-shadow: 0 6px 30px rgba(212, 165, 42, 0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(212, 165, 42, 0.45); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.03); color: var(--fg-0);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-ghost:hover { background: rgba(212, 165, 42, 0.08); border-color: var(--gold); }
+
+  .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; padding-top: 28px; border-top: 1px solid var(--border); }
+  .hero-stats .stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: var(--gold-bright); }
+  .hero-stats .stat .lbl { font-size: 12px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* Hero visual — ore vein / cross-section */
+  .hero-visual {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(circle at 30% 35%, rgba(184, 115, 51, 0.45), transparent 45%),
+      radial-gradient(circle at 70% 65%, rgba(212, 165, 42, 0.4), transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(60, 80, 95, 0.3), transparent 60%),
+      linear-gradient(180deg, #1a1410 0%, #0a0c0f 100%);
+    border: 1px solid var(--border-strong);
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), inset 0 0 80px rgba(0,0,0,0.4);
+  }
+  .hero-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent 0 22px, rgba(212, 165, 42, 0.05) 22px 23px),
+      repeating-linear-gradient(-45deg, transparent 0 28px, rgba(184, 115, 51, 0.04) 28px 29px);
+  }
+  .vein { position: absolute; opacity: 0.9; }
+  .vein-1 {
+    top: 18%; left: 8%; width: 84%; height: 14px;
+    background: linear-gradient(90deg, transparent, var(--gold-bright), var(--gold), transparent);
+    transform: rotate(-12deg); filter: blur(0.5px);
+    box-shadow: 0 0 24px rgba(212, 165, 42, 0.6);
+  }
+  .vein-2 {
+    top: 42%; left: 14%; width: 70%; height: 8px;
+    background: linear-gradient(90deg, transparent, var(--copper), transparent);
+    transform: rotate(8deg); filter: blur(1px);
+  }
+  .vein-3 {
+    top: 65%; left: 4%; width: 90%; height: 10px;
+    background: linear-gradient(90deg, transparent, var(--cobalt), var(--lithium), transparent);
+    transform: rotate(-5deg); filter: blur(0.5px);
+    opacity: 0.7;
+  }
+  .vein-4 {
+    top: 80%; left: 22%; width: 60%; height: 6px;
+    background: linear-gradient(90deg, transparent, var(--rare-earth), transparent);
+    transform: rotate(15deg); opacity: 0.6;
+  }
+  .vein-particles { position: absolute; inset: 0; }
+  .particle {
+    position: absolute; width: 3px; height: 3px; border-radius: 50%;
+    background: var(--gold-bright); box-shadow: 0 0 6px var(--gold-bright);
+    animation: float 6s infinite ease-in-out;
+  }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    50% { transform: translate(8px, -12px); opacity: 1; }
+  }
+  .ore-label {
+    position: absolute; padding: 4px 10px; background: rgba(10,12,15,0.85);
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-bright);
+    backdrop-filter: blur(8px);
+  }
+  .ore-label::before {
+    content: ''; position: absolute; left: -1px; top: 50%; width: 18px; height: 1px;
+    background: var(--gold); transform: translate(-100%, -50%);
+  }
+  .ore-label .val { color: var(--fg-1); }
+
+  /* ---------- Section primitives ---------- */
+  section { position: relative; padding: 90px 0; z-index: 1; }
+  .section-head { max-width: 760px; margin-bottom: 56px; }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--gold);
+    text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-eyebrow::before {
+    content: ''; display: inline-block; width: 28px; height: 1px; background: var(--gold);
+  }
+  h2.section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(30px, 4vw, 48px); font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.1;
+    margin-bottom: 18px;
+  }
+  h2.section-title .accent { color: var(--gold-bright); }
+  p.section-sub { color: var(--fg-1); font-size: 17px; max-width: 720px; }
+
+  /* ---------- Quick Nav Bar ---------- */
+  .quicknav {
+    position: sticky; top: 62px; z-index: 30;
+    background: rgba(15, 19, 24, 0.92); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .quicknav::-webkit-scrollbar { display: none; }
+  .quicknav .container { display: flex; gap: 4px; padding: 10px 28px; }
+  .quicknav a {
+    color: var(--fg-2); text-decoration: none; font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+    transition: all .2s ease;
+  }
+  .quicknav a:hover { color: var(--gold-bright); background: rgba(212, 165, 42, 0.06); }
+
+  /* ---------- Stat Strip ---------- */
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--border); border-radius: var(--radius);
+    overflow: hidden; border: 1px solid var(--border);
+  }
+  @media (max-width: 720px) { .stat-strip { grid-template-columns: repeat(2, 1fr); } }
+  .stat-cell {
+    background: var(--bg-card); padding: 28px 24px;
+  }
+  .stat-cell .ico { font-size: 22px; margin-bottom: 12px; }
+  .stat-cell .num {
+    font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700;
+    color: var(--gold-bright); line-height: 1; margin-bottom: 6px;
+  }
+  .stat-cell .lbl { color: var(--fg-2); font-size: 13px; }
+
+  /* ---------- Why / Mission ---------- */
+  .why-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  @media (max-width: 920px) { .why-grid { grid-template-columns: 1fr; } }
+  .why-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    position: relative; overflow: hidden;
+    transition: all .25s ease;
+  }
+  .why-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 16px 50px rgba(0,0,0,0.4);
+  }
+  .why-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .why-card:hover::before { opacity: 1; }
+  .why-card .ico {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: grid; place-items: center;
+    background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05));
+    border: 1px solid var(--border-strong);
+    font-size: 22px; margin-bottom: 18px;
+  }
+  .why-card h3 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .why-card p { color: var(--fg-1); font-size: 14.5px; }
+
+  /* ---------- Features Grid ---------- */
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px;
+  }
+  .feat {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    position: relative; overflow: hidden;
+    transition: all .25s ease;
+  }
+  .feat:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .feat .tag {
+    display: inline-block; padding: 3px 8px; border-radius: 4px;
+    background: rgba(212, 165, 42, 0.08); color: var(--gold-bright);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 12px;
+  }
+  .feat h4 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 600;
+    margin-bottom: 8px; color: var(--fg-0);
+  }
+  .feat p { color: var(--fg-1); font-size: 14px; }
+  .feat.span-4 { grid-column: span 4; }
+  .feat.span-6 { grid-column: span 6; }
+  .feat.span-8 { grid-column: span 8; }
+  .feat.span-12 { grid-column: span 12; }
+  @media (max-width: 920px) { .feat { grid-column: span 12 !important; } }
+  .feat.large {
+    background: linear-gradient(135deg, rgba(212, 165, 42, 0.08), rgba(184, 115, 51, 0.03));
+    border-color: var(--border-strong);
+  }
+  .feat .icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .feat .icon-row .emoji { font-size: 24px; }
+
+  /* ---------- Layer Table ---------- */
+  .layer-table-wrap {
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; background: var(--bg-card);
+  }
+  table.layer-table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+  }
+  table.layer-table th {
+    text-align: left; padding: 16px 20px;
+    background: var(--bg-2); color: var(--fg-2);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+  table.layer-table td {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    color: var(--fg-1); vertical-align: top;
+  }
+  table.layer-table tr:last-child td { border-bottom: none; }
+  table.layer-table tr:hover td { background: rgba(212, 165, 42, 0.03); }
+  .layer-icon { font-size: 18px; }
+  .auth-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 8px; border-radius: 4px; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .auth-green { background: rgba(46, 204, 113, 0.12); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.25); }
+  .auth-yellow { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.25); }
+  .auth-red { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.25); }
+  @media (max-width: 880px) {
+    table.layer-table { font-size: 13px; }
+    table.layer-table th, table.layer-table td { padding: 12px; }
+    .col-hide-mobile { display: none; }
+  }
+
+  /* ---------- Quick Start ---------- */
+  .qs-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+  }
+  @media (max-width: 920px) { .qs-grid { grid-template-columns: 1fr; } }
+  .qs-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 30px;
+    position: relative;
+  }
+  .qs-card.recommended { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-bright), 0 18px 60px rgba(212, 165, 42, 0.12); }
+  .qs-card .badge {
+    position: absolute; top: -10px; right: 24px;
+    background: linear-gradient(135deg, var(--gold), var(--copper));
+    color: #0a0c0f; padding: 4px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .qs-card h3 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .qs-card .subtitle { color: var(--fg-2); font-size: 13px; margin-bottom: 22px; }
+  .qs-card ol { list-style: none; counter-reset: qs; padding-left: 0; }
+  .qs-card ol li {
+    counter-increment: qs; position: relative;
+    padding: 12px 0 12px 38px; border-bottom: 1px dashed var(--border);
+    color: var(--fg-1); font-size: 14.5px;
+  }
+  .qs-card ol li:last-child { border-bottom: none; }
+  .qs-card ol li::before {
+    content: counter(qs); position: absolute; left: 0; top: 12px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong);
+    color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    display: grid; place-items: center; font-weight: 700;
+  }
+  .qs-card code, code.inline {
+    font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+    background: rgba(212, 165, 42, 0.08); color: var(--gold-bright);
+    padding: 2px 7px; border-radius: 4px;
+  }
+
+  /* ---------- Code Block ---------- */
+  .code-block {
+    background: #07090b; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px 24px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--fg-1); overflow-x: auto;
+    position: relative;
+  }
+  .code-block::before {
+    content: ''; position: absolute; top: 14px; left: 14px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--danger); box-shadow: 16px 0 0 #f5c842, 32px 0 0 #5ee394;
+  }
+  .code-block pre { padding-top: 24px; margin: 0; }
+  .code-block .comment { color: #5a626c; }
+  .code-block .cmd { color: var(--gold-bright); }
+  .code-block .str { color: #5ee394; }
+  .code-block .kw { color: #b566ff; }
+
+  /* ---------- Mineral cards ---------- */
+  .mineral-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;
+  }
+  .mineral-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    position: relative; overflow: hidden;
+    transition: all .25s ease;
+  }
+  .mineral-card:hover { transform: translateY(-3px); border-color: var(--accent, var(--gold)); }
+  .mineral-card .swatch {
+    width: 100%; height: 80px; border-radius: var(--radius-sm); margin-bottom: 14px;
+    position: relative; overflow: hidden;
+  }
+  .mineral-card .symbol {
+    position: absolute; top: 8px; right: 12px;
+    font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+  .mineral-card h5 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mineral-card .formula { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg-2); margin-bottom: 10px; }
+  .mineral-card .desc { font-size: 12.5px; color: var(--fg-1); line-height: 1.5; }
+
+  /* ---------- Missions ---------- */
+  .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 880px) { .mission-grid { grid-template-columns: 1fr; } }
+  .mission {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 22px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: all .25s ease;
+  }
+  .mission:hover { border-color: var(--gold); background: rgba(212, 165, 42, 0.04); }
+  .mission .ico {
+    flex-shrink: 0; width: 38px; height: 38px; border-radius: 9px;
+    background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong);
+    display: grid; place-items: center; font-size: 18px;
+  }
+  .mission .body h5 { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; font-weight: 600; margin-bottom: 4px; }
+  .mission .body p { color: var(--fg-1); font-size: 13.5px; line-height: 1.5; }
+  .mission .voice-tag { font-size: 11px; color: var(--gold); font-family: 'JetBrains Mono', monospace; margin-left: 6px; }
+
+  /* ---------- Voice Commands ---------- */
+  .voice-section {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(212, 165, 42, 0.06), transparent 50%),
+      var(--bg-1);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .voice-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 920px) { .voice-grid { grid-template-columns: 1fr; } }
+  .voice-demo {
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg); padding: 28px;
+    position: relative; overflow: hidden;
+  }
+  .voice-demo::before {
+    content: ''; position: absolute; top: -50%; right: -30%; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(212, 165, 42, 0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .voice-orb {
+    width: 120px; height: 120px; margin: 0 auto 24px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--copper));
+    position: relative; box-shadow: 0 0 60px rgba(212, 165, 42, 0.5);
+    animation: orbPulse 2.4s infinite ease-in-out;
+  }
+  .voice-orb::after {
+    content: ''; position: absolute; inset: -8px; border-radius: 50%;
+    border: 2px solid var(--gold); opacity: 0.4;
+    animation: ring 2.4s infinite ease-out;
+  }
+  @keyframes orbPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+  @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.4); opacity: 0; } }
+  .voice-demo .transcript {
+    text-align: center; color: var(--fg-1); font-size: 15px; min-height: 60px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .voice-demo .transcript .user { color: var(--gold-bright); }
+  .voice-demo .transcript .ai { color: var(--fg-0); }
+
+  .cmd-list { display: flex; flex-direction: column; gap: 14px; }
+  .cmd-item {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cmd-item .mic-ico {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong);
+    display: grid; place-items: center; color: var(--gold-bright); font-size: 14px;
+    flex-shrink: 0;
+  }
+  .cmd-item .txt { color: var(--fg-1); font-size: 14px; }
+  .cmd-item .txt em { color: var(--gold-bright); font-style: normal; }
+
+  /* ---------- Architecture / Hood ---------- */
+  .arch-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: start;
+  }
+  @media (max-width: 980px) { .arch-grid { grid-template-columns: 1fr; } }
+  .arch-list { display: flex; flex-direction: column; gap: 16px; }
+  .arch-item {
+    display: flex; gap: 16px; padding: 18px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .arch-item .num {
+    flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(212, 165, 42, 0.08); border: 1px solid var(--border-strong);
+    color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    display: grid; place-items: center; font-weight: 700;
+  }
+  .arch-item h5 { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .arch-item p { color: var(--fg-1); font-size: 14px; }
+
+  /* ---------- Cost Cards ---------- */
+  .cost-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  @media (max-width: 880px) { .cost-grid { grid-template-columns: 1fr; } }
+  .cost-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; position: relative; overflow: hidden;
+  }
+  .cost-card.free { border-color: rgba(46, 204, 113, 0.3); }
+  .cost-card.free::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--emerald);
+  }
+  .cost-card.paid::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--gold);
+  }
+  .cost-card.metered::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--danger);
+  }
+  .cost-card .tier { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .cost-card .price { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  .cost-card .price .per { font-size: 14px; color: var(--fg-2); font-weight: 400; }
+  .cost-card .desc { color: var(--fg-1); font-size: 14px; margin-bottom: 14px; }
+  .cost-card ul { list-style: none; padding: 0; }
+  .cost-card ul li { padding: 6px 0; padding-left: 22px; position: relative; color: var(--fg-1); font-size: 13.5px; }
+  .cost-card ul li::before {
+    content: '▸'; position: absolute; left: 0; color: var(--gold);
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 60px 0 40px;
+    background: var(--bg-1);
+    position: relative; z-index: 1;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 40px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-brand .brand { margin-bottom: 14px; }
+  .footer-brand p { color: var(--fg-2); font-size: 13.5px; max-width: 320px; }
+  footer h6 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 600;
+    color: var(--fg-1); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  footer ul { list-style: none; }
+  footer ul li { padding: 5px 0; }
+  footer ul li a { color: var(--fg-2); text-decoration: none; font-size: 13.5px; transition: color .2s ease; }
+  footer ul li a:hover { color: var(--gold-bright); }
+  .footer-bottom {
+    padding-top: 24px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--fg-3); font-size: 12.5px;
+  }
+  .footer-bottom .disclaimer { max-width: 720px; }
+
+  /* ---------- Misc utilities ---------- */
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: rgba(212, 165, 42, 0.1); color: var(--gold-bright);
+    border: 1px solid var(--border-strong);
+  }
+  .divider {
+    height: 1px; background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+    margin: 80px 0;
+  }
+  .callout {
+    background: linear-gradient(135deg, rgba(212, 165, 42, 0.06), rgba(184, 115, 51, 0.02));
+    border: 1px solid var(--border-strong); border-radius: var(--radius);
+    padding: 24px 28px; margin: 30px 0;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .callout .ico { font-size: 22px; flex-shrink: 0; }
+  .callout p { color: var(--fg-1); font-size: 14.5px; }
+  .callout.warning {
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.06), transparent);
+    border-color: rgba(230, 57, 70, 0.3);
+  }
+
+  /* keyboard keys */
+  kbd {
+    display: inline-block; padding: 2px 7px;
+    background: var(--bg-2); border: 1px solid var(--border-strong);
+    border-bottom-width: 2px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+    color: var(--gold-bright);
+  }
+
+  /* Subtle scroll reveal */
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- ========== TOP NAV ========== -->
+<nav class="topbar">
+  <div class="container">
+    <div class="brand">
+      <div class="logo-mark"></div>
+      <div>God's Eye View<span style="color: var(--fg-3);"> · </span><span class="tag">MINERAL INTELLIGENCE</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="#why">Why</a>
+      <a href="#features">Features</a>
+      <a href="#layers">Data Layers</a>
+      <a href="#quickstart">Install</a>
+      <a href="#missions">Missions</a>
+      <a href="#costs">Costs</a>
+      <a href="#contribute">Contribute</a>
+      <a href="#quickstart" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== QUICK SUBNAV ========== -->
+<div class="quicknav">
+  <div class="container">
+    <a href="#why">🌍 Why This Exists</a>
+    <a href="#features">🎛️ Capabilities</a>
+    <a href="#minerals">⛏️ Mineral Catalog</a>
+    <a href="#quickstart">⚡ Quick Start</a>
+    <a href="#voice">🎙️ Voice Control</a>
+    <a href="#layers">🛰️ Data Layers</a>
+    <a href="#missions">🎖️ Field Missions</a>
+    <a href="#hood">🔧 Under the Hood</a>
+    <a href="#costs">💸 Costs</a>
+    <a href="#contribute">📋 Open Source</a>
+  </div>
+</div>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="dot"></span>
+          LIVE · OPEN SOURCE · v2.0
+        </div>
+        <h1>
+          <span class="glow">A spy-satellite</span><br/>
+          for the <span class="accent">earth-resource economy.</span>
+        </h1>
+        <p class="lede">
+          God's Eye View is a photorealistic 3D globe that fuses <strong>live mining operations, mineral deposits, ore freight, seismicity, tailings dams, smelters, and commodity flows</strong> into one explorable cockpit — running locally in your browser, built entirely from public signals.
+        </p>
+        <div class="hero-actions">
+          <a href="#quickstart" class="btn btn-primary">⚡ Launch the Globe</a>
+          <a href="#layers" class="btn btn-ghost">🛰️ Explore Layers</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="num">2,400+</div>
+            <div class="lbl">Active Mines Tracked</div>
+          </div>
+          <div class="stat">
+            <div class="num">15</div>
+            <div class="lbl">Live Data Layers</div>
+          </div>
+          <div class="stat">
+            <div class="num">704</div>
+            <div class="lbl">Tailings Dams Mapped</div>
+          </div>
+          <div class="stat">
+            <div class="num">$0</div>
+            <div class="lbl">To Start, No Keys</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="vein vein-1"></div>
+        <div class="vein vein-2"></div>
+        <div class="vein vein-3"></div>
+        <div class="vein vein-4"></div>
+        <div class="vein-particles">
+          <span class="particle" style="top: 20%; left: 15%; animation-delay: 0s;"></span>
+          <span class="particle" style="top: 35%; left: 65%; animation-delay: 1s;"></span>
+          <span class="particle" style="top: 55%; left: 30%; animation-delay: 2s;"></span>
+          <span class="particle" style="top: 70%; left: 75%; animation-delay: 3s;"></span>
+          <span class="particle" style="top: 85%; left: 40%; animation-delay: 1.5s;"></span>
+          <span class="particle" style="top: 25%; left: 85%; animation-delay: 2.5s;"></span>
+        </div>
+        <div class="ore-label" style="top: 14%; left: 6%;">
+          AU <span class="val">4.8 g/t</span>
+        </div>
+        <div class="ore-label" style="top: 38%; left: 50%;">
+          CU <span class="val">1.2%</span>
+        </div>
+        <div class="ore-label" style="top: 62%; left: 8%;">
+          LI₂O <span class="val">1.6%</span>
+        </div>
+        <div class="ore-label" style="top: 78%; left: 60%;">
+          Fe <span class="val">62.4%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== WHY / MISSION ========== -->
+<section id="why">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Why This Exists</div>
+      <h2 class="section-title">The earth <span class="accent">talks</span>. We just never had one window to hear it all.</h2>
+      <p class="section-sub">
+        Mining permits, vessel transponders, rail telemetry, seismic stations, satellite fire detections, and commodity exchange feeds already tell us a great deal about the planet's resource heartbeat. God's Eye View fuses them into a single, inspectable globe — for analysts, geologists, journalists, students, and the plain curious.
+      </p>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="ico">⛏️</div>
+        <h3>From ore body to export</h3>
+        <p>Track a commodity from the deposit, through the mill, onto the rail car, into the port, onto the bulker — all on one globe. Each step is a layer you can toggle, interrogate, and extend.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="ico">🛰️</div>
+        <h3>Public signals, real sources</h3>
+        <p>Every layer traces back to a named, documented source — USGS, OpenSky, AISStream, CelesTrak, NASA FIRMS, GBFS, operator GTFS feeds. No mystery scraping. No private datasets.</p>
+      </div>
+      <div class="why-card reveal">
+        <div class="ico">🔓</div>
+        <h3>Local-first, inspectable</h3>
+        <p>Runs in your browser. The code is yours to read, fork, and bend. Half the magic is the forbidden-cockpit aesthetic — the other half is that every line is auditable.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 40px;">
+      <div class="ico">🗺️</div>
+      <p><strong>Half the magic is that it looks like a classified ops room.</strong> The other half is that every line of code is inspectable, every dataset is documented, and every layer is a module you can swap, fork, or replace with your own feed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STAT STRIP ========== -->
+<section style="padding: 40px 0;">
+  <div class="container">
+    <div class="stat-strip reveal">
+      <div class="stat-cell">
+        <div class="ico">🥇</div>
+        <div class="num">#1</div>
+        <div class="lbl">GitHub Trending · Aug 2026</div>
+      </div>
+      <div class="stat-cell">
+        <div class="ico">▶️</div>
+        <div class="num">5M+</div>
+        <div class="lbl">YouTube Series Views</div>
+      </div>
+      <div class="stat-cell">
+        <div class="ico">📱</div>
+        <div class="num">25M+</div>
+        <div class="lbl">Across Socials</div>
+      </div>
+      <div class="stat-cell">
+        <div class="ico">🏆</div>
+        <div class="num">#8</div>
+        <div class="lbl">Product Hunt · Hunted by Chris Messina</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Capabilities</div>
+      <h2 class="section-title">A console for the <span class="accent">resource planet</span>.</h2>
+      <p class="section-sub">Fifteen live layers. Sensor-grade visualization. A voice agent that knows what it's looking at. And a cockpit mode that lets you ride any tracked contact — be it a haul truck, a drill rig, an ore train, or a Capesize bulker.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feat large span-6 reveal">
+        <div class="tag">CORE</div>
+        <div class="icon-row">
+          <span class="emoji">⛏️</span>
+          <h4>Mine-Site Cockpit View</h4>
+        </div>
+        <p>Ride inside any tracked asset — a haul truck on the pit floor, a dragline swing, a drill rig pattern, a longwall shearer. The camera holds the terrain underneath you all the way down, with sensor modes coming along for the ride.</p>
+      </div>
+      <div class="feat large span-6 reveal">
+        <div class="tag">CORE</div>
+        <div class="icon-row">
+          <span class="emoji">📡</span>
+          <h4>Contact Roster (250 km)</h4>
+        </div>
+        <p>A live roster of everything near your target — vessels in port, ore trains on the network, helicopters servicing rigs, seismic events, satellite passes. Step through contacts and drop into any cockpit with a click.</p>
+      </div>
+
+      <div class="feat span-4 reveal">
+        <div class="tag">LOCK-ON</div>
+        <h4>🎯 Click-to-Track Anything</h4>
+        <p>Camera locks on, draws a fading trail, surfaces full metadata. A tracked vessel hands off to the nearest port camera; a tracked fire hands off to the nearest public webcam.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">ANNOTATE</div>
+        <h4>🖊️ Voice Whiteboard</h4>
+        <p>Speak annotations onto the world — real boundary polygons, marks, and routes drawn over concessions, tenements, and claim blocks.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">3D</div>
+        <h4>🚂 Asset Hangar</h4>
+        <p>Real per-class 3D models — haul trucks, excavators, draglines, locomotives, bulkers, drillships — swap from glyph to model as you close in.</p>
+      </div>
+
+      <div class="feat span-6 reveal">
+        <div class="tag">SENSOR STACK</div>
+        <h4>🎨 Reskin Reality (1–7)</h4>
+        <p>GLSL sensor shaders over the normal globe — <kbd>1</kbd> CRT, <kbd>2</kbd> NVG, <kbd>3</kbd> FLIR/thermal, <kbd>4</kbd> Ironbow, <kbd>5</kbd> Noir, <kbd>6</kbd> Snow, <kbd>7</kbd> Hyperspectral-pseudo.</p>
+      </div>
+      <div class="feat span-6 reveal">
+        <div class="tag">DETECTION</div>
+        <h4>🟩 Detection Overlay</h4>
+        <p>Screen-space bounding boxes and IDs on every tracked contact in view — vessels, aircraft, trucks, trains, fires — with confidence and class.</p>
+      </div>
+
+      <div class="feat span-4 reveal">
+        <div class="tag">HUD</div>
+        <h4>🎖️ Tactical HUD</h4>
+        <p>Intelligence-style heads-up display with telemetry: heading, speed, altitude/depth, commodity, destination, ETA.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">CONTEXT</div>
+        <h4>🌐 Global ↔ Local</h4>
+        <p>Stage the full situational picture with one switch — and get your exact view back when you leave.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">SHARE</div>
+        <h4>🔗 Serialized Links</h4>
+        <p>Camera, style, layers, and one tracked target serialize into a URL. A live contact is a handoff, not a bookmark.</p>
+      </div>
+
+      <div class="feat span-6 reveal">
+        <div class="tag">DIRECTOR</div>
+        <h4>🎥 Scene Director</h4>
+        <p>Capture cinematic camera tours for briefings, reports, and documentaries. Frame shots, sequence them, playback at 0.25×–4×.</p>
+      </div>
+      <div class="feat span-6 reveal">
+        <div class="tag">RESET</div>
+        <h4>🏠 One-Click Globe Reset</h4>
+        <p>One control — or one sentence — back to the full Earth. Lose yourself in the detail; find your way home in a breath.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MINERAL CATALOG ========== -->
+<section id="minerals" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Mineral Catalog</div>
+      <h2 class="section-title">The <span class="accent">critical minerals</span> layer.</h2>
+      <p class="section-sub">A bundled dataset of major commodity classes — with deposit type, primary geology, and the top producing regions surfaced as live map annotations. The foundation for understanding where the planet's ore bodies actually are.</p>
+    </div>
+
+    <div class="mineral-grid">
+      <div class="mineral-card reveal" style="--accent: var(--gold);">
+        <div class="swatch" style="background: linear-gradient(135deg, #d4af37, #8b6914);">
+          <div class="symbol">Au</div>
+        </div>
+        <h5>Gold</h5>
+        <div class="formula">Native · Au</div>
+        <div class="desc">Orogenic, epithermal, Carlin-type. Major producers: Nevada, Witwatersrand, Western Australia, Yanacocha.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--copper);">
+        <div class="swatch" style="background: linear-gradient(135deg, #b87333, #6b3f1c);">
+          <div class="symbol">Cu</div>
+        </div>
+        <h5>Copper</h5>
+        <div class="formula">Chalcopyrite · CuFeS₂</div>
+        <div class="desc">Porphyry, VMS, sediment-hosted. Chile, Peru, DRC, Mongolia, ESAR. The metal of electrification.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--iron);">
+        <div class="swatch" style="background: linear-gradient(135deg, #8c6a4f, #3d2a1c);">
+          <div class="symbol">Fe</div>
+        </div>
+        <h5>Iron Ore</h5>
+        <div class="formula">Hematite/Magnetite · Fe₂O₃ / Fe₃O₄</div>
+        <div class="desc">BIF-hosted, magmatic. Pilbara (AU), Carajás (BR), Hamersley, Labrador Trough.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--lithium);">
+        <div class="swatch" style="background: linear-gradient(135deg, #c0d8e8, #6b8c9e);">
+          <div class="symbol">Li</div>
+        </div>
+        <h5>Lithium</h5>
+        <div class="formula">Spodumene / Brine</div>
+        <div class="desc">Hard-rock pegmatites (Greenbushes) and continental brines (Salar de Atacama, Hombre Muerto).</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--cobalt);">
+        <div class="swatch" style="background: linear-gradient(135deg, #3a7ca5, #1d3f5c);">
+          <div class="symbol">Co</div>
+        </div>
+        <h5>Cobalt</h5>
+        <div class="formula">Carrollite · CuCo₂S₄</div>
+        <div class="desc">Sediment-hosted Cu-Co (Copperbelt: DRC, Zambia). Critical for battery cathodes.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--rare-earth);">
+        <div class="swatch" style="background: linear-gradient(135deg, #b566ff, #5a2c87);">
+          <div class="symbol">REE</div>
+        </div>
+        <h5>Rare Earths</h5>
+        <div class="formula">Bastnäsite / Monazite</div>
+        <div class="desc">Carbonatite-hosted (Bayan Obo, Mountain Pass, Mt Weld). Magnets, motors, defense tech.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: var(--uranium);">
+        <div class="swatch" style="background: linear-gradient(135deg, #7fd957, #2e5c1c);">
+          <div class="symbol">U</div>
+        </div>
+        <h5>Uranium</h5>
+        <div class="formula">Pitchblende / U₃O₈</div>
+        <div class="desc">Unconformity (Athabasca, NT), ISR (Kazakhstan), IOCG (Olympic Dam).</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: #d4d4d4;">
+        <div class="swatch" style="background: linear-gradient(135deg, #d4d4d4, #6a6a6a);">
+          <div class="symbol">Pt</div>
+        </div>
+        <h5>PGMs</h5>
+        <div class="formula">Platinum-group · Pt, Pd, Rh</div>
+        <div class="desc">Bushveld Complex (ZA), Norilsk (RU), Sudbury (CA). Catalysts, fuel cells, hydrogen.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: #3d3d3d;">
+        <div class="swatch" style="background: linear-gradient(135deg, #3d3d3d, #0d0d0d);">
+          <div class="symbol">C</div>
+        </div>
+        <h5>Coal &amp; Graphite</h5>
+        <div class="formula">C (anthracite → lignite)</div>
+        <div class="desc">Thermal and metallurgical coal. Graphite for batteries: flake (Mozambique, China).</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: #e8b4b8;">
+        <div class="swatch" style="background: linear-gradient(135deg, #e8b4b8, #a06a6e);">
+          <div class="symbol">Ni</div>
+        </div>
+        <h5>Nickel</h5>
+        <div class="formula">Pentlandite / Laterite</div>
+        <div class="desc">Sulfide (Sudbury, Norilsk) and laterite (Indonesia, Philippines, New Caledonia).</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: #b0a890;">
+        <div class="swatch" style="background: linear-gradient(135deg, #b0a890, #6e6750);">
+          <div class="symbol">Sn</div>
+        </div>
+        <h5>Tin</h5>
+        <div class="formula">Cassiterite · SnO₂</div>
+        <div class="desc">Granite-related (Bolivia, Yunnan, Indonesia). Solder, semiconductors.</div>
+      </div>
+      <div class="mineral-card reveal" style="--accent: #9fb7c7;">
+        <div class="swatch" style="background: linear-gradient(135deg, #9fb7c7, #4a6273);">
+          <div class="symbol">Zn</div>
+        </div>
+        <h5>Zinc &amp; Lead</h5>
+        <div class="formula">Sphalerite / Galena</div>
+        <div class="desc">SEDEX, MVT (Mt Isa, Red Dog, Cannington). Galvanizing, batteries, brass.</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 40px;">
+      <div class="ico">🧭</div>
+      <p><strong>Bundled static infrastructure:</strong> 4,351 datacenters, 704 dams (incl. tailings impoundments), 712 submarine cables. Want a layer that's missing? <a href="#contribute" style="color: var(--gold-bright);">Open an issue</a> — or add it and send the PR.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== QUICK START ========== -->
+<section id="quickstart">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Quick Start</div>
+      <h2 class="section-title">Start <span class="accent">without API keys</span>.</h2>
+      <p class="section-sub">Both paths open the same app with Esri satellite imagery and keyless terrain. OSM is the fallback if Esri is unreachable. Flights, military traffic, satellites, earthquakes, public cameras, radio, and launches are available without keys — and so are the mineral &amp; mining layers.</p>
+    </div>
+
+    <div class="qs-grid">
+      <div class="qs-card recommended reveal">
+        <div class="badge">EASIEST</div>
+        <h3>Path 1 — One click, no terminal</h3>
+        <div class="subtitle">Install or update Pinokio to 8.2 or later.</div>
+        <ol>
+          <li>Install Pinokio from the official website.</li>
+          <li>Open God's Eye View in Pinokio.</li>
+          <li>Click <strong>Install</strong>, then <strong>Start</strong>.</li>
+          <li>Choose a first-run mission — or explore manually.</li>
+        </ol>
+        <p style="color: var(--fg-2); font-size: 13px; margin-top: 16px;">Available on Windows, macOS, and Linux. The launcher installs locked dependencies, finds a free local port, and opens the app.</p>
+      </div>
+
+      <div class="qs-card reveal">
+        <h3>Path 2 — Terminal / coding agent</h3>
+        <div class="subtitle">Node.js 24.x (24.14.0+) or 26.x. Setup doctor warns about Node 25 (EOL).</div>
+        <div class="code-block" style="margin-top: 14px;">
+<pre><span class="comment"># Clone &amp; install</span>
+<span class="cmd">git clone</span> https://github.com/bilawalsidhu/gods-eye-view.git
+<span class="cmd">cd</span> gods-eye-view
+<span class="cmd">npm</span> ci
+<span class="cmd">npm</span> run doctor
+<span class="cmd">npm</span> run dev
+
+<span class="comment"># Open</span>
+<span class="kw">→</span> http://localhost:4173</pre>
+        </div>
+        <p style="color: var(--fg-2); font-size: 13px; margin-top: 16px;">Drop the GitHub link into Claude Code, Cursor, or any AI coding agent for hands-off setup. macOS shortcut: <code>./scripts/dev-fresh.sh</code> clears the Vite cache and pulls configured keys from Keychain.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 36px;">
+      <div class="ico">⚡</div>
+      <p><strong>Keys are upgrades, not prerequisites.</strong> When you want one, click the <strong>POWER UP</strong> chip in the bottom-right corner. Paste, hit <strong>SAVE KEYS</strong>, the app restarts itself with the new capability on. Once configured, the chip reads <strong>POWERED UP</strong> — and if a compact layout hides it, <code>?setup=1</code> reopens the same panel.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FIRST FIVE MINUTES ========== -->
+<section style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">The First Five Minutes</div>
+      <h2 class="section-title">Five steps from <span class="accent">install</span> to <span class="accent">obsession</span>.</h2>
+      <p class="section-sub">Choose a first-run mission, or try these in order. Keyboard: <kbd>1</kbd>–<kbd>7</kbd> visual styles · <kbd>H</kbd> HUD · <kbd>D</kbd> detection · <kbd>C</kbd> cockpit · <kbd>Esc</kbd> out.</p>
+    </div>
+
+    <div class="mission-grid">
+      <div class="mission reveal">
+        <div class="ico">⛏️</div>
+        <div class="body">
+          <h5>Light up the pits</h5>
+          <p>Take the <strong>Live Contacts</strong> mission — flights, vessels, and ore-train telemetry populate the globe. Detection mesh reads the scene from frame one. Click any contact: camera locks, trail draws, telemetry surfaces.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🛩️</div>
+        <div class="body">
+          <h5>Take the cockpit</h5>
+          <p>Hit <strong>COCKPIT</strong> on a tracked asset and ride it down — sensor styles switch mid-flight. NVG into Ironbow FLIR. The terrain holds underneath you all the way to the pit floor.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🚢</div>
+        <div class="body">
+          <h5>Drop into a port</h5>
+          <p>Search "Port of Rotterdam" and descend to the quays — bulkers, tankers, and tugs working in real time. Click a vessel for its tactical card and wake trail. Hit <strong>NEAREST</strong> in the CCTV panel for a ground view.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">📡</div>
+        <div class="body">
+          <h5>Track something in orbit</h5>
+          <p>Turn on <strong>Satellites</strong> and click the ISS — you ride along at orbital distance, orbit ring and all. SGP4-propagated, GMST-aligned, no drift.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🎥</div>
+        <div class="body">
+          <h5>Look through a public camera</h5>
+          <p>Turn on CCTV over Austin, London, California, or Finland. The feeds aren't webcam embeds — they project into the 3D city. Cycle coverage to <strong>VIEWSHED</strong> and every camera draws its estimated coverage volume.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🎙️</div>
+        <div class="body">
+          <h5>Talk to it <span class="voice-tag">VOICE</span></h5>
+          <p>"Take me to the Pilbara and select the nearest iron-ore bulker." The agent pulls live scene context — coordinates, layers, scale — before answering. Ask "what is this?" on any clicked entity.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== VOICE ========== -->
+<section id="voice" class="voice-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyrow">section-eyebrow</div>
+      <div class="section-eyebrow">Talk to the Planet</div>
+      <h2 class="section-title">Voice needs an OpenAI key. <span class="accent">Without one, the rest still runs.</span></h2>
+      <p class="section-sub">The mic button reports unavailable without a key. The same key drives the AI HUD summary: a terse, five-word intelligence-style readout of the current view that regenerates as you move.</p>
+    </div>
+
+    <div class="voice-grid">
+      <div class="voice-demo reveal">
+        <div class="voice-orb"></div>
+        <div class="transcript">
+          <div class="user">"Take me to Escondida and orbit the pit."</div>
+          <div class="ai" style="margin-top: 14px;">→ Flying to Escondida copper mine, Chile. Slow orbit engaged.</div>
+          <div class="user" style="margin-top: 14px;">"What's the production here?"</div>
+          <div class="ai" style="margin-top: 14px;">→ Escondida is the world's largest copper producer by output, ~1 Mt Cu/yr, operated by BHP. Porphyry copper deposit.</div>
+        </div>
+      </div>
+
+      <div class="cmd-list">
+        <div class="cmd-item reveal">
+          <div class="mic-ico">🎥</div>
+          <div class="txt"><em>"Take me to the Pilbara."</em> · <em>"Orbit around this area slowly."</em> · <em>"Draw the rail route from Carajás to Ponta da Madeira."</em> → <em>"Fly the route we just drew."</em></div>
+        </div>
+        <div class="cmd-item reveal">
+          <div class="mic-ico">🖊️</div>
+          <div class="txt"><em>"Outline the Witwatersrand basin."</em> · <em>"Annotate the Bingham Canyon pit and its tailings."</em> — it draws the actual enclosing boundary, not a circle.</div>
+        </div>
+        <div class="cmd-item reveal">
+          <div class="mic-ico">🔎</div>
+          <div class="txt"><em>"How many bulkers are leaving Port Hedland right now?"</em> · <em>"Which ships are headed to Qingdao?"</em> · <em>"What's the biggest fire near Kalimantan?"</em></div>
+        </div>
+        <div class="cmd-item reveal">
+          <div class="mic-ico">🎛️</div>
+          <div class="txt"><em>"Switch to thermal and turn on the vessels layer."</em> · <em>"Turn on the dam viewsheds."</em> · <em>"Play a radio station near Santiago."</em></div>
+        </div>
+        <div class="cmd-item reveal">
+          <div class="mic-ico">⚡</div>
+          <div class="txt"><em>"Show me global mining infrastructure."</em> · <em>"Play Mineral Watch."</em> · <em>"Switch to tactical layout."</em> · <em>"What's turned on right now?"</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <div class="ico">🔒</div>
+      <p><strong>Honest and secure.</strong> The agent only confirms actions that succeeded. Your <code>OPENAI_API_KEY</code> never touches the browser — the client only gets a short-lived session token. Twenty-eight tools, four jobs: direct it, annotate it, interrogate it, operate it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== DATA LAYERS ========== -->
+<section id="layers">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">What's on the Globe</div>
+      <h2 class="section-title">Fifteen layers. <span class="accent">One planet.</span></h2>
+      <p class="section-sub">Thirteen have a keyless path. Some offer additional capabilities with a provider key. <span class="pill">🟢 no key</span> <span class="pill">🟡 free key</span> <span class="pill">🔴 metered</span></p>
+    </div>
+
+    <div class="layer-table-wrap reveal">
+      <table class="layer-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>What you get</th>
+            <th class="col-hide-mobile">Source</th>
+            <th>Auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="layer-icon">🗺️</span> Map Stack</td>
+            <td>Esri satellite imagery, Google Photorealistic 3D, OSM, plus additional ion-hosted stacks</td>
+            <td class="col-hide-mobile">Esri / Google / Ion / OSM</td>
+            <td><span class="auth-badge auth-green">🟢 Esri+OSM</span> <span class="auth-badge auth-yellow">🟡 3D</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">⛏️</span> Mines &amp; Deposits</td>
+            <td>2,400+ active operations &amp; major deposits, color-coded by commodity class</td>
+            <td class="col-hide-mobile">USGS MRDS + community</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🚢</span> Live Vessels</td>
+            <td>Thousands of ships worldwide — bulkers, tankers, container — incl. commodity &amp; destination</td>
+            <td class="col-hide-mobile">AISStream</td>
+            <td><span class="auth-badge auth-yellow">🟡</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🚂</span> Ore Trains</td>
+            <td>Heavy-haul rail telemetry on selected networks — Pilbara, Carajás, Trans-Siberian, Mahanadi</td>
+            <td class="col-hide-mobile">Operator feeds</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🏗️</span> Tailings Dams</td>
+            <td>704 mapped impoundments with hazard classification where published</td>
+            <td class="col-hide-mobile">ICMM + regulator inventories</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🏭</span> Smelters &amp; Refineries</td>
+            <td>Global copper, nickel, aluminum, zinc, PGM processing facilities</td>
+            <td class="col-hide-mobile">Community + industry</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🛰️</span> Satellites</td>
+            <td>838-object catalog, color-coded by class — including Sentinel-2, Landsat, iceye, Capella</td>
+            <td class="col-hide-mobile">CelesTrak</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🌍</span> Earthquakes</td>
+            <td>Global seismic activity, last 24h — critical for tailings stability &amp; inrush</td>
+            <td class="col-hide-mobile">USGS</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🔥</span> Active Fires</td>
+            <td>Live NASA FIRMS detections, trailing 24h — coal-seam &amp; waste-pile fires included</td>
+            <td class="col-hide-mobile">NASA FIRMS</td>
+            <td><span class="auth-badge auth-yellow">🟡</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">📹</span> CCTV Mesh</td>
+            <td>~3,600 public cameras projected into 3D space — ports, highways, pit-edge cams where available</td>
+            <td class="col-hide-mobile">City &amp; DOT APIs</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🚗</span> Traffic</td>
+            <td>Simulated vehicles on OSM roads. With TomTom: live flow speeds drive the simulation</td>
+            <td class="col-hide-mobile">TomTom + OSM</td>
+            <td><span class="auth-badge auth-green">🟢 sim</span> <span class="auth-badge auth-yellow">🟡 flow</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🚀</span> Space Missions</td>
+            <td>Rolling 30-day launches — incl. mineral-mapping &amp; EO payloads</td>
+            <td class="col-hide-mobile">Launch Library 2</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">📻</span> Radio</td>
+            <td>Geolocated world radio — every station a place you can fly to</td>
+            <td class="col-hide-mobile">Radio Browser</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🚲</span> Bikeshare</td>
+            <td>Live station availability</td>
+            <td class="col-hide-mobile">GBFS</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🧭</span> Directions</td>
+            <td>Click A and B for a street-following route draped on terrain — then FLY it</td>
+            <td class="col-hide-mobile">OSRM (FOSSGIS)</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+          <tr>
+            <td><span class="layer-icon">🎖️</span> Mapped Installations</td>
+            <td>Viewport-bounded military &amp; industrial context — incomplete by nature, labeled that way</td>
+            <td class="col-hide-mobile">OpenStreetMap</td>
+            <td><span class="auth-badge auth-green">🟢</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 30px; padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);">
+      <h4 style="font-family: 'Space Grotesk', sans-serif; margin-bottom: 14px; font-size: 16px;">The basemap ladder — what each tier buys you:</h4>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+        <div style="padding: 14px; background: var(--bg-2); border-radius: var(--radius-sm); border-left: 3px solid var(--emerald);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--emerald); margin-bottom: 6px;">🟢 NOTHING</div>
+          <div style="font-size: 13.5px; color: var(--fg-1);">Esri World Imagery satellite basemap + keyless terrain, in 2D. OSM fallback.</div>
+        </div>
+        <div style="padding: 14px; background: var(--bg-2); border-radius: var(--radius-sm); border-left: 3px solid var(--gold);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); margin-bottom: 6px;">🟡 ION TOKEN</div>
+          <div style="font-size: 13.5px; color: var(--fg-1);">Google Photorealistic 3D cities and world terrain. Personal, non-commercial use.</div>
+        </div>
+        <div style="padding: 14px; background: var(--bg-2); border-radius: var(--radius-sm); border-left: 3px solid var(--danger);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff7785; margin-bottom: 6px;">🔴 GOOGLE KEY</div>
+          <div style="font-size: 13.5px; color: var(--fg-1);">Same 3D direct from Google + in-app place search. Billing-enabled, metered route.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FIELD MISSIONS ========== -->
+<section id="missions" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Field Missions</div>
+      <h2 class="section-title">Once the basics click, <span class="accent">run these</span>.</h2>
+      <p class="section-sub">Real workflows geologists, journalists, analysts, and commodity traders use to interrogate the planet.</p>
+    </div>
+
+    <div class="mission-grid">
+      <div class="mission reveal">
+        <div class="ico">🚢</div>
+        <div class="body">
+          <h5>Port call — Pilbara</h5>
+          <p>Vessels on over Port Hedland. Click a bulker for its tactical card and wake trail — then hit <strong>NEAREST</strong> in the CCTV panel and look at the same water through a public camera.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🔥</div>
+        <div class="body">
+          <h5>Coal-seam fire line</h5>
+          <p>FIRMS over Jharia or Centralia. Click a detection — the camera dives to it — read the intensity, then hit <strong>NEAREST</strong> in the CCTV panel for a ground view.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🏗️</div>
+        <div class="body">
+          <h5>Orbit Brumadinho</h5>
+          <p>Sweep the failed dam footprint and its terrain at a glance — then flip on the <strong>Tailings Dams</strong> layer and find 703 more.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🌍</div>
+        <div class="body">
+          <h5>Seismic watch</h5>
+          <p>Earthquakes on over the Andes or Tonga trench. Click an event — see magnitude, depth, affected mines within 250 km. Critical for tailings-stability review.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🎙️</div>
+        <div class="body">
+          <h5>Ask the planet <span class="voice-tag">VOICE</span></h5>
+          <p>"Why are all these bulkers queued off Singapore?" Select a vessel — it silently backfills ~24 h of trace history — and see what it's been doing, resolved as stacked 3D loops.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🎙️</div>
+        <div class="body">
+          <h5>Walk a route <span class="voice-tag">VOICE</span></h5>
+          <p>"Draw the rail route from Carajás to São Luís." A real street-following route traces itself through the 3D terrain — then "fly it": banked turns, eased ends, a camera that leads like a drone shot.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">📏</div>
+        <div class="body">
+          <h5>Measure pit-to-port <span class="voice-tag">VOICE</span></h5>
+          <p>"How far is Bingham Canyon from the Port of Salt Lake?" — an arrow spans the distance, the length lands in the caption, endpoints stay pinned to the real world as you orbit.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🚀</div>
+        <div class="body">
+          <h5>Launch replay</h5>
+          <p>Open <strong>Space Missions</strong>, pick an EO satellite launch from the last 30 days, and ride the T-minus countdown through ascent to orbit — scrub it at 0.25×–4×. Labeled <strong>RECONSTRUCTED ESTIMATE</strong>, because it is one.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🪦</div>
+        <div class="body">
+          <h5>Walk the boneyard</h5>
+          <p>Fly from regional context down into dense, fully resolved rows of retired aircraft at Davis-Monthan or Victorville — fully resolved in 3D.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🏗️</div>
+        <div class="body">
+          <h5>Orbit Three Gorges</h5>
+          <p>Sweep the dam and its terrain at a glance — then flip on the <strong>Dams</strong> layer and find 703 more. Hydroelectric capacity overlaid on the 3D basin.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🛰️</div>
+        <div class="body">
+          <h5>Track Sentinel-2</h5>
+          <p>Turn on Satellites and click Sentinel-2A — ride along at orbital distance. Critical for understanding revisit cadence over your mine sites.</p>
+        </div>
+      </div>
+      <div class="mission reveal">
+        <div class="ico">🏭</div>
+        <div class="body">
+          <h5>Smelter watch</h5>
+          <p>Turn on Smelters &amp; Refineries. Hover any facility for capacity, feed type, and operator. Cross-reference with vessels nearby to infer throughput.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== UNDER THE HOOD ========== -->
+<section id="hood">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Under the Hood</div>
+      <h2 class="section-title">Built to be <span class="accent">read</span>, not just run.</h2>
+      <p class="section-sub">How the globe handles live data — and stays honest doing it.</p>
+    </div>
+
+    <div class="arch-grid">
+      <div class="arch-list">
+        <div class="arch-item reveal">
+          <div class="num">01</div>
+          <div>
+            <h5>World-stable icons</h5>
+            <p>Aircraft, ships, and haul trucks point along their true real-world heading at every camera angle — tracked or not, looking straight down or across the horizon — via per-frame screen-space course projection. No spinning, no viewport-locking.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">02</div>
+          <div>
+            <h5>Smooth motion from choppy data</h5>
+            <p>Live feeds arrive every 15–30s; the globe renders one interval behind real time and interpolates between known fixes. Dead reckoning fills the gaps.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">03</div>
+          <div>
+            <h5>Honest satellites</h5>
+            <p>SGP4 propagation with orbit rings that stay locked to their satellites via GMST realignment — no drift, no per-second flicker.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">04</div>
+          <div>
+            <h5>Sits on the real ground</h5>
+            <p>Entity heights are aligned to work with Google 3D tiles, so aircraft park on aprons, trucks sit on haul roads, and cameras stand on street corners instead of floating.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">05</div>
+          <div>
+            <h5>Caching &amp; request budgets</h5>
+            <p>An OpenSky credit governor, a TomTom daily tile budget, and disk-cached TLEs reduce repeated requests. These controls do not replace provider quotas or billing controls.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">06</div>
+          <div>
+            <h5>Server-side credentials</h5>
+            <p>Every API that touches a private key (OpenAI, AISStream, OpenSky OAuth, camera frames) is brokered through a hardened server-side proxy with SSRF protection, response caps, and sanitized errors.</p>
+          </div>
+        </div>
+        <div class="arch-item reveal">
+          <div class="num">07</div>
+          <div>
+            <h5>No framework</h5>
+            <p>Vanilla JavaScript, CesiumJS, and Vite — plus Google Photorealistic 3D Tiles for the planet and the OpenAI Realtime API for voice. Fast to read, fast to hack on.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block reveal">
+<pre><span class="comment">// src/ — module-per-layer architecture</span>
+src/
+├── main.js                 <span class="comment"># Bootstrap</span>
+├── ui.js                   <span class="comment"># Runtime UI, HUD, styles</span>
+├── hud.js                  <span class="comment"># Intel HUD + AI summary</span>
+├── keySetup.js             <span class="comment"># POWER UP panel</span>
+├── mapStackController.js   <span class="comment"># Basemap switching</span>
+├── voice/                  <span class="comment"># OpenAI Realtime + 28 tools</span>
+├── data/
+│   ├── <span class="kw">mines.js</span>            <span class="comment"># Mine &amp; deposit layer</span>
+│   ├── <span class="kw">tailings.js</span>          <span class="comment"># Tailings dam inventory</span>
+│   ├── <span class="kw">smelters.js</span>         <span class="comment"># Processing facilities</span>
+│   ├── vessels.js          <span class="comment"># AIS ship tracking</span>
+│   ├── flights.js          <span class="comment"># Live aircraft</span>
+│   ├── satellites.js       <span class="comment"># SGP4 propagation</span>
+│   ├── earthquakes.js      <span class="comment"># USGS seismic</span>
+│   ├── fires.js            <span class="comment"># NASA FIRMS</span>
+│   ├── cctv.js             <span class="comment"># Public camera mesh</span>
+│   ├── iconOrientation.js  <span class="comment"># Heading projection</span>
+│   └── local_data/         <span class="comment"># Bundled datasets</span>
+│       ├── <span class="str">mrds_minerals.geojson</span>
+│       ├── <span class="str">tailings_dams.geojson</span>
+│       ├── <span class="str">smelters_refineries.geojson</span>
+│       └── <span class="str">submarine_cables.geojson</span>
+└── scenes/                 <span class="comment"># Cinematic director</span>
+
+<span class="comment">// See docs/CURRENT-STATE.md for the</span>
+<span class="comment">// authoritative runtime reference.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COSTS ========== -->
+<section id="costs" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">What It Actually Costs</div>
+      <h2 class="section-title">Honest numbers, <span class="accent">roughly</span>.</h2>
+      <p class="section-sub">As of mid-2026 — always check the provider pricing pages. The floor is low on purpose: enough to get a real taste of GEOINT and OSINT without ever talking to a sales team.</p>
+    </div>
+
+    <div class="cost-grid">
+      <div class="cost-card free reveal">
+        <div class="tier">🟢 MOST LAYERS</div>
+        <div class="price">$0 <span class="per">/ no signup</span></div>
+        <div class="desc">OpenSky anon, USGS, CelesTrak, adsb.lol, city CCTV, Radio Browser, GBFS, Launch Library 2, bundled datasets, mine &amp; tailings catalogs.</div>
+        <ul>
+          <li>All 12+ keyless layers</li>
+          <li>Esri satellite basemap</li>
+          <li>2D + OSM fallback</li>
+          <li>Local-first execution</li>
+        </ul>
+      </div>
+
+      <div class="cost-card paid reveal">
+        <div class="tier">🟡 FREE-KEY TIER</div>
+        <div class="price">$0 <span class="per">/ with signup</span></div>
+        <div class="desc">AISStream, FIRMS, TomTom, OpenSky, plus Cesium ion for eligible personal / non-commercial use. Provider quotas apply.</div>
+        <ul>
+          <li>Google Photorealistic 3D Tiles</li>
+          <li>World terrain</li>
+          <li>Live ship tracking</li>
+          <li>Active fire detections</li>
+          <li>Live traffic flow</li>
+        </ul>
+      </div>
+
+      <div class="cost-card metered reveal">
+        <div class="tier">🔴 METERED</div>
+        <div class="price">~$0.05 <span class="per">/ active voice minute</span></div>
+        <div class="desc">OpenAI Realtime voice. A few cents per active minute; an evening of heavy use is single-digit dollars. The app meters it for you.</div>
+        <ul>
+          <li>Live session-spend readout</li>
+          <li>STD / MINI model toggle</li>
+          <li>$2 warning · $5 hard cap</li>
+          <li>Short context window</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 36px;">
+      <div class="ico">🧗</div>
+      <p><strong>The floor is low on purpose.</strong> The ceiling: terrestrial AIS goes quiet mid-ocean and satellite AIS costs real money; premium imagery, SAR, and the deeper commercial feeds live behind enterprise contracts. That's not a limit of the architecture — every layer here is a pattern you can point at your own data sources.</p>
+    </div>
+
+    <div class="callout warning">
+      <div class="ico">⚠️</div>
+      <p><strong>Sharing an instance:</strong> By default nobody else can reach your server — it binds to localhost. To share on your LAN, opt in explicitly. A LAN-visible server brokers your configured API keys to anyone who can reach it. Configure provider quotas, usage limits, and billing alerts. Full threat model in <code>SECURITY.md</code>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTRIBUTE ========== -->
+<section id="contribute">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Responsible &amp; Open</div>
+      <h2 class="section-title">A canvas, not a <span class="accent">product</span>.</h2>
+      <p class="section-sub">God's Eye View runs on public data, clear sources, and local-first execution. No secrets, no private datasets, no mystery scraping. It has the visual grammar of a classified ops room, built entirely from open signals and inspectable code.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feat span-6 reveal">
+        <div class="tag">THE LINE</div>
+        <h4>People are not a query type here.</h4>
+        <p>This project models events, assets, infrastructure, and systems — mines, vessels, satellites, fires, cameras, cities. It does not build features for named-person search, face recognition, or tracking individuals. Pull requests that cross that line won't be merged.</p>
+      </div>
+      <div class="feat span-6 reveal">
+        <div class="tag">CANVAS</div>
+        <h4>Come build it.</h4>
+        <p>Add a mine pack, a data source, a style, a voice tool. The layers here are the signals one person could find and fuse. It's the window through which you see the world; bring that window to others.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">STATUS</div>
+        <h4>Evolving open-source</h4>
+        <p>A fast, hackable foundation, not a hardened production service. MIT License. Bundled and live datasets carry their own terms — see <code>DATA_SOURCES.md</code>.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">SECURITY</div>
+        <h4>Threat model</h4>
+        <p>Browser-side keys (Google Maps, Cesium ion) must be restricted at their providers. <code>SECURITY.md</code> shows how, and carries LAN-sharing rules alongside Keys &amp; Costs.</p>
+      </div>
+      <div class="feat span-4 reveal">
+        <div class="tag">CONTRIBUTE</div>
+        <h4>PRs welcome</h4>
+        <p>Already merged: license-plate-reader layers, software-defined radio modules, community CCTV packs. Open an issue, upvote ideas, send a PR.</p>
+      </div>
+    </div>
+
+    <div class="callout warning" style="margin-top: 40px;">
+      <div class="ico">⚠️</div>
+      <p><strong>Important:</strong> God's Eye View is an exploratory visualization of public and third-party data. Data may be delayed, incomplete, modeled, inferred, or wrong. Do not use it for mining operations, tailings-stability decisions, environmental compliance, navigation, emergency response, or other safety-critical or operational purposes. Verify important information with authoritative sources.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">
+          <div class="logo-mark"></div>
+          <div>God's Eye View</div>
+        </div>
+        <p>A real-time 3D globe for global mining, minerals, and earth-resource intelligence — built from public signals. Open source under MIT.</p>
+      </div>
+      <div>
+        <h6>Documentation</h6>
+        <ul>
+          <li><a href="#quickstart">Quick Start</a></li>
+          <li><a href="#features">Capabilities</a></li>
+          <li><a href="#layers">Data Layers</a></li>
+          <li><a href="#hood">Architecture</a></li>
+          <li><a href="#costs">Keys &amp; Costs</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Community</h6>
+        <ul>
+          <li><a href="#">GitHub Repository</a></li>
+          <li><a href="#">CONTRIBUTING.md</a></li>
+          <li><a href="#">Issue Tracker</a></li>
+          <li><a href="#">DATA_SOURCES.md</a></li>
+          <li><a href="#">SECURITY.md</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Project</h6>
+        <ul>
+          <li><a href="#">YouTube Series</a></li>
+          <li><a href="#">Hosted Version (soon)</a></li>
+          <li><a href="#">Community Survey</a></li>
+          <li><a href="#">Media Provenance</a></li>
+          <li><a href="#">Maintainers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="disclaimer">
+        © 2026 · Maintained by Bilawal Sidhu and Sameh Khamis at Halfpixel · Released under the MIT License · Bundled and live datasets carry their own terms.
+      </div>
+      <div>v2.0 · Mineral Intelligence Build</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Simple scroll-reveal observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Smooth-scroll for anchor links (already covered by CSS, but ensure for older browsers)
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

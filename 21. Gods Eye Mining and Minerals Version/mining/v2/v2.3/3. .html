@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>God's Eye View · Global Mining & Mineral Intelligence Platform</title>
+<meta name="description" content="A real-time 3D globe for global mining, minerals, and earth-resource intelligence — built from 100+ public and commercial data sources." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-0); color: var(--fg-0); line-height: 1.55; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+  :root {
+    --bg-0: #0a0c0f; --bg-1: #0f1318; --bg-2: #141a21; --bg-3: #1b232c; --bg-card: #11161c;
+    --border: rgba(218, 165, 32, 0.12); --border-strong: rgba(218, 165, 32, 0.28);
+    --fg-0: #e8eaed; --fg-1: #b8bcc4; --fg-2: #7a8088; --fg-3: #4a5058;
+    --gold: #d4a52a; --gold-bright: #f5c842; --copper: #b87333; --iron: #8c6a4f;
+    --lithium: #c0d8e8; --uranium: #7fd957; --cobalt: #3a7ca5; --rare-earth: #b566ff;
+    --emerald: #2ecc71; --warning: #ff6b3d; --danger: #e63946;
+    --grid-line: rgba(212, 165, 42, 0.06); --radius: 12px; --radius-sm: 6px; --radius-lg: 18px; --maxw: 1280px;
+  }
+
+  .container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 56px 56px; pointer-events: none; z-index: 0; mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%); }
+  body::after { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 12% 18%, rgba(212, 165, 42, 0.08), transparent 38%), radial-gradient(circle at 88% 82%, rgba(184, 115, 51, 0.06), transparent 42%); pointer-events: none; z-index: 0; }
+
+  nav.topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(18px) saturate(140%); background: rgba(10, 12, 15, 0.72); border-bottom: 1px solid var(--border); }
+  nav.topbar .container { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 17px; }
+  .brand .logo-mark { width: 32px; height: 32px; background: conic-gradient(from 180deg at 50% 50%, var(--gold), var(--copper), var(--gold-bright), var(--gold)); border-radius: 50%; box-shadow: 0 0 20px rgba(212, 165, 42, 0.45), inset 0 0 10px rgba(0,0,0,0.4); position: relative; }
+  .brand .logo-mark::after { content: ''; position: absolute; inset: 5px; border: 1.5px solid rgba(0,0,0,0.55); border-radius: 50%; border-top-color: transparent; border-right-color: transparent; }
+  .brand .tag { color: var(--fg-2); font-weight: 500; font-size: 11px; font-family: 'JetBrains Mono', monospace; padding: 2px 7px; border: 1px solid var(--border); border-radius: 4px; }
+  .nav-links { display: flex; gap: 22px; align-items: center; }
+  .nav-links a { color: var(--fg-1); text-decoration: none; font-size: 13px; font-weight: 500; transition: color .2s ease; }
+  .nav-links a:hover { color: var(--gold-bright); }
+  .nav-cta { padding: 8px 16px; border-radius: 999px; background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 0 4px 16px rgba(212, 165, 42, 0.25); }
+  .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(212, 165, 42, 0.4); }
+  @media (max-width: 980px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  .quicknav { position: sticky; top: 57px; z-index: 30; background: rgba(15, 19, 24, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+  .quicknav::-webkit-scrollbar { display: none; }
+  .quicknav .container { display: flex; gap: 4px; padding: 8px 24px; }
+  .quicknav a { color: var(--fg-2); text-decoration: none; font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; white-space: nowrap; transition: all .2s ease; }
+  .quicknav a:hover { color: var(--gold-bright); background: rgba(212, 165, 42, 0.06); }
+
+  section { position: relative; padding: 64px 0; z-index: 1; }
+  .section-head { max-width: 760px; margin-bottom: 40px; }
+  .section-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+  .section-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--gold); }
+  h2.section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 14px; }
+  h2.section-title .accent { color: var(--gold-bright); }
+  p.section-sub { color: var(--fg-1); font-size: 15px; max-width: 720px; }
+
+  .hero { position: relative; padding: 80px 0 60px; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; }
+  @media (max-width: 980px) { .hero-grid { grid-template-columns: 1fr; gap: 30px; } }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 5px 12px; border-radius: 999px; background: rgba(212, 165, 42, 0.08); border: 1px solid var(--border-strong); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 20px; }
+  .hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-bright); box-shadow: 0 0 10px var(--gold-bright); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 60px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px; }
+  .hero h1 .accent { background: linear-gradient(135deg, var(--gold-bright) 0%, var(--copper) 60%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero h1 .glow { background: linear-gradient(135deg, #fff, var(--fg-1)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .hero .lede { color: var(--fg-1); font-size: 16px; max-width: 560px; margin-bottom: 24px; }
+  .hero .lede strong { color: var(--fg-0); font-weight: 600; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: 13px; text-decoration: none; transition: all .2s ease; cursor: pointer; border: none; }
+  .btn-primary { background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; box-shadow: 0 4px 24px rgba(212, 165, 42, 0.3); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(212, 165, 42, 0.45); }
+  .btn-ghost { background: rgba(255,255,255,0.03); color: var(--fg-0); border: 1px solid var(--border-strong); }
+  .btn-ghost:hover { background: rgba(212, 165, 42, 0.08); border-color: var(--gold); }
+  .hero-stats { display: flex; gap: 28px; flex-wrap: wrap; padding-top: 20px; border-top: 1px solid var(--border); }
+  .hero-stats .stat .num { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: var(--gold-bright); }
+  .hero-stats .stat .lbl { font-size: 11px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; }
+  .hero-visual { position: relative; aspect-ratio: 1 / 1; border-radius: var(--radius-lg); background: radial-gradient(circle at 30% 35%, rgba(184, 115, 51, 0.45), transparent 45%), radial-gradient(circle at 70% 65%, rgba(212, 165, 42, 0.4), transparent 50%), radial-gradient(circle at 50% 50%, rgba(60, 80, 95, 0.3), transparent 60%), linear-gradient(180deg, #1a1410 0%, #0a0c0f 100%); border: 1px solid var(--border-strong); overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 60px rgba(0,0,0,0.4); }
+  .hero-visual::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, transparent 0 22px, rgba(212, 165, 42, 0.05) 22px 23px), repeating-linear-gradient(-45deg, transparent 0 28px, rgba(184, 115, 51, 0.04) 28px 29px); }
+  .vein { position: absolute; opacity: 0.9; }
+  .vein-1 { top: 18%; left: 8%; width: 84%; height: 12px; background: linear-gradient(90deg, transparent, var(--gold-bright), var(--gold), transparent); transform: rotate(-12deg); filter: blur(0.5px); box-shadow: 0 0 20px rgba(212, 165, 42, 0.6); }
+  .vein-2 { top: 42%; left: 14%; width: 70%; height: 7px; background: linear-gradient(90deg, transparent, var(--copper), transparent); transform: rotate(8deg); filter: blur(1px); }
+  .vein-3 { top: 65%; left: 4%; width: 90%; height: 9px; background: linear-gradient(90deg, transparent, var(--cobalt), var(--lithium), transparent); transform: rotate(-5deg); filter: blur(0.5px); opacity: 0.7; }
+  .vein-4 { top: 80%; left: 22%; width: 60%; height: 5px; background: linear-gradient(90deg, transparent, var(--rare-earth), transparent); transform: rotate(15deg); opacity: 0.6; }
+  .ore-label { position: absolute; padding: 3px 8px; background: rgba(10,12,15,0.85); border: 1px solid var(--border-strong); border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--gold-bright); backdrop-filter: blur(8px); }
+  .ore-label::before { content: ''; position: absolute; left: -1px; top: 50%; width: 14px; height: 1px; background: var(--gold); transform: translate(-100%, -50%); }
+  .ore-label .val { color: var(--fg-1); }
+
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); }
+  @media (max-width: 720px) { .stat-strip { grid-template-columns: repeat(2, 1fr); } }
+  .stat-cell { background: var(--bg-card); padding: 22px 20px; }
+  .stat-cell .ico { font-size: 20px; margin-bottom: 10px; }
+  .stat-cell .num { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: var(--gold-bright); line-height: 1; margin-bottom: 4px; }
+  .stat-cell .lbl { color: var(--fg-2); font-size: 12px; }
+
+  .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 920px) { .why-grid { grid-template-columns: 1fr; } }
+  .why-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .why-card:hover { border-color: var(--border-strong); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .why-card .ico { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); font-size: 20px; margin-bottom: 14px; }
+  .why-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .why-card p { color: var(--fg-1); font-size: 14px; }
+
+  /* DATA SOURCES DIRECTORY */
+  .ds-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; align-items: center; justify-content: space-between; }
+  .ds-search { flex: 1; min-width: 240px; position: relative; }
+  .ds-search input { width: 100%; padding: 12px 16px 12px 44px; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 10px; color: var(--fg-0); font-size: 13px; font-family: 'Inter', sans-serif; transition: all .2s ease; }
+  .ds-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 165, 42, 0.1); }
+  .ds-search .search-ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--fg-2); font-size: 16px; }
+  .ds-filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .filter-chip { padding: 7px 12px; border-radius: 999px; background: var(--bg-card); border: 1px solid var(--border); color: var(--fg-1); font-size: 11.5px; font-weight: 500; cursor: pointer; transition: all .2s ease; font-family: 'JetBrains Mono', monospace; }
+  .filter-chip:hover { border-color: var(--gold); color: var(--gold-bright); }
+  .filter-chip.active { background: linear-gradient(135deg, var(--gold), var(--copper)); border-color: transparent; color: #0a0c0f; font-weight: 700; }
+
+  .ds-category { margin-bottom: 36px; }
+  .ds-category-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .ds-category-head .cat-ico { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 20px; }
+  .ds-category-head h3 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; font-weight: 600; }
+  .ds-category-head .count { margin-left: auto; padding: 3px 10px; border-radius: 999px; background: rgba(212, 165, 42, 0.1); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+  .ds-category-head .cat-desc { color: var(--fg-2); font-size: 12.5px; margin-top: 2px; }
+  .ds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+  .ds-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; transition: all .2s ease; position: relative; overflow: hidden; }
+  .ds-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .ds-card .ds-head { display: flex; align-items: flex-start; gap: 10px; }
+  .ds-card .ds-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px; color: var(--fg-0); flex: 1; }
+  .ds-card .ds-emoji { font-size: 16px; flex-shrink: 0; }
+  .ds-card .ds-desc { color: var(--fg-1); font-size: 12px; line-height: 1.45; flex: 1; }
+  .ds-card .ds-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding-top: 8px; margin-top: 2px; border-top: 1px dashed var(--border); }
+  .ds-tag { padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10px; text-decoration: none; transition: all .15s ease; }
+  .ds-tag.free { background: rgba(46, 204, 113, 0.12); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.25); }
+  .ds-tag.paid { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.25); }
+  .ds-tag.freemium { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.25); }
+  .ds-tag.region { background: rgba(255,255,255,0.04); color: var(--fg-2); border: 1px solid var(--border); }
+  .ds-tag.live { background: rgba(127, 217, 87, 0.1); color: var(--uranium); border: 1px solid rgba(127, 217, 87, 0.25); }
+
+  /* UPLOAD GUIDE - COMPACT TABLES */
+  .upload-section { background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .upload-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-bottom: 36px; }
+  .upload-method { background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 18px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .upload-method:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .upload-method .um-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 20px; margin-bottom: 12px; }
+  .upload-method h4 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--fg-0); }
+  .upload-method p { color: var(--fg-1); font-size: 12.5px; line-height: 1.5; margin-bottom: 8px; }
+  .upload-method .um-badge { display: inline-block; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; background: rgba(212, 165, 42, 0.1); color: var(--gold-bright); border: 1px solid var(--border-strong); margin-bottom: 6px; }
+  .upload-method .um-code { background: #07090b; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 10px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--gold-bright); overflow-x: auto; white-space: nowrap; }
+
+  .upload-cat { margin-bottom: 32px; }
+  .upload-cat-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border-strong); }
+  .upload-cat-head .uc-ico { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, rgba(212, 165, 42, 0.15), rgba(184, 115, 51, 0.05)); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 18px; }
+  .upload-cat-head h3 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; }
+  .upload-cat-head .uc-count { margin-left: auto; padding: 3px 10px; border-radius: 999px; background: rgba(212, 165, 42, 0.1); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; }
+
+  table.src-table { width: 100%; border-collapse: collapse; font-size: 12.5px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-card); }
+  table.src-table th { text-align: left; padding: 8px 12px; background: var(--bg-2); color: var(--fg-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+  table.src-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); color: var(--fg-1); vertical-align: top; line-height: 1.4; }
+  table.src-table tr:last-child td { border-bottom: none; }
+  table.src-table tr:hover td { background: rgba(212, 165, 42, 0.03); }
+  table.src-table .src-name { font-weight: 600; color: var(--fg-0); white-space: nowrap; }
+  table.src-table .src-code { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-bright); }
+  .sg-badge { padding: 1px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; display: inline-block; margin: 1px; }
+  .sg-badge.geojson { background: rgba(46, 204, 113, 0.12); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.25); }
+  .sg-badge.json { background: rgba(95, 211, 255, 0.12); color: #5fd3ff; border: 1px solid rgba(95, 211, 255, 0.25); }
+  .sg-badge.csv { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.25); }
+  .sg-badge.xml { background: rgba(181, 102, 255, 0.12); color: #b566ff; border: 1px solid rgba(181, 102, 255, 0.25); }
+  .sg-badge.wms { background: rgba(184, 115, 51, 0.12); color: var(--copper); border: 1px solid rgba(184, 115, 51, 0.25); }
+  .sg-badge.api { background: rgba(127, 217, 87, 0.1); color: var(--uranium); border: 1px solid rgba(127, 217, 87, 0.25); }
+  .sg-badge.ws { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.25); }
+  .method-badge { padding: 1px 6px; border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700; }
+  .method-badge.m1 { background: rgba(46, 204, 113, 0.1); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.2); }
+  .method-badge.m2 { background: rgba(95, 211, 255, 0.1); color: #5fd3ff; border: 1px solid rgba(95, 211, 255, 0.2); }
+  .method-badge.m3 { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.2); }
+  .method-badge.m4 { background: rgba(181, 102, 255, 0.1); color: #b566ff; border: 1px solid rgba(181, 102, 255, 0.2); }
+  .integrated { color: #5ee394; font-weight: 600; font-size: 10px; }
+
+  .callout { background: linear-gradient(135deg, rgba(212, 165, 42, 0.06), rgba(184, 115, 51, 0.02)); border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 18px 22px; margin: 24px 0; display: flex; gap: 14px; align-items: flex-start; }
+  .callout .ico { font-size: 20px; flex-shrink: 0; }
+  .callout p { color: var(--fg-1); font-size: 13.5px; }
+  .callout.warning { background: linear-gradient(135deg, rgba(230, 57, 70, 0.06), transparent); border-color: rgba(230, 57, 70, 0.3); }
+  code { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; background: rgba(212, 165, 42, 0.08); color: var(--gold-bright); padding: 1px 5px; border-radius: 3px; }
+  kbd { display: inline-block; padding: 2px 6px; background: var(--bg-2); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--gold-bright); }
+
+  .pill { display: inline-block; padding: 2px 7px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; background: rgba(212, 165, 42, 0.1); color: var(--gold-bright); border: 1px solid var(--border-strong); }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+  .feat { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .feat:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .feat .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; background: rgba(212, 165, 42, 0.08); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-bottom: 8px; }
+  .feat h4 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 6px; color: var(--fg-0); }
+  .feat p { color: var(--fg-1); font-size: 13px; }
+  .feat.span-4 { grid-column: span 4; } .feat.span-6 { grid-column: span 6; } .feat.span-12 { grid-column: span 12; }
+  @media (max-width: 920px) { .feat { grid-column: span 12 !important; } }
+  .feat.large { background: linear-gradient(135deg, rgba(212, 165, 42, 0.08), rgba(184, 115, 51, 0.03)); border-color: var(--border-strong); }
+  .feat .icon-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .feat .icon-row .emoji { font-size: 22px; }
+
+  .mineral-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+  .mineral-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; position: relative; overflow: hidden; transition: all .25s ease; }
+  .mineral-card:hover { transform: translateY(-3px); border-color: var(--accent, var(--gold)); }
+  .mineral-card .swatch { width: 100%; height: 64px; border-radius: var(--radius-sm); margin-bottom: 12px; position: relative; overflow: hidden; }
+  .mineral-card .symbol { position: absolute; top: 6px; right: 10px; font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: rgba(255,255,255,0.85); }
+  .mineral-card h5 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .mineral-card .formula { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fg-2); margin-bottom: 8px; }
+  .mineral-card .desc { font-size: 11.5px; color: var(--fg-1); line-height: 1.45; }
+
+  .cost-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 880px) { .cost-grid { grid-template-columns: 1fr; } }
+  .cost-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; position: relative; overflow: hidden; }
+  .cost-card.free { border-color: rgba(46, 204, 113, 0.3); } .cost-card.free::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--emerald); }
+  .cost-card.paid::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--gold); }
+  .cost-card.metered::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--danger); }
+  .cost-card .tier { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--fg-2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .cost-card .price { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .cost-card .price .per { font-size: 13px; color: var(--fg-2); font-weight: 400; }
+  .cost-card .desc { color: var(--fg-1); font-size: 13px; margin-bottom: 12px; }
+  .cost-card ul { list-style: none; padding: 0; }
+  .cost-card ul li { padding: 5px 0 5px 20px; position: relative; color: var(--fg-1); font-size: 12.5px; }
+  .cost-card ul li::before { content: '▸'; position: absolute; left: 0; color: var(--gold); }
+
+  .qs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 920px) { .qs-grid { grid-template-columns: 1fr; } }
+  .qs-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; position: relative; }
+  .qs-card.recommended { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold-bright), 0 12px 48px rgba(212, 165, 42, 0.12); }
+  .qs-card .badge { position: absolute; top: -10px; right: 20px; background: linear-gradient(135deg, var(--gold), var(--copper)); color: #0a0c0f; padding: 3px 10px; border-radius: 999px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  .qs-card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .qs-card .subtitle { color: var(--fg-2); font-size: 12px; margin-bottom: 16px; }
+  .qs-card ol { list-style: none; counter-reset: qs; padding-left: 0; }
+  .qs-card ol li { counter-increment: qs; position: relative; padding: 10px 0 10px 34px; border-bottom: 1px dashed var(--border); color: var(--fg-1); font-size: 13.5px; }
+  .qs-card ol li:last-child { border-bottom: none; }
+  .qs-card ol li::before { content: counter(qs); position: absolute; left: 0; top: 10px; width: 24px; height: 24px; border-radius: 50%; background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 11px; display: grid; place-items: center; font-weight: 700; }
+
+  .code-block { background: #07090b; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--fg-1); overflow-x: auto; position: relative; }
+  .code-block::before { content: ''; position: absolute; top: 12px; left: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--danger); box-shadow: 14px 0 0 #f5c842, 28px 0 0 #5ee394; }
+  .code-block pre { padding-top: 20px; margin: 0; }
+  .code-block .comment { color: #5a626c; } .code-block .cmd { color: var(--gold-bright); } .code-block .str { color: #5ee394; } .code-block .kw { color: #b566ff; }
+
+  .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 880px) { .mission-grid { grid-template-columns: 1fr; } }
+  .mission { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; display: flex; gap: 14px; align-items: flex-start; transition: all .25s ease; }
+  .mission:hover { border-color: var(--gold); background: rgba(212, 165, 42, 0.04); }
+  .mission .ico { flex-shrink: 0; width: 34px; height: 34px; border-radius: 8px; background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong); display: grid; place-items: center; font-size: 16px; }
+  .mission .body h5 { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .mission .body p { color: var(--fg-1); font-size: 12.5px; line-height: 1.45; }
+  .mission .voice-tag { font-size: 10px; color: var(--gold); font-family: 'JetBrains Mono', monospace; margin-left: 5px; }
+
+  .voice-section { background: radial-gradient(circle at 20% 30%, rgba(212, 165, 42, 0.06), transparent 50%), var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 920px) { .voice-grid { grid-template-columns: 1fr; } }
+  .voice-demo { background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); padding: 24px; position: relative; overflow: hidden; }
+  .voice-orb { width: 100px; height: 100px; margin: 0 auto 20px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--gold-bright), var(--copper)); position: relative; box-shadow: 0 0 50px rgba(212, 165, 42, 0.5); animation: orbPulse 2.4s infinite ease-in-out; }
+  .voice-orb::after { content: ''; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--gold); opacity: 0.4; animation: ring 2.4s infinite ease-out; }
+  @keyframes orbPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+  @keyframes ring { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(1.4); opacity: 0; } }
+  .voice-demo .transcript { text-align: center; color: var(--fg-1); font-size: 13px; min-height: 50px; font-family: 'JetBrains Mono', monospace; }
+  .voice-demo .transcript .user { color: var(--gold-bright); } .voice-demo .transcript .ai { color: var(--fg-0); }
+  .cmd-list { display: flex; flex-direction: column; gap: 10px; }
+  .cmd-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+  .cmd-item .mic-ico { width: 28px; height: 28px; border-radius: 50%; background: rgba(212, 165, 42, 0.1); border: 1px solid var(--border-strong); display: grid; place-items: center; color: var(--gold-bright); font-size: 13px; flex-shrink: 0; }
+  .cmd-item .txt { color: var(--fg-1); font-size: 13px; }
+  .cmd-item .txt em { color: var(--gold-bright); font-style: normal; }
+
+  .layer-table-wrap { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--bg-card); }
+  table.layer-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.layer-table th { text-align: left; padding: 12px 16px; background: var(--bg-2); color: var(--fg-2); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+  table.layer-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--fg-1); vertical-align: top; }
+  table.layer-table tr:last-child td { border-bottom: none; }
+  table.layer-table tr:hover td { background: rgba(212, 165, 42, 0.03); }
+  .layer-icon { font-size: 16px; }
+  .auth-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-family: 'JetBrains Mono', monospace; }
+  .auth-green { background: rgba(46, 204, 113, 0.12); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.25); }
+  .auth-yellow { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.25); }
+  @media (max-width: 880px) { table.layer-table { font-size: 12px; } table.layer-table th, table.layer-table td { padding: 10px; } .col-hide-mobile { display: none; } }
+
+  .arch-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: start; }
+  @media (max-width: 980px) { .arch-grid { grid-template-columns: 1fr; } }
+  .arch-list { display: flex; flex-direction: column; gap: 12px; }
+  .arch-item { display: flex; gap: 14px; padding: 14px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); }
+  .arch-item .num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 8px; background: rgba(212, 165, 42, 0.08); border: 1px solid var(--border-strong); color: var(--gold-bright); font-family: 'JetBrains Mono', monospace; font-size: 12px; display: grid; place-items: center; font-weight: 700; }
+  .arch-item h5 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .arch-item p { color: var(--fg-1); font-size: 13px; }
+
+  footer { border-top: 1px solid var(--border); padding: 48px 0 32px; background: var(--bg-1); position: relative; z-index: 1; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); gap: 32px; margin-bottom: 32px; }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+  .footer-brand .brand { margin-bottom: 12px; }
+  .footer-brand p { color: var(--fg-2); font-size: 12.5px; max-width: 300px; }
+  footer h6 { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 600; color: var(--fg-1); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
+  footer ul { list-style: none; }
+  footer ul li { padding: 4px 0; }
+  footer ul li a { color: var(--fg-2); text-decoration: none; font-size: 12.5px; transition: color .2s ease; }
+  footer ul li a:hover { color: var(--gold-bright); }
+  .footer-bottom { padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; color: var(--fg-3); font-size: 11.5px; }
+  .footer-bottom .disclaimer { max-width: 700px; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 640px) {
+    table.src-table { font-size: 11px; }
+    table.src-table th, table.src-table td { padding: 6px 8px; }
+    .src-table-hide-mobile { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="container">
+    <div class="brand"><div class="logo-mark"></div><div>God's Eye View<span style="color: var(--fg-3);"> · </span><span class="tag">MINERAL INTELLIGENCE</span></div></div>
+    <div class="nav-links">
+      <a href="#why">Why</a><a href="#sources">Data Sources</a><a href="#upload">Upload Guide</a><a href="#features">Features</a><a href="#layers">Layers</a><a href="#quickstart">Install</a><a href="#costs">Costs</a><a href="#quickstart" class="nav-cta">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<div class="quicknav">
+  <div class="container">
+    <a href="#why">🌍 Why</a><a href="#sources">📦 Sources (100+)</a><a href="#upload">📤 Upload Guide</a><a href="#features">🎛️ Features</a><a href="#minerals">⛏️ Minerals</a><a href="#quickstart">⚡ Start</a><a href="#voice">🎙️ Voice</a><a href="#layers">🛰️ Layers</a><a href="#missions">🎖️ Missions</a><a href="#hood">🔧 Hood</a><a href="#costs">💸 Costs</a><a href="#contribute">📋 Open Source</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-eyebrow"><span class="dot"></span>LIVE · OPEN SOURCE · 100+ DATA SOURCES · v2.0</div>
+        <h1><span class="glow">A spy-satellite</span><br/>for the <span class="accent">earth-resource economy.</span></h1>
+        <p class="lede">God's Eye View is a photorealistic 3D globe that fuses <strong>live mining operations, mineral deposits, ore freight, seismicity, tailings dams, smelters, commodity flows, and 100+ public &amp; commercial data sources</strong> into one explorable cockpit — running locally in your browser, built entirely from inspectable signals.</p>
+        <div class="hero-actions"><a href="#quickstart" class="btn btn-primary">⚡ Launch the Globe</a><a href="#sources" class="btn btn-ghost">📦 Browse Data Sources</a></div>
+        <div class="hero-stats">
+          <div class="stat"><div class="num">100+</div><div class="lbl">Categorized Data Sources</div></div>
+          <div class="stat"><div class="num">2,400+</div><div class="lbl">Active Mines Tracked</div></div>
+          <div class="stat"><div class="num">15</div><div class="lbl">Live Data Layers</div></div>
+          <div class="stat"><div class="num">704</div><div class="lbl">Tailings Dams Mapped</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="vein vein-1"></div><div class="vein vein-2"></div><div class="vein vein-3"></div><div class="vein vein-4"></div>
+        <div class="ore-label" style="top: 14%; left: 6%;">AU <span class="val">4.8 g/t</span></div>
+        <div class="ore-label" style="top: 38%; left: 50%;">CU <span class="val">1.2%</span></div>
+        <div class="ore-label" style="top: 62%; left: 8%;">LI₂O <span class="val">1.6%</span></div>
+        <div class="ore-label" style="top: 78%; left: 60%;">Fe <span class="val">62.4%</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="why">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Why This Exists</div>
+      <h2 class="section-title">The earth <span class="accent">talks</span>. We just never had one window to hear it all.</h2>
+      <p class="section-sub">Mining permits, vessel transponders, rail telemetry, seismic stations, satellite fire detections, commodity exchange feeds, ESG disclosures, and regulatory filings already tell us a great deal about the planet's resource heartbeat. God's Eye View fuses them into a single, inspectable globe.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal"><div class="ico">⛏️</div><h3>From ore body to export</h3><p>Track a commodity from the deposit, through the mill, onto the rail car, into the port, onto the bulker — all on one globe. Each step is a layer you can toggle, interrogate, and extend.</p></div>
+      <div class="why-card reveal"><div class="ico">🛰️</div><h3>Public signals, real sources</h3><p>Every layer traces back to a named, documented source — USGS, OpenSky, AISStream, CelesTrak, NASA FIRMS, UN Comtrade, ICMM, SEDAR+. No mystery scraping. No private datasets.</p></div>
+      <div class="why-card reveal"><div class="ico">🔓</div><h3>Local-first, inspectable</h3><p>Runs in your browser. The code is yours to read, fork, and bend. Half the magic is the forbidden-cockpit aesthetic — the other half is that every line is auditable.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding: 30px 0;">
+  <div class="container">
+    <div class="stat-strip reveal">
+      <div class="stat-cell"><div class="ico">📦</div><div class="num">100+</div><div class="lbl">Data Sources Catalogued</div></div>
+      <div class="stat-cell"><div class="ico">🟢</div><div class="num">75+</div><div class="lbl">Completely Free Sources</div></div>
+      <div class="stat-cell"><div class="ico">🟡</div><div class="num">25+</div><div class="lbl">Freemium / Paid Sources</div></div>
+      <div class="stat-cell"><div class="ico">🏆</div><div class="num">#1</div><div class="lbl">GitHub Trending · Aug 2026</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES DIRECTORY -->
+<section id="sources">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">The Data Sources Directory</div>
+      <h2 class="section-title">100+ mining &amp; mineral data sources, <span class="accent">categorized</span>.</h2>
+      <p class="section-sub">The foundation of God's Eye View is a curated directory of over 100 data sources spanning geology, deposits, operations, financials, commodities, ESG, and earth observation.</p>
+    </div>
+    <div class="ds-controls reveal">
+      <div class="ds-search"><span class="search-ico">🔎</span><input type="text" id="ds-search-input" placeholder="Search 100+ sources (e.g. 'copper', 'LME', 'tailings')..." /></div>
+      <div class="ds-filter-row">
+        <span class="filter-chip active" data-filter="all">ALL</span>
+        <span class="filter-chip" data-filter="free">🟢 FREE</span>
+        <span class="filter-chip" data-filter="freemium">🟡 FREEMIUM</span>
+        <span class="filter-chip" data-filter="paid">🔴 PAID</span>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="deposits">
+      <div class="ds-category-head"><div class="cat-ico">🪨</div><div><h3>Mineral Deposits &amp; Geology</h3><div class="cat-desc">National geological surveys, deposit databases, geochemistry, and bedrock mapping.</div></div><div class="count">17 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="usgs mrds" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">USGS MRDS</span></div><div class="ds-desc">Mineral Resources Data System — 280k+ records of mines, prospects, and occurrences worldwide.</div><div class="ds-meta"><a class="ds-tag free" href="https://mrdata.usgs.gov/mrds/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="usgs active" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">USGS Active Mines</span></div><div class="ds-desc">Subset of MRDS filtered to currently operating mines and processing plants.</div><div class="ds-meta"><a class="ds-tag free" href="https://mrdata.usgs.gov/mrds/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="onegeology" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌐</span><span class="ds-name">OneGeology</span></div><div class="ds-desc">Federated global geological survey data — bedrock, supergene, and structural layers.</div><div class="ds-meta"><a class="ds-tag free" href="http://portal.onegeology.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="macrostrat" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🦴</span><span class="ds-name">Macrostrat</span></div><div class="ds-desc">Geologic map of the world with stratigraphic, lithologic, and economic-mineral columns.</div><div class="ds-meta"><a class="ds-tag free" href="https://macrostrat.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="geoscience australia" data-region="oceania" data-type="free"><div class="ds-head"><span class="ds-emoji">🇦🇺</span><span class="ds-name">Geoscience Australia</span></div><div class="ds-desc">Australian mineral occurrences (MINEDEX), stratigraphy, radiometrics, and gravity.</div><div class="ds-meta"><a class="ds-tag free" href="https://portal.ga.gov.au/" target="_blank">🟢 FREE</a><span class="ds-tag region">OCEANIA</span></div></div>
+        <div class="ds-card" data-name="bgs geology" data-region="europe" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">BGS Geology</span></div><div class="ds-desc">British Geological Survey — onshore bedrock, superficial, and mineral occurrence data.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.bgs.ac.uk/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">UK</span></div></div>
+        <div class="ds-card" data-name="geoindex" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">GeoIndex (BGS)</span></div><div class="ds-desc">Interactive map of UK boreholes, minerals, hydrogeology, and scanned legacy logs.</div><div class="ds-meta"><a class="ds-tag free" href="http://mapapps2.bgs.ac.uk/geoindex/" target="_blank">🟢 FREE</a><span class="ds-tag region">UK</span></div></div>
+        <div class="ds-card" data-name="ardf alaska" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">ARDF (Alaska)</span></div><div class="ds-desc">Alaska Resource Data File — 7,000+ mineral occurrences with detailed geologic context.</div><div class="ds-meta"><a class="ds-tag free" href="https://ardf.wr.usgs.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">ALASKA</span></div></div>
+        <div class="ds-card" data-name="nrcan" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇨🇦</span><span class="ds-name">NRCan Geoscience</span></div><div class="ds-desc">Natural Resources Canada — Canadian Mineral Occurrence (MINCAN) and geology layers.</div><div class="ds-meta"><a class="ds-tag free" href="https://geo.nrcan.gc.ca/" target="_blank">🟢 FREE</a><span class="ds-tag region">CANADA</span></div></div>
+        <div class="ds-card" data-name="sgu sweden" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇸🇪</span><span class="ds-name">SGU (Sweden)</span></div><div class="ds-desc">Geological Survey of Sweden — bedrock, till, and mineral deposits in Fennoscandia.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.sgu.se/en/" target="_blank">🟢 FREE</a><span class="ds-tag region">SWEDEN</span></div></div>
+        <div class="ds-card" data-name="gs namibia" data-region="africa" data-type="free"><div class="ds-head"><span class="ds-emoji">🇳🇦</span><span class="ds-name">GS Namibia</span></div><div class="ds-desc">Namibia Geological Survey — mineral occurrences, diamonds, uranium, base metals.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.mme.gov.na/directorates/gsi/" target="_blank">🟢 FREE</a><span class="ds-tag region">NAMIBIA</span></div></div>
+        <div class="ds-card" data-name="cgs south africa" data-region="africa" data-type="free"><div class="ds-head"><span class="ds-emoji">🇿🇦</span><span class="ds-name">CGS (South Africa)</span></div><div class="ds-desc">Council for Geoscience — SAMINDABA mineral database, Witwatersrand gold, PGMs, Mn.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.geoscience.org.za/" target="_blank">🟢 FREE</a><span class="ds-tag region">SOUTH AFRICA</span></div></div>
+        <div class="ds-card" data-name="segemar" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇦🇷</span><span class="ds-name">SEGEMAR</span></div><div class="ds-desc">Argentine Geological Survey — Andean porphyry copper, lithium brines, borates.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.segemar.gob.ar/" target="_blank">🟢 FREE</a><span class="ds-tag region">ARGENTINA</span></div></div>
+        <div class="ds-card" data-name="earthchem" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🧪</span><span class="ds-name">EarthChem</span></div><div class="ds-desc">Global rock, mineral, and whole-rock geochemistry — major, trace, and isotopic data.</div><div class="ds-meta"><a class="ds-tag free" href="https://earthchem.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="mindat" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">💎</span><span class="ds-name">Mindat.org</span></div><div class="ds-desc">Largest public mineral locality database — 1M+ mineral localities with coordinates.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.mindat.org/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="ngmdb" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🗺️</span><span class="ds-name">USGS NGMDB</span></div><div class="ds-desc">National Geologic Map Database — stratigraphic lexicon and detailed US geologic mapping.</div><div class="ds-meta"><a class="ds-tag free" href="https://ngmdb.usgs.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">USA</span></div></div>
+        <div class="ds-card" data-name="heat flow" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">♨️</span><span class="ds-name">Global Heat Flow</span></div><div class="ds-desc">IHFC global heat-flow database — useful for geothermal, uranium ISR, and basement modeling.</div><div class="ds-meta"><a class="ds-tag free" href="http://www.ihfc-iugg.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="eo">
+      <div class="ds-category-head"><div class="cat-ico">🛰️</div><div><h3>Earth Observation &amp; Satellite Imagery</h3><div class="cat-desc">Free and commercial satellite archives — optical, SAR, thermal, hyperspectral, and night lights.</div></div><div class="count">14 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="sentinel hub" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇪🇺</span><span class="ds-name">Sentinel Hub</span></div><div class="ds-desc">API for Sentinel-1/2/3, Landsat, MODIS — free tier for small-scale evaluation.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.sentinel-hub.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="earthexplorer" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">USGS EarthExplorer</span></div><div class="ds-desc">Landsat 4–9, ASTER, SRTM, Hyperion, MODIS archives — the classic free archive.</div><div class="ds-meta"><a class="ds-tag free" href="https://earthexplorer.usgs.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="copernicus hub" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇪🇺</span><span class="ds-name">Copernicus Data Hub</span></div><div class="ds-desc">Open access to full Sentinel archive — S1 SAR, S2 MSI, S3 SLSTR, S5P methane.</div><div class="ds-meta"><a class="ds-tag free" href="https://scihub.copernicus.eu/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="nasa firms" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🔥</span><span class="ds-name">NASA FIRMS</span></div><div class="ds-desc">Fire Information for Resource Management — MODIS + VIIRS active fire detections.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://firms.modaps.eosdis.nasa.gov/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="openaerialmap" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🗺️</span><span class="ds-name">OpenAerialMap</span></div><div class="ds-desc">Community-contributed UAV and aerial imagery — useful for site-level documentation.</div><div class="ds-meta"><a class="ds-tag free" href="https://openaerialmap.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="esa eo" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇪🇺</span><span class="ds-name">ESA EO Catalogue</span></div><div class="ds-desc">ESA Earth Online — ERS, Envisat, SMOS, CryoSat, Aeolus mission archives.</div><div class="ds-meta"><a class="ds-tag free" href="https://earth.esa.int/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="planet labs" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">Planet Labs</span></div><div class="ds-desc">Daily PlanetScope Dove imagery (3m) + SkySat (50cm) — commercial, education programs.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.planet.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="maxar" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">Maxar</span></div><div class="ds-desc">WorldView 1–4, GeoEye — 30–50cm sub-daily commercial VHR imagery &amp; SecureWatch.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.maxar.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="iceye" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">ICEYE</span></div><div class="ds-desc">X-band SAR microsatellite constellation — daily revisit, all-weather ground movement.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.iceye.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="capella" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">Capella Space</span></div><div class="ds-desc">Commercial SAR with very high resolution — useful for tailings and pit monitoring.</div><div class="ds-meta"><a class="ds-tag paid" href="https://capellaspace.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="sentinel 5p" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">💨</span><span class="ds-name">Sentinel-5P TROPOMI</span></div><div class="ds-desc">Atmospheric methane (CH₄) &amp; CO column — detect coal mine &amp; gas leaks from space.</div><div class="ds-meta"><a class="ds-tag free" href="https://sentinel.esa.int/web/sentinel/missions/sentinel-5p" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="global forest watch" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌳</span><span class="ds-name">Global Forest Watch</span></div><div class="ds-desc">World Resources Institute — tree cover loss alerts relevant to mine-area impact.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.globalforestwatch.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="nasa earthdata" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">NASA Earthdata</span></div><div class="ds-desc">Federated search across NASA DAACs — MODIS, VIIRS, SRTM, ASTER, GPM, GRACE.</div><div class="ds-meta"><a class="ds-tag free" href="https://earthdata.nasa.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="noaa night lights" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌃</span><span class="ds-name">NOAA Night Lights</span></div><div class="ds-desc">VIIRS Day/Night Band — proxy for mine-site activity, grid power, and flaring.</div><div class="ds-meta"><a class="ds-tag free" href="https://ngdc.noaa.gov/eog/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="ops">
+      <div class="ds-category-head"><div class="cat-ico">⛏️</div><div><h3>Mining Operations &amp; Production</h3><div class="cat-desc">Asset-level databases, production figures, ownership structures, and tailings inventories.</div></div><div class="count">12 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="minerals yearbook" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">USGS Minerals Yearbook</span></div><div class="ds-desc">Annual commodity-by-commodity production, reserves, and country reviews.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.usgs.gov/centers/national-minerals-information-center" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="usgs mcs" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">USGS MCS</span></div><div class="ds-desc">Mineral Commodity Summaries — annual reserve &amp; production snapshot for 90+ commodities.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="icmm tailings" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🏗️</span><span class="ds-name">ICMM Tailings</span></div><div class="ds-desc">International Council on Mining &amp; Metals — global tailings dam disclosure database.</div><div class="ds-meta"><a class="ds-tag free" href="https://tailings.globaltailingsreview.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="gtr tailings" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🏗️</span><span class="ds-name">Global Tailings Review</span></div><div class="ds-desc">GTR database of disclosed tailings facilities — hazard, volume, consequence classification.</div><div class="ds-meta"><a class="ds-tag free" href="https://globaltailingsreview.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="world mining congress" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌐</span><span class="ds-name">World Mining Congress</span></div><div class="ds-desc">Country-level production statistics, trends, and reserves by commodity.</div><div class="ds-meta"><a class="ds-tag free" href="https://wmc.org.pl/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="bgs wmp" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">BGS WMP</span></div><div class="ds-desc">British Geological Survey — World Mineral Production dataset, 5-year rolling statistics.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.bgs.ac.uk/mineralsuk/statistics/worldStatistics.html" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="s&p global" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">S&amp;P Global Market Intelligence</span></div><div class="ds-desc">Industry-standard asset-level mining intelligence — reserves, production, ownership.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.spglobal.com/marketintelligence/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="minespans" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">MineSpans (McKinsey)</span></div><div class="ds-desc">Mine-level cost curves, production data, and operational benchmarks.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.mckinsey.com/industries/metals-and-mining/our-insights/minespans" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="raw materials data" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📦</span><span class="ds-name">Raw Materials Data</span></div><div class="ds-desc">Ownership and production database for global mines &amp; smelters (Sweden-based).</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.rmd.se/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="snl mining" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">S&amp;P SNL Mining</span></div><div class="ds-desc">M&amp;A, project pipeline, and asset financials for listed and private mining entities.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.spglobal.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="cru group" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">CRU Group</span></div><div class="ds-desc">Mine production analysis, cost curves, and commodity market intelligence.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.crugroup.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="wood mac" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">Wood Mackenzie</span></div><div class="ds-desc">Mine asset database, costs, and strategic outlooks across metals &amp; energy.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.woodmac.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="finance">
+      <div class="ds-category-head"><div class="cat-ico">💹</div><div><h3>Commodity Prices &amp; Financial Markets</h3><div class="cat-desc">Exchanges, pricing agencies, company financials, and market data feeds.</div></div><div class="count">14 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="lme" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">London Metal Exchange</span></div><div class="ds-desc">LME Cu, Al, Zn, Ni, Pb, Sn, Co &amp; LMEX — delayed prices free, real-time paid.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.lme.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="comex" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">COMEX / CME Group</span></div><div class="ds-desc">Gold, silver, copper futures &amp; options — delayed quotes free via CME.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.cmegroup.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="shfe" data-region="asia" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇨🇳</span><span class="ds-name">Shanghai Futures Exchange</span></div><div class="ds-desc">SHFE Cu, Al, Zn, Ni, Sn, Pb, Au, Ag — China's primary metals futures market.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.shfe.com.cn/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">CHINA</span></div></div>
+        <div class="ds-card" data-name="lbma" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🥇</span><span class="ds-name">LBMA</span></div><div class="ds-desc">London Bullion Market Association — daily Au, Ag, Pt, Pd benchmark prices.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.lbma.org.uk/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="kitco" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">💰</span><span class="ds-name">Kitco Metals</span></div><div class="ds-desc">Free live precious-metals prices, news, and historical charts.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.kitco.com/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="metalary" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">💰</span><span class="ds-name">Metalary</span></div><div class="ds-desc">Spot prices for 60+ industrial metals &amp; alloys, including rare earths.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.metalary.com/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="fastmarkets" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">Fastmarkets</span></div><div class="ds-desc">PRA (Price Reporting Agency) — benchmark Li, Co, Ni, graphite, battery-metal prices.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.fastmarkets.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="argus" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">Argus Media</span></div><div class="ds-desc">Independent PRA — ferro-alloys, coal, steel, rare-earths, and battery materials.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.argusmedia.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="platts" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">S&amp;P Platts</span></div><div class="ds-desc">Benchmark commodity prices — iron ore, coal, steel, ferrous scrap, HBI.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.spglobal.com/platts/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="yahoo finance" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📈</span><span class="ds-name">Yahoo Finance</span></div><div class="ds-desc">Mining company stock prices, historical quotes, and fundamentals — free &amp; unfettered.</div><div class="ds-meta"><a class="ds-tag free" href="https://finance.yahoo.com/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="stockanalysis" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📈</span><span class="ds-name">StockAnalysis.com</span></div><div class="ds-desc">Clean mining-company financials — income, balance sheet, cashflow — for free.</div><div class="ds-meta"><a class="ds-tag free" href="https://stockanalysis.com/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="macrotrends" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📈</span><span class="ds-name">Macrotrends</span></div><div class="ds-desc">Long-term historical commodity &amp; stock price charts — 10–100 yr series.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.macrotrends.net/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="koyfin" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">📈</span><span class="ds-name">Koyfin</span></div><div class="ds-desc">Bloomberg-lite terminal — macro, commodity, and equity data with generous free tier.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.koyfin.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="sec edgar" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">SEC EDGAR</span></div><div class="ds-desc">40-F, 10-K, 20-F filings — reserves, NI 43-101 technical reports, and operations.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.sec.gov/edgar" target="_blank">🟢 FREE</a><span class="ds-tag region">USA</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="filings">
+      <div class="ds-category-head"><div class="cat-ico">📑</div><div><h3>Company Filings &amp; Technical Disclosures</h3><div class="cat-desc">Regulatory filings, NI 43-101, JORC, and SEDAR+ technical reports for public mining companies.</div></div><div class="count">9 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="sedar+" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇨🇦</span><span class="ds-name">SEDAR+</span></div><div class="ds-desc">Canadian securities filings — the global home of NI 43-101 technical reports.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.sedarplus.ca/" target="_blank">🟢 FREE</a><span class="ds-tag region">CANADA</span></div></div>
+        <div class="ds-card" data-name="ni 43101" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">📄</span><span class="ds-name">NI 43-101 Registry</span></div><div class="ds-desc">Canadian Institute of Mining — filed technical reports for over 3,800 mining projects.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.cim.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">CANADA</span></div></div>
+        <div class="ds-card" data-name="jorc" data-region="oceania" data-type="free"><div class="ds-head"><span class="ds-emoji">🇦🇺</span><span class="ds-name">JORC Code</span></div><div class="ds-desc">Australasian Code for Reporting Mineral Resources &amp; Ore Reserves — ASX/NSX filings.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.jorc.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">AUSTRALIA</span></div></div>
+        <div class="ds-card" data-name="samrec" data-region="africa" data-type="free"><div class="ds-head"><span class="ds-emoji">🇿🇦</span><span class="ds-name">SAMREC / SAMVAL</span></div><div class="ds-desc">South African Code for Reporting Mineral Resources &amp; Mineral Asset Valuations.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.samcode.co.za/" target="_blank">🟢 FREE</a><span class="ds-tag region">SOUTH AFRICA</span></div></div>
+        <div class="ds-card" data-name="companies house" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">Companies House (UK)</span></div><div class="ds-desc">Free UK corporate filings — useful for tracing mining holding companies.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.gov.uk/government/organisations/companies-house" target="_blank">🟢 FREE</a><span class="ds-tag region">UK</span></div></div>
+        <div class="ds-card" data-name="opencorporates" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🏢</span><span class="ds-name">OpenCorporates</span></div><div class="ds-desc">Largest open corporate registry — useful for tracing mine ownership chains.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://opencorporates.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="fca nss" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">FCA NSS</span></div><div class="ds-desc">UK Financial Conduct Authority — regulated mining company announcements.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.fca.org.uk/" target="_blank">🟢 FREE</a><span class="ds-tag region">UK</span></div></div>
+        <div class="ds-card" data-name="hemscott" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇬🇧</span><span class="ds-name">Morningstar (Hemscott)</span></div><div class="ds-desc">Historic UK mining share data, dividends, and director dealings.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.morningstar.co.uk/" target="_blank">🟢 FREE</a><span class="ds-tag region">UK</span></div></div>
+        <div class="ds-card" data-name="eiti" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌍</span><span class="ds-name">EITI</span></div><div class="ds-desc">Extractive Industries Transparency Initiative — country-level revenue &amp; payments data.</div><div class="ds-meta"><a class="ds-tag free" href="https://eiti.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="trade">
+      <div class="ds-category-head"><div class="cat-ico">🚢</div><div><h3>Shipping, Logistics &amp; Trade</h3><div class="cat-desc">AIS vessel tracking, port operations, rail telemetry, and bilateral trade flows.</div></div><div class="count">11 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="aisstream" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">AISStream</span></div><div class="ds-desc">Free global AIS vessel tracking API — bulkers, tankers, container, naval.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://aisstream.io/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="marinetraffic" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🚢</span><span class="ds-name">MarineTraffic</span></div><div class="ds-desc">Web-based AIS with vessel details, port calls, and historical tracks.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.marinetraffic.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="vesselfinder" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🚢</span><span class="ds-name">VesselFinder</span></div><div class="ds-desc">Free tier for live AIS — good coverage on coastal bulkers and tankers.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.vesselfinder.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="fleetmon" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🚢</span><span class="ds-name">FleetMon</span></div><div class="ds-desc">Vessel tracking, port arrivals, and fleet analytics — generous free tier.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.fleetmon.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="un comtrade" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌍</span><span class="ds-name">UN Comtrade</span></div><div class="ds-desc">Bilateral trade flows for all HS-coded commodities — ore, concentrate, refined metal.</div><div class="ds-meta"><a class="ds-tag free" href="https://comtradeplus.un.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="trade map" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🌍</span><span class="ds-name">Trade Map (ITC)</span></div><div class="ds-desc">International Trade Centre — trade statistics, tariffs, and market access.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.trademap.org/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="portwatch" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">⚓</span><span class="ds-name">PortWatch (IMF)</span></div><div class="ds-desc">IMF global port activity tracker — daily ship calls and bulk cargo volumes.</div><div class="ds-meta"><a class="ds-tag free" href="https://portwatch.imf.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="drewry" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🚢</span><span class="ds-name">Drewry</span></div><div class="ds-desc">Maritime research — dry bulk &amp; container market analysis, forecasts.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.drewry.co.uk/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="clarksons" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">🚢</span><span class="ds-name">Clarksons Research</span></div><div class="ds-desc">Shipping intelligence — bulk carrier fleet, orderbook, freight rates.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.clarksons.net/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="opensky" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">✈️</span><span class="ds-name">OpenSky Network</span></div><div class="ds-desc">Live ADS-B flight tracking — useful for FIFO mine workers &amp; drill-rig moves.</div><div class="ds-meta"><a class="ds-tag free" href="https://opensky-network.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="adsb.lol" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">✈️</span><span class="ds-name">adsb.lol</span></div><div class="ds-desc">Community ADS-B network — includes military and charter flights to remote sites.</div><div class="ds-meta"><a class="ds-tag free" href="https://adsb.lol/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="esg">
+      <div class="ds-category-head"><div class="cat-ico">🌱</div><div><h3>ESG, Environmental &amp; Social</h3><div class="cat-desc">Sustainability frameworks, environmental disclosures, and community impact registries.</div></div><div class="count">11 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="gri" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📋</span><span class="ds-name">GRI Standards</span></div><div class="ds-desc">Global Reporting Initiative — free sustainability disclosure database &amp; standards.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.globalreporting.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="sasb" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📋</span><span class="ds-name">SASB Standards</span></div><div class="ds-desc">Sector-specific (incl. Metals &amp; Mining) sustainability accounting metrics.</div><div class="ds-meta"><a class="ds-tag free" href="https://sasb.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="cdp" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🌿</span><span class="ds-name">CDP</span></div><div class="ds-desc">Carbon Disclosure Project — climate, water, and forest disclosures from miners.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.cdp.net/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="tnfd" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🦋</span><span class="ds-name">TNFD</span></div><div class="ds-desc">Taskforce on Nature-related Financial Disclosures — mine-site biodiversity reporting.</div><div class="ds-meta"><a class="ds-tag free" href="https://tnfd.global/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="irma" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">✅</span><span class="ds-name">IRMA</span></div><div class="ds-desc">Initiative for Responsible Mining — audited mine-site ESG standard &amp; registry.</div><div class="ds-meta"><a class="ds-tag free" href="https://responsiblemining.net/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="tsm" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">✅</span><span class="ds-name">Towards Sustainable Mining</span></div><div class="ds-desc">Mining Association of Canada protocol — facility-level performance protocols.</div><div class="ds-meta"><a class="ds-tag free" href="https://mining.ca/towards-sustainable-mining/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="land matrix" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🗺️</span><span class="ds-name">Land Matrix</span></div><div class="ds-desc">Global land deal database — tracks large-scale mining &amp; ag land acquisitions.</div><div class="ds-meta"><a class="ds-tag free" href="https://landmatrix.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="ibat" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🦧</span><span class="ds-name">IBAT</span></div><div class="ds-desc">Integrated Biodiversity Assessment Tool — key species &amp; protected areas near sites.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.ibat-alliance.org/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="wdpa" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🏞️</span><span class="ds-name">WDPA</span></div><div class="ds-desc">World Database on Protected Areas — UN-EP-WCMC global conservation registry.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.protectedplanet.net/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="msci esg" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">MSCI ESG</span></div><div class="ds-desc">Commercial ESG ratings &amp; controversy scores for listed mining companies.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.msci.com/our-solutions/esg-investing" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="sustainalytics" data-region="global" data-type="paid"><div class="ds-head"><span class="ds-emoji">📊</span><span class="ds-name">Sustainalytics</span></div><div class="ds-desc">Morningstar-owned ESG risk ratings — controversy and incident tracking.</div><div class="ds-meta"><a class="ds-tag paid" href="https://www.sustainalytics.com/" target="_blank">🔴 PAID</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="geo">
+      <div class="ds-category-head"><div class="cat-ico">🌋</div><div><h3>Geophysics, Seismic &amp; Natural Hazards</h3><div class="cat-desc">Earthquakes, volcanism, and magnetic data — crucial for tailings stability &amp; exploration.</div></div><div class="count">8 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="usgs earthquakes" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌍</span><span class="ds-name">USGS Earthquakes</span></div><div class="ds-desc">Real-time global earthquake feed — magnitude, depth, affected regions.</div><div class="ds-meta"><a class="ds-tag free" href="https://earthquake.usgs.gov/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="emsc" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌍</span><span class="ds-name">EMSC</span></div><div class="ds-desc">European-Mediterranean Seismological Centre — rapid global earthquake locations.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.emsc-csem.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="earthscope" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📡</span><span class="ds-name">EarthScope (IRIS)</span></div><div class="ds-desc">Global seismographic network — waveforms and event catalogs for research.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.iris.edu/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="volcanism" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌋</span><span class="ds-name">Global Volcanism Program</span></div><div class="ds-desc">Smithsonian volcanism database — 10k+ Holocene volcanoes with eruptions &amp; deposits.</div><div class="ds-meta"><a class="ds-tag free" href="https://volcano.si.edu/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="noaa swpc" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">☀️</span><span class="ds-name">NOAA SWPC</span></div><div class="ds-desc">Space Weather Prediction Center — geomagnetic storms affecting magnetic surveys.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.swpc.noaa.gov/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="emag2" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🧲</span><span class="ds-name">EMAG2 v3</span></div><div class="ds-desc">Earth Magnetic Anomaly Grid — 2-arc-min global grid for basement mapping.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.ncei.noaa.gov/products/geomagnetic-anomaly-data" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="bgi wgm" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🪨</span><span class="ds-name">BGI WGM</span></div><div class="ds-desc">Bureau Gravimétrique International — global gravity &amp; Bouguer anomaly maps.</div><div class="ds-meta"><a class="ds-tag free" href="http://bgi.omp.obs-mip.fr/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="copernicus ems" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🚨</span><span class="ds-name">Copernicus EMS</span></div><div class="ds-desc">Rapid mapping service for floods, landslides, and tailings failures during crises.</div><div class="ds-meta"><a class="ds-tag free" href="https://emergency.copernicus.eu/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="infra">
+      <div class="ds-category-head"><div class="cat-ico">⚡</div><div><h3>Infrastructure, Energy &amp; Water</h3><div class="cat-desc">Power grids, water, dams, rail, and ports — the operational backbone of mining.</div></div><div class="count">8 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="openinframap" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🔌</span><span class="ds-name">OpenInfraMap</span></div><div class="ds-desc">Global power, gas, oil, water infrastructure rendered from OpenStreetMap tags.</div><div class="ds-meta"><a class="ds-tag free" href="https://openinframap.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="global energy monitor" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">⚡</span><span class="ds-name">Global Energy Monitor</span></div><div class="ds-desc">Global Coal, Steel, Gas Plant Trackers — geolocated operating asset database.</div><div class="ds-meta"><a class="ds-tag free" href="https://globalenergymonitor.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="ember" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">⚡</span><span class="ds-name">Ember Climate</span></div><div class="ds-desc">Country-level electricity mix &amp; carbon intensity — mining decarbonization context.</div><div class="ds-meta"><a class="ds-tag free" href="https://ember-climate.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="eia" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">EIA</span></div><div class="ds-desc">US Energy Information Administration — coal, uranium, and energy data.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.eia.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">USA</span></div></div>
+        <div class="ds-card" data-name="iea" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🔋</span><span class="ds-name">IEA Critical Minerals</span></div><div class="ds-desc">International Energy Agency — demand projections for Li, Co, Ni, Cu, REE, graphite.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.iea.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="bom water" data-region="oceania" data-type="free"><div class="ds-head"><span class="ds-emoji">💧</span><span class="ds-name">BoM Water (AU)</span></div><div class="ds-desc">Australian Bureau of Meteorology — water storages, stream gauges, and rainfall.</div><div class="ds-meta"><a class="ds-tag free" href="http://www.bom.gov.au/water/" target="_blank">🟢 FREE</a><span class="ds-tag region">AUSTRALIA</span></div></div>
+        <div class="ds-card" data-name="usgs water" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">💧</span><span class="ds-name">USGS Water Data</span></div><div class="ds-desc">Real-time stream &amp; groundwater levels — critical for mine dewatering &amp; compliance.</div><div class="ds-meta"><a class="ds-tag free" href="https://waterdata.usgs.gov/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="openrailwaymap" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🚂</span><span class="ds-name">OpenRailwayMap</span></div><div class="ds-desc">OpenStreetMap-based rail network — heavy-haul corridors like Pilbara &amp; Carajás.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.openrailwaymap.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="climate">
+      <div class="ds-category-head"><div class="cat-ico">🌦️</div><div><h3>Meteorology &amp; Climate</h3><div class="cat-desc">Weather, rainfall, and climate datasets affecting mine operations &amp; tailings safety.</div></div><div class="count">6 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="open-meteo" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌤️</span><span class="ds-name">Open-Meteo</span></div><div class="ds-desc">Free non-commercial API — global forecast &amp; historical weather, no key required.</div><div class="ds-meta"><a class="ds-tag free" href="https://open-meteo.com/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="noaa cdo" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">NOAA Climate Data</span></div><div class="ds-desc">Climate Data Online (CDO) — global historical weather observations.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.ncdc.noaa.gov/cdo-web/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="c3s" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇪🇺</span><span class="ds-name">C3S Climate Store</span></div><div class="ds-desc">Copernicus Climate Data Store — ERA5 reanalysis and seasonal forecasts.</div><div class="ds-meta"><a class="ds-tag free" href="https://cds.climate.copernicus.eu/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="worldclim" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌡️</span><span class="ds-name">WorldClim v2</span></div><div class="ds-desc">Global climate surfaces — temperature, precipitation, bioclim layers at 1km resolution.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.worldclim.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="nasa power" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">NASA POWER</span></div><div class="ds-desc">Prediction Of Worldwide Energy Resources — solar &amp; meteorology at point locations.</div><div class="ds-meta"><a class="ds-tag free" href="https://power.larc.nasa.gov/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="ecmwf" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🌧️</span><span class="ds-name">ECMWF</span></div><div class="ds-desc">European weather forecasts &amp; reanalysis — ERA5, SEAS5, extreme-precip datasets.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://www.ecmwf.int/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="research">
+      <div class="ds-category-head"><div class="cat-ico">📚</div><div><h3>Academic, Research &amp; News</h3><div class="cat-desc">Open research, critical-mineral strategies, and mining sector journalism.</div></div><div class="count">7 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="usgs critical" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">🇺🇸</span><span class="ds-name">USGS Critical Minerals</span></div><div class="ds-desc">US List of 50 Critical Minerals &amp; the methodology that defines supply risk.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.usgs.gov/centers/national-minerals-information-center" target="_blank">🟢 FREE</a><span class="ds-tag region">USA</span></div></div>
+        <div class="ds-card" data-name="usgs sip" data-region="americas" data-type="free"><div class="ds-head"><span class="ds-emoji">⛏️</span><span class="ds-name">USGS SIP</span></div><div class="ds-desc">Earth Mapping Resources Initiative — airborne geophysics &amp; geochemistry for the US.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.usgs.gov/earthmap" target="_blank">🟢 FREE</a><span class="ds-tag region">USA</span></div></div>
+        <div class="ds-card" data-name="eu crm" data-region="europe" data-type="free"><div class="ds-head"><span class="ds-emoji">🇪🇺</span><span class="ds-name">EU CRM List</span></div><div class="ds-desc">European Commission Critical Raw Materials list &amp; foresight studies.</div><div class="ds-meta"><a class="ds-tag free" href="https://ec.europa.eu/growth/sectors/raw-materials/strategic-action-plan-critical-raw-materials_en" target="_blank">🟢 FREE</a><span class="ds-tag region">EU</span></div></div>
+        <div class="ds-card" data-name="world bank" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🏦</span><span class="ds-name">World Bank MinDev</span></div><div class="ds-desc">Minerals for Climate Action report — demand forecasts for energy transition.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.worldbank.org/en/topic/extractiveindustries" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="oecd" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🌐</span><span class="ds-name">OECD Raw Materials</span></div><div class="ds-desc">OECD minerals &amp; metals data — trade, criticality, and material productivity.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.oecd.org/env/indicators-modelling-outlooks/raw-materials-database.htm" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="mining.com" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📰</span><span class="ds-name">Mining.com</span></div><div class="ds-desc">Leading mining industry news source — free daily updates with global coverage.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.mining.com/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="reuters" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📰</span><span class="ds-name">Reuters Metals</span></div><div class="ds-desc">Reuters Metals &amp; Mining — deal, operational, and market-moving news.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.reuters.com/business/metals-mining/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+      </div>
+    </div>
+
+    <div class="ds-category reveal" data-category="live">
+      <div class="ds-category-head"><div class="cat-ico">📡</div><div><h3>Live Operational Telemetry</h3><div class="cat-desc">Sources directly ingested into the God's Eye View live globe.</div></div><div class="count">8 sources</div></div>
+      <div class="ds-grid">
+        <div class="ds-card" data-name="celestak" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🛰️</span><span class="ds-name">CelesTrak</span></div><div class="ds-desc">838-object satellite catalog — incl. Sentinel, Landsat, ICEYE, Capella, Starlink shells.</div><div class="ds-meta"><a class="ds-tag free" href="https://celestrak.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="gtfs" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🚌</span><span class="ds-name">GTFS-Realtime</span></div><div class="ds-desc">Operator transit feeds — includes light-rail mine workers and commuter flows.</div><div class="ds-meta"><a class="ds-tag free" href="https://gtfs.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="gbfs" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🚲</span><span class="ds-name">GBFS</span></div><div class="ds-desc">General Bikeshare Feed — useful for inferring mine-camp worker movement.</div><div class="ds-meta"><a class="ds-tag free" href="https://gbfs.org/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="radio browser" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">📻</span><span class="ds-name">Radio Browser</span></div><div class="ds-desc">Community-curated global radio directory — geolocated broadcasters.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.radio-browser.info/" target="_blank">🟢 FREE</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="tomtom" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🚦</span><span class="ds-name">TomTom Traffic</span></div><div class="ds-desc">Live flow speeds &amp; congestion colors — drives the simulated traffic layer.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://developer.tomtom.com/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+        <div class="ds-card" data-name="osrm" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🧭</span><span class="ds-name">OSRM</span></div><div class="ds-desc">Open Source Routing Machine — street &amp; rail route tracing on OSM.</div><div class="ds-meta"><a class="ds-tag free" href="http://project-osrm.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="osm" data-region="global" data-type="free"><div class="ds-head"><span class="ds-emoji">🗺️</span><span class="ds-name">OpenStreetMap</span></div><div class="ds-desc">The free editable map of the world — roads, rails, buildings, and site polygons.</div><div class="ds-meta"><a class="ds-tag free" href="https://www.openstreetmap.org/" target="_blank">🟢 FREE</a><span class="ds-tag region">GLOBAL</span></div></div>
+        <div class="ds-card" data-name="launch library" data-region="global" data-type="freemium"><div class="ds-head"><span class="ds-emoji">🚀</span><span class="ds-name">Launch Library 2</span></div><div class="ds-desc">Rolling 30-day orbital launches — including EO, mineral mapping, &amp; comms payloads.</div><div class="ds-meta"><a class="ds-tag freemium" href="https://thespacedevs.com/llapi/" target="_blank">🟡 FREEMIUM</a><span class="ds-tag live">LIVE</span></div></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 30px;">
+      <div class="ico">🧩</div>
+      <p><strong>Missing a source?</strong> Each layer in God's Eye View is a separate module. Open an issue or send a PR — see <a href="#upload" style="color: var(--gold-bright);">the Upload Guide below</a> for per-source integration steps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW TO ADD & UPLOAD YOUR DATA SOURCES ===== -->
+<section id="upload" class="upload-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Upload Guide</div>
+      <h2 class="section-title">How to Add &amp; Upload <span class="accent">Every Data Source</span></h2>
+      <p class="section-sub">God's Eye View uses a module-per-layer architecture. Every source above can be integrated via one of four methods. Below is a per-source guide for all 100+ sources — format, method, file path, and integration code.</p>
+    </div>
+
+    <!-- 4 METHODS -->
+    <div class="upload-methods reveal">
+      <div class="upload-method">
+        <div class="um-icon">📂</div>
+        <div class="um-badge">METHOD 01</div>
+        <h4>Bundled Static Data</h4>
+        <p>Drop a GeoJSON/CSV/JSON into <code>src/data/local_data/</code>. Loaded at init. Best for catalogs &amp; inventories.</p>
+        <div class="um-code">src/data/local_data/your_set/data.geojson</div>
+      </div>
+      <div class="upload-method">
+        <div class="um-icon">📡</div>
+        <div class="um-badge">METHOD 02</div>
+        <h4>Live API Polling</h4>
+        <p>Write a <code>refresh()</code> method fetching JSON from a public API. Best for keyless feeds.</p>
+        <div class="um-code">async refresh() { fetch(url) }</div>
+      </div>
+      <div class="upload-method">
+        <div class="um-icon">🔑</div>
+        <div class="um-badge">METHOD 03</div>
+        <h4>Keyed API via POWER UP</h4>
+        <p>Declare provider in <code>keySetup.js</code>, paste key in POWER UP panel, broker through server proxy with SSRF.</p>
+        <div class="um-code">server/routes/yourkey.js → ssrfGuard()</div>
+      </div>
+      <div class="upload-method">
+        <div class="um-icon">🤖</div>
+        <div class="um-badge">METHOD 04</div>
+        <h4>AI-Assisted Integration</h4>
+        <p>Clone into Cursor/Claude Code/Codex. Describe the layer in natural language. Vanilla JS is agent-friendly.</p>
+        <div class="um-code">"Create a GEV layer for [source]..."</div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-bottom: 32px;">
+      <div class="ico">📐</div>
+      <p><strong>Every layer follows the same contract:</strong> <code>id</code>, <code>name</code>, <code>init()</code>, <code>enable()</code>, <code>disable()</code>, <code>update()</code>, <code>refresh()</code>, <code>onTrack()</code>. Register in <code>src/main.js</code> — the UI picks it up automatically.</p>
+    </div>
+
+    <!-- CAT 1: DEPOSITS -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🪨</div><h3>Mineral Deposits &amp; Geology</h3><div class="uc-count">17 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">USGS MRDS</td><td><span class="sg-badge geojson">GeoJSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download CSV from <code>mrdata.usgs.gov</code> → convert with <code>ogr2ogr</code> → place in <code>local_data/mrds/</code></td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>fetch('./data/local_data/mrds/mrds.geojson')</code></td></tr>
+          <tr><td class="src-name">USGS Active Mines</td><td><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Filter MRDS where <code>site_status == 'Active'</code> → export as GeoJSON</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>mrds.filter(m =&gt; m.status==='Active')</code></td></tr>
+          <tr><td class="src-name">OneGeology</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Register <code>WebMapServiceImageryProvider</code> with portal URL → add as basemap toggle</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>new Cesium.WebMapServiceImageryProvider({url, layers})</code></td></tr>
+          <tr><td class="src-name">Macrostrat</td><td><span class="sg-badge geojson">GeoJSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m2">02 Live</span></td><td>Pull bedrock polygons from <code>macrostrat.org/api/v2</code> → cache → render as <code>GeoJsonDataSource</code></td><td><code>geology.js</code></td><td class="src-table-hide-mobile"><code>viewer.dataSources.add(Cesium.GeoJsonDataSource.load(...))</code></td></tr>
+          <tr><td class="src-name">Geoscience Australia</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use GA Portal WMS for MINEDEX → add as regional geology toggle</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>url: 'https://services.ga.gov.au/...'</code></td></tr>
+          <tr><td class="src-name">BGS Geology</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Request BGS bedrock WMS for UK onshore → add as regional basemap</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'BGS_Geology_625k_Bedrock'</code></td></tr>
+          <tr><td class="src-name">GeoIndex (BGS)</td><td><span class="sg-badge json">JSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m2">02 Live</span></td><td>Query GeoIndex for boreholes/minerals → plot as billboards with depth metadata</td><td><code>boreholes.js</code></td><td class="src-table-hide-mobile"><code>fetch('http://mapapps2.bgs.ac.uk/geoindex/...')</code></td></tr>
+          <tr><td class="src-name">ARDF (Alaska)</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download from <code>ardf.wr.usgs.gov</code> → convert CSV → bundle in <code>local_data/ardf/</code></td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>local_data/ardf_alaska/ardf.geojson</code></td></tr>
+          <tr><td class="src-name">NRCan Geoscience</td><td><span class="sg-badge wms">WMS</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Fetch MINCAN from NRCan GeoSpatial service → render as commodity-colored billboards</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>url: 'https://geo.nrcan.gc.ca/...'</code></td></tr>
+          <tr><td class="src-name">SGU (Sweden)</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use SGU WMS for bedrock/till → add as Fennoscandia regional sublayer</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'SGU_Bedrock_50k'</code></td></tr>
+          <tr><td class="src-name">GS Namibia</td><td><span class="sg-badge geojson">GeoJSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download shapefiles from GS Namibia → <code>ogr2ogr</code> → bundle in <code>local_data/namibia/</code></td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>local_data/namibia_minerals/occurrences.geojson</code></td></tr>
+          <tr><td class="src-name">CGS (South Africa)</td><td><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Obtain SAMINDABA → filter Au/PGM/Mn/Cr → bundle in <code>local_data/samindaba/</code></td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>local_data/samindaba/samindaba.geojson</code></td></tr>
+          <tr><td class="src-name">SEGEMAR</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use SEGEMAR WMS for Argentine geology → focus on Andean porphyry &amp; Puna lithium</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>url: 'https://www.segemar.gob.ar/...'</code></td></tr>
+          <tr><td class="src-name">EarthChem</td><td><span class="sg-badge json">JSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m2">02 Live</span></td><td>Query EarthChem API for whole-rock geochemistry by bbox → render as billboards with chemistry</td><td><code>geochemistry.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://earthchem.org/api/v1/samples?...')</code></td></tr>
+          <tr><td class="src-name">Mindat.org</td><td><span class="sg-badge json">JSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Use Mindat API (free signup) → broker key server-side → render 1M+ localities as clustered billboards</td><td><code>mineralLocalities.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/mindat/localities?mineral=quartz')</code></td></tr>
+          <tr><td class="src-name">USGS NGMDB</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Register NGMDB geologic map WMS as US basemap → add stratigraphic lexicon lookup</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'ngmdb_bedrock'</code></td></tr>
+          <tr><td class="src-name">Global Heat Flow</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download IHFC CSV with lat/lon/mW_m2 → convert → color-code by heat-flow value</td><td><code>heatFlow.js</code></td><td class="src-table-hide-mobile"><code>local_data/heat_flow/ihfc.geojson</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 2: EO -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🛰️</div><h3>Earth Observation &amp; Satellite</h3><div class="uc-count">14 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">Sentinel Hub</td><td><span class="sg-badge api">API</span><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Sign up for Instance ID → declare in <code>keySetup.js</code> → broker through server → add as WMS ImageryLayer</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>WebMapServiceImageryProvider({url:'/api/sh/wms',layers:'TRUE_COLOR'})</code></td></tr>
+          <tr><td class="src-name">USGS EarthExplorer</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for API key → use <code>sceneList</code> endpoint → display scene footprints as polygons</td><td><code>landsatScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/earthexplorer/sceneList?dataset=LANDSAT_8')</code></td></tr>
+          <tr><td class="src-name">Copernicus Data Hub</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for free credentials → use OData API → broker server-side → display footprints</td><td><code>sentinelScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/copernicus/odata?$filter=...')</code></td></tr>
+          <tr><td class="src-name">NASA FIRMS</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Get MAP_KEY → declare in <code>keySetup.js</code> → poll <code>/api/area/csv</code> every 30 min → render by FRP</td><td><code>fires.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">OpenAerialMap</td><td><span class="sg-badge json">JSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m2">02 Live</span></td><td>Query OAM API for UAV imagery by bbox → display footprints → click to load as ImageryLayer</td><td><code>uavImagery.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://api.openaerialmap.org/aoi?bbox=...')</code></td></tr>
+          <tr><td class="src-name">ESA EO Catalogue</td><td><span class="sg-badge json">JSON</span><span class="sg-badge api">API</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register at ESA Earth Online → query EO-SIP OpenSearch → broker server-side</td><td><code>esaScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/esa/search?mission=SMOS')</code></td></tr>
+          <tr><td class="src-name">Planet Labs</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain API key (paid/edu) → declare as <code>planet</code> → broker through server → display PlanetScope footprints</td><td><code>planetScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/planet/search?item_types=PSOrthoTile')</code></td></tr>
+          <tr><td class="src-name">Maxar</td><td><span class="sg-badge api">API</span><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain SecureWatch WMS credentials → broker through server → register as premium 30-50cm basemap</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>WebMapServiceImageryProvider({url:'/api/maxar/wms'})</code></td></tr>
+          <tr><td class="src-name">ICEYE</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain API access (paid) → broker server-side → fetch SAR scene catalogs → display footprints</td><td><code>iceyeScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/iceye/scenes?bbox=...')</code></td></tr>
+          <tr><td class="src-name">Capella Space</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain API access (paid) → broker → fetch HR SAR scenes → useful for tailings wall monitoring</td><td><code>capellaScenes.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/capella/scenes?bbox=...')</code></td></tr>
+          <tr><td class="src-name">Sentinel-5P TROPOMI</td><td><span class="sg-badge api">API</span><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Use ESA Hub or Sentinel Hub → fetch TROPOMI CH₄/CO column → render as methane pseudo-color imagery</td><td><code>methane.js</code></td><td class="src-table-hide-mobile"><code>layers: '5P_METHANE', url: '/api/sh/wms'</code></td></tr>
+          <tr><td class="src-name">Global Forest Watch</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use GFW API for GLAD/RADD alerts → poll weekly → render loss pixels as orange billboards</td><td><code>forestLoss.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://api.globalforestwatch.org/v1/...')</code></td></tr>
+          <tr><td class="src-name">NASA Earthdata</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for Earthdata login → use CMR search API for MODIS/VIIRS/SRTM/ASTER → broker credentials</td><td><code>nasaGranules.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/earthdata/search?...')</code></td></tr>
+          <tr><td class="src-name">NOAA Night Lights</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use NOAA EOG WMS for VIIRS DNB → add as basemap toggle visible only in Night Mode</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'VIIRS_DNB'</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 3: OPS -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">⛏️</div><h3>Mining Operations &amp; Production</h3><div class="uc-count">12 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">USGS Minerals Yearbook</td><td><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download Yearbook chapters → extract mine-level production → geocode by site name</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>local_data/minerals_yearbook/2024.csv</code></td></tr>
+          <tr><td class="src-name">USGS MCS</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download MCS PDF + data tables → parse reserves/production → attach to country polygons as choropleth</td><td><code>commodityReserves.js</code></td><td class="src-table-hide-mobile"><code>local_data/mcs/2024_reserves.json</code></td></tr>
+          <tr><td class="src-name">ICMM Tailings</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download Global Tailings Disclosure CSV → geocode dams → include hazard/volume/consequence fields</td><td><code>tailings.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">Global Tailings Review</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download GTR CSV from <code>globaltailingsreview.org</code> → merge with ICMM for fuller coverage</td><td><code>tailings.js</code></td><td class="src-table-hide-mobile"><code>local_data/tailings_dams/gtr.geojson</code></td></tr>
+          <tr><td class="src-name">World Mining Congress</td><td><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download WMC country production stats → attach to country boundary GeoJSON for choropleth</td><td><code>commodityProduction.js</code></td><td class="src-table-hide-mobile"><code>local_data/wmc/production_by_country.json</code></td></tr>
+          <tr><td class="src-name">BGS WMP</td><td><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download BGS 5-year rolling stats → parse country × commodity × year → bundle as time-series JSON</td><td><code>commodityProduction.js</code></td><td class="src-table-hide-mobile"><code>local_data/bgs_wmp/5yr_production.json</code></td></tr>
+          <tr><td class="src-name">S&amp;P Global MI</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain S&amp;P API access (enterprise) → broker with response caps → fetch asset-level reserves/production</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/spglobal/asset?mineId=...')</code></td></tr>
+          <tr><td class="src-name">MineSpans (McKinsey)</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain MineSpans access (paid) → export cost curves as CSV → bundle or use API broker</td><td><code>mineCosts.js</code></td><td class="src-table-hide-mobile"><code>local_data/minespans/cost_curves.csv</code></td></tr>
+          <tr><td class="src-name">Raw Materials Data</td><td><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Obtain RMD access (paid) → export mine &amp; smelter ownership/production → geocode &amp; bundle</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>local_data/rmd/mines_smelters.geojson</code></td></tr>
+          <tr><td class="src-name">S&amp;P SNL Mining</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Use SNL API for M&amp;A and pipeline → broker through server → render M&amp;A events as timeline annotations</td><td><code>miningMA.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/snl/transactions?commodity=copper')</code></td></tr>
+          <tr><td class="src-name">CRU Group</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain CRU API access (paid) → fetch mine cost curves &amp; production forecasts → broker server-side</td><td><code>mineCosts.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/cru/costcurve?commodity=...')</code></td></tr>
+          <tr><td class="src-name">Wood Mackenzie</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain WoodMac access (enterprise) → fetch asset database &amp; outlooks → broker with strict caps</td><td><code>mines.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/woodmac/asset?mineId=...')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 4: FINANCE -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">💹</div><h3>Commodity Prices &amp; Financials</h3><div class="uc-count">14 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">London Metal Exchange</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for delayed (free) or real-time (paid) → declare as <code>lme</code> → poll → display in HUD strip</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/lme/quotes?metals=Cu,Al,Zn')</code></td></tr>
+          <tr><td class="src-name">COMEX / CME</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use CME delayed quotes API (free) → poll Au/Ag/Cu every 60s → display in same HUD as LME</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.cmegroup.com/.../settlements')</code></td></tr>
+          <tr><td class="src-name">Shanghai Futures</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use SHFE public daily settlement → parse HTML/JSON for Cu/Al/Zn/Ni/Sn/Pb/Au/Ag</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.shfe.com.cn/data/dailydata/...')</code></td></tr>
+          <tr><td class="src-name">LBMA</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m2">02 Live</span></td><td>Fetch LBMA benchmark prices from <code>lbma.org.uk</code> (free, daily) → poll at market close for Au/Ag/Pt/Pd</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.lbma.org.uk/prices/add')</code></td></tr>
+          <tr><td class="src-name">Kitco</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Scrape/use Kitco JSON endpoint → poll every 30s for live Au/Ag/Pt/Pd spot → display as live ticker</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.kitco.com/price/precious-metals')</code></td></tr>
+          <tr><td class="src-name">Metalary</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Scrape Metalary spot prices for 60+ industrial metals &amp; rare earths → update daily</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.metalary.com/...')</code></td></tr>
+          <tr><td class="src-name">Fastmarkets</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain Fastmarkets API (paid PRA) → broker server-side for Li/Co/Ni/graphite benchmarks</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/fastmarkets/benchmarks?metal=Li')</code></td></tr>
+          <tr><td class="src-name">Argus Media</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain Argus API (paid PRA) → broker for ferro-alloys/coal/steel/rare-earths prices</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/argus/prices?category=ferroalloys')</code></td></tr>
+          <tr><td class="src-name">S&amp;P Platts</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain Platts API (paid) → broker for iron ore/coal/steel/ferrous scrap benchmarks</td><td><code>commodityPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/platts/benchmarks?commodity=ironore')</code></td></tr>
+          <tr><td class="src-name">Yahoo Finance</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Yahoo Finance public API → poll every 60s during market hours → attach to mines by ticker</td><td><code>stockPrices.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://query1.finance.yahoo.com/v7/quote?symbol=BHP')</code></td></tr>
+          <tr><td class="src-name">StockAnalysis.com</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use StockAnalysis public pages for income/balance/cashflow → display on mine telemetry card</td><td><code>stockFinancials.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://stockanalysis.com/api/symbol/AEE/...')</code></td></tr>
+          <tr><td class="src-name">Macrotrends</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Scrape Macrotrends historical charts → bundle 10-100yr series as JSON → use for timeline scrubber</td><td><code>commodityHistory.js</code></td><td class="src-table-hide-mobile"><code>local_data/macrotrends/gold_100yr.json</code></td></tr>
+          <tr><td class="src-name">Koyfin</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for Koyfin free tier → use API for macro/commodity/equity → broker if paid</td><td><code>marketData.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/koyfin/series?symbol=...')</code></td></tr>
+          <tr><td class="src-name">SEC EDGAR</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use EDGAR full-text search (free, no key) → fetch 10-K/20-F/40-F → link filings to mines by CIK</td><td><code>filings.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://efts.sec.gov/LATEST/search-index?q=...')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 5: FILINGS -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">📑</div><h3>Company Filings &amp; Disclosures</h3><div class="uc-count">9 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">SEDAR+</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use SEDAR+ filing search API (free) → filter for NI 43-101 by filing type → link to mines</td><td><code>filings.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.sedarplus.ca/.../search?doctype=43-101')</code></td></tr>
+          <tr><td class="src-name">NI 43-101 Registry</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download CIM NI 43-101 filed reports index → geocode project locations → bundle 3,800+ projects</td><td><code>technicalReports.js</code></td><td class="src-table-hide-mobile"><code>local_data/ni43101/registry.geojson</code></td></tr>
+          <tr><td class="src-name">JORC Code</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use ASX announcement API for JORC resource/reserve filings → filter by announcement type</td><td><code>filings.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.asx.com.au/asx/.../announcements?...')</code></td></tr>
+          <tr><td class="src-name">SAMREC / SAMVAL</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download SAMREC/SAMVAL reports from SAMCODE → parse competency statements → bundle</td><td><code>technicalReports.js</code></td><td class="src-table-hide-mobile"><code>local_data/samrec/reports.json</code></td></tr>
+          <tr><td class="src-name">Companies House (UK)</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for CH API key (free) → broker server-side → look up mining holding companies</td><td><code>corporateOwnership.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/companieshouse/company?name=...')</code></td></tr>
+          <tr><td class="src-name">OpenCorporates</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for OC API key (freemium) → broker server-side → trace mine ownership chains globally</td><td><code>corporateOwnership.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/opencorporates/companies?q=...')</code></td></tr>
+          <tr><td class="src-name">FCA NSS</td><td><span class="sg-badge api">API</span><span class="sg-badge xml">XML</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use FCA National Storage System → parse RNS XML → link to mine entities by ticker</td><td><code>filings.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://api.fca.org.uk/...')</code></td></tr>
+          <tr><td class="src-name">Morningstar (Hemscott)</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Morningstar UK for historic mining share data → poll for dividends/director dealings</td><td><code>stockFinancials.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.morningstar.co.uk/...')</code></td></tr>
+          <tr><td class="src-name">EITI</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download EITI country reports dataset (CSV) → attach revenue/payment data to country polygons</td><td><code>eitiRevenue.js</code></td><td class="src-table-hide-mobile"><code>local_data/eiti/country_revenue.csv</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 6: TRADE -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🚢</div><h3>Shipping, Logistics &amp; Trade</h3><div class="uc-count">11 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">AISStream</td><td><span class="sg-badge ws">WebSocket</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for free key → declare as <code>aisstream</code> → open WebSocket from server → stream ship positions → render via <code>iconOrientation.js</code></td><td><code>vessels.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">MarineTraffic</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for API key (freemium) → broker server-side → poll vessel positions by bbox every 60s</td><td><code>vessels.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/marinetraffic/vessel?bbox=...')</code></td></tr>
+          <tr><td class="src-name">VesselFinder</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for free tier → broker server-side for coastal bulker coverage</td><td><code>vessels.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/vesselfinder/vessels?bbox=...')</code></td></tr>
+          <tr><td class="src-name">FleetMon</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for free tier → fetch port arrivals &amp; fleet analytics → display as port-activity sublayer</td><td><code>portActivity.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/fleetmon/portcalls?port=...')</code></td></tr>
+          <tr><td class="src-name">UN Comtrade</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Comtrade API (free, rate-limited) → query bilateral trade by HS code → render as animated arc lines</td><td><code>tradeFlows.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://comtradeapi.un.org/data/v1/get/C/A/HS?...')</code></td></tr>
+          <tr><td class="src-name">Trade Map (ITC)</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Register (freemium) → download bilateral trade statistics/tariffs → bundle annual snapshots</td><td><code>tradeFlows.js</code></td><td class="src-table-hide-mobile"><code>local_data/trademap/2024_cu_ores.csv</code></td></tr>
+          <tr><td class="src-name">PortWatch (IMF)</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use IMF PortWatch API (free) → poll daily ship calls &amp; cargo volumes → display port activity badges</td><td><code>portActivity.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://portwatch.imf.org/api/v1/portcalls?...')</code></td></tr>
+          <tr><td class="src-name">Drewry</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Obtain Drewry access (paid) → export dry bulk market analysis as CSV → bundle quarterly</td><td><code>shippingContext.js</code></td><td class="src-table-hide-mobile"><code>local_data/drewry/dry_bulk_2024q3.csv</code></td></tr>
+          <tr><td class="src-name">Clarksons Research</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Obtain Clarksons access (paid) → export fleet/orderbook/freight rates as CSV → bundle</td><td><code>shippingContext.js</code></td><td class="src-table-hide-mobile"><code>local_data/clarksons/fleet_orderbook.csv</code></td></tr>
+          <tr><td class="src-name">OpenSky Network</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use OpenSky anonymous API (free) or OAuth → poll <code>/api/states/all</code> every 15s → render with heading/altitude/callsign</td><td><code>flights.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">adsb.lol</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use adsb.lol public API (free, no key) → poll for military/charter flights → display alongside OpenSky</td><td><code>military.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 7: ESG -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🌱</div><h3>ESG, Environmental &amp; Social</h3><div class="uc-count">11 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">GRI Standards</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use GRI public disclosure database (free) → search for mining sustainability reports → link to mines</td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://database.globalreporting.org/reports?sector=Mining')</code></td></tr>
+          <tr><td class="src-name">SASB Standards</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download SASB Metals &amp; Mining standard (free) → parse metrics → bundle in <code>local_data/sasb/</code></td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>local_data/sasb/metals_mining.json</code></td></tr>
+          <tr><td class="src-name">CDP</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for CDP access (freemium) → broker server-side for climate/water/forest disclosures</td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/cdp/disclosures?company=BHP')</code></td></tr>
+          <tr><td class="src-name">TNFD</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download TNFD framework (free) → bundle recommendations as JSON → display biodiversity risk when available</td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>local_data/tnfd/framework.json</code></td></tr>
+          <tr><td class="src-name">IRMA</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use IRMA public audit registry (free) → fetch audited mine-site ESG scores → display as colored badges</td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://responsiblemining.net/audit-registry/...')</code></td></tr>
+          <tr><td class="src-name">Towards Sustainable Mining</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download MAC TSM facility-level protocol results → bundle → display performance scores on Canadian sites</td><td><code>esgDisclosures.js</code></td><td class="src-table-hide-mobile"><code>local_data/tsm/facilities.json</code></td></tr>
+          <tr><td class="src-name">Land Matrix</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Land Matrix API (free) → filter for mining-sector land deals → render deal polygons with size/investor/status</td><td><code>landDeals.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://landmatrix.org/api/v1/deals?sector=Mining')</code></td></tr>
+          <tr><td class="src-name">IBAT</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for IBAT access (freemium) → broker server-side → query biodiversity near mine bbox</td><td><code>biodiversity.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/ibat/proximity?lat=...&amp;lon=...')</code></td></tr>
+          <tr><td class="src-name">WDPA</td><td><span class="sg-badge geojson">GeoJSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download WDPA protected areas (free, login required) → convert to GeoJSON → render as green polygons</td><td><code>protectedAreas.js</code></td><td class="src-table-hide-mobile"><code>local_data/wdpa/protected_areas.geojson</code></td></tr>
+          <tr><td class="src-name">MSCI ESG</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain MSCI ESG API (paid) → broker server-side → fetch ESG ratings &amp; controversy scores</td><td><code>esgRatings.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/msci/esg?ticker=BHP')</code></td></tr>
+          <tr><td class="src-name">Sustainalytics</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Obtain Sustainalytics API (paid) → broker → fetch ESG risk ratings → display alongside MSCI</td><td><code>esgRatings.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/sustainalytics/risk?ticker=RIO')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 8: GEO -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🌋</div><h3>Geophysics, Seismic &amp; Hazards</h3><div class="uc-count">8 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">USGS Earthquakes</td><td><span class="sg-badge api">API</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use USGS GeoJSON summary feed (free, no key) → poll <code>all_day.geojson</code> every 60s → render by magnitude</td><td><code>earthquakes.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">EMSC</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use EMSC RSS/JSON feed (free) → poll every 60s → display as secondary source alongside USGS</td><td><code>earthquakes.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.seismicportal.eu/fdsnws/event/1/query?format=json')</code></td></tr>
+          <tr><td class="src-name">EarthScope (IRIS)</td><td><span class="sg-badge api">API</span><span class="sg-badge xml">XML</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use IRIS FDSN-WS event &amp; waveform service (free) → fetch station locations → render as billboards</td><td><code>seismicStations.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://service.iris.edu/fdsnws/event/1/query?format=xml')</code></td></tr>
+          <tr><td class="src-name">Global Volcanism Program</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download Smithsonian GVP Holocene volcano database (CSV) → convert to GeoJSON → bundle</td><td><code>volcanoes.js</code></td><td class="src-table-hide-mobile"><code>local_data/gvp_volcanoes/holocene.geojson</code></td></tr>
+          <tr><td class="src-name">NOAA SWPC</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use NOAA SWPC JSON API (free) → poll for geomagnetic storm alerts → display HUD warning when Kp &gt; 5</td><td><code>spaceWeather.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')</code></td></tr>
+          <tr><td class="src-name">EMAG2 v3</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use NOAA NCEI EMAG2 WMS for global magnetic anomaly grid → add as basemap toggle for exploration</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'EMAG2_V3'</code></td></tr>
+          <tr><td class="src-name">BGI WGM</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use BGI global gravity WMS for Bouguer anomaly maps → add as basemap toggle for basement interpretation</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'BGI_WGM'</code></td></tr>
+          <tr><td class="src-name">Copernicus EMS</td><td><span class="sg-badge api">API</span><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Copernicus EMS Rapid Mapping (free) → poll for activations during crises → display delineation maps</td><td><code>rapidMapping.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://emergency.copernicus.eu/mapping/.../activations')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 9: INFRA -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">⚡</div><h3>Infrastructure, Energy &amp; Water</h3><div class="uc-count">8 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">OpenInfraMap</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use OpenInfraMap WMS/tiling (free) → add as basemap toggle for power/gas/water infrastructure</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>url: 'https://openinframap.org/...'</code></td></tr>
+          <tr><td class="src-name">Global Energy Monitor</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download GEM Coal/Steel/Gas Plant Tracker CSV (free) → geocode plant locations → bundle</td><td><code>powerPlants.js</code></td><td class="src-table-hide-mobile"><code>local_data/gem/coal_plants.geojson</code></td></tr>
+          <tr><td class="src-name">Ember Climate</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download Ember country electricity data (CSV, free) → attach carbon intensity to country polygons</td><td><code>gridCarbon.js</code></td><td class="src-table-hide-mobile"><code>local_data/ember/electricity_mix.csv</code></td></tr>
+          <tr><td class="src-name">EIA</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for EIA API key (free) → declare as <code>eia</code> → fetch coal/uranium/electricity generation data</td><td><code>energyData.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://api.eia.gov/v2/coal/...?api_key=...')</code></td></tr>
+          <tr><td class="src-name">IEA Critical Minerals</td><td><span class="sg-badge csv">CSV</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download IEA demand projections (free) → bundle as time-series JSON for Li/Co/Ni/Cu/REE/graphite</td><td><code>demandForecasts.js</code></td><td class="src-table-hide-mobile"><code>local_data/iea/demand_projections.json</code></td></tr>
+          <tr><td class="src-name">BoM Water (AU)</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use BoM Water Storage API (free) → poll for reservoir levels near Australian mine sites</td><td><code>waterData.js</code></td><td class="src-table-hide-mobile"><code>fetch('http://www.bom.gov.au/waterdata/...')</code></td></tr>
+          <tr><td class="src-name">USGS Water Data</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use USGS NWIS instant values API (free, no key) → poll stream gauges &amp; groundwater every 15 min</td><td><code>waterData.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://waterservices.usgs.gov/nwis/iv/?format=json')</code></td></tr>
+          <tr><td class="src-name">OpenRailwayMap</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use OpenRailwayMap WMS or download OSM rail extracts → render as polylines, highlight heavy-haul</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>url: 'https://tiles.openrailwaymap.org/...'</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 10: CLIMATE -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">🌦️</div><h3>Meteorology &amp; Climate</h3><div class="uc-count">6 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">Open-Meteo</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Open-Meteo API (free, no key) → poll forecast &amp; historical for mine locations → display on cockpit strip</td><td><code>weather.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://api.open-meteo.com/v1/forecast?latitude=...&longitude=...')</code></td></tr>
+          <tr><td class="src-name">NOAA Climate Data</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for NOAA CDO token (free) → declare as <code>noaacdo</code> → fetch historical weather observations</td><td><code>weather.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.ncdc.noaa.gov/cdo-web/api/v2/data?token=...')</code></td></tr>
+          <tr><td class="src-name">C3S Climate Store</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for CDS API key (free) → broker server-side → fetch ERA5 reanalysis for mine locations</td><td><code>climate.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/cds/era5?lat=...&lon=...&var=temperature')</code></td></tr>
+          <tr><td class="src-name">WorldClim v2</td><td><span class="sg-badge geojson">GeoTIFF</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download WorldClim bioclim rasters (free) → convert to GeoTIFF → add as Cesium ImageryLayer</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>local_data/worldclim/bio1.tif</code></td></tr>
+          <tr><td class="src-name">NASA POWER</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use NASA POWER API (free, no key) → fetch solar irradiance &amp; meteorology at mine point locations</td><td><code>solar.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://power.larc.nasa.gov/api/temporal/hourly/...')</code></td></tr>
+          <tr><td class="src-name">ECMWF</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for ECMWF API key (freemium) → broker server-side → fetch ERA5 &amp; SEAS5 seasonal forecasts</td><td><code>climate.js</code></td><td class="src-table-hide-mobile"><code>fetch('/api/ecmwf/era5?var=tp&lat=...')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 11: RESEARCH -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">📚</div><h3>Academic, Research &amp; News</h3><div class="uc-count">7 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">USGS Critical Minerals</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download USGS 50 Critical Minerals list &amp; methodology (free) → bundle as JSON → use as commodity filter chips</td><td><code>criticalMinerals.js</code></td><td class="src-table-hide-mobile"><code>local_data/usgs_critical/50_minerals.json</code></td></tr>
+          <tr><td class="src-name">USGS SIP</td><td><span class="sg-badge wms">WMS</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use USGS Earth MRI WMS for airborne geophysics &amp; geochemistry → add as US-specific geology overlay</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><code>layers: 'EMRI_AERO_MAG'</code></td></tr>
+          <tr><td class="src-name">EU CRM List</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download EU Critical Raw Materials list (free) → bundle as JSON → use as secondary commodity filter</td><td><code>criticalMinerals.js</code></td><td class="src-table-hide-mobile"><code>local_data/eu_crm/crm_list.json</code></td></tr>
+          <tr><td class="src-name">World Bank MinDev</td><td><span class="sg-badge json">JSON</span><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download Minerals for Climate Action report data (free) → bundle demand forecasts as time-series JSON</td><td><code>demandForecasts.js</code></td><td class="src-table-hide-mobile"><code>local_data/worldbank/minerals_climate.json</code></td></tr>
+          <tr><td class="src-name">OECD Raw Materials</td><td><span class="sg-badge csv">CSV</span></td><td><span class="method-badge m1">01 Static</span></td><td>Download OECD minerals &amp; metals database (CSV, free) → parse trade/criticality/productivity tables</td><td><code>materialFlows.js</code></td><td class="src-table-hide-mobile"><code>local_data/oecd/raw_materials.csv</code></td></tr>
+          <tr><td class="src-name">Mining.com</td><td><span class="sg-badge api">RSS</span><span class="sg-badge xml">XML</span></td><td><span class="method-badge m2">02 Live</span></td><td>Parse Mining.com RSS feed (free) → poll every 15 min → geocode headlines by keyword matching → news pins</td><td><code>news.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.mining.com/feed/')</code></td></tr>
+          <tr><td class="src-name">Reuters Metals</td><td><span class="sg-badge api">RSS</span><span class="sg-badge xml">XML</span></td><td><span class="method-badge m2">02 Live</span></td><td>Parse Reuters Metals &amp; Mining RSS (free) → geocode deal/operational/market news → display alongside Mining.com</td><td><code>news.js</code></td><td class="src-table-hide-mobile"><code>fetch('https://www.reuters.com/business/metals-mining/rss/')</code></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <!-- CAT 12: LIVE -->
+    <div class="upload-cat reveal">
+      <div class="upload-cat-head"><div class="uc-ico">📡</div><h3>Live Operational Telemetry</h3><div class="uc-count">8 sources</div></div>
+      <div style="overflow-x:auto;">
+      <table class="src-table">
+        <thead><tr><th>Source</th><th>Format</th><th>Method</th><th>Integration Steps</th><th>Layer File</th><th class="src-table-hide-mobile">Code Snippet</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name">CelesTrak</td><td><span class="sg-badge api">API</span><span class="sg-badge csv">TLE</span></td><td><span class="method-badge m2">02 Live</span></td><td>Fetch TLE catalogs from <code>celestrak.org</code> (free) → disk-cache → propagate with SGP4 per-frame → GMST-realign</td><td><code>satellites.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">GTFS-Realtime</td><td><span class="sg-badge api">Protobuf</span></td><td><span class="method-badge m2">02 Live</span></td><td>Fetch operator GTFS-RT protobuf feeds (free) → parse with <code>gtfs-realtime-bindings</code> → render with delayed playback</td><td><code>transit.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">GBFS</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Fetch GBFS <code>station_status.json</code> from operators (free) → poll every 60s → render bikeshare availability</td><td><code>bikeshare.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">Radio Browser</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use Radio Browser API (free) → fetch geolocated station list → render as billboards → click to play audio</td><td><code>radio.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">TomTom Traffic</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Register for TomTom API key (freemium) → declare as <code>tomtom</code> → poll flow speeds → drive traffic simulation</td><td><code>traffic.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">OSRM</td><td><span class="sg-badge api">API</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use OSRM API on FOSSGIS servers (free) → click A/B on globe → route traces on terrain → fly camera along it</td><td><code>directions.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">OpenStreetMap</td><td><span class="sg-badge wms">WMS</span><span class="sg-badge geojson">GeoJSON</span></td><td><span class="method-badge m2">02 Live</span></td><td>Use OSM tile servers or Overpass API → render as 2D basemap fallback → query for roads/buildings/site polygons</td><td><code>mapStackController.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+          <tr><td class="src-name">Launch Library 2</td><td><span class="sg-badge api">API</span><span class="sg-badge json">JSON</span></td><td><span class="method-badge m3">03 Keyed</span></td><td>Use Launch Library 2 API (freemium) → poll 30-day orbital launches → render launch pads &amp; trajectories</td><td><code>spaceMissions.js</code></td><td class="src-table-hide-mobile"><span class="integrated">✅ ALREADY INTEGRATED</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top: 24px;">
+      <div class="ico">📐</div>
+      <p><strong>Legend:</strong> <span class="method-badge m1">01 Static</span> = bundle a file in <code>local_data/</code> · <span class="method-badge m2">02 Live</span> = poll a public API · <span class="method-badge m3">03 Keyed</span> = broker through server with POWER UP panel · <span class="method-badge m4">04 AI</span> = describe in natural language to a coding agent. <span class="integrated">✅ ALREADY INTEGRATED</span> = shipped in the current build.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section id="features" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Capabilities</div>
+      <h2 class="section-title">A console for the <span class="accent">resource planet</span>.</h2>
+      <p class="section-sub">Fifteen live layers. Sensor-grade visualization. A voice agent that knows what it's looking at. And a cockpit mode that lets you ride any tracked contact.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feat large span-6 reveal"><div class="tag">CORE</div><div class="icon-row"><span class="emoji">⛏️</span><h4>Mine-Site Cockpit View</h4></div><p>Ride inside any tracked asset — a haul truck on the pit floor, a dragline swing, a drill rig pattern. The camera holds terrain underneath all the way down.</p></div>
+      <div class="feat large span-6 reveal"><div class="tag">CORE</div><div class="icon-row"><span class="emoji">📡</span><h4>Contact Roster (250 km)</h4></div><p>A live roster of everything near your target — vessels, ore trains, helicopters, seismic events, satellite passes.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">LOCK-ON</div><h4>🎯 Click-to-Track</h4><p>Camera locks on, draws a fading trail, surfaces full metadata. A tracked vessel hands off to nearest port camera.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">ANNOTATE</div><h4>🖊️ Voice Whiteboard</h4><p>Speak annotations onto the world — real boundary polygons, marks, and routes over concessions &amp; claim blocks.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">3D</div><h4>🚂 Asset Hangar</h4><p>Real per-class 3D models — haul trucks, excavators, draglines, locomotives, bulkers — swap from glyph to model on approach.</p></div>
+      <div class="feat span-6 reveal"><div class="tag">SENSOR</div><h4>🎨 Reskin Reality (1–7)</h4><p>GLSL sensor shaders — <kbd>1</kbd> CRT, <kbd>2</kbd> NVG, <kbd>3</kbd> FLIR, <kbd>4</kbd> Ironbow, <kbd>5</kbd> Noir, <kbd>6</kbd> Snow, <kbd>7</kbd> Hyperspectral.</p></div>
+      <div class="feat span-6 reveal"><div class="tag">DETECTION</div><h4>🟩 Detection Overlay</h4><p>Screen-space bounding boxes and IDs on every tracked contact — vessels, aircraft, trucks, trains, fires.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">HUD</div><h4>🎖️ Tactical HUD</h4><p>Intelligence-style heads-up display with heading, speed, altitude, commodity, destination, ETA.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">CONTEXT</div><h4>🌐 Global ↔ Local</h4><p>Stage the full situational picture with one switch — and get your exact view back when you leave.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">SHARE</div><h4>🔗 Serialized Links</h4><p>Camera, style, layers, and one tracked target serialize into a URL. A live contact is a handoff, not a bookmark.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MINERALS ===== -->
+<section id="minerals">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Mineral Catalog</div>
+      <h2 class="section-title">The <span class="accent">critical minerals</span> layer.</h2>
+      <p class="section-sub">A bundled dataset of major commodity classes — with deposit type, primary geology, and top producing regions surfaced as live map annotations.</p>
+    </div>
+    <div class="mineral-grid">
+      <div class="mineral-card reveal" style="--accent: var(--gold);"><div class="swatch" style="background: linear-gradient(135deg, #d4af37, #8b6914);"><div class="symbol">Au</div></div><h5>Gold</h5><div class="formula">Native · Au</div><div class="desc">Orogenic, epithermal, Carlin-type. Nevada, Witwatersrand, Western Australia.</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--copper);"><div class="swatch" style="background: linear-gradient(135deg, #b87333, #6b3f1c);"><div class="symbol">Cu</div></div><h5>Copper</h5><div class="formula">CuFeS₂</div><div class="desc">Porphyry, VMS. Chile, Peru, DRC, Mongolia. The metal of electrification.</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--iron);"><div class="swatch" style="background: linear-gradient(135deg, #8c6a4f, #3d2a1c);"><div class="symbol">Fe</div></div><h5>Iron Ore</h5><div class="formula">Hematite/Magnetite</div><div class="desc">BIF-hosted. Pilbara (AU), Carajás (BR), Labrador Trough.</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--lithium);"><div class="swatch" style="background: linear-gradient(135deg, #c0d8e8, #6b8c9e);"><div class="symbol">Li</div></div><h5>Lithium</h5><div class="formula">Spodumene / Brine</div><div class="desc">Hard-rock (Greenbushes) and brines (Salar de Atacama, Hombre Muerto).</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--cobalt);"><div class="swatch" style="background: linear-gradient(135deg, #3a7ca5, #1d3f5c);"><div class="symbol">Co</div></div><h5>Cobalt</h5><div class="formula">CuCo₂S₄</div><div class="desc">Sediment-hosted Cu-Co (Copperbelt: DRC, Zambia). Critical for batteries.</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--rare-earth);"><div class="swatch" style="background: linear-gradient(135deg, #b566ff, #5a2c87);"><div class="symbol">REE</div></div><h5>Rare Earths</h5><div class="formula">Bastnäsite</div><div class="desc">Carbonatite-hosted (Bayan Obo, Mountain Pass, Mt Weld).</div></div>
+      <div class="mineral-card reveal" style="--accent: var(--uranium);"><div class="swatch" style="background: linear-gradient(135deg, #7fd957, #2e5c1c);"><div class="symbol">U</div></div><h5>Uranium</h5><div class="formula">U₃O₈</div><div class="desc">Unconformity (Athabasca), ISR (Kazakhstan), IOCG (Olympic Dam).</div></div>
+      <div class="mineral-card reveal" style="--accent: #d4d4d4;"><div class="swatch" style="background: linear-gradient(135deg, #d4d4d4, #6a6a6a);"><div class="symbol">Pt</div></div><h5>PGMs</h5><div class="formula">Pt, Pd, Rh</div><div class="desc">Bushveld Complex (ZA), Norilsk (RU), Sudbury (CA).</div></div>
+      <div class="mineral-card reveal" style="--accent: #3d3d3d;"><div class="swatch" style="background: linear-gradient(135deg, #3d3d3d, #0d0d0d);"><div class="symbol">C</div></div><h5>Coal &amp; Graphite</h5><div class="formula">C</div><div class="desc">Thermal and metallurgical coal. Graphite: Balama (MZ), China.</div></div>
+      <div class="mineral-card reveal" style="--accent: #e8b4b8;"><div class="swatch" style="background: linear-gradient(135deg, #e8b4b8, #a06a6e);"><div class="symbol">Ni</div></div><h5>Nickel</h5><div class="formula">Pentlandite</div><div class="desc">Sulfide (Sudbury, Norilsk) and laterite (Indonesia, Philippines).</div></div>
+      <div class="mineral-card reveal" style="--accent: #b0a890;"><div class="swatch" style="background: linear-gradient(135deg, #b0a890, #6e6750);"><div class="symbol">Sn</div></div><h5>Tin</h5><div class="formula">SnO₂</div><div class="desc">Granite-related (Bolivia, Yunnan, Indonesia). Solder, semiconductors.</div></div>
+      <div class="mineral-card reveal" style="--accent: #9fb7c7;"><div class="swatch" style="background: linear-gradient(135deg, #9fb7c7, #4a6273);"><div class="symbol">Zn</div></div><h5>Zinc &amp; Lead</h5><div class="formula">Sphalerite</div><div class="desc">SEDEX, MVT (Mt Isa, Red Dog, Cannington). Galvanizing, batteries.</div></div>
+    </div>
+    <div class="callout" style="margin-top: 30px;"><div class="ico">🧭</div><p><strong>Bundled static infrastructure:</strong> 4,351 datacenters, 704 dams (incl. tailings), 712 submarine cables. Want a layer that's missing? <a href="#upload" style="color: var(--gold-bright);">See the Upload Guide above</a>.</p></div>
+  </div>
+</section>
+
+<!-- ===== QUICK START ===== -->
+<section id="quickstart" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Quick Start</div>
+      <h2 class="section-title">Start <span class="accent">without API keys</span>.</h2>
+      <p class="section-sub">Both paths open the same app with Esri satellite imagery and keyless terrain. Mineral deposits, tailings, earthquakes, cameras, radio, and launches are available without keys.</p>
+    </div>
+    <div class="qs-grid">
+      <div class="qs-card recommended reveal">
+        <div class="badge">EASIEST</div>
+        <h3>Path 1 — One click, no terminal</h3>
+        <div class="subtitle">Install Pinokio 8.2+ on Windows, macOS, or Linux.</div>
+        <ol>
+          <li>Install Pinokio from the official website.</li>
+          <li>Open God's Eye View in Pinokio.</li>
+          <li>Click <strong>Install</strong>, then <strong>Start</strong>.</li>
+          <li>Choose a first-run mission — or explore manually.</li>
+        </ol>
+      </div>
+      <div class="qs-card reveal">
+        <h3>Path 2 — Terminal / coding agent</h3>
+        <div class="subtitle">Node.js 24.x (24.14.0+) or 26.x.</div>
+        <div class="code-block" style="margin-top: 14px;">
+<pre><span class="comment"># Clone &amp; install</span>
+<span class="cmd">git clone</span> https://github.com/bilawalsidhu/gods-eye-view.git
+<span class="cmd">cd</span> gods-eye-view
+<span class="cmd">npm</span> ci
+<span class="cmd">npm</span> run doctor
+<span class="cmd">npm</span> run dev
+
+<span class="comment"># Open</span>
+<span class="kw">→</span> http://localhost:4173</pre>
+        </div>
+        <p style="color: var(--fg-2); font-size: 12px; margin-top: 14px;">Drop the GitHub link into Cursor, Claude Code, or any AI coding agent. macOS: <code>./scripts/dev-fresh.sh</code> clears cache &amp; pulls keys from Keychain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== VOICE ===== -->
+<section id="voice" class="voice-section">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Talk to the Planet</div>
+      <h2 class="section-title">Voice needs an OpenAI key. <span class="accent">Without one, the rest still runs.</span></h2>
+      <p class="section-sub">The mic button reports unavailable without a key. The same key drives the AI HUD summary: a terse, five-word intelligence readout.</p>
+    </div>
+    <div class="voice-grid">
+      <div class="voice-demo reveal">
+        <div class="voice-orb"></div>
+        <div class="transcript">
+          <div class="user">"Take me to Escondida and orbit the pit."</div>
+          <div class="ai" style="margin-top: 12px;">→ Flying to Escondida, Chile. Slow orbit engaged.</div>
+          <div class="user" style="margin-top: 12px;">"What's the production here?"</div>
+          <div class="ai" style="margin-top: 12px;">→ ~1 Mt Cu/yr, operated by BHP. Porphyry deposit.</div>
+        </div>
+      </div>
+      <div class="cmd-list">
+        <div class="cmd-item reveal"><div class="mic-ico">🎥</div><div class="txt"><em>"Take me to the Pilbara."</em> · <em>"Orbit around this area slowly."</em> · <em>"Draw the rail route from Carajás to São Luís."</em> → <em>"Fly the route we just drew."</em></div></div>
+        <div class="cmd-item reveal"><div class="mic-ico">🖊️</div><div class="txt"><em>"Outline the Witwatersrand basin."</em> · <em>"Annotate the Bingham Canyon pit and its tailings."</em></div></div>
+        <div class="cmd-item reveal"><div class="mic-ico">🔎</div><div class="txt"><em>"How many bulkers are leaving Port Hedland right now?"</em> · <em>"Which ships are headed to Qingdao?"</em></div></div>
+        <div class="cmd-item reveal"><div class="mic-ico">🎛️</div><div class="txt"><em>"Switch to thermal and turn on the vessels layer."</em> · <em>"Turn on the dam viewsheds."</em></div></div>
+        <div class="cmd-item reveal"><div class="mic-ico">⚡</div><div class="txt"><em>"Show me global mining infrastructure."</em> · <em>"Switch to tactical layout."</em> · <em>"What's turned on right now?"</em></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LIVE LAYERS ===== -->
+<section id="layers">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">What's on the Globe</div>
+      <h2 class="section-title">Fifteen live layers. <span class="accent">One planet.</span></h2>
+      <p class="section-sub">Thirteen have a keyless path. <span class="pill">🟢 no key</span> <span class="pill">🟡 free key</span> <span class="pill">🔴 metered</span></p>
+    </div>
+    <div class="layer-table-wrap reveal">
+      <table class="layer-table">
+        <thead><tr><th>Layer</th><th>What you get</th><th class="col-hide-mobile">Source</th><th>Auth</th></tr></thead>
+        <tbody>
+          <tr><td><span class="layer-icon">🗺️</span> Map Stack</td><td>Esri satellite, Google 3D, OSM, ion-hosted stacks</td><td class="col-hide-mobile">Esri / Google / Ion / OSM</td><td><span class="auth-badge auth-green">🟢 Esri+OSM</span> <span class="auth-badge auth-yellow">🟡 3D</span></td></tr>
+          <tr><td><span class="layer-icon">⛏️</span> Mines &amp; Deposits</td><td>2,400+ active operations &amp; deposits, color-coded by commodity</td><td class="col-hide-mobile">USGS MRDS + community</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🚢</span> Live Vessels</td><td>Thousands of ships — bulkers, tankers, container — with destination</td><td class="col-hide-mobile">AISStream</td><td><span class="auth-badge auth-yellow">🟡</span></td></tr>
+          <tr><td><span class="layer-icon">🚂</span> Ore Trains</td><td>Heavy-haul rail — Pilbara, Carajás, Trans-Siberian, Mahanadi</td><td class="col-hide-mobile">Operator feeds</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🏗️</span> Tailings Dams</td><td>704 mapped impoundments with hazard classification</td><td class="col-hide-mobile">ICMM + regulator inventories</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🏭</span> Smelters &amp; Refineries</td><td>Global Cu, Ni, Al, Zn, PGM processing facilities</td><td class="col-hide-mobile">Community + industry</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🛰️</span> Satellites</td><td>838-object catalog — Sentinel, Landsat, ICEYE, Capella, Starlink</td><td class="col-hide-mobile">CelesTrak</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🌍</span> Earthquakes</td><td>Global seismic activity, last 24h</td><td class="col-hide-mobile">USGS</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🔥</span> Active Fires</td><td>Live NASA FIRMS detections, trailing 24h</td><td class="col-hide-mobile">NASA FIRMS</td><td><span class="auth-badge auth-yellow">🟡</span></td></tr>
+          <tr><td><span class="layer-icon">📹</span> CCTV Mesh</td><td>~3,600 public cameras projected into 3D space</td><td class="col-hide-mobile">City &amp; DOT APIs</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🚗</span> Traffic</td><td>Simulated vehicles on OSM. TomTom: live flow speeds</td><td class="col-hide-mobile">TomTom + OSM</td><td><span class="auth-badge auth-green">🟢 sim</span> <span class="auth-badge auth-yellow">🟡 flow</span></td></tr>
+          <tr><td><span class="layer-icon">🚀</span> Space Missions</td><td>Rolling 30-day launches — incl. EO &amp; mineral mapping payloads</td><td class="col-hide-mobile">Launch Library 2</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">📻</span> Radio</td><td>Geolocated world radio — every station a place you can fly to</td><td class="col-hide-mobile">Radio Browser</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🚲</span> Bikeshare</td><td>Live station availability</td><td class="col-hide-mobile">GBFS</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+          <tr><td><span class="layer-icon">🧭</span> Directions</td><td>Click A and B for a street-following route — then FLY it</td><td class="col-hide-mobile">OSRM (FOSSGIS)</td><td><span class="auth-badge auth-green">🟢</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MISSIONS ===== -->
+<section id="missions" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Field Missions</div>
+      <h2 class="section-title">Once the basics click, <span class="accent">run these</span>.</h2>
+    </div>
+    <div class="mission-grid">
+      <div class="mission reveal"><div class="ico">🚢</div><div class="body"><h5>Port call — Pilbara</h5><p>Vessels over Port Hedland. Click a bulker for tactical card and wake trail — hit <strong>NEAREST</strong> in CCTV panel for a ground view.</p></div></div>
+      <div class="mission reveal"><div class="ico">🔥</div><div class="body"><h5>Coal-seam fire line</h5><p>FIRMS over Jharia. Click a detection — camera dives — read intensity, hit <strong>NEAREST</strong> for ground CCTV view.</p></div></div>
+      <div class="mission reveal"><div class="ico">🏗️</div><div class="body"><h5>Orbit Brumadinho</h5><p>Sweep the failed dam footprint in 3D terrain — flip on <strong>Tailings Dams</strong> layer and find 703 more.</p></div></div>
+      <div class="mission reveal"><div class="ico">🌍</div><div class="body"><h5>Seismic watch</h5><p>Earthquakes over the Andes. Click an event — see magnitude, depth, affected mines within 250 km.</p></div></div>
+      <div class="mission reveal"><div class="ico">🎙️</div><div class="body"><h5>Ask the planet <span class="voice-tag">VOICE</span></h5><p>"Why are all these bulkers queued off Singapore?" Select a vessel — backfills ~24h of trace history.</p></div></div>
+      <div class="mission reveal"><div class="ico">🎙️</div><div class="body"><h5>Walk a route <span class="voice-tag">VOICE</span></h5><p>"Draw the rail route from Carajás to São Luís." Real route traces through 3D terrain — then "fly it".</p></div></div>
+      <div class="mission reveal"><div class="ico">🚀</div><div class="body"><h5>Launch replay</h5><p>Open <strong>Space Missions</strong>, pick an EO satellite launch, ride T-minus through ascent to orbit at 0.25×–4×.</p></div></div>
+      <div class="mission reveal"><div class="ico">🛰️</div><div class="body"><h5>Track Sentinel-2</h5><p>Turn on Satellites, click Sentinel-2A — ride along at orbital distance. Understand revisit cadence.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== UNDER THE HOOD ===== -->
+<section id="hood">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Under the Hood</div>
+      <h2 class="section-title">Built to be <span class="accent">read</span>, not just run.</h2>
+    </div>
+    <div class="arch-grid">
+      <div class="arch-list">
+        <div class="arch-item reveal"><div class="num">01</div><div><h5>World-stable icons</h5><p>Aircraft, ships, and haul trucks point along true heading at every camera angle via per-frame screen-space projection.</p></div></div>
+        <div class="arch-item reveal"><div class="num">02</div><div><h5>Smooth motion from choppy data</h5><p>Live feeds arrive every 15–30s; the globe renders one interval behind real time and interpolates. Dead reckoning fills gaps.</p></div></div>
+        <div class="arch-item reveal"><div class="num">03</div><div><h5>Honest satellites</h5><p>SGP4 propagation with orbit rings locked via GMST realignment — no drift, no per-second flicker.</p></div></div>
+        <div class="arch-item reveal"><div class="num">04</div><div><h5>Sits on the real ground</h5><p>Entity heights aligned to work with Google 3D tiles — trucks on haul roads, cameras on street corners.</p></div></div>
+        <div class="arch-item reveal"><div class="num">05</div><div><h5>Caching &amp; request budgets</h5><p>OpenSky credit governor, TomTom daily tile budget, disk-cached TLEs. Controls do not replace provider quotas.</p></div></div>
+        <div class="arch-item reveal"><div class="num">06</div><div><h5>Server-side credentials</h5><p>Every private key brokered through a hardened server-side proxy with SSRF protection, response caps, sanitized errors.</p></div></div>
+        <div class="arch-item reveal"><div class="num">07</div><div><h5>No framework</h5><p>Vanilla JavaScript, CesiumJS, Vite — plus Google 3D Tiles and OpenAI Realtime API. Fast to read, fast to hack.</p></div></div>
+      </div>
+      <div class="code-block reveal">
+<pre><span class="comment">// src/ — module-per-layer architecture</span>
+src/
+├── main.js                 <span class="comment"># Bootstrap</span>
+├── ui.js                   <span class="comment"># Runtime UI, HUD, styles</span>
+├── keySetup.js             <span class="comment"># POWER UP panel</span>
+├── mapStackController.js   <span class="comment"># Basemap switching</span>
+├── voice/                  <span class="comment"># OpenAI Realtime + 28 tools</span>
+├── data/
+│   ├── <span class="kw">mines.js</span>            <span class="comment"># Mine &amp; deposit layer</span>
+│   ├── <span class="kw">tailings.js</span>          <span class="comment"># Tailings dam inventory</span>
+│   ├── vessels.js          <span class="comment"># AIS ship tracking</span>
+│   ├── flights.js          <span class="comment"># Live aircraft</span>
+│   ├── satellites.js       <span class="comment"># SGP4 propagation</span>
+│   ├── earthquakes.js      <span class="comment"># USGS seismic</span>
+│   ├── fires.js            <span class="comment"># NASA FIRMS</span>
+│   ├── iconOrientation.js  <span class="comment"># Heading projection</span>
+│   └── local_data/         <span class="comment"># Bundled datasets</span>
+│       ├── <span class="str">mrds_minerals.geojson</span>
+│       ├── <span class="str">tailings_dams.geojson</span>
+│       └── <span class="str">submarine_cables.geojson</span>
+└── scenes/                 <span class="comment"># Cinematic director</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COSTS ===== -->
+<section id="costs" style="background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">What It Actually Costs</div>
+      <h2 class="section-title">Honest numbers, <span class="accent">roughly</span>.</h2>
+    </div>
+    <div class="cost-grid">
+      <div class="cost-card free reveal"><div class="tier">🟢 MOST LAYERS</div><div class="price">$0 <span class="per">/ no signup</span></div><div class="desc">USGS MRDS, OpenSky anon, CelesTrak, adsb.lol, city CCTV, Radio Browser, GBFS, bundled datasets, mine &amp; tailings catalogs.</div><ul><li>All 12+ keyless layers</li><li>Esri satellite basemap</li><li>2D + OSM fallback</li><li>Local-first execution</li></ul></div>
+      <div class="cost-card paid reveal"><div class="tier">🟡 FREE-KEY TIER</div><div class="price">$0 <span class="per">/ with signup</span></div><div class="desc">AISStream, FIRMS, TomTom, OpenSky, plus Cesium ion for eligible personal/non-commercial use.</div><ul><li>Google Photorealistic 3D Tiles</li><li>World terrain</li><li>Live ship tracking</li><li>Active fire detections</li><li>Live traffic flow</li></ul></div>
+      <div class="cost-card metered reveal"><div class="tier">🔴 METERED</div><div class="price">~$0.05 <span class="per">/ voice min</span></div><div class="desc">OpenAI Realtime voice. A few cents per active minute; an evening of heavy use is single-digit dollars.</div><ul><li>Live session-spend readout</li><li>STD / MINI model toggle</li><li>$2 warning · $5 hard cap</li><li>Short context window</li></ul></div>
+    </div>
+    <div class="callout warning"><div class="ico">⚠️</div><p><strong>Sharing an instance:</strong> By default nobody else can reach your server — it binds to localhost. To share on your LAN, opt in explicitly. Configure provider quotas, usage limits, and billing alerts. Full threat model in <code>SECURITY.md</code>.</p></div>
+  </div>
+</section>
+
+<!-- ===== CONTRIBUTE ===== -->
+<section id="contribute">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Responsible &amp; Open</div>
+      <h2 class="section-title">A canvas, not a <span class="accent">product</span>.</h2>
+      <p class="section-sub">God's Eye View runs on public data, clear sources, and local-first execution. No secrets, no private datasets, no mystery scraping.</p>
+    </div>
+    <div class="feature-grid">
+      <div class="feat span-6 reveal"><div class="tag">THE LINE</div><h4>People are not a query type here.</h4><p>This project models events, assets, infrastructure, and systems — mines, vessels, satellites, fires, cameras, cities. It does not build features for named-person search, face recognition, or tracking individuals.</p></div>
+      <div class="feat span-6 reveal"><div class="tag">CANVAS</div><h4>Come build it.</h4><p>Add a mine pack, a data source, a style, a voice tool. See <a href="#upload" style="color: var(--gold-bright);">the Upload Guide</a> for per-source integration steps.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">STATUS</div><h4>Evolving open-source</h4><p>MIT License. Bundled and live datasets carry their own terms — see <code>DATA_SOURCES.md</code>.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">SECURITY</div><h4>Threat model</h4><p>Browser-side keys must be restricted at providers. <code>SECURITY.md</code> shows how, and carries LAN-sharing rules.</p></div>
+      <div class="feat span-4 reveal"><div class="tag">CONTRIBUTE</div><h4>PRs welcome</h4><p>Already merged: license-plate-reader layers, SDR radio modules, community CCTV packs. Open an issue, send a PR.</p></div>
+    </div>
+    <div class="callout warning" style="margin-top: 30px;"><div class="ico">⚠️</div><p><strong>Important:</strong> God's Eye View is an exploratory visualization of public and third-party data. Data may be delayed, incomplete, modeled, inferred, or wrong. Do not use it for mining operations, tailings-stability decisions, environmental compliance, navigation, or emergency response. Verify important information with authoritative sources.</p></div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand"><div class="logo-mark"></div><div>God's Eye View</div></div>
+        <p>A real-time 3D globe for global mining, minerals, and earth-resource intelligence — built from 100+ public and commercial data sources. Open source under MIT.</p>
+      </div>
+      <div><h6>Documentation</h6><ul><li><a href="#quickstart">Quick Start</a></li><li><a href="#sources">Data Sources</a></li><li><a href="#upload">Upload Guide</a></li><li><a href="#features">Capabilities</a></li><li><a href="#layers">Live Layers</a></li><li><a href="#costs">Keys &amp; Costs</a></li></ul></div>
+      <div><h6>Community</h6><ul><li><a href="#">GitHub Repository</a></li><li><a href="#">CONTRIBUTING.md</a></li><li><a href="#">Issue Tracker</a></li><li><a href="#">DATA_SOURCES.md</a></li><li><a href="#">SECURITY.md</a></li></ul></div>
+      <div><h6>Project</h6><ul><li><a href="#">YouTube Series</a></li><li><a href="#">Hosted Version (soon)</a></li><li><a href="#">Community Survey</a></li><li><a href="#">Media Provenance</a></li><li><a href="#">Maintainers</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="disclaimer">© 2026 · Maintained by Bilawal Sidhu and Sameh Khamis at Halfpixel · Released under the MIT License · Bundled and live datasets carry their own terms.</div>
+      <div>v2.0 · Mineral Intelligence Build</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); } });
+  }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    });
+  });
+
+  const searchInput = document.getElementById('ds-search-input');
+  const filterChips = document.querySelectorAll('.filter-chip');
+  const dsCategories = document.querySelectorAll('.ds-category');
+  let activeFilter = 'all';
+
+  function applyFilters() {
+    const query = (searchInput?.value || '').toLowerCase().trim();
+    dsCategories.forEach(cat => {
+      let visibleInCat = 0;
+      cat.querySelectorAll('.ds-card').forEach(card => {
+        const name = (card.dataset.name || '').toLowerCase();
+        const region = (card.dataset.region || '').toLowerCase();
+        const type = card.dataset.type;
+        const text = card.textContent.toLowerCase();
+        const matchesQuery = !query || name.includes(query) || text.includes(query) || region.includes(query);
+        const matchesFilter = activeFilter === 'all' || type === activeFilter;
+        if (matchesQuery && matchesFilter) { card.style.display = ''; visibleInCat++; } else { card.style.display = 'none'; }
+      });
+      cat.style.display = visibleInCat > 0 ? '' : 'none';
+    });
+  }
+
+  searchInput?.addEventListener('input', applyFilters);
+  filterChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      filterChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFilter = chip.dataset.filter;
+      applyFilters();
+    });
+  });
+</script>
+
+</body>
+</html>

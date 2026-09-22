@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God's Eye View | World Mining & Minerals Sector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #060a10;
+            --bg-secondary: #0d141b;
+            --bg-tertiary: #161f29;
+            --accent-gold: #d4af37; /* Mineral Gold */
+            --accent-copper: #b87333; /* Copper */
+            --accent-cyan: #00f0ff; /* Hologram Blue */
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Background Grid */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Radar Element */
+        .radar-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .radar-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 50%;
+        }
+        
+        .radar-sweep {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.3) 100%);
+            transform-origin: left center;
+            animation: radar-rotate 4s infinite linear;
+        }
+
+        @keyframes radar-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .radar-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(22, 31, 41, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 30px -5px rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+        }
+
+        /* Glowing Text */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Navbar */
+        .nav-link {
+            position: relative;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-gold);
+            transition: width 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--text-main);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-copper);
+        }
+
+        /* Voice Terminal */
+        .terminal {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            border: 1px solid var(--accent-cyan);
+            box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+        
+        .terminal-line {
+            opacity: 0;
+            animation: typeIn 0.5s forwards;
+        }
+
+        @keyframes typeIn {
+            to { opacity: 1; }
+        }
+
+        /* Globe Dots */
+        .globe-dots {
+            background-image: radial-gradient(circle, rgba(0,240,255,0.2) 1px, transparent 1px);
+            background-size: 20px 20px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 70%);
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[#060a10]/80 border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="flex items-center gap-2">
+                <i class="fas fa-globe text-[#00f0ff] text-xl"></i>
+                <span class="font-bold tracking-wider text-lg">GOD'S EYE VIEW</span>
+            </a>
+            <div class="hidden md:flex gap-8 items-center">
+                <a href="#install" class="nav-link text-sm uppercase tracking-wider">Install</a>
+                <a href="#features" class="nav-link text-sm uppercase tracking-wider">Features</a>
+                <a href="#use-cases" class="nav-link text-sm uppercase tracking-wider">Use Cases</a>
+                <a href="#community" class="nav-link text-sm uppercase tracking-wider">Community</a>
+            </div>
+            <a href="#install" class="px-5 py-2 bg-[#d4af37] text-black font-bold text-sm rounded hover:bg-white transition-colors">
+                Power Up
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 globe-dots opacity-30"></div>
+        
+        <div class="absolute right-[-100px] top-1/2 transform -translate-y-1/2 hidden lg:block">
+            <div class="radar-container floating">
+                <div class="radar-circle" style="width: 100%; height: 100%;"></div>
+                <div class="radar-circle" style="width: 70%; height: 70%;"></div>
+                <div class="radar-circle" style="width: 40%; height: 40%;"></div>
+                <div class="radar-sweep"></div>
+                <!-- Random Dots representing mines/flights -->
+                <div class="radar-dot" style="top: 30%; left: 40%;"></div>
+                <div class="radar-dot" style="top: 60%; left: 70%;"></div>
+                <div class="radar-dot" style="top: 80%; left: 30%;"></div>
+                <div class="radar-dot" style="top: 20%; left: 80%;"></div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-center lg:text-left">
+                <p class="text-[#00f0ff] uppercase tracking-[0.3em] text-sm mb-4 glow-text">World Mining & Minerals Edition</p>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                    Track the<br>
+                    <span class="text-[#d4af37]">Global Ore</span><br>
+                    Supply Chain
+                </h1>
+                <p class="text-lg text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0">
+                    An open-source spy satellite simulator for the mineral sector. Monitor bulk carriers, survey planes, and mine site CCTV in real-time, right from your browser.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <a href="#install" class="px-8 py-3 bg-[#d4af37] text-black font-bold rounded flex items-center gap-2 hover:bg-white transition-colors">
+                        <i class="fas fa-download"></i> Install Pinocchio
+                    </a>
+                    <a href="#features" class="px-8 py-3 border border-white/20 text-white font-bold rounded flex items-center gap-2 hover:border-[#00f0ff] hover:text-[#00f0ff] transition-colors">
+                        <i class="fas fa-play-circle"></i> View Walkthrough
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-slate-500"></i>
+        </div>
+    </section>
+
+    <!-- Install Section -->
+    <section id="install" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">01 // Setup</p>
+                <h2 class="text-4xl font-bold">Get Up and Running</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- One Click Install -->
+                <div class="glass-card p-8 rounded-lg reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-[#d4af37]/10 flex items-center justify-center">
+                            <i class="fas fa-mouse-pointer text-[#d4af37] text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">The Easy Route</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6">
+                        For Windows, Mac, or Linux. Download Pinocchio 8.2, press one button, and you are off to the races. No coding required.
+                    </p>
+                    <ul class="space-y-3 text-slate-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Officially supported version</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Bug fixes included</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Instant keyless Ezri globe</li>
+                    </ul>
+                    <button class="w-full py-3 border border-[#d4af37] text-[#d4af37] rounded font-bold hover:bg-[#d4af37] hover:text-black transition-colors">
+                        Download Pinocchio
+                    </button>
+                </div>
+
+                <!-- Hacker Mode -->
+                <div class="glass-card p-8 rounded-lg reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-[#00f0ff]/10 flex items-center justify-center">
+                            <i class="fas fa-code text-[#00f0ff] text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">The Hacker Route</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6">
+                        Drop the GitHub link into Codeex, Claude Code, or Cursor. Give it the prompt and let your AI coding agent handle the rest.
+                    </p>
+                    <ul class="space-y-3 text-slate-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Build custom mineral overlays</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Integrate private mining datasets</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Send pull requests to the repo</li>
+                    </ul>
+                    <button class="w-full py-3 border border-[#00f0ff] text-[#00f0ff] rounded font-bold hover:bg-[#00f0ff] hover:text-black transition-colors">
+                        View GitHub Repo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-24 px-6 bg-[#0d141b] border-y border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">02 // Capabilities</p>
+                <h2 class="text-4xl font-bold">Tactical Mineral Intelligence</h2>
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto">From the Pilbara to the Strait of Malacca. Monitor the physical internet of mining in real-time.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-plane-departure text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Flight Tracking & Cockpit View</h3>
+                    <p class="text-slate-400 text-sm">Track geological survey flights and heavy-lift cargo helicopters. Jump into cockpit mode for live telemetry and nearby traffic context.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-ship text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Bulk Carrier Tracking</h3>
+                    <p class="text-slate-400 text-sm">Monitor ore vessels at Port Hedland or the English Channel. Click tracks to zoom in, cache paths, and watch dock action live.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-microphone text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Voice Control AI</h3>
+                    <p class="text-slate-400 text-sm">Powered by GPT real-time. "Take me to the Bingham Canyon mine." "Draw a route from Port Hedland to Newman mine." It's that easy.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-video text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Mine Site CCTV</h3>
+                    <p class="text-slate-400 text-sm">View primary crushers, haul roads, and shift changes. Real-time images refreshed for privacy but dense enough to monitor choke points.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-fire text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Thermal & Disaster Watch</h3>
+                    <p class="text-slate-400 text-sm">NASA satellite data detects coal seam fires and refinery flares. Overlay earthquake data to monitor induced seismicity around tailings dams.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-route text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Physical Internet Map</h3>
+                    <p class="text-slate-400 text-sm">Visualize submarine cables and power grids. Understand why aluminum smelters cluster near low-carbon nuclear hubs and coastal landing spots.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voice Command Demo -->
+    <section class="py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">03 // Interaction</p>
+                <h2 class="text-4xl font-bold">Control the World With Your Voice</h2>
+            </div>
+            
+            <div class="terminal rounded-lg p-6 md:p-8 reveal">
+                <div class="flex items-center gap-2 mb-6 text-slate-500 text-sm border-b border-slate-800 pb-3">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-auto">GODS_EYE_TERMINAL_v1.0</span>
+                </div>
+                
+                <div class="space-y-4 text-sm md:text-base">
+                    <div class="terminal-line" style="animation-delay: 0.5s;">
+                        <span class="text-[#00f0ff]">User &gt;</span> <span class="text-white">"Please take me to the Top Secret Rare Earth Mine."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 1.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">Flying you over to the restricted mine zone now. You're at the rare earth mine.</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 2.5s;">
+                        <span class="text-[#00f0ff]">User &gt;</span> <span class="text-white">"Turn on haul traffic mode and CCTV mode, please."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 3.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">Haul traffic is on. CCTV is on, too.</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 4.5s;">
+                        <span class="text-[#00f0ff]]User &gt;</span> <span class="text-white">"Draw me a route from the Port Hedland terminal to the Newman mine."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 5.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">I mapped a driving route from the Port Hedland terminal to the Newman mine. It's about 380 km.</span>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center gap-2 text-slate-500 text-xs">
+                    <i class="fas fa-microphone-alt text-[#00f0ff] animate-pulse"></i>
+                    <span>Listening... (Hold Spacebar to talk)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases / Case Studies -->
+    <section id="use-cases" class="py-24 px-6 bg-[#0d141b] border-y border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">04 // Case Studies</p>
+                <h2 class="text-4xl font-bold">Real-World Mineral Application</h2>
+            </div>
+
+            <div class="space-y-12">
+                <!-- Case 1 -->
+                <div class="grid md:grid-cols-2 gap-8 items-center reveal">
+                    <div class="order-2 md:order-1">
+                        <h3 class="text-2xl font-bold mb-4 text-[#d4af37]">Reconstructing Tailings Dam Failures</h3>
+                        <p class="text-slate-400 mb-6">
+                            Use AI agents to pull open-source data from Planet and USGS to plot the trajectory of a tailings dam disaster. Overlay social media clips and photos to map the scale and scope of the slurry flow.
+                        </p>
+                        <button class="text-[#00f0ff] font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                            Learn How <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="order-1 md:order-2 glass-card rounded-lg p-2 h-64 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 globe-dots opacity-10"></div>
+                        <i class="fas fa-mountain text-6xl text-red-500/50"></i>
+                        <div class="absolute bottom-4 left-4 text-xs text-slate-400 font-mono">DATA: BRUMADINHO // STATUS: ARCHIVED</div>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="grid md:grid-cols-2 gap-8 items-center reveal">
+                    <div class="glass-card rounded-lg p-2 h-64 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 globe-dots opacity-10"></div>
+                        <i class="fas fa-globe-asia text-6xl text-[#00f0ff]/50"></i>
+                        <div class="absolute bottom-4 left-4 text-xs text-slate-400 font-mono">DATA: SUBSEA CABLES // STATUS: LIVE</div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-[#00f0ff]">The Physical Internet of Mining</h3>
+                        <p class="text-slate-400 mb-6">
+                            Turn on submarine cables and data center layers. Ask the AI why aluminum smelters cluster in France (low-carbon nuclear grid) and trace the infrastructure that connects global mineral markets.
+                        </p>
+                        <button class="text-[#d4af37] font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                            Explore Map <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community / CTA -->
+    <section id="community" class="py-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center opacity-5">
+            <i class="fas fa-globe text-[40rem]"></i>
+        </div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="reveal">
+                <i class="fab fa-github text-5xl text-white mb-6"></i>
+                <h2 class="text-4xl font-bold mb-4">Build the Collective Window</h2>
+                <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+                    This isn't just a mineral reconnaissance simulator. It's a foundation. Add ALPR for mine exit gates, software-defined radios for ops channels, or your own geological overlays. Create a pull request today.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="#" class="px-8 py-3 bg-white text-black font-bold rounded flex items-center gap-2 hover:bg-[#00f0ff] transition-colors">
+                        <i class="fab fa-github"></i> View on GitHub
+                    </a>
+                    <a href="#" class="px-8 py-3 border border-white/20 text-white font-bold rounded flex items-center gap-2 hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                        <i class="fas fa-server"></i> Request Hosted Version
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2 text-slate-500 text-sm">
+                <i class="fas fa-globe text-[#00f0ff]"></i>
+                <span>God's Eye View &copy; 2024 // Open Source</span>
+            </div>
+            <div class="flex gap-6 text-slate-500 text-sm">
+                <a href="#" class="hover:text-[#d4af37] transition-colors">Docs</a>
+                <a href="#" class="hover:text-[#d4af37] transition-colors">API Keys</a>
+                <a href="#" class="hover:text-[#d4af37] transition-colors">License</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal Animation
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        reveals.forEach(reveal => {
+            revealObserver.observe(reveal);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>God's Eye View · 200 Advanced Inferences</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-0: #0a0c0f; --bg-1: #0f1318; --bg-2: #141a21; --bg-card: #11161c;
+    --border: rgba(218, 165, 32, 0.12); --border-strong: rgba(218, 165, 32, 0.28);
+    --fg-0: #e8eaed; --fg-1: #b8bcc4; --fg-2: #7a8088; --fg-3: #4a5058;
+    --gold: #d4a52a; --gold-bright: #f5c842; --copper: #b87333;
+    --emerald: #2ecc71; --danger: #e63946; --cobalt: #3a7ca5; --violet: #b566ff;
+    --cyan: #5fd3ff; --radius: 14px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-0); color: var(--fg-0); line-height: 1.6;
+    overflow-x: hidden; -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(212, 165, 42, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 165, 42, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px; pointer-events: none; z-index: 0;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  }
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 1; }
+
+  header { padding: 80px 0 40px; text-align: center; border-bottom: 1px solid var(--border); margin-bottom: 0; }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px;
+  }
+  header h1 .accent {
+    background: linear-gradient(135deg, var(--gold-bright) 0%, var(--copper) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  header p { color: var(--fg-1); max-width: 780px; margin: 0 auto; font-size: 17px; }
+  header .subtitle { color: var(--fg-2); font-size: 13px; margin-top: 12px; font-family: 'JetBrains Mono', monospace; }
+
+  .controls { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; position: sticky; top: 0; background: rgba(10,12,15,0.92); backdrop-filter: blur(14px); padding: 16px 0; border-bottom: 1px solid var(--border); z-index: 10; }
+  .search-box { position: relative; max-width: 640px; margin: 0 auto; width: 100%; }
+  .search-box input {
+    width: 100%; padding: 13px 20px 13px 48px; background: var(--bg-card);
+    border: 1px solid var(--border-strong); border-radius: 12px; color: var(--fg-0);
+    font-size: 14px; font-family: 'Inter', sans-serif;
+  }
+  .search-box input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 165, 42, 0.1); }
+  .search-box::before { content: '🔎'; position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 16px; }
+
+  .filter-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .filter-chip {
+    padding: 7px 14px; border-radius: 999px; background: var(--bg-card);
+    border: 1px solid var(--border); color: var(--fg-1); font-size: 11.5px;
+    font-weight: 500; cursor: pointer; transition: all .2s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .filter-chip:hover { border-color: var(--gold); color: var(--gold-bright); }
+  .filter-chip.active { background: var(--gold); border-color: var(--gold); color: #0a0c0f; font-weight: 700; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 16px; padding-bottom: 80px; }
+
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; display: flex; flex-direction: column;
+    transition: all .25s ease; position: relative; overflow: hidden;
+  }
+  .card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent, var(--gold)); }
+
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 12px; }
+  .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 600; color: var(--fg-0); line-height: 1.3; }
+  .card-cat { font-family: 'JetBrains Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent, var(--gold)); white-space: nowrap; padding: 3px 8px; border-radius: 4px; background: rgba(212,165,32,0.06); border: 1px solid var(--border); }
+  .card-desc { color: var(--fg-1); font-size: 13px; margin-bottom: 14px; flex-grow: 1; line-height: 1.5; }
+
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--fg-2); text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .section-label .ico { font-size: 13px; }
+
+  .sources-box {
+    background: rgba(95, 211, 255, 0.04); border: 1px solid rgba(95, 211, 255, 0.15);
+    border-radius: 8px; padding: 10px 12px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--cyan); line-height: 1.6; margin-bottom: 12px;
+  }
+  .sources-box::before { content: '🔗 '; }
+
+  .decision-box {
+    background: rgba(46, 204, 113, 0.04); border: 1px solid rgba(46, 204, 113, 0.15);
+    border-radius: 8px; padding: 10px 12px; font-size: 12px; color: #a8e89b; line-height: 1.5;
+  }
+  .decision-box::before { content: '🎯 '; margin-right: 2px; }
+
+  .conf-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9.5px; font-weight: 700;
+    margin-top: 8px;
+  }
+  .conf-badge.high { background: rgba(46, 204, 113, 0.12); color: #5ee394; border: 1px solid rgba(46, 204, 113, 0.25); }
+  .conf-badge.med { background: rgba(245, 200, 66, 0.1); color: var(--gold-bright); border: 1px solid rgba(245, 200, 66, 0.25); }
+  .conf-badge.low { background: rgba(230, 57, 70, 0.1); color: #ff7785; border: 1px solid rgba(230, 57, 70, 0.25); }
+
+  .no-results { text-align: center; padding: 60px; color: var(--fg-2); grid-column: 1 / -1; font-size: 18px; }
+
+  footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--fg-3); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: 1fr; }
+    .filter-chip { font-size: 10px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>200 Advanced <span class="accent">Fused Inferences</span></h1>
+    <p>What your clients can know — and decide — when 100+ independent data sources are cross-referenced into a single intelligence layer. Each inference combines 3+ sources to produce a signal no single source can generate alone.</p>
+    <div class="subtitle">9 CATEGORIES · 200 INFERENCE ENGINES · MIT-LICENSED</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="controls">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Search 200 inferences (e.g., 'copper', 'tailings', 'AIS', 'smelter', 'deforestation')..." />
+    </div>
+    <div class="filter-row" id="filters">
+      <span class="filter-chip active" data-filter="all">ALL (200)</span>
+      <span class="filter-chip" data-filter="Supply">Supply Chain</span>
+      <span class="filter-chip" data-filter="Production">Production Alpha</span>
+      <span class="filter-chip" data-filter="Price">Price Signals</span>
+      <span class="filter-chip" data-filter="ESG">ESG &amp; Carbon</span>
+      <span class="filter-chip" data-filter="Geopolitical">Geopolitical</span>
+      <span class="filter-chip" data-filter="Infra">Infrastructure</span>
+      <span class="filter-chip" data-filter="Corp">Corporate &amp; M&amp;A</span>
+      <span class="filter-chip" data-filter="Risk">Risk &amp; Insurance</span>
+      <span class="filter-chip" data-filter="Exploration">Exploration</span>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer>
+  God's Eye View · Advanced Inference Catalog · 200 Fused Signals
+</footer>
+
+<script>
+  // Format: "Category|Title|Description|Sources|Confidence|Decision"
+  const rawData = [
+    // ========== SUPPLY CHAIN & EXPORT (25) ==========
+    "Supply|Bulker Queue Depth as Export Volume Proxy|Vessel count anchored at Port Hedland 35% above 7-day average, combined with stockpile shadow growth, indicates iron ore export volume is running ahead of market expectations.|AIS Vessels + PortWatch + NOAA Night Lights + Satellite Imagery|HIGH|Short iron ore futures; long BHP ahead of earnings beat",
+    "Supply|Vessel Draft Data as Cargo Load Verification|A bulker's reported AIS draft of 14.2m at departure vs 8.1m at arrival confirms a full cargo load, cross-referenced with port loading records and bilateral trade data.|AIS Vessel Draft + Port Call Records + UN Comtrade|HIGH|Verify supplier shipment claims; detect under-reporting",
+    "Supply|Rail Car Count as Mine Throughput Proxy|Ore train frequency at Carajás exit increased 20% week-over-week, matching satellite-confirmed pit activity and vessel departures — mine is running above nameplate capacity.|Rail Telemetry + Satellite Imagery + AIS Departures + Mine DB|HIGH|Forecast Vale quarterly output; position copper long",
+    "Supply|Stockpile Height from Shadow Analysis|Multi-angle satellite imagery at Porto de Tubarão, combined with solar elevation angle, allows 3D stockpile volume estimation — pellet inventory has grown 8%, signaling oversupply.|Satellite Stereo + Solar Position + Port Database + AIS|HIGH|Short iron ore; anticipate bearish Vale guidance",
+    "Supply|Container Dwell Time as Congestion Indicator|Average container dwell time at Shanghai has increased from 3.2 to 6.8 days, visible in CCTV and confirmed by AIS berthing delays — port is severely congested.|PortWatch + CCTV + AIS Berthing + OSM Terminal|VERY HIGH|Reroute shipments; long shipping rates; short export-dependent stocks",
+    "Supply|Bauxite Bulker Route Deviation as Supply Disruption|Three bulkers originally destined for China from Weipa have deviated to Korean ports, combined with satellite showing reduced activity at the mine — supply chain reconfiguration underway.|AIS Route Tracking + Satellite Imagery + Mine DB + Port Calls|HIGH|Monitor aluminum supply; long Korean refiners; short Chinese alumina",
+    "Supply|Coal Train Frequency as Production Proxy|Powder River Basin rail car count down 15% from baseline, night lights at mines dimmed, and FIRMS shows fewer coal seam fires — production is actively declining.|Rail Telemetry + NOAA Night Lights + FIRMS + Mine DB|VERY HIGH|Long thermal coal; short PRB producers; anticipate price spike",
+    "Supply|Panama Canal Queue as Global Bottleneck Signal|47 bulkers waiting at Panama Canal anchorage, average transit time up from 8 to 26 hours, combined with Suez diversion spike — global dry bulk is in severe congestion.|AIS Anchorage Count + Port Transit Times + Suez AIS Comparison|VERY HIGH|Long Capesize rates; long dry bulk ETF; short time-charter exposure",
+    "Supply|Ore Train Weight Data as Output Verification|Rail loop weighbridge data at mine exit shows 12% higher tonnage than company guidance, corroborated by satellite stockpile shrinkage and bulker loading speed.|Rail Weighbridge + Mine DB + Satellite + AIS Loading Rate|HIGH|Position long ahead of production beat; benchmark against guidance",
+    "Supply|Bulker Loading Speed as Port Efficiency Benchmark|Average loading time at Hay Point has increased from 18 to 34 hours per bulker, visible in AIS dwell time and satellite crane activity — port efficiency is degrading.|AIS Dwell Time + Satellite Crane Activity + Port Database|HIGH|Anticipate supply delays; adjust delivery forecasts; long alternative port stocks",
+    "Supply|Container Ship Vacancy as Demand Indicator|Empty container count at Shanghai terminal up 40% from CCTV monitoring, combined with 30% fewer vessel calls — Chinese export demand is collapsing.|CCTV + AIS Port Calls + PortWatch + Satellite Container Count|HIGH|Short shipping stocks; long RMB hedges; anticipate recession signal",
+    "Supply|Rail Loop Occupancy as Potash Production Rate|Loop occupancy at Esterhazy potash mine at 92% capacity, up from 68% last month, satellite confirms active stockpile growth — production ramp confirmed.|Rail Telemetry + Satellite Stockpile + OSM Rail Layout + Mine DB|HIGH|Short potash price; long Nutrien; anticipate supply glut",
+    "Supply|Barge Traffic Density as Bauxite Output Proxy|Amazon River barge count from Trombetas to Macapá up 22%, satellite confirms increased loading at dock — bauxite export from Brazil is accelerating.|AIS Barge Tracking + Satellite Dock Activity + Mine DB + River AIS|HIGH|Monitor aluminum feedstock; position in alumina market",
+    "Supply|Conveyor Thermal Signature as Operational Status|FLIR thermal scan of overland conveyor from Mufulira pit to concentrator shows 60°C belt temperature — conveyor is active, mine is operational despite strike rumors.|FLIR Thermal + Satellite Conveyor Route + Mine DB + Night Lights|HIGH|Dispel misinformation; maintain position; verify rumors with physical evidence",
+    "Supply|Truck Queue at Mine Gate as Shift Indicator|Satellite imagery shows 40 haul trucks queued at Escondida gate at 06:00 local, CCTV at the access road confirms — day shift is fully staffed, operations normal.|Satellite Timed Capture + CCTV + Mine DB + Shift Schedule|MED|Confirm operational status; maintain baseline assumptions",
+    "Supply|AIS Gap Pattern as Transshipment-at-Sea|A bulker's AIS goes dark for 6 hours in international waters near a known STS transfer zone, reappears with 3m deeper draft — oil-to-oil or cargo transshipment detected.|AIS Dark Patterns + Port Calls + Maritime Boundaries + Ownership|HIGH|Flag for sanctions compliance; inspect supply chain; report to authorities",
+    "Supply|Bulker Destination Change as Spot Market Signal|Three Capesize bulkers en route to Qingdao have changed destination to Rotterdam mid-voyage — spot market premium in Europe triggered rerouting.|AIS Route Change + Commodity Prices + Port Calls + Freight Rates|HIGH|Anticipate European supply tightening; long European commodity exposure",
+    "Supply|Tonnage Balance as Supply-Demand Proxy|Total deadweight tonnage departing iron ore export ports exceeds tonnage arriving at import ports by 8% — inventory is building in transit, signal of oversupply.|AIS DWT Aggregation + Port Inbound/Outbound + Comtrade|MED|Short iron ore; anticipate inventory destocking cycle",
+    "Supply|Rail Maintenance Window as Downtime Predictor|Scheduled rail maintenance on Pilbara network for 48 hours visible in rail operator timetable, combined with pre-maintenance stockpile buildup at port — supply will pause.|Rail Operator Timetable + OSM + Satellite Stockpile + Port AIS|HIGH|Pre-position inventory; anticipate 2-day supply gap; price短期 premium",
+    "Supply|Vessel Speed Reduction as Fuel-Saving Indicator|Average bulker speed on Brazil-China route dropped from 12.5 to 10.2 knots, bunker fuel prices are elevated — industry-wide slow-steaming indicates freight market weakness.|AIS Speed Data + Bunker Fuel Prices + Weather + Shipping Indices|HIGH|Short dry bulk rates; long bunker fuel; anticipate freight compression",
+    "Supply|Port Crane Activity as Loading Rate Proxy|Satellite imagery timestamped at 14:00 shows 8 of 12 gantry cranes active at Hay Point, combined with AIS showing 3 bulkkers at berth — loading rate is at 67% capacity.|Satellite Timed Capture + AIS Berthed Vessels + Port Crane DB|MED|Estimate same-week export volume; adjust supply forecast",
+    "Supply|Truck Tire Stockpile as Maintenance Schedule|Satellite shows 200+ mining tires stockpiled at Pilbara service yard, up from 80 last month — major haul fleet tire-change campaign underway, suggesting reduced truck availability.|Satellite Imagery + Mine DB + Supply Chain Data + Night Lights|MED|Anticipate reduced production; short-term bearish on output",
+    "Supply|Conveyor Route as Bottleneck Identifier|Satellite + OSM shows 14km overland conveyor from pit to port at Grasberg, FLIR shows hot spots at 2 transfer points — bottleneck identified at junction, not at the mill.|Satellite + OSM Infrastructure + FLIR Thermal + Mine DB|MED|Target maintenance; optimize throughput; avoid unnecessary mill downtime",
+    "Supply|Bulker Queue Age as Congestion Severity|Average anchored vessel age at Newcastle has increased from 2.1 to 8.7 days, with 15 bulkers waiting over 10 days — severe port congestion.|AIS Dwell Time + Port Calls + Weather Conditions + Port DB|VERY HIGH|Declare force majeure risk; long freight rates; anticipate delivery defaults",
+    "Supply|Rail Car Type as Commodity-Specific Throughput|Rail telemetry identifies 90% ore cars on the EFVM railway vs 10% general freight — Brazilian iron ore export is prioritized over general cargo.|Rail Telemetry + OSM Rail Classification + Mine DB + Port AIS|MED|Confirm ore export channel health; monitor for mode shift",
+
+    // ========== PRODUCTION ALPHA (25) ==========
+    "Production|Night Light Intensity Delta as Concentrator Activity|Escondida concentrator night light brightness up 14% from 3-month baseline, satellite thermal confirms increased heat, AIS shows 3 more bulkers departing — production is running above Q3 guidance.|NOAA Night Lights + Sentinel-3 Thermal + AIS + Mine DB|VERY HIGH|Long BHP ahead of earnings; short copper price on supply surprise",
+    "Production|Thermal Satellite as Smelter Utilization|Norilsk nickel smelter thermal footprint up 22% from baseline, night lights confirm, inbound vessel deliveries of concentrate increased — smelter utilization rate estimated at 88%, above market consensus of 75%.|Sentinel-3 SLSTR + NOAA Night Lights + Inbound AIS + Power Grid|HIGH|Long Norilsk; position nickel long; anticipate earnings beat",
+    "Production|Stockpile Volume Change as Production-Consumption Balance|Multi-temporal satellite at Olympic Dam shows surface stockpile volume decreased 12% over 6 weeks while outbound truck frequency increased — mine is drawing down inventory, production below consumption rate.|Satellite DEM Time-Series + Truck Traffic + Mine DB + Outbound AIS|HIGH|Forecast production shortfall; short BHP; long uranium price",
+    "Production|FIFO Flight Frequency as Staffing Proxy|ADS-B shows 14 daily FIFO flights from Perth to Pilbara mine sites, up from 10 last month — workforce has been ramped up, indicating production increase or pre-stripping campaign.|OpenSky/adsb.lol + Mine DB + Airport Schedule + Night Lights|MED|Anticipate production ramp; long relevant miner; monitor for expansion announcement",
+    "Production|Haul Truck GPS Density as Activity Rate|Simulated traffic layer shows 180 haul truck movements on Bingham Canyon pit floor, up from 145 baseline — pit activity is at 124% of normal rate.|Traffic Simulation + Satellite Count + Mine DB + Night Lights|MED|Position long copper; anticipate production beat from Rio Tinto",
+    "Production|Power Consumption Proxy for Aluminum Smelter|Night light intensity at Kitimat aluminum smelter increased 18%, power grid load data shows 5% increase, inbound alumina bulker count up — smelter has ramped up, aluminum supply is increasing.|NOAA Night Lights + Power Grid Data + Inbound AIS + Smelter DB|HIGH|Short aluminum price; long Rio Tinto; anticipate market oversupply",
+    "Production|Dragline Swing Pattern as Stripping Rate|Historical satellite track analysis of dragline at Wyodak shows swing arc increased from 85° to 102° and cycle count up 15% — overburden stripping rate has accelerated, mine expansion underway.|Satellite Time-Series + Mine DB + Night Lights + Production Stats|MED|Anticipate future production increase; long Powder River coal; monitor expansion permits",
+    "Production|Water Truck Route Density as Dust Suppression Proxy|Traffic simulation shows 40 water truck trips per shift on Grasberg haul road, up from 25 — dry season dust suppression effort intensified, confirming active mining on multiple benches.|Traffic Simulation + Satellite + Weather + Mine DB|LOW|Confirm mine is multi-bench active; supports production assumptions",
+    "Production|Drill Rig Helicopter as Exploration-to-Production|Three helicopter ADS-B tracks per day from Yellowknife to a remote site, combined with fresh satellite disturbance and SEDAR+ filing — exploration transitioning to production drilling.|ADS-B + Satellite Disturbance + SEDAR+ + MRDS|MED|Accumulate junior miner; anticipate drill results announcement",
+    "Production|Vent Shaft Heat Plume as Underground Activity|FLIR thermal from Mponeng vent shaft shows 45°C plume, night lights at surface infrastructure bright, personnel vehicles visible — world's deepest gold mine is actively ventilating and operating.|FLIR Thermal + NOAA Night Lights + Satellite + Mine DB|HIGH|Confirm mine is operational; maintain production assumptions for Harmony Gold",
+    "Production|Slag Dump Thermal Growth as Smelter Output|Thermal satellite shows Ilo copper smelter slag dump has grown 15% in thermal footprint over 2 months, outbound copper anode vessel departures increased — smelter output is rising.|Thermal Satellite + Smelter DB + Outbound AIS + Night Lights|HIGH|Anticipate Southern Copper earnings beat; position long copper anode supply",
+    "Production|Conveyor Motion from Time-Series as Throughput|Satellite imagery 3 days apart shows conveyor material has moved 40m between captures at Moolarben, combined with 3 inbound and 2 outbound trains — conveyor throughput estimated at 4,200 tph.|Satellite Time-Series + Rail Telemetry + OSM + Mine DB|MED|Estimate coal throughput; position in thermal coal market",
+    "Production|Explosive Delivery Truck Frequency as Blast Cycle|Traffic data shows 6 ANFO truck trips to blast pattern at Highland Valley in 24 hours, up from 4 — blast frequency has increased, mining rate is accelerating.|Traffic + Satellite Blast Pattern + Mine DB + USGS Blast Seismic|MED|Anticipate increased production; long Teck Resources; monitor copper supply",
+    "Production|Pit Depth Change from DEM as Extraction Rate|SRTM DEM differencing over 6 months at Carajás N5 pit shows 8m average deepening, mine DB confirms active benches, night lights bright — extraction rate estimated at 150kt/day.|SRTM Time-Series + Mine DB + Satellite + Night Lights|MED|Estimate actual extraction; benchmark against Vale guidance",
+    "Production|Tailings Dam Wall Height as Raising Cycle|Satellite DEM shows dam wall at Kinross Paracatu has risen 2.4m in 6 months, construction traffic visible, ICMM database confirms 'Active' raising status — tailings capacity expansion underway.|Satellite DEM + ICMM + Mine DB + Construction Traffic|MED|Confirm mine is investing in long-term capacity; long Kinross",
+    "Production|Water Discharge Temperature as Concentrator Activity|FLIR shows 28°C thermal plume at Diavik water discharge point, up from 18°C ambient, water data confirms increased flow — concentrator is running at elevated throughput.|FLIR + USGS Water Data + Mine DB + Night Lights|MED|Confirm concentrator activity; support production estimates",
+    "Production|Pre-Strip Dozer Track as Mine Expansion|Satellite shows 3 new dozer tracks in vegetation at Mt Arthur, Global Forest Watch confirms 12ha clearing, night lights at new area bright — pre-stripping for expansion is underway.|Satellite + GFW + Mine DB + NOAA Night Lights|MED|Anticipate production expansion; monitor permit progress; long BHP coal",
+    "Production|Surge Pile Level from Shadow as Buffer Stock|Satellite at 14:00 local shows surge pile at stockyard is 60% full by shadow analysis, AIS shows no outbound vessels for 5 days — buffer is building, suggesting a planned maintenance window.|Satellite + Solar Angle + AIS + Mine DB|MED|Anticipate 1-2 week production pause; short-term supply tightness",
+    "Production|Smelter Stack Height from Satellite as Capacity|Satellite imagery at Guixi smelter shows 3 of 4 stacks venting visible steam plume, thermal confirms elevated, AIS shows 5 inbound concentrate bulkers — smelter at 85% capacity vs 60% consensus.|Satellite + Thermal + Inbound AIS + Smelter DB|HIGH|Long Jiangxi Copper; short LME copper; anticipate Chinese demand pickup",
+    "Production|Conveyor Power Draw from Night Light Delta|Night light delta at conveyor corridor between Moolarben pit and port shows 8% increase, combined with 2 additional ore trains — conveyor system power draw has increased, throughput rising.|NOAA Night Lights Delta + Rail Telemetry + OSM + Mine DB|MED|Position in coal market; anticipate increased export",
+    "Production|Tire Stockpile Change as Fleet Expansion|Satellite shows Pilbara service yard tire count down from 200 to 60, mine DB confirms 40 new trucks added — haul fleet has been expanded, production capacity increased.|Satellite + Mine DB + Supply Chain + Night Lights|MED|Anticipate production increase; long relevant iron ore miner",
+    "Production|Fuel Delivery Frequency as Diesel Consumption Proxy|Traffic data shows 8 fuel tanker deliveries per day to Tarkwa mine, up from 5 — diesel consumption has increased 60%, confirming intensified haul fleet operations.|Traffic + Mine DB + Fuel Price Data + Night Lights|LOW|Support production ramp assumptions; confirm active mining",
+    "Production|Blasting Seismic as Blast Timing/Frequency|USGS seismograph within 20km of Bingham Canyon detects 4 M1.5-2.0 events in 24 hours at blast-pattern timing, satellite confirms fresh wall advance — blast cycle is on 12-hour intervals.|USGS + Mine DB + Satellite + FIRMS (no fire)|MED|Estimate daily throughput from blast frequency; benchmark production",
+    "Production|Gold Doré Flight Frequency as Output Indicator|ADS-B shows 2 secure flights per week from Kalgoorlie to Perth, up from 1, LBMA gold price is elevated — mine output has increased, doré security transport frequency is the proxy.|ADS-B + Airport + Mine DB + LBMA Price|MED|Estimate gold production; position in gold market; anticipate miner earnings beat",
+    "Production|Tailings Volume Change as Processing Rate|Satellite DEM shows tailings beach at Yanacocha has expanded 3.2ha in 3 months, ICMM confirms active deposition, mine DB shows mill running — processing rate estimated at 130kt/day.|Satellite DEM + ICMM + Mine DB + Night Lights|MED|Estimate mill throughput; forecast gold production; position in Newmont",
+
+    // ========== PRICE SIGNALS (25) ==========
+    "Price|Port Queue Depth vs LME Inflow as Price-Leading Signal|47 bulkers anchored at Port Hedland (35% above average) while LME copper warehouse inflows in Detroit are accelerating — supply is building but demand is absorbing it, price is about to rise.|AIS Anchorage + LME Warehouse + Port Calls + Comtrade|HIGH|Long copper; anticipate tight physical market; position ahead of LME stock draw",
+    "Price|Bulker Count vs Iron Ore Futures as Supply-Price Signal|Departing bulker count from Hedland up 22%, but SHFE iron ore futures down 3% — divergence suggests market hasn't priced the supply increase, creating a short opportunity.|AIS Departures + SHFE Futures + Port + BGS WMP|HIGH|Short iron ore futures; anticipate price correction when supply data hits market",
+    "Price|Vessel Speed as Freight Rate Indicator|Average Capesize speed on Brazil-China route dropped to 10.2 knots, bunker prices elevated, Baltic Dry Index falling — freight market is oversupplied, rates will compress further.|AIS Speed + Bunker Fuel + Baltic Dry Index + Weather|VERY HIGH|Short dry bulk shipping stocks; long bunker fuel; anticipate freight rate collapse",
+    "Price|Smelter Truck Queue as Bottleneck Premium|CCTV and traffic show 40 copper concentrate trucks queued at Guixi smelter gate, LME copper premium widening — Chinese smelter bottleneck is creating a physical premium.|Traffic + CCTV + Smelter DB + LME + SHFE|HIGH|Long copper physical; short LME futures; position in smelter bottleneck premium",
+    "Price|Gold Doré Flight Destination as Refinery Demand|ADS-B shows gold doré flights diverting from Zurich to Hong Kong, LBMA price stable, Hong Kong premiums rising — Asian physical gold demand is surging.|ADS-B + LBMA + Airport + Hong Kong Premium|MED|Long gold in HK market; anticipate Asian premium widening; position in physical gold",
+    "Price|Stockpile Shadow at Port as Supply Glut|Satellite shadow analysis at Qingdao shows iron ore stockpile at 18-month high, AIS shows 12 more bulkers inbound — oversupply is building, price will fall.|Satellite + Solar Angle + Inbound AIS + SHFE|VERY HIGH|Short iron ore; anticipate inventory write-down; position bearish on Vale",
+    "Price|Smelter Night Light vs LME Aluminum as Cost-Curve Signal|Kitimat smelter night lights up 18% (ramp), LME aluminum price at $2,100/t, power costs low — smelter is moving up the cost curve, high-cost smelters will restart.|NOAA + LME + Smelter DB + Power Grid + EIA|HIGH|Long aluminum; anticipate supply increase; short high-cost smelter equities",
+    "Price|Cobalt Air Freight from Lubumbashi as Supply Health|ADS-B shows cobalt flights from Lubumbashi to Brussels down 40%, Fastmarkets cobalt price up 8% — DRC supply is constrained, physical cobalt is tightening.|ADS-B + Airport + Mine DB + Fastmarkets|HIGH|Long cobalt; anticipate battery supply chain stress; position in cobalt equities",
+    "Price|Lithium Brine Pond Color as Production Stage|Satellite imagery at Salar de Atacama shows evaporation pond color shifting from turquoise to white (salt crystallization), mine DB confirms pond in final stage — lithium carbonate production imminent, price will soften.|Satellite + Mine DB + Fastmarkets + Weather|MED|Short lithium carbonate; anticipate supply increase; position bearish on SQM",
+    "Price|REE Separation Plant Truck Activity as Bottleneck|Traffic at Mountain Pass rare earth separation plant shows 30 trucks/day vs 15 baseline, Metalary REE prices rising — processing bottleneck is creating a rare earth supply squeeze.|Traffic + Mine DB + Metalary + Satellite|MED|Long rare earth prices; position in MP Materials; anticipate processing bottleneck premium",
+    "Price|NPI Plant Construction as Future Nickel Supply|Satellite shows 5 new NPI plant sites under construction in Morowali, GFW confirms 340ha forest clearing, night lights at site bright — Indonesian nickel supply will surge in 6-12 months.|Satellite + GFW + Mine DB + Night Lights|HIGH|Short nickel price; position bearish on NPI; anticipate Indonesian supply flood",
+    "Price|Silver Bullion Flight as Investment Demand|ADS-B shows 3 silver bullion flights from Mexico City to Zurich in one week, up from 0, LBMA silver price up 5%, stock market volatile — safe-haven silver demand is surging.|ADS-B + LBMA + Stock Market + Airport|MED|Long silver; anticipate safe-haven rally; position in physical silver",
+    "Price|Molybdenum Stockpile at Climax as Supply Buffer|Satellite shows Climax mine stockpile at 8-month high, LME molybdenum price declining, night lights at mine dim — mine is producing into a building stockpile, price will fall.|Satellite + Mine DB + LME + Night Lights|MED|Short molybdenum; anticipate supply overhang; position bearish on Climax",
+    "Price|Graphite Route from Balama to Nacala as Export Health|OSRM shows route from Balama graphite mine to Nacala port active with 15 trucks/day, AIS shows 2 bulkers loading — Mozambique graphite export channel is healthy, supply is flowing.|OSRM + AIS + Mine DB + Satellite|LOW|Maintain graphite supply assumptions; confirm export channel viability",
+    "Price|Tungsten Shipment from Vietnam as Supply Route|AIS shows 3 bulkers from Hai Phong to Rotterdam carrying tungsten concentrate, mine DB confirms Thai Nguyen mines active, Metalary tungsten price stable — supply chain is functional.|AIS + Mine DB + Metalary + Traffic|LOW|Maintain tungsten supply assumptions; no disruption signal",
+    "Price|Fluorspar Truck Route as HF Acid Supply|Traffic shows 8 fluorspar trucks/day from Coahuila to Texas, OSRM confirms route active, commodity prices stable — HF acid supply chain is healthy, no disruption.|Traffic + OSRM + Mine DB + Commodity Prices|LOW|Maintain fluorspar supply assumptions; no pricing signal",
+    "Price|Vanadium Slag Transport as Supply Constraint|Traffic from Highveld steel mill to port shows 4 trucks/day, down from 12, mine DB confirms reduced slag output, vanadium price up 12% — supply is constrained, price will rise.|Traffic + Mine DB + Steel Production + Comtrade|MED|Long vanadium; anticipate supply squeeze; position in vanadium producers",
+    "Price|Bauxite Vessel Count at CBG Sangaredi as Supply Proxy|AIS shows 8 bulkers at Sangaredi anchorage, mine DB confirms CBG operating normally, BGS WMP shows Guinea bauxite exports stable — global bauxite supply is secure.|AIS + Mine DB + Port + BGS WMP|MED|Maintain bauxite supply assumptions; no disruption signal",
+    "Price|Nickel Deforestation as Supply Expansion|GFW shows 1,200ha deforestation at Halmahera nickel concession, satellite confirms new pit development, mine DB shows 3 new operations — Indonesian nickel supply is expanding rapidly.|GFW + Satellite + Mine DB + Night Lights|HIGH|Short nickel; anticipate long-term supply glut; position bearish on nickel producers",
+    "Price|PGM Supply Route from Bushveld to Port as Flow|OSRM shows 20 PGM concentrate trucks/day from Rustenburg to Durban, mine DB confirms Anglo American operations normal, LBMA platinum price stable — PGM supply chain is healthy.|OSRM + Mine DB + Port + AIS + LBMA|LOW|Maintain PGM supply assumptions; no disruption signal",
+    "Price|Iron Ore Majors Simultaneous Monitoring|Night lights at Pilbara (BHP/Rio), Carajás (Vale), and Hamersley all show increased activity, AIS departures up across all three — global iron ore supply is surging simultaneously.|Mine DB + NOAA + AIS + Satellite|HIGH|Short iron ore aggressively; anticipate global oversupply; position bearish on all three majors",
+    "Price|Smelter Truck Queue at Guixi as Chinese Demand|CCTV shows 40 trucks at Guixi, traffic data confirms, LME copper warehouse stock declining, SHFE copper up — Chinese copper demand is strong, physical premium will widen.|CCTV + Traffic + LME + SHFE + Smelter DB|HIGH|Long copper; anticipate Chinese demand-driven price rally",
+    "Price|Urea Shipments from Russia to Brazil as Fertilizer Supply|AIS shows 6 bulkers from St. Petersburg to Santos carrying urea, Comtrade confirms Russian fertilizer exports to Brazil up 15%, seasonal weather confirms planting season — urea supply is adequate.|AIS + Comtrade + Weather + Port|MED|Maintain urea supply assumptions; no price spike signal",
+    "Price|Cement Clinker Ships from Indonesia to Africa as Construction|AIS shows 4 clinker bulkers from Padang to Mombasa, mine DB confirms Indonesian cement plants active, African construction indices rising — cement supply to Africa is flowing, supporting construction demand.|AIS + Mine DB + Smelter DB + Construction Index|LOW|Maintain cement supply assumptions; monitor African construction demand",
+    "Price|Silicon Metal Trucks from Norway to Port as European Supply|Traffic shows 6 silicon trucks/day from Meraker to Trondheim port, mine DB confirms smelter operational, commodity prices stable — European silicon supply is secure.|Traffic + OSRM + Mine DB + Smelter DB|LOW|Maintain silicon supply assumptions; no disruption signal",
+
+    // ========== ESG & CARBON (25) ==========
+    "ESG|Tailings + Earthquake + Rainfall Composite Failure Risk|ICMM database shows Vale TSF #3 at 'Extreme' consequence, USGS recorded M4.2 within 22km yesterday, Open-Meteo shows 180mm rainfall in 72h — composite risk score 78/100, elevated failure probability.|ICMM + USGS + Weather + Satellite|MED|Trigger emergency inspection; alert communities; review insurance; consider divestment",
+    "ESG|Deforestation Within Concession as Carbon Liability|Global Forest Watch shows 340ha tree cover loss within Carajás concession boundary, satellite confirms, mine DB identifies operator — carbon liability estimated at 51,000 tCO₂, valued at $2.5M at current carbon prices.|GFW + Mine Boundaries + Satellite + Carbon Pricing|HIGH|ESG screen: flag Vale; divest if in portfolio; calculate carbon liability for reporting",
+    "ESG|Coal Seam Fire + Mine Location as Spontaneous Combustion|FIRMS shows 47 active fire detections within Jharia coal mine boundary, mine DB confirms active underground coal seam fire, night lights show ongoing activity — spontaneous combustion is uncontrolled.|FIRMS + Mine DB + NOAA Night Lights + Thermal|HIGH|Flag for ESG violation; regulatory reporting; short operator; carbon liability assessment",
+    "ESG|Acid Mine Drainage in River Color from Satellite|Sentinel-2 shows iron oxide staining (orange-red) in river 5km downstream of West Virginia coal mine, USGS water gauge confirms pH 3.2, mine DB identifies discharge source — acid mine drainage is occurring.|Sentinel-2 + USGS Water + Mine DB + OSM Rivers|HIGH|Regulatory complaint; ESG flag; water treatment requirement; short operator",
+    "ESG|Tailings Dam Wall Crack from High-Res Satellite|Maxar 30cm imagery shows 2cm crack on upstream face of Cadia TSF, ICMM database shows dam age 14 years, USGS shows M3.1 within 10km last month — structural integrity compromised, immediate inspection required.|Satellite (VHR) + ICMM + USGS + Mine DB|HIGH|Emergency inspection order; community evacuation plan; short Newcrest; insurance review",
+    "ESG|Phosphogypsum Stack Proximity to Homes|Mine DB shows 4 phosphogypsum stacks within 2km of residential areas in Florida, satellite confirms proximity, census data shows 12,000 residents within 5km — radiation exposure risk for populated area.|Mine DB + Satellite + Census + EPA Radiation|MED|ESG flag; community notification; regulatory petition; consider divestment from Mosaic",
+    "ESG|Coal Slurry + Seismic + Flood Path as Community Risk|Mine DB shows 3 coal slurry impoundments in West Virginia, USGS shows M3.5 within 30km, DEM shows flood path through 3 communities, census shows 4,000 downstream residents — combined risk is severe.|Mine DB + USGS + DEM + Census + OSM Rivers|MED|Community risk assessment; evacuation plan; regulatory intervention; ESG divestment",
+    "ESG|Oil Sands Tailings Pond Expansion|Satellite shows Fort McMurray tailings pond area increased 8% in 12 months, mine DB confirms active MFT production, GFW shows no new deforestation but pond encroaching on wetland — environmental liability is growing.|Satellite + Mine DB + GFW + ICMM + Night Lights|MED|ESG flag for Canadian operators; carbon liability calculation; wetland impact assessment",
+    "ESG|Mercury Contamination from Artisanal Gold Deforestation|GFW shows 500ha deforestation in Madre de Dios, satellite confirms 200 mercury pond features, mine DB identifies artisanal gold zone, water data shows Hg in downstream — mercury contamination from artisanal mining is active.|GFW + Satellite + Mine DB + USGS Water|HIGH|Supply chain audit; mercury-free certification; regulatory intervention; ESG flag",
+    "ESG|Smelter SO2 Plume from Sentinel-5P + Wind|Sentinel-5P shows SO2 column over Norilsk at 3x background, weather data confirms wind from NE carrying plume toward population center, smelter DB confirms no scrubber — SO2 exposure to downwind communities.|Sentinel-5P + Weather + Smelter DB + Population|HIGH|ESG violation; regulatory complaint; community health assessment; short Norilsk",
+    "ESG|Coal Mine Methane from Sentinel-5P + Boundary|Sentinel-5P shows CH4 plume over Bowen Basin coal mine, mine DB identifies boundary, satellite shows active mining, night lights confirm operations — methane emissions are uncontrolled and unreported.|Sentinel-5P + Mine DB + Satellite + Night Lights|HIGH|ESG non-disclosure flag; regulatory complaint; carbon liability = unreported emissions; short operator",
+    "ESG|TSF Spillway Integrity from Satellite + Freeboard|Satellite shows spillway blocked with vegetation at TSF in Minas Gerais, ICMM shows dam at 'High' consequence, weather shows rainfall forecast 100mm/24h — spillway cannot handle design flood, overtopping risk is elevated.|Satellite + ICMM + Weather + Mine DB|MED|Emergency spillway clearing; flood preparedness; community alert; insurance review",
+    "ESG|Asbestos Waste Dump Expansion|Satellite shows uncovered asbestos tailings at Mpumalanga dump expanded 15% in 12 months, mine DB confirms active operation, GFW shows no rehabilitation — airborne asbestos risk to nearby communities is uncontrolled.|Satellite + Mine DB + NOAA Night Lights + GFW|MED|ESG violation; regulatory complaint; rehabilitation order; short operator",
+    "ESG|Biodiversity Offset vs Active Mining Zone|Satellite shows 200ha rehabilitation zone at Olympic Dam, mine DB shows 400ha active mining in same period, WDPA shows a protected area 5km away — biodiversity offset is 50% of impact, not compliant with IRMA standard.|Satellite + Mine DB + WDPA + IBAT|MED|ESG non-compliance flag; IRMA audit failure; biodiversity liability assessment",
+    "ESG|Mine Water Discharge Temperature as Thermal Pollution|FLIR shows 32°C thermal plume from mine discharge into river at 18°C ambient, USGS water gauge confirms temperature spike, mine DB identifies source — thermal pollution is violating water quality standards.|FLIR + USGS Water + Mine DB + OSM Rivers|HIGH|Regulatory complaint; water quality violation; ESG flag; environmental fine risk",
+    "ESG|Radon Proximity to Uranium Tailings|Mine DB shows U tailings pile at Moab, satellite confirms 500m from residential area, census shows 2,000 residents within 1km, EPA radiation data shows elevated readings — radon exposure risk is unacceptable.|Mine DB + Satellite + Census + EPA|MED|Community relocation; regulatory intervention; ESG flag; short operator",
+    "ESG|Submarine Tailings Disposal Outfall + Marine Boundary|Mine DB shows STD outfall at Norwegian copper mine, OSM shows marine protected area 3km away, satellite shows turbidity plume extending 2km — submarine disposal is impacting protected marine area.|Mine DB + OSM + Satellite + Marine Boundaries|MED|ESG violation; marine impact assessment; regulatory complaint; short operator",
+    "ESG|Sinkhole Subsidence over Florida Phosphate|SRTM DEM time-series shows 1.2m subsidence over 2 years at Florida phosphate mine, mine DB confirms active extraction, USGS water shows groundwater drawdown — sinkhole formation is active and accelerating.|SRTM Time-Series + Mine DB + USGS Water + Geology|MED|Structural risk assessment; property damage liability; insurance repricing; ESG flag",
+    "ESG|TSF Raising + Seismic + Rainfall as Failure Precursor|Satellite DEM shows dam wall raised 2m in 6 months at TSF, USGS shows M3.8 within 15km last week, weather shows 200mm rainfall in 48h — raising + seismic + rainfall = classic Brumadinho precursor pattern.|Satellite DEM + USGS + Weather + ICMM|MED|Emergency risk assessment; consider evacuation; short operator aggressively; insurance withdrawal",
+    "ESG|Red Mud Pond Level as Bauxite Residue Risk|Satellite shows red mud pond at Stade alumina refinery at 95% capacity, mine DB confirms active bauxite processing, ICMM shows dam classification 'High' — pond is near overflow, bauxite residue spill risk is elevated.|Satellite + Mine DB + ICMM + Smelter DB|MED|Capacity expansion urgent; spill risk assessment; environmental compliance review",
+    "ESG|Cyanide Spill Path from Heap Leach to Stream|DEM shows downhill path from Yanacocha heap leach pad to stream, mine DB confirms cyanide in use, OSM shows stream connects to river 10km downstream, USGS water shows elevated CN — cyanide contamination path is active.|DEM + Mine DB + OSM Rivers + USGS Water|HIGH|Emergency containment; water supply alert; regulatory intervention; short Newmont",
+    "ESG|Mountaintop Removal Valley Fill Progress|Satellite shows 3 new valley fills in West Virginia, DEM shows 40m height increase, mine DB confirms active mountaintop removal, USGS water shows elevated sediment downstream — valley fill impacts are expanding.|Satellite + DEM + Mine DB + USGS Water + GFW|MED|ESG flag; stream mitigation requirement; regulatory intervention; short Appalachian coal",
+    "ESG|Arsenic Dust from Gold Roaster in Snow|Satellite shows orange-brown discoloration in snowpack 2km from Yellowknife gold roaster, mine DB confirms arsenopyrite processing, water data shows As in snowmelt — arsenic contamination is spreading.|Satellite + Mine DB + Snow Cover + USGS Water|HIGH|Environmental violation; community health alert; remediation order; short operator",
+    "ESG|SO2 at Nickel Smelter from Sentinel-5P|Sentinel-5P shows SO2 column over Sudbury nickel smelter at 4x background, weather shows wind toward city, smelter DB confirms active operations, night lights bright — SO2 exposure to population is ongoing.|Sentinel-5P + Weather + Smelter DB + NOAA Night Lights|HIGH|ESG violation; air quality alert; regulatory intervention; short Vale nickel",
+    "ESG|Coal Ash Pond Breach Path + Downstream Population|Mine DB shows 3 coal ash ponds in Tennessee, DEM shows breach path to river, OSM shows river flows through 3 towns, census shows 15,000 downstream residents — combined ash pond failure risk is catastrophic.|Mine DB + DEM + OSM + Census + USGS Water|MED|Insurance repricing; community emergency plan; regulatory decommissioning order; ESG divestment",
+
+    // ========== GEOPOLITICAL (25) ==========
+    "Geopolitical|AIS Dark Pattern + Sanctioned Port + Ownership as Evasion|Bulker IMO 9237482 went dark for 54h in Baltic, reappeared at Ust-Luga (Russia), loaded crude, went dark again, reappeared at Gujarat. Ownership chain: Liberia flag, Dubai management, Cypriot beneficial owner. High-confidence sanctions evasion.|AIS Dark + Port Calls + OpenCorporates + Comtrade|HIGH|Compliance: suspend vessel; file SAR; divest from counterparty; alert board",
+    "Geopolitical|Military Flight Near Mining Region as Dispute|ADS-B shows 8 military flights circling a contested mining region in the DRC-Rwanda border zone, mine DB shows 3 active tin mines in area, news confirms escalating tensions — territorial dispute threatens supply.|ADS-B Military + Mine DB + News + Border Data|MED|Supply chain risk: secure alternative tin sources; physical premium positioning; geopolitical alert",
+    "Geopolitical|Bulker Queue at Sanctioned Port + Dark Departures|AIS shows 12 bulkers at sanctioned Iranian port, 6 have gone dark on departure, Comtrade shows zero official exports — embargo violation is occurring at scale.|AIS Anchorage + Dark Departures + Comtrade + Port|HIGH|Compliance: screen supply chain for Iranian-origin material; regulatory exposure; divestment",
+    "Geopolitical|Post-Sanctions Trade Flow Shift|UN Comtrade shows Russian aluminum exports to China up 40%, AIS shows new vessel routes from St. Petersburg to Qingdao, LME shows Russian aluminum discounted 15% — sanctions have rerouted, not reduced, Russian supply.|Comtrade + AIS Routes + LME + Port|HIGH|Position in Russian aluminum discount; monitor sanctions enforcement; long Chinese aluminum exposure",
+    "Geopolitical|Russian Coal Export Diversion|AIS shows Russian coal bulkers diverting from European ports to Indian and Chinese ports, night lights at Russian mines bright, Comtrade shows 30% drop in EU imports — coal trade has structurally rerouted post-sanctions.|AIS Routes + Port + Night Lights + Comtrade|HIGH|Short European coal; long Indian coal; position in freight route shift",
+    "Geopolitical|DRC Cobalt Artisanal Deforestation as Supply Risk|GFW shows 1,200ha deforestation in Kolwezi artisanal cobalt zone, satellite confirms new pits, mine DB identifies the area, Fastmarkets shows cobalt price up — artisanal supply is expanding but ESG-non-compliant.|GFW + Satellite + Mine DB + Fastmarkets|MED|ESG: audit cobalt supply chain; IRMA compliance; position in certified cobalt producers",
+    "Geopolitical|Chinese REE Monopoly Activity|Satellite shows active mining at Bayan Obo, night lights bright, mine DB confirms it's the world's largest REE operation, Metalary shows neodymium price up 12% — China is tightening REE supply as trade leverage.|Satellite + Mine DB + Night Lights + Metalary|HIGH|Long non-Chinese REE producers (MP Materials, Iluka); strategic stockpile; supply chain diversification",
+    "Geopolitical|Indonesian Nickel Boom Deforestation|GFW shows 2,800ha forest clearing at Morowali, satellite confirms NPI plant construction, mine DB shows 5 new operations, night lights bright — Indonesian nickel supply is rapidly expanding, pressuring global prices.|GFW + Satellite + Mine DB + Night Lights|HIGH|Short nickel price; position in Indonesian nickel producers; anticipate ESG scrutiny",
+    "Geopolitical|Freeport Strike Detection|AIS shows zero vessel departures from Grasberg port for 72h, ADS-B shows FIFO flights ceased, night lights dimmed 40%, mine DB confirms — a strike or disruption has occurred, not yet reported.|AIS + ADS-B + Night Lights + Mine DB|VERY HIGH|Long copper; short Freeport; anticipate supply disruption; physical premium",
+    "Geopolitical|Codelco Production from Chilean Monitoring|Night lights at Codelco Norte up 10%, satellite shows active pit, AIS shows 3 bulkers departing, smelter thermal active — Codelco is producing above market estimates.|NOAA + Satellite + AIS + Smelter DB + Mine DB|HIGH|Long copper supply; anticipate Codelco production beat; short copper price",
+    "Geopolitical|SA PGM Grid Impact|Night lights at Rustenburg PGM smelters down 30%, power grid load data confirms load-shedding, mine DB confirms operations curtailed, LBMA platinum price up — South African grid crisis is constraining PGM supply.|NOAA + Power Grid + Mine DB + Smelter DB + LBMA|HIGH|Long platinum and palladium; anticipate supply squeeze; position in non-SA PGM producers",
+    "Geopolitical|Greenbushes Spodumene vs Lithium Price|AIS shows 4 spodumene bulkers departing Greenbushes in one week, traffic data confirms truck activity, Fastmarkets shows Li₂CO₃ price down 5%, mine DB confirms ramp — lithium supply is accelerating faster than demand.|AIS + Traffic + Mine DB + Fastmarkets|HIGH|Short lithium; anticipate price decline; position bearish on lithium producers",
+    "Geopolitical|Gold Doré Flights to Switzerland|ADS-B shows 5 gold doré flights from Perth to Zurich in one week, LBMA price stable, mine DB confirms Australian gold output, Comtrade shows Swiss gold imports up — physical gold is flowing to refineries, ETF demand building.|ADS-B + LBMA + Mine DB + Comtrade|MED|Long gold; anticipate ETF inflow; position in gold equities",
+    "Geopolitical|Silver Solar Demand from Silicon Shipments|AIS shows silicon metal bulkers from Norway to China up 20%, smelter DB confirms active Norwegian smelter, LBMA silver price up — solar panel manufacturing demand for silver is rising.|AIS + Smelter DB + LBMA + Mine DB|MED|Long silver; anticipate solar-driven demand; position in silver equities",
+    "Geopolitical|Uranium Yellowcake Transport Security|Traffic shows 4 secure trucks from Cigar Lake to Blind River, OSRM confirms route, mine DB confirms active U extraction, nuclear power data shows demand — uranium supply chain is active and secure.|Traffic + OSRM + Mine DB + Nuclear Data|LOW|Maintain uranium supply assumptions; no disruption signal",
+    "Geopolitical|Zinc Mine Closure Detection|Satellite shows Mount Isa night lights down 50%, AIS shows zero outbound vessels for 2 weeks, LME zinc stock declining, mine DB confirms — mine has closed or curtailed, not yet announced.|Satellite + NOAA + Mine DB + AIS + LME|VERY HIGH|Long zinc; anticipate supply tightening; short Glencore; position in zinc market",
+    "Geopolitical|Tin Conflict Zone Monitoring|GFW shows 200ha deforestation in DRC Maniema tin zone, satellite confirms artisanal mining, mine DB identifies conflict mineral area, Comtrade shows tin exports from DRC — conflict tin is entering supply chain.|GFW + Satellite + Mine DB + Comtrade|MED|Supply chain audit: conflict mineral compliance; ESG flag; regulatory exposure",
+    "Geopolitical|Diamond De Beers Fleet Monitoring|AIS shows Debmarine diamond mining vessels active offshore Namibia, ADS-B shows supply flights, mine DB confirms offshore diamond operation, port calls confirm — De Beers offshore diamond production is normal.|AIS + ADS-B + Mine DB + Port|LOW|Maintain diamond supply assumptions; no disruption signal",
+    "Geopolitical|Coal Phase-Out Verification|Satellite shows Hambach mine night lights down 60%, FIRMS shows no active coal fires, mine DB confirms partial closure, power grid data shows reduced coal burn — German coal phase-out is progressing as announced.|Satellite + NOAA + FIRMS + Mine DB + Power Grid|HIGH|Short European coal; long European carbon credits; position in energy transition theme",
+    "Geopolitical|Potash Cartel Rail Activity|Rail telemetry shows Belaruskali rail exports down 40%, OSRM shows route to port active but low volume, mine DB confirms reduced output, commodity prices show potash up 8% — Belarus potash supply is constrained by sanctions.|Rail + OSRM + Mine DB + Commodity Prices|HIGH|Long potash; anticipate supply squeeze; position in non-Belarusian potash producers",
+    "Geopolitical|Copper Smelter Truck Queue as Bottleneck|CCTV shows 40 trucks queued at Guixi smelter, traffic confirms, satellite shows stockpile building, LME copper stock declining — Chinese smelter is bottlenecked, copper physical premium will widen.|CCTV + Traffic + Satellite + LME + SHFE|HIGH|Long copper physical; short LME futures; position in smelter bottleneck premium",
+    "Geopolitical|Molybdenum Stockpile at Climax|Satellite shows Climax mine stockpile at 8-month high, night lights dim, mine DB confirms reduced output, LME moly price declining — mine is building inventory into a weak market.|Satellite + Mine DB + LME + Night Lights|MED|Short molybdenum; anticipate inventory overhang; position bearish on Climax",
+    "Geopolitical|Graphite Anode Supply Route|Mozambique mine DB confirms Balama active, OSRM shows 15 trucks/day to Nacala port, AIS shows 2 bulkers loading — graphite anode supply from Mozambique to Korean gigafactories is flowing normally.|OSRM + AIS + Mine DB + Fastmarkets|LOW|Maintain graphite supply assumptions; no disruption signal",
+    "Geopolitical|Bauxite Monopoly at CBG Sangaredi|AIS shows 8 bulkers at Sangaredi anchorage, mine DB confirms CBG operating, BGS WMP shows Guinea bauxite exports up 10% — Guinean bauxite supply is expanding, supporting global aluminum feedstock.|AIS + Mine DB + Port + BGS WMP|MED|Maintain bauxite supply assumptions; anticipate stable aluminum feedstock",
+    "Geopolitical|PGM Supply for Hydrogen Economy|Mine DB shows Bushveld PGM mines active, OSRM shows route to Durban port, LBMA platinum price up, AIS shows 4 PGM concentrate vessels departing — PGM supply is flowing but hydrogen economy demand is tightening market.|OSRM + Mine DB + Port + AIS + LBMA|MED|Long platinum; anticipate hydrogen economy demand; position in PGM equities",
+
+    // ========== INFRASTRUCTURE (20) ==========
+    "Infra|Coal Power Plant Utilization from Night Lights + Thermal|NOAA shows night light intensity at coal plant up 15%, thermal satellite confirms increased heat, EIA data shows coal burn up, power output data confirms — plant utilization has increased from 55% to 72%.|NOAA + Thermal Satellite + Power Plant DB + EIA|HIGH|Long coal demand; anticipate price support; position in coal utilities",
+    "Infra|Solar Farm Construction Expansion|Satellite shows 400ha new solar panel installation at Mojave Desert site, OSM confirms, power grid connection visible, weather confirms high irradiance — utility-scale solar is expanding, will reduce peak power prices.|Satellite + OSM + Power Grid + Weather|MED|Short peak power prices; long solar inverter manufacturers; anticipate coal demand reduction",
+    "Infra|Hydro Dam Level Estimation from Satellite + Weather|Satellite shows Kainji Dam reservoir surface area down 12%, weather shows 40% rainfall deficit, dam DB confirms it powers an aluminum smelter — water level is critically low, smelter may curtail.|Satellite + Weather + Dam DB + Mine DB (Smelter)|MED|Short aluminum; anticipate smelter curtailment; position in power-constrained aluminum",
+    "Infra|Wind Turbine Delivery via Long-Haul Trucks|Traffic shows 8 oversized blade transports on Texas highway, OSM confirms route to wind farm, satellite confirms pad construction, power grid shows planned connection — wind capacity is being installed, will add to grid.|Traffic + OSM + Satellite + Power Grid|LOW|Anticipate increased renewable supply; position in wind component manufacturers",
+    "Infra|Coal Mine Methane from Sentinel-5P + Boundary|Sentinel-5P shows CH4 plume over Bowen Basin coal mine, mine DB identifies boundary, satellite shows active mining, night lights confirm — methane emissions from coal mining are uncontrolled and unreported.|Sentinel-5P + Mine DB + Satellite + Night Lights|HIGH|ESG: regulatory complaint; carbon liability = unreported emissions; short operator",
+    "Infra|LNG Tanker Congestion at Export Terminal|AIS shows 12 LNG tankers anchored at Ras Laffan, night lights at terminal bright, weather shows calm conditions, port calls confirm — LNG export is at capacity, gas supply is tight.|AIS + NOAA + Port + Weather|HIGH|Long LNG; anticipate gas supply tightness; position in LNG exporters",
+    "Infra|SAGD Well Pad Deforestation|GFW shows 60ha clearing at Fort McMurray SAGD site, satellite confirms new well pads, mine DB confirms steam-assisted gravity drainage operation, night lights bright — oil sands expansion is continuing.|GFW + Satellite + Mine DB + Night Lights + Power|MED|Monitor oil sands expansion; ESG assessment; position in Canadian energy",
+    "Infra|Refinery Flaring from Thermal + Air Quality|FLIR shows flare stack at Texas City refinery at elevated temperature, Sentinel-5P shows NO2 plume, weather shows wind toward city, air quality monitor confirms — refinery is flaring, indicating operational upset.|FLIR + Sentinel-5P + Weather + Air Quality|MED|Anticipate refinery upset; monitor product supply; short refinery if outage extends",
+    "Infra|Coal Rail to Power Plant|Rail telemetry shows 20 coal trains/day to 4GW power plant, mine DB confirms source mine active, OSM confirms rail route, power grid shows 90% capacity factor — coal supply to power plant is adequate, plant is at high utilization.|Rail + Mine DB + OSM + Power Grid|LOW|Maintain coal demand assumptions; confirm power plant operational status",
+    "Infra|Pumped Storage Hydro Level from Satellite|Satellite shows Bath County pumped storage reservoir at upper level, weather confirms no rainfall, power grid shows off-peak pumping — storage is charged, ready for peak discharge, anticipating peak price sell.|Satellite + Weather + Dam DB + Power Grid|LOW|Anticipate peak power supply; short peak power prices; monitor storage dispatch",
+    "Infra|Nuclear Cooling Water Thermal Plume from FLIR|FLIR shows 8°C thermal plume from Fukushima nuclear plant into ocean, water data confirms temperature, AIS shows monitoring vessels, nuclear DB confirms operational status — cooling water discharge is normal.|FLIR + USGS Water + AIS + Nuclear DB|LOW|Maintain nuclear operational assumptions; no anomaly signal",
+    "Infra|HVDC Power Line Route from Mine to Grid|OpenInfraMap shows new HVDC line from Pilbara mine to grid, OSM confirms route, mine DB confirms new mine connection, power grid shows load — mine is now grid-connected, diesel generation will reduce.|OpenInfraMap + OSM + Mine DB + Power Grid|MED|Anticipate mine cost reduction; long mine operator; position in grid infrastructure",
+    "Infra|Battery Storage Construction from Satellite|Satellite shows 20ha battery storage facility under construction at Moss Landing, OSM confirms, power grid shows planned connection, mine DB confirms lithium supply — grid-scale battery is being built, will smooth renewable supply.|Satellite + OSM + Power Grid + Mine DB|MED|Long battery manufacturers; anticipate grid stability improvement; position in storage theme",
+    "Infra|CSG Well Pad Density from Satellite|Satellite shows 80 CSG well pads in Surat Basin, OSM confirms access roads, mine DB confirms coal seam gas operation, GFW shows no new deforestation — CSG field is at mature development stage.|Satellite + OSM + Mine DB + GFW + Night Lights|LOW|Maintain CSG supply assumptions; no expansion signal",
+    "Infra|UF6 Transport from Conversion to Enrichment|Traffic shows 4 secure UF6 cylinder trucks from Metropolis IL to Paducah, OSRM confirms route, mine DB confirms U conversion, nuclear DB confirms enrichment plant — uranium fuel cycle is active.|Traffic + OSRM + Mine DB + Nuclear DB|LOW|Maintain nuclear fuel supply assumptions; no disruption signal",
+    "Infra|Aluminum Smelter Power from Night Lights|NOAA shows Kitimat smelter night lights up 18%, power grid load data confirms 5% increase, mine DB confirms alumina supply, EIA shows low-cost power — smelter ramp is confirmed, aluminum supply increasing.|NOAA + Power Grid + Mine DB + Smelter DB + EIA|HIGH|Short aluminum; anticipate supply increase; position in smelter operator",
+    "Infra|Biomass Plant Supply from Wood Chip Trucks|Traffic shows 20 wood chip trucks/day to Ironbridge biomass plant, satellite confirms forestry activity, power plant DB confirms operation, OSM confirms supply route — biomass fuel supply is adequate.|Traffic + Satellite + Power Plant DB + OSM|LOW|Maintain biomass supply assumptions; no disruption signal",
+    "Infra|Geothermal Injection Well Seismicity|USGS shows 8 M2+ events at Salton Sea geothermal site, mine DB confirms injection wells, satellite confirms new pads, thermal shows increased — induced seismicity from geothermal injection is active.|USGS + Mine DB + Satellite + Thermal + Power|MED|Monitor seismic risk; regulatory review; position in geothermal operator",
+    "Infra|Hydrogen Pipeline Route Near Steel Mills|OpenInfraMap shows planned H2 pipeline in Ruhr Valley, OSM confirms route, satellite shows construction, steel DB confirms nearby mills — hydrogen infrastructure is being built for steel decarbonization.|OpenInfraMap + OSM + Satellite + Steel DB|MED|Long hydrogen economy; anticipate steel decarbonization; position in green steel",
+    "Infra|Coal Terminal Conveyor Fire from Thermal|FLIR shows hot spot at 120°C on coal terminal conveyor at Newcastle, satellite confirms conveyor route, mine DB confirms coal terminal, FIRMS shows no external fire — internal conveyor bearing failure, fire risk is high.|FLIR + Satellite + Coal Terminal DB + FIRMS|MED|Emergency maintenance; anticipate terminal downtime; short-term coal supply tightness",
+
+    // ========== CORPORATE & M&A (20) ==========
+    "Corp|Executive Helicopter Frequency as Site Visit Indicator|ADS-B shows 3 helicopter flights from corporate HQ to remote mine site in one week, mine DB identifies target, SEC filings show no recent announcement — executive site visits suggest imminent deal or major finding.|ADS-B + Mine DB + Company DB + SEC EDGAR|MED|Accumulate target company stock; anticipate M&A or drill results announcement",
+    "Corp|Corporate Jet Traffic Between HQs as M&A Signal|ADS-B shows 5 corporate jet round-trips between BHP and Rio Tinto HQs in 30 days, OpenCorporates shows no shared directors, SEC shows no filing — repeated executive travel suggests negotiation underway.|ADS-B + OpenCorporates + SEC + Airport|MED|Event-driven: long both; anticipate merger announcement; position in arbitrage spread",
+    "Corp|Stock Price vs Production Estimate Divergence|Production inference (night lights + AIS + satellite) estimates 8% production increase, but stock is down 3% with no news — market hasn't priced the production beat, creating a long opportunity.|Production Inference + Stock Price + Mine DB + SEC|HIGH|Long stock ahead of earnings; anticipate post-earnings rally",
+    "Corp|NI 43-101 Filing + Satellite Disturbance as Drill Result Predictor|SEDAR+ shows NI 43-101 filed 2 weeks ago, satellite shows fresh drill pad disturbance, MRDS shows favorable geology, ADS-B shows helicopter activity — drill results are imminent, likely positive.|SEDAR+ + Satellite + MRDS + ADS-B|MED|Accumulate junior miner; anticipate drill result announcement; position for discovery pop",
+    "Corp|Ownership Chain from Corporate Registries|OpenCorporates shows mine owned by Company A (Cyprus), which is owned by Company B (BVI), which is owned by Company C (UK) — 4-layer ownership chain obscures the true beneficial owner, flag for compliance.|OpenCorporates + Mine DB + Comtrade + SEC|MED|Compliance audit; beneficial ownership identification; regulatory exposure assessment",
+    "Corp|FIFO Worker Flight Reduction as Cost-Cutting|ADS-B shows FIFO flights from Perth to mine sites down 25%, mine DB confirms operations, company financials show debt increase, night lights unchanged — company is cutting worker transport to save cash, distress signal.|ADS-B + Mine DB + Company Financials + NOAA|MED|Short mining company; anticipate production curtailment; debt default risk",
+    "Corp|Stock Options + Executive Flights as Insider Signal|Stock options flow shows unusual call buying on mining company, ADS-B shows CEO's aircraft flying to competitor HQ, SEC shows no filing — insider activity suggests deal is imminent.|Stock Options + ADS-B + SEC + OpenCorporates|MED|Event-driven: long stock; anticipate M&A; position in call options",
+    "Corp|Satellite + SEDAR+ as Resource Upgrade Predictor|Satellite shows expanded pit at gold mine, SEDAR+ shows amended NI 43-101 with increased resource estimate, MRDS shows favorable geology, mine DB confirms — resource upgrade is confirmed, stock should re-rate.|Satellite + SEDAR+ + MRDS + Mine DB|MED|Long junior miner; anticipate resource upgrade announcement; position for re-rating",
+    "Corp|Glencore Global Asset Monitoring|Mine DB shows Glencore operations in DRC, Zambia, Australia, and Colombia, night lights active at all, AIS shows vessel movements at associated ports, satellite confirms — Glencore is operating across all assets at normal capacity.|Mine DB + NOAA + AIS + Satellite|HIGH|Maintain Glencore production estimates; anticipate normal earnings",
+    "Corp|LME Warehouse Truck Density as Stock Inflow|Traffic shows 30 trucks/day at Detroit LME warehouse, OSM confirms warehouse location, LME stock data shows copper inflow, satellite confirms container stacking — physical copper is flowing into LME, supply is building.|Traffic + OSM + LME + Satellite|HIGH|Short copper; anticipate LME stock build; position bearish on physical premium",
+    "Corp|Vale Dam Compliance from ICMM + Satellite|ICMM shows 12 Vale TSFs at 'Extreme' consequence, satellite shows wall conditions, USGS shows seismic activity, mine DB confirms all are active — Vale's tailings risk portfolio is elevated, Brumadinho lessons not fully implemented.|ICMM + Satellite + USGS + Mine DB + SEC|MED|Short Vale; ESG flag; insurance review; regulatory intervention risk",
+    "Corp|Russian Sanctions Evasion Vessel Ownership|AIS shows vessel going dark near Russian port, OpenCorporates traces ownership through 4 shell companies, Comtrade shows zero official exports — vessel is part of a sanctions-evasion fleet.|AIS + OpenCorporates + Comtrade + Port|HIGH|Compliance: divest from counterparty; file SAR; regulatory exposure assessment",
+    "Corp|Cobalt Artisanal Supply from DRC Deforestation|GFW shows 500ha deforestation in Kolwezi artisanal zone, satellite confirms new pits, mine DB identifies area, Fastmarkets shows cobalt price — artisanal cobalt supply is entering the supply chain, ESG-non-compliant.|GFW + Satellite + Mine DB + Fastmarkets|MED|Supply chain audit; ESG compliance; position in certified cobalt producers",
+    "Corp|LME Copper Stock Inflow from Truck + Warehouse|Traffic shows 30 trucks/day at LME Detroit warehouse, LME stock data confirms copper inflow, warehouse DB confirms location, AIS shows inbound vessels — physical copper is building at LME, market is oversupplied.|Traffic + LME + Warehouse DB + AIS|HIGH|Short copper; anticipate stock build; bearish on physical premium",
+    "Corp|BHP Iron Ore Output from Vessel Departures|AIS shows 40 bulkers departing Port Hedland in 7 days, port calls confirm, mine DB confirms BHP Pilbara operations, night lights bright — BHP iron ore output is running at 290Mt/yr annualized, above guidance.|AIS + Port + Mine DB + NOAA|HIGH|Long BHP ahead of earnings; anticipate production beat",
+    "Corp|Codelco Output from Chilean Monitoring|Night lights at Codelco Norte up 10%, satellite shows active pit, AIS shows 3 bulkers departing, smelter thermal active — Codelco is producing above market estimates, copper supply is adequate.|NOAA + Satellite + AIS + Smelter DB + Mine DB|HIGH|Short copper price; anticipate Codelco production beat; maintain supply assumptions",
+    "Corp|SA PGM Supply from Grid + Mine|NOAA shows Rustenburg smelter night lights down 30%, power grid confirms load-shedding, mine DB confirms curtailment, LBMA platinum up — South African grid crisis is constraining PGM supply, market is tightening.|NOAA + Power Grid + Mine DB + Smelter DB + LBMA|HIGH|Long platinum; anticipate supply squeeze; position in non-SA PGM producers",
+    "Corp|Greenbushes Spodumene vs Lithium Price|AIS shows 4 spodumene bulkers departing Greenbushes, traffic confirms truck activity, Fastmarkets shows Li₂CO₃ down 5%, mine DB confirms ramp — lithium supply is accelerating, price will decline.|AIS + Traffic + Mine DB + Fastmarkets|HIGH|Short lithium; anticipate price decline; position bearish on lithium producers",
+    "Corp|Gold Doré Flights to Zurich as ETF Demand|ADS-B shows 5 gold doré flights from Perth to Zurich, LBMA price stable, Comtrade shows Swiss gold imports up — physical gold is flowing to refineries, ETF demand is building, price will rise.|ADS-B + LBMA + Comtrade + Airport|MED|Long gold; anticipate ETF inflow; position in gold equities",
+    "Corp|Mount Isa Zinc Mine Closure|Satellite shows Mount Isa night lights down 50%, AIS shows zero outbound zinc vessels for 2 weeks, LME zinc stock declining, mine DB confirms — Glencore has closed or curtailed Mount Isa, not yet announced.|Satellite + NOAA + Mine DB + AIS + LME|VERY HIGH|Long zinc; anticipate supply tightening; short Glencore; position in zinc market",
+
+    // ========== RISK & INSURANCE (20) ==========
+    "Risk|Tailings Dam + M4+ Earthquake Within 50km as Failure Warning|ICMM shows TSF at 'Extreme' consequence, USGS recorded M4.2 within 22km, mine DB confirms dam age 14 years, weather shows recent rainfall — composite risk score 78/100, elevated failure probability.|ICMM + USGS + Mine DB + Weather|MED|Insurance: increase premium 40-60%; emergency inspection; community alert; consider policy exit",
+    "Risk|Mine Pit Wall Stability from FLIR Seepage|FLIR shows 25°C seepage zone on Bingham Canyon pit wall, satellite confirms crack, mine DB confirms wall material is altered, USGS shows micro-seismic — pit wall instability is developing, slope failure risk elevated.|FLIR + Satellite + Mine DB + USGS|MED|Insurance: review pit wall coverage; mine: increase monitoring; operational risk assessment",
+    "Risk|Flood Path from Tailings to Downstream Population|DEM shows flood path from TSF through 3 communities, mine DB identifies dam, OSM shows river network, census shows 8,000 downstream residents — combined dam failure + flood risk is catastrophic.|DEM + Mine DB + OSM + Census + ICMM|MED|Insurance: catastrophe modeling; community evacuation plan; emergency response readiness",
+    "Risk|Coal Waste Pile Fire from FIRMS + Thermal|FIRMS shows 47 active fire detections at Jharia coal waste pile, FLIR shows 180°C hotspot, mine DB confirms spontaneous combustion, night lights show ongoing activity — fire is uncontrolled, air quality risk severe.|FIRMS + FLIR + Mine DB + NOAA|HIGH|Insurance: fire damage liability; environmental compliance; community health risk; regulatory intervention",
+    "Risk|Slope Failure from DEM Time-Series|SRTM DEM differencing shows 1.5m subsidence at highwall mine over 6 months, satellite confirms tension cracks, mine DB confirms active mining, USGS shows micro-seismic — slope failure is developing.|SRTM Time-Series + Satellite + Mine DB + USGS|MED|Insurance: slope failure coverage review; mine: geotechnical assessment; operational halt risk",
+    "Risk|Water Contamination Path from Heap Leach|DEM shows downhill path from cyanide heap leach pad to stream, mine DB confirms CN in use, OSM shows stream connects to river, USGS water shows elevated CN — cyanide contamination path is active.|DEM + Mine DB + OSM Rivers + USGS Water|HIGH|Insurance: environmental liability; regulatory intervention; water supply alert; community risk",
+    "Risk|Tsunami Run-Up at Coastal Mine|USGS shows M7.5 earthquake 200km offshore, DEM shows coastal mine at 10m elevation, mine DB confirms copper port at risk, coastal data shows tsunami travel time 45 min — coastal mine is at tsunami risk.|USGS + DEM + Mine DB + Coastal Data|MED|Insurance: tsunami risk assessment; emergency evacuation plan; port infrastructure risk",
+    "Risk|Dam Overtopping from Rainfall + Freeboard|Weather shows 250mm rainfall in 48h forecast, satellite shows dam freeboard at 0.8m, ICMM shows 'High' consequence, mine DB confirms dam — overtopping risk is severe, immediate action required.|Weather + Satellite + ICMM + Mine DB|HIGH|Emergency: lower pond level; community alert; insurance: catastrophe risk; operational halt",
+    "Risk|Pit Dewatering Failure from Water Level|USGS water shows groundwater level up 2m at mine perimeter, mine DB confirms active dewatering, satellite shows pump station, night lights confirm — dewatering system is failing, pit flooding risk is developing.|USGS Water + Mine DB + Satellite + NOAA|MED|Insurance: flooding risk; mine: pump capacity review; operational curtailment risk",
+    "Risk|Underground Mine Fire from FIRMS + Ventilation|FIRMS shows 3 fire detections at underground mine vent shaft, FLIR shows 80°C, mine DB confirms coal mine, night lights at vent confirm — underground fire is burning, explosion risk is elevated.|FIRMS + FLIR + Mine DB + NOAA|HIGH|Insurance: fire and explosion liability; emergency: mine evacuation; regulatory intervention",
+    "Risk|TSF Liquefaction from Seismic + Dam Type + Saturation|USGS shows M5+ within 30km, ICMM shows upstream-construction dam, weather shows 95% saturation, satellite confirms — liquefaction risk is at maximum, dam failure probability is elevated.|USGS + ICMM + Weather + Satellite + Mine DB|MED|Insurance: dam failure coverage review; emergency: evacuation; regulatory: decommissioning order",
+    "Risk|Landslide from Rainfall + Slope + Geology|Weather shows 400mm rainfall in 72h, DEM shows 35° slope at mine, geology map shows weak shale, mine DB confirms active mining — landslide risk is severe, slope failure is imminent.|Weather + DEM + Geology + Mine DB|HIGH|Emergency: evacuate pit; insurance: landslide liability; mine: geotechnical halt",
+    "Risk|Acid Rock Drainage from Mine + Water pH + Geology|Mine DB confirms ARD-prone sulfide ore, USGS water shows pH 3.5 downstream, geology confirms acid-generating formation, satellite shows waste dump — acid rock drainage is occurring and uncontrolled.|Mine DB + USGS Water + Geology + Satellite + EarthChem|MED|Insurance: water treatment liability; regulatory: environmental violation; ESG: divestment flag",
+    "Risk|Tailings Dust from Wind + Dry Dam + Satellite|Weather shows 40 km/h wind, satellite shows dry tailings beach, mine DB confirms inactive TSF, ICMM shows 'High' consequence, Sentinel-5P shows aerosol plume — tailings dust is blowing toward community.|Weather + Satellite + Mine DB + ICMM + Sentinel-5P|MED|Insurance: community health liability; regulatory: dust suppression order; environmental compliance",
+    "Risk|Sinkhole from Phosphate Mining + Water + DEM|Mine DB confirms Florida phosphate extraction, USGS water shows groundwater drawdown, DEM shows 1.2m subsidence, geology confirms karst — sinkhole formation is active and accelerating.|Mine DB + USGS Water + DEM + Geology|MED|Insurance: property damage liability; regulatory: subsidence monitoring; structural risk",
+    "Risk|Conveyor Fire from Thermal + Route|FLIR shows 120°C hot spot on conveyor bearing at coal terminal, satellite confirms conveyor route, OSM shows length, mine DB confirms coal terminal — conveyor fire risk is high, bearing failure detected.|FLIR + Satellite + OSM + Mine DB|MED|Insurance: fire liability; mine: emergency maintenance; operational downtime risk",
+    "Risk|Explosive Magazine Proximity to Mine|Mine DB shows explosive magazine within 500m of active pit, OSM confirms, satellite confirms, census shows workers present — blast radius exceeds safe distance, regulatory violation.|Mine DB + OSM + Satellite + Census|MED|Insurance: explosion liability; regulatory: violation notice; operational: magazine relocation",
+    "Risk|Refinery Flare from Thermal + Air Quality|FLIR shows flare at 400°C, Sentinel-5P shows NO2 plume, weather shows wind toward city, air quality monitor confirms — refinery flare is causing air quality violation, community health risk.|FLIR + Sentinel-5P + Weather + Air Quality|MED|Insurance: community health liability; regulatory: air quality violation; environmental compliance",
+    "Risk|Underground Stope Collapse from Subsidence DEM|SRTM DEM shows 0.8m subsidence over underground mine, mine DB confirms active stoping, satellite confirms tension cracks, USGS shows micro-seismic — stope collapse is developing, surface subsidence is active.|SRTM Time-Series + Mine DB + Satellite + USGS|MED|Insurance: subsidence liability; mine: geotechnical review; structural risk to surface infrastructure",
+    "Risk|Cyanide Spill from Heap Leach + Flood Path|DEM shows flood path from heap leach pad, mine DB confirms cyanide in use, OSM shows stream connection, USGS water shows elevated CN, weather shows rainfall forecast — cyanide spill path is active during rainfall.|DEM + Mine DB + OSM + USGS Water + Weather|HIGH|Insurance: environmental catastrophe liability; emergency: containment; regulatory: immediate intervention",
+
+    // ========== EXPLORATION (15) ==========
+    "Exploration|Fresh Disturbance + Helicopter ADS-B + Claim Filing|Satellite shows 4 new drill pad disturbances, ADS-B shows 3 helicopter round-trips per day from Whitehorse, SEDAR+ shows NI 43-101 filed 2 weeks ago, MRDS shows greenstone belt geology — active exploration, drill results imminent.|Satellite + ADS-B + SEDAR+ + MRDS|MED|Accumulate junior miner; anticipate drill results; position for discovery pop",
+    "Exploration|BIF Structural Trend from Geology + MRDS|OneGeology WMS shows BIF horizons striking NE-SW in Pilbara, MRDS shows 40 historical BIF-hosted iron occurrences along trend, satellite shows unexplored 15km strike — structural prospectivity for iron ore is high.|OneGeology + MRDS + Satellite + Mine DB|MED|Acquire exploration licenses; position in iron ore juniors with Pilbara tenements",
+    "Exploration|Porphyry Copper Clustering from MRDS + Geology|MRDS shows 12 porphyry Cu deposits along Andean belt, geology map shows intrusive complex, satellite shows alteration halo at unexplored gap between known deposits — porphyry copper prospectivity in the gap is high.|MRDS + Geology WMS + Satellite + EarthChem|MED|Acquire exploration ground; position in copper juniors with Andean tenements",
+    "Exploration|Lithium Brine Evaporation Pond from Satellite + Geology|Satellite shows turquoise evaporation ponds at Salar de Atacama, geology confirms closed basin, mine DB confirms active Li operation, weather shows high evaporation — lithium brine production is active, resource is being extracted.|Satellite + Geology + Mine DB + Weather|LOW|Maintain lithium supply assumptions; confirm brine operation status",
+    "Exploration|Unconformity Uranium from Geology + Earthquakes|Geology map shows Athabasca Basin sandstone over basement, USGS shows M2+ events along fault, MRDS shows 15 U deposits in basin, satellite shows exploration disturbance — unconformity U prospectivity along fault is high.|Geology + USGS + MRDS + Satellite + Heat Flow|MED|Acquire exploration ground; position in uranium juniors with Athabasca tenements",
+    "Exploration|REE Carbonatite from Geology + Magnetic Anomaly|Geology map shows carbonatite intrusion, EMAG2 shows 200nT magnetic anomaly, MRDS shows 3 REE prospects, satellite shows carbonatite outcrop — REE prospectivity is confirmed by magnetic signature.|Geology + EMAG2 + MRDS + Satellite + EarthChem|MED|Acquire exploration ground; position in REE juniors with carbonatite tenements",
+    "Exploration|Gold Orogenic from Geology + Stream Sediment|Geology shows greenstone belt, EarthChem shows 15ppb Au in stream sediment, MRDS shows 8 historical orogenic Au occurrences, satellite shows unexplored shear zone — orogenic Au prospectivity is high.|Geology + EarthChem + MRDS + Satellite + OSM Rivers|MED|Acquire exploration ground; position in gold juniors with greenstone tenements",
+    "Exploration|Kimberlite Pipe from Magnetic + Satellite|EMAG2 shows circular 150nT magnetic anomaly, satellite shows circular depression, MRDS shows 2 nearby diamond occurrences, geology confirms craton — kimberlite pipe prospectivity is high.|EMAG2 + Satellite + MRDS + Geology + Mindat|MED|Acquire exploration ground; position in diamond juniors with cratonic tenements",
+    "Exploration|SEDEX Zinc from Geology + Gravity Anomaly|Geology shows Proterozoic basin, BGI WGM shows 30 mGal gravity high, MRDS shows 5 SEDEX Zn deposits in basin, satellite shows unexplored sub-basin — SEDEX Zn prospectivity in sub-basin is high.|Geology + BGI WGM + MRDS + Satellite + EarthChem|MED|Acquire exploration ground; position in zinc juniors with basin tenements",
+    "Exploration|IOCG from Gravity + Magnetic + Geology|BGI WGM shows 40 mGal gravity high, EMAG2 shows 100nT magnetic anomaly, geology shows IOCG-host sequence, MRDS shows Olympic Dam nearby — IOCG prospectivity at anomaly is high.|BGI WGM + EMAG2 + Geology + MRDS + EarthChem|MED|Acquire exploration ground; position in copper-uranium-gold juniors",
+    "Exploration|Nickel Laterite from Satellite + Geology + GFW|Satellite shows red laterite soil, geology confirms ultramafic body, GFW shows 200ha clearing, MRDS shows 3 Ni laterite deposits in belt — nickel laterite prospectivity is confirmed by surface expression.|Satellite + Geology + GFW + MRDS + EarthChem|MED|Acquire exploration ground; position in nickel juniors with laterite tenements",
+    "Exploration|MVT Zinc from Geology + Cave Systems|Geology shows carbonate platform, OSM shows 5 cave systems, MRDS shows 8 MVT Zn deposits, satellite shows unexplored carbonate — MVT Zn prospectivity along cave trend is high.|Geology + OSM Caves + MRDS + Satellite + EarthChem|MED|Acquire exploration ground; position in zinc juniors with carbonate tenements",
+    "Exploration|Placer Gold from Stream + MRDS + Geology|OSM rivers show active stream in gold-bearing belt, MRDS shows 15 historical placer Au occurrences, geology confirms greenstone source, satellite shows alluvial fan — placer Au prospectivity downstream is high.|OSM Rivers + MRDS + Geology + Satellite + EarthChem|LOW|Acquire exploration license; position in alluvial gold juniors",
+    "Exploration|Coal Seam from Geology + Magnetic + FIRMS|Geology shows coal-bearing sequence, EMAG2 shows no magnetic anomaly (non-magnetic), FIRMS shows 3 active coal seam fires, MRDS confirms coal — coal seam prospectivity is confirmed by fire expression.|Geology + EMAG2 + FIRMS + MRDS + Satellite|LOW|Acquire exploration ground; position in coal juniors",
+    "Exploration|VMS Deposit from Geology + Gravity + EarthChem|Geology shows felsic volcanic sequence, BGI WGM shows 20 mGal gravity high, EarthChem shows Cu-Zn-Pb anomaly in stream sediment, MRDS shows 3 VMS deposits in belt — VMS prospectivity at anomaly is high.|Geology + BGI WGM + EarthChem + MRDS + Satellite|MED|Acquire exploration ground; position in VMS juniors with volcanic tenements"
+  ];
+
+  const grid = document.getElementById('grid');
+  const searchInput = document.getElementById('search');
+  const filtersContainer = document.getElementById('filters');
+  let activeFilter = 'all';
+
+  const catColors = {
+    'Supply': '#5fd3ff',
+    'Production': '#f5c842',
+    'Price': '#2ecc71',
+    'ESG': '#b566ff',
+    'Geopolitical': '#ff6b3d',
+    'Infra': '#3a7ca5',
+    'Corp': '#d4a52a',
+    'Risk': '#e63946',
+    'Exploration': '#7fd957'
+  };
+
+  const catLabels = {
+    'Supply': 'Supply Chain',
+    'Production': 'Production Alpha',
+    'Price': 'Price Signals',
+    'ESG': 'ESG & Carbon',
+    'Geopolitical': 'Geopolitical',
+    'Infra': 'Infrastructure',
+    'Corp': 'Corporate',
+    'Risk': 'Risk & Insurance',
+    'Exploration': 'Exploration'
+  };
+
+  function renderCards() {
+    const query = searchInput.value.toLowerCase().trim();
+    grid.innerHTML = '';
+    let count = 0;
+
+    rawData.forEach(item => {
+      const parts = item.split('|');
+      if (parts.length < 6) return;
+      const [cat, title, desc, sources, conf, decision] = parts;
+
+      if (activeFilter !== 'all' && cat !== activeFilter) return;
+
+      const searchText = (title + ' ' + desc + ' ' + sources + ' ' + decision + ' ' + cat).toLowerCase();
+      if (query && !searchText.includes(query)) return;
+
+      count++;
+      const color = catColors[cat] || 'var(--gold)';
+      const catLabel = catLabels[cat] || cat;
+      const confClass = conf.includes('VERY') ? 'high' : conf.includes('HIGH') ? 'high' : conf.includes('MED') ? 'med' : 'low';
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.setProperty('--accent', color);
+      card.innerHTML = `
+        <div class="card-head">
+          <div class="card-title">${title}</div>
+          <div class="card-cat">${catLabel}</div>
+        </div>
+        <div class="card-desc">${desc}</div>
+        <div class="section-label"><span class="ico">🔗</span> Sources Fused</div>
+        <div class="sources-box">${sources}</div>
+        <div class="section-label"><span class="ico">🎯</span> Decision Enabled</div>
+        <div class="decision-box">${decision}</div>
+        <span class="conf-badge ${confClass}">${conf} CONFIDENCE</span>
+      `;
+      grid.appendChild(card);
+    });
+
+    if (count === 0) {
+      grid.innerHTML = '<div class="no-results">No inferences match your search. Try another keyword.</div>';
+    }
+  }
+
+  searchInput.addEventListener('input', renderCards);
+
+  filtersContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('filter-chip')) {
+      filtersContainer.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.dataset.filter;
+      renderCards();
+    }
+  });
+
+  renderCards();
+</script>
+
+</body>
+</html>

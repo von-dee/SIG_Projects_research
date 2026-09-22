@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God's Eye View | World Mining & Minerals Sector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #060a10;
+            --bg-secondary: #0d141b;
+            --bg-tertiary: #161f29;
+            --accent-gold: #d4af37;
+            --accent-copper: #b87333;
+            --accent-cyan: #00f0ff;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: -1; pointer-events: none;
+        }
+
+        .radar-container { position: relative; width: 300px; height: 300px; border-radius: 50%; border: 1px solid rgba(0, 240, 255, 0.3); overflow: hidden; }
+        .radar-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 1px solid rgba(0, 240, 255, 0.2); border-radius: 50%; }
+        .radar-sweep { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.3) 100%); transform-origin: left center; animation: radar-rotate 4s infinite linear; }
+        @keyframes radar-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .radar-dot { position: absolute; width: 6px; height: 6px; background-color: var(--accent-gold); border-radius: 50%; box-shadow: 0 0 10px var(--accent-gold); }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .glass-card { background: rgba(22, 31, 41, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px -5px rgba(212, 175, 55, 0.1); transform: translateY(-5px); }
+
+        .glow-text { text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+
+        .nav-link { position: relative; color: var(--text-muted); transition: color 0.3s; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background-color: var(--accent-gold); transition: width 0.3s; }
+        .nav-link:hover { color: var(--text-main); }
+        .nav-link:hover::after { width: 100%; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-copper); }
+
+        .terminal { font-family: 'Courier New', monospace; background: #000; border: 1px solid var(--accent-cyan); box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1); }
+        .terminal-line { opacity: 0; animation: typeIn 0.5s forwards; }
+        @keyframes typeIn { to { opacity: 1; } }
+
+        .globe-dots { background-image: radial-gradient(circle, rgba(0,240,255,0.2) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(circle at center, black 40%, transparent 70%); -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 70%); }
+
+        .floating { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        /* Data Source Specific Styles */
+        .badge-free { background-color: rgba(0, 255, 127, 0.15); color: #00ff7f; border: 1px solid rgba(0, 255, 127, 0.3); }
+        .badge-freemium { background-color: rgba(0, 240, 255, 0.15); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); }
+        .badge-paid { background-color: rgba(255, 99, 71, 0.15); color: #ff6347; border: 1px solid rgba(255, 99, 71, 0.3); }
+        
+        .filter-btn { background-color: transparent; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); }
+        .filter-btn.active { background-color: var(--accent-gold); color: black; border-color: var(--accent-gold); }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-[#060a10]/80 border-b border-white/5">
+        <nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="flex items-center gap-2">
+                <i class="fas fa-globe text-[#00f0ff] text-xl"></i>
+                <span class="font-bold tracking-wider text-lg">GOD'S EYE VIEW</span>
+            </a>
+            <div class="hidden md:flex gap-8 items-center">
+                <a href="#install" class="nav-link text-sm uppercase tracking-wider">Install</a>
+                <a href="#features" class="nav-link text-sm uppercase tracking-wider">Features</a>
+                <a href="#data-sources" class="nav-link text-sm uppercase tracking-wider">Data Sources</a>
+                <a href="#use-cases" class="nav-link text-sm uppercase tracking-wider">Use Cases</a>
+                <a href="#community" class="nav-link text-sm uppercase tracking-wider">Community</a>
+            </div>
+            <a href="#install" class="px-5 py-2 bg-[#d4af37] text-black font-bold text-sm rounded hover:bg-white transition-colors">
+                Power Up
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 globe-dots opacity-30"></div>
+        
+        <div class="absolute right-[-100px] top-1/2 transform -translate-y-1/2 hidden lg:block">
+            <div class="radar-container floating">
+                <div class="radar-circle" style="width: 100%; height: 100%;"></div>
+                <div class="radar-circle" style="width: 70%; height: 70%;"></div>
+                <div class="radar-circle" style="width: 40%; height: 40%;"></div>
+                <div class="radar-sweep"></div>
+                <div class="radar-dot" style="top: 30%; left: 40%;"></div>
+                <div class="radar-dot" style="top: 60%; left: 70%;"></div>
+                <div class="radar-dot" style="top: 80%; left: 30%;"></div>
+                <div class="radar-dot" style="top: 20%; left: 80%;"></div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+            <div class="text-center lg:text-left">
+                <p class="text-[#00f0ff] uppercase tracking-[0.3em] text-sm mb-4 glow-text">World Mining & Minerals Edition</p>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-6">
+                    Track the<br>
+                    <span class="text-[#d4af37]">Global Ore</span><br>
+                    Supply Chain
+                </h1>
+                <p class="text-lg text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0">
+                    An open-source spy satellite simulator for the mineral sector. Monitor bulk carriers, survey planes, and mine site CCTV in real-time. Integrated with over 100 global mining data sources.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <a href="#install" class="px-8 py-3 bg-[#d4af37] text-black font-bold rounded flex items-center gap-2 hover:bg-white transition-colors">
+                        <i class="fas fa-download"></i> Install Pinocchio
+                    </a>
+                    <a href="#data-sources" class="px-8 py-3 border border-white/20 text-white font-bold rounded flex items-center gap-2 hover:border-[#00f0ff] hover:text-[#00f0ff] transition-colors">
+                        <i class="fas fa-database"></i> View Data Sources
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <i class="fas fa-chevron-down text-slate-500"></i>
+        </div>
+    </section>
+
+    <!-- Install Section -->
+    <section id="install" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">01 // Setup</p>
+                <h2 class="text-4xl font-bold">Get Up and Running</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass-card p-8 rounded-lg reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-[#d4af37]/10 flex items-center justify-center">
+                            <i class="fas fa-mouse-pointer text-[#d4af37] text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">The Easy Route</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6">For Windows, Mac, or Linux. Download Pinocchio 8.2, press one button, and you are off to the races. No coding required.</p>
+                    <ul class="space-y-3 text-slate-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Officially supported version</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Bug fixes included</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#00f0ff]"></i> Instant keyless Ezri globe</li>
+                    </ul>
+                    <button class="w-full py-3 border border-[#d4af37] text-[#d4af37] rounded font-bold hover:bg-[#d4af37] hover:text-black transition-colors">Download Pinocchio</button>
+                </div>
+
+                <div class="glass-card p-8 rounded-lg reveal">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 rounded-full bg-[#00f0ff]/10 flex items-center justify-center">
+                            <i class="fas fa-code text-[#00f0ff] text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">The Hacker Route</h3>
+                    </div>
+                    <p class="text-slate-400 mb-6">Drop the GitHub link into Codeex, Claude Code, or Cursor. Give it the prompt and let your AI coding agent handle the rest.</p>
+                    <ul class="space-y-3 text-slate-300 mb-8">
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Build custom mineral overlays</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Integrate private mining datasets</li>
+                        <li class="flex items-center gap-3"><i class="fas fa-check text-[#d4af37]"></i> Send pull requests to the repo</li>
+                    </ul>
+                    <button class="w-full py-3 border border-[#00f0ff] text-[#00f0ff] rounded font-bold hover:bg-[#00f0ff] hover:text-black transition-colors">View GitHub Repo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section id="features" class="py-24 px-6 bg-[#0d141b] border-y border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">02 // Capabilities</p>
+                <h2 class="text-4xl font-bold">Tactical Mineral Intelligence</h2>
+                <p class="text-slate-400 mt-4 max-w-2xl mx-auto">From the Pilbara to the Strait of Malacca. Monitor the physical internet of mining in real-time.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-plane-departure text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Flight Tracking & Cockpit View</h3>
+                    <p class="text-slate-400 text-sm">Track geological survey flights and heavy-lift cargo helicopters. Jump into cockpit mode for live telemetry and nearby traffic context.</p>
+                </div>
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-ship text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Bulk Carrier Tracking</h3>
+                    <p class="text-slate-400 text-sm">Monitor ore vessels at Port Hedland or the English Channel. Click tracks to zoom in, cache paths, and watch dock action live.</p>
+                </div>
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-microphone text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Voice Control AI</h3>
+                    <p class="text-slate-400 text-sm">Powered by GPT real-time. "Take me to the Bingham Canyon mine." "Draw a route from Port Hedland to Newman mine." It's that easy.</p>
+                </div>
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-video text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Mine Site CCTV</h3>
+                    <p class="text-slate-400 text-sm">View primary crushers, haul roads, and shift changes. Real-time images refreshed for privacy but dense enough to monitor choke points.</p>
+                </div>
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-fire text-[#d4af37] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Thermal & Disaster Watch</h3>
+                    <p class="text-slate-400 text-sm">NASA satellite data detects coal seam fires and refinery flares. Overlay earthquake data to monitor induced seismicity around tailings dams.</p>
+                </div>
+                <div class="glass-card p-6 rounded-lg reveal">
+                    <i class="fas fa-route text-[#00f0ff] text-2xl mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Physical Internet Map</h3>
+                    <p class="text-slate-400 text-sm">Visualize submarine cables and power grids. Understand why aluminum smelters cluster near low-carbon nuclear hubs and coastal landing spots.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Sources Library (100+ Sources) -->
+    <section id="data-sources" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">03 // Data Library</p>
+                <h2 class="text-4xl font-bold mb-4">100+ Mining & Mineral Data Sources</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Aggregated categories: Mineral Deposits, Finance & Markets, Logistics & Trade, ESG & Environment, Satellite & Remote Sensing, and Government Regulatory Bodies. Search and filter free, freemium, and paid databases.</p>
+            </div>
+
+            <!-- Controls -->
+            <div class="mb-8 flex flex-col md:flex-row gap-4 justify-between items-center reveal">
+                <div class="relative w-full md:w-1/2">
+                    <input type="text" id="searchInput" placeholder="Search sources (e.g., LME, USGS, Tailings)..." class="w-full bg-[#0d141b] border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#00f0ff]">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500"></i>
+                </div>
+                <div class="flex gap-2 flex-wrap justify-center">
+                    <button class="filter-btn active px-4 py-2 rounded-lg text-sm font-bold" data-filter="all">All</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-bold" data-filter="Free"><i class="fas fa-circle text-[10px] mr-1" style="color:#00ff7f"></i> Free</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-bold" data-filter="Freemium"><i class="fas fa-circle text-[10px] mr-1" style="color:#00f0ff"></i> Freemium</button>
+                    <button class="filter-btn px-4 py-2 rounded-lg text-sm font-bold" data-filter="Paid"><i class="fas fa-circle text-[10px] mr-1" style="color:#ff6347"></i> Paid</button>
+                </div>
+            </div>
+
+            <div id="categoryFilters" class="flex flex-wrap gap-2 justify-center mb-8 reveal">
+                 <!-- Category badges will be injected by JS -->
+            </div>
+
+            <!-- Grid -->
+            <div id="dataGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 reveal">
+                <!-- Cards injected by JS -->
+            </div>
+            
+            <div id no-results class="hidden text-center text-slate-500 py-12">
+                <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                <p>No data sources match your search.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voice Command Demo -->
+    <section class="py-24 px-6 bg-[#0d141b] border-y border-white/5">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">04 // Interaction</p>
+                <h2 class="text-4xl font-bold">Control the World With Your Voice</h2>
+            </div>
+            
+            <div class="terminal rounded-lg p-6 md:p-8 reveal">
+                <div class="flex items-center gap-2 mb-6 text-slate-500 text-sm border-b border-slate-800 pb-3">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-auto">GODS_EYE_TERMINAL_v1.0</span>
+                </div>
+                
+                <div class="space-y-4 text-sm md:text-base">
+                    <div class="terminal-line" style="animation-delay: 0.5s;">
+                        <span class="text-[#00f0ff]">User &gt;</span> <span class="text-white">"Please take me to the Top Secret Rare Earth Mine."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 1.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">Flying you over to the restricted mine zone now. You're at the rare earth mine.</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 2.5s;">
+                        <span class="text-[#00f0ff]">User &gt;</span> <span class="text-white">"Turn on haul traffic mode and CCTV mode, please."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 3.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">Haul traffic is on. CCTV is on, too.</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 4.5s;">
+                        <span class="text-[#00f0ff]">User &gt;</span> <span class="text-white">"Draw me a route from the Port Hedland terminal to the Newman mine."</span>
+                    </div>
+                    <div class="terminal-line" style="animation-delay: 5.5s;">
+                        <span class="text-[#d4af37]">AI &gt;</span> <span class="text-slate-300">I mapped a driving route from the Port Hedland terminal to the Newman mine. It's about 380 km.</span>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center gap-2 text-slate-500 text-xs">
+                    <i class="fas fa-microphone-alt text-[#00f0ff] animate-pulse"></i>
+                    <span>Listening... (Hold Spacebar to talk)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases / Case Studies -->
+    <section id="use-cases" class="py-24 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[#00f0ff] uppercase tracking-widest text-sm mb-2">05 // Case Studies</p>
+                <h2 class="text-4xl font-bold">Real-World Mineral Application</h2>
+            </div>
+
+            <div class="space-y-12">
+                <div class="grid md:grid-cols-2 gap-8 items-center reveal">
+                    <div class="order-2 md:order-1">
+                        <h3 class="text-2xl font-bold mb-4 text-[#d4af37]">Reconstructing Tailings Dam Failures</h3>
+                        <p class="text-slate-400 mb-6">Use AI agents to pull open-source data from Planet and USGS to plot the trajectory of a tailings dam disaster. Overlay social media clips and photos to map the scale and scope of the slurry flow.</p>
+                        <button class="text-[#00f0ff] font-bold flex items-center gap-2 hover:gap-3 transition-all">Learn How <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    <div class="order-1 md:order-2 glass-card rounded-lg p-2 h-64 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 globe-dots opacity-10"></div>
+                        <i class="fas fa-mountain text-6xl text-red-500/50"></i>
+                        <div class="absolute bottom-4 left-4 text-xs text-slate-400 font-mono">DATA: BRUMADINHO // STATUS: ARCHIVED</div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 items-center reveal">
+                    <div class="glass-card rounded-lg p-2 h-64 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 globe-dots opacity-10"></div>
+                        <i class="fas fa-globe-asia text-6xl text-[#00f0ff]/50"></i>
+                        <div class="absolute bottom-4 left-4 text-xs text-slate-400 font-mono">DATA: SUBSEA CABLES // STATUS: LIVE</div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4 text-[#00f0ff]">The Physical Internet of Mining</h3>
+                        <p class="text-slate-400 mb-6">Turn on submarine cables and data center layers. Ask the AI why aluminum smelters cluster in France (low-carbon nuclear grid) and trace the infrastructure that connects global mineral markets.</p>
+                        <button class="text-[#d4af37] font-bold flex items-center gap-2 hover:gap-3 transition-all">Explore Map <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Community / CTA -->
+    <section id="community" class="py-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center opacity-5">
+            <i class="fas fa-globe text-[40rem]"></i>
+        </div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <div class="reveal">
+                <i class="fab fa-github text-5xl text-white mb-6"></i>
+                <h2 class="text-4xl font-bold mb-4">Build the Collective Window</h2>
+                <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">This isn't just a mineral reconnaissance simulator. It's a foundation. Add ALPR for mine exit gates, software-defined radios for ops channels, or your own geological overlays. Create a pull request today.</p>
+                <div class="flex flex-wrap gap-4 justify-center">
+                    <a href="#" class="px-8 py-3 bg-white text-black font-bold rounded flex items-center gap-2 hover:bg-[#00f0ff] transition-colors"><i class="fab fa-github"></i> View on GitHub</a>
+                    <a href="#" class="px-8 py-3 border border-white/20 text-white font-bold rounded flex items-center gap-2 hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"><i class="fas fa-server"></i> Request Hosted Version</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2 text-slate-500 text-sm">
+                <i class="fas fa-globe text-[#00f0ff]"></i>
+                <span>God's Eye View &copy; 2024 // Open Source</span>
+            </div>
+            <div class="flex gap-6 text-slate-500 text-sm">
+                <a href="#" class="hover:text-[#d4af37] transition-colors">Docs</a>
+                <a href="#" class="hover:text-[#d4af37] transition-colors">API Keys</a>
+                <a href="#" class="hover:text-[#d4af37] transition-colors">License</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal Animation
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.15 });
+        reveals.forEach(reveal => revealObserver.observe(reveal));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Data Sources Array
+        const dataSources = [
+            // Mineral Deposits & Geology
+            { name: "USGS MRDS", cat: "Mineral Deposits", type: "Free", desc: "Mineral Resources Data System containing historical and active mines in the US.", url: "https://mrdata.usgs.gov/mrds/" },
+            { name: "Mindat.org", cat: "Mineral Deposits", type: "Free", desc: "The world's largest open database of minerals, rocks, and meteorites.", url: "https://www.mindat.org/" },
+            { name: "OneGeology", cat: "Mineral Deposits", type: "Free", desc: "Global geological data sharing initiative.", url: "https://onegeology.org/" },
+            { name: "Geoscience Australia", cat: "Mineral Deposits", type: "Free", desc: "Australian geological survey data and mineral occurrences.", url: "https://www.ga.gov.au/" },
+            { name: "Natural Resources Canada", cat: "Mineral Deposits", type: "Free", desc: "Canadian mineral occurrences and geology data.", url: "https://www.nrcan.gc.ca/" },
+            { name: "British Geological Survey", cat: "Mineral Deposits", type: "Free", desc: "UK geology, minerals, and mining data.", url: "https://www.bgs.ac.uk/" },
+            { name: "S&P Global Market Intelligence", cat: "Mineral Deposits", type: "Paid", desc: "Premium mining data, property records, and financial models.", url: "https://www.spglobal.com/marketintelligence/" },
+            { name: "Mining Intelligence (S&P)", cat: "Mineral Deposits", type: "Paid", desc: "Asset-level mine data, production forecasts, and reserves.", url: "https://www.spglobal.com/" },
+            { name: "Interra Copper", cat: "Mineral Deposits", type: "Freemium", desc: "Copper exploration data and global deposit database.", url: "https://interracopper.com/" },
+            { name: "Geoscience BC", cat: "Mineral Deposits", type: "Free", desc: "Independent geoscience research organization in British Columbia.", url: "https://www.geosciencebc.com/" },
+            { name: "ISA Deep Sea Deposits", cat: "Mineral Deposits", type: "Free", desc: "International Seabed Authority deep sea mining deposit data.", url: "https://www.isa.org.jm/" },
+            { name: "NGU (Norway)", cat: "Mineral Deposits", type: "Free", desc: "Geological Survey of Norway mineral databases.", url: "https://www.ngu.no/" },
+            { name: "BRGM (France)", cat: "Mineral Deposits", type: "Free", desc: "French geological survey and subsurface data.", url: "https://www.brgm.fr/" },
+            { name: "EarthChem", cat: "Mineral Deposits", type: "Free", desc: "Community-driven petrological and geochemical data repository.", url: "https://www.earthchem.org/" },
+            { name: "Macrostrat", cat: "Mineral Deposits", type: "Free", desc: "Platform for geological data integration and stratigraphy.", url: "https://macrostrat.org/" },
+            { name: "DAREx", cat: "Mineral Deposits", type: "Paid", desc: "Data Access for Rigorous Exploitation (DAREx) mineral database.", url: "https://darex.com/" },
+            { name: "Siberian Geological Survey", cat: "Mineral Deposits", type: "Freemium", desc: "Russian Federation geological and resource data.", url: "https://www.geol.ru/" },
+            { name: "CONAGE (Ecuador)", cat: "Mineral Deposits", type: "Free", desc: "National geological agency of Ecuador datasets.", url: "https://www.conage.gob.ec/" },
+            { name: "Geological Survey of Namibia", cat: "Mineral Deposits", type: "Free", desc: "Namibian geology, minerals, and exploration data.", url: "https://www.mme.gov.na/gsn/" },
+            { name: "Geological Survey of Finland (GTK)", cat: "Mineral Deposits", type: "Free", desc: "Finnish geoscience data and mineral deposits.", url: "https://www.gtk.fi/" },
+
+            // Financials & Market Data
+            { name: "Yahoo Finance (Mining)", cat: "Financials", type: "Free", desc: "Stock prices and basic financials for publicly listed mining companies.", url: "https://finance.yahoo.com/" },
+            { name: "Investing.com Commodities", cat: "Financials", type: "Freemium", desc: "Real-time and historical commodity and metal prices.", url: "https://www.investing.com/commodities/" },
+            { name: "TradingView", cat: "Financials", type: "Freemium", desc: "Charting platform for mining stocks and metal futures.", url: "https://www.tradingview.com/" },
+            { name: "LME (London Metal Exchange)", cat: "Financials", type: "Paid", desc: "Premium metals prices, stocks, and forward curves.", url: "https://www.lme.com/" },
+            { name: "CME Group (COMEX)", cat: "Financials", type: "Freemium", desc: "Futures and options market data for precious and base metals.", url: "https://www.cmegroup.com/" },
+            { name: "Fastmarkets MB", cat: "Financials", type: "Paid", desc: "Specialist reporting and pricing for metal markets.", url: "https://www.fastmarkets.com/" },
+            { name: "S&P Global Platts", cat: "Financials", type: "Paid", desc: "Commodities news, pricing, and benchmark data.", url: "https://www.spglobal.com/platts/" },
+            { name: "Benchmark Mineral Intelligence", cat: "Financials", type: "Paid", desc: "Lithium, cobalt, graphite, and battery metal supply chain data.", url: "https://www.benchmarkminerals.com/" },
+            { name: "Kitco Metals", cat: "Financials", type: "Free", desc: "Precious metals news, prices, and mining reports.", url: "https://www.kitco.com/" },
+            { name: "Mining.com", cat: "Financials", type: "Free", desc: "Global mining news, exploration, and market data.", url: "https://www.mining.com/" },
+            { name: "MiningWeekly", cat: "Financials", type: "Freemium", desc: "Weekly mining industry news and project updates.", url: "https://www.miningweekly.com/" },
+            { name: "S&P Capital IQ", cat: "Financials", type: "Paid", desc: "Deep company financials, estimates, and macro data.", url: "https://www.spglobal.com/" },
+            { name: "Pitchbook", cat: "Financials", type: "Paid", desc: "Mining startup and private equity deal data.", url: "https://pitchbook.com/" },
+            { name: "Crunchbase", cat: "Financials", type: "Freemium", desc: "Mining tech startups and exploration company profiles.", url: "https://www.crunchbase.com/" },
+            { name: "OpenCorporates", cat: "Financials", type: "Free", desc: "Largest open database of corporate entities globally.", url: "https://opencorporates.com/" },
+            { name: "SEC EDGAR", cat: "Financials", type: "Free", desc: "US mining company 10-K, 10-Q, and 8-K regulatory filings.", url: "https://www.sec.gov/edgar" },
+            { name: "SEDAR+ (Canada)", cat: "Financials", type: "Free", desc: "Canadian mining company filings and technical reports (NI 43-101).", url: "https://www.sedarplus.ca/" },
+            { name: "ASX Announcements", cat: "Financials", type: "Free", desc: "Australian Securities Exchange mining company announcements.", url: "https://www.asx.com.au/" },
+            { name: "TSX Filings", cat: "Financials", type: "Free", desc: "Toronto Stock Exchange mining sector documents.", url: "https://www.tsx.com/" },
+            { name: "JORC Code Registry", cat: "Financials", type: "Free", desc: "Australasian reporting standards for identified mineral resources.", url: "https://www.jorc.org/" },
+            { name: "World Bank Pink Sheet", cat: "Financials", type: "Free", desc: "Monthly commodity price data for minerals and metals.", url: "https://www.worldbank.org/" },
+            { name: "IMF Primary Commodity Prices", cat: "Financials", type: "Free", desc: "International Monetary Fund commodity price tables.", url: "https://www.imf.org/" },
+
+            // ESG & Environment
+            { name: "Columbia Mine Tailings Database", cat: "ESG & Environment", type: "Free", desc: "Global tailings dam database compiled by Columbia Univ.", url: "https://tailingsspill.com/" },
+            { name: "Global Forest Watch", cat: "ESG & Environment", type: "Free", desc: "Monitor forest cover loss around mining concessions.", url: "https://www.globalforestwatch.org/" },
+            { name: "NASA FIRMS", cat: "ESG & Environment", type: "Free", desc: "Fire Information for Resource Management System (active fires).", url: "https://firms.modaps.eosdis.nasa.gov/" },
+            { name: "ICMM", cat: "ESG & Environment", type: "Freemium", desc: "International Council on Mining and Metals ESG guidelines.", url: "https://www.icmm.com/" },
+            { name: "ResponsibleSteel", cat: "ESG & Environment", type: "Freemium", desc: "Certification standard for responsible steel production.", url: "https://www.responsiblesteel.org/" },
+            { name: "IRMA", cat: "ESG & Environment", type: "Freemium", desc: "Initiative for Responsible Mining Assurance standards.", url: "https://responsiblemining.net/" },
+            { name: "TSM (Towards Sustainable Mining)", cat: "ESG & Environment", type: "Free", desc: "Mining sustainability framework established by MAC.", url: "https://mining.ca/" },
+            { name: "MSHA Data", cat: "ESG & Environment", type: "Free", desc: "Mine Safety and Health Administration incident logs.", url: "https://www.msha.gov/" },
+            { name: "EPA Envirofacts", cat: "ESG & Environment", type: "Free", desc: "US EPA facility data including mine waste and emissions.", url: "https://www.epa.gov/enviro" },
+            { name: "TRACES (EU)", cat: "ESG & Environment", type: "Freemium", desc: "European ESG and environmental reporting framework.", url: "https://environment.ec.europa.eu/" },
+            { name: "Global Tailings Review", cat: "ESG & Environment", type: "Free", desc: "Global Industry Standard on Tailings Management (GISTM).", url: "https://globaltailingsreview.org/" },
+            { name: "Water Quality Portal", cat: "ESG & Environment", type: "Free", desc: "USGS, EPA, USDA water quality data around mine sites.", url: "https://www.waterqualitydata.us/" },
+            { name: "Dartmouth Toxic Metals", cat: "ESG & Environment", type: "Free", desc: "Superfund research program tracking toxic mine runoff.", url: "https://sites.dartmouth.edu/" },
+            { name: "Carbon Disclosure Project (CDP)", cat: "ESG & Environment", type: "Freemium", desc: "Corporate carbon and water reporting for mining majors.", url: "https://www.cdp.net/" },
+            { name: "GISTM Tracker", cat: "ESG & Environment", type: "Freemium", desc: "Tracking implementation of tailings safety standards.", url: "https://www.tailings.org/" },
+
+            // Logistics & Trade
+            { name: "AISStream.io", cat: "Logistics & Trade", type: "Free", desc: "Free AIS vessel tracking API for bulk carriers.", url: "https://aisstream.io/" },
+            { name: "MarineTraffic", cat: "Logistics & Trade", type: "Freemium", desc: "Live vessel positions, port calls, and fleet data.", url: "https://www.marinetraffic.com/" },
+            { name: "VesselFinder", cat: "Logistics & Trade", type: "Freemium", desc: "Real-time ship tracking and maritime data.", url: "https://www.vesselfinder.com/" },
+            { name: "FlightRadar24", cat: "Logistics & Trade", type: "Freemium", desc: "Live air traffic, useful for tracking survey planes.", url: "https://www.flightradar24.com/" },
+            { name: "TomTom Traffic", cat: "Logistics & Trade", type: "Freemium", desc: "Aggregate location data for haul road choke points.", url: "https://www.tomtom.com/" },
+            { name: "UN Comtrade", cat: "Logistics & Trade", type: "Free", desc: "UN global mineral and metal trade flow database.", url: "https://comtrade.un.org/" },
+            { name: "Datalastic", cat: "Logistics & Trade", type: "Freemium", desc: "Maritime API for port congestion and vessel tracking.", url: "https://datalastic.com/" },
+            { name: "ShipXplorer", cat: "Logistics & Trade", type: "Freemium", desc: "Live AIS ship tracking and maritime intelligence.", url: "https://www.shipxplorer.com/" },
+            { name: "Port of Rotterdam Data", cat: "Logistics & Trade", type: "Free", desc: "Port authority logistics and cargo handling data.", url: "https://www.portofrotterdam.com/" },
+            { name: "Port Hedland Authority", cat: "Logistics & Trade", type: "Free", desc: "Live shipping times and tonnage for iron ore exports.", url: "https://www.porthedland.com.au/" },
+            { name: "USITC Dataweb", cat: "Logistics & Trade", type: "Free", desc: "US International Trade Commission tariff and trade data.", url: "https://dataweb.usitc.gov/" },
+            { name: "WTO Stats", cat: "Logistics & Trade", type: "Free", desc: "World Trade Organization statistics for raw materials.", url: "https://www.wto.org/" },
+            { name: "Railway Age (Bulk Cargo)", cat: "Logistics & Trade", type: "Freemium", desc: "Rail freight logistics for mineral transport.", url: "https://www.railwayage.com/" },
+            { name: "BNSF Logistics", cat: "Logistics & Trade", type: "Freemium", desc: "North American rail freight data for coal and ore.", url: "https://www.bnsf.com/" },
+            { name: "BIMCO", cat: "Logistics & Trade", type: "Freemium", desc: "Baltic and International Maritime Council shipping reports.", url: "https://www.bimco.org/" },
+
+            // Satellite & Remote Sensing
+            { name: "Google Earth Engine", cat: "Satellite & Remote Sensing", type: "Freemium", desc: "Cloud platform for planetary-scale geospatial analysis.", url: "https://earthengine.google.com/" },
+            { name: "Copernicus Open Access Hub", cat: "Satellite & Remote Sensing", type: "Free", desc: "ESA Sentinel satellite imagery (Sentinel-1, 2, 3).", url: "https://scihub.copernicus.eu/" },
+            { name: "USGS EarthExplorer", cat: "Satellite & Remote Sensing", type: "Free", desc: "Query and order satellite images, aerial photos, and maps.", url: "https://earthexplorer.usgs.gov/" },
+            { name: "Landviewer", cat: "Satellite & Remote Sensing", type: "Freemium", desc: "Tool for finding and analyzing satellite imagery.", url: "https://landviewer.latbus.com/" },
+            { name: "Planet Labs (Planet Explorer)", cat: "Satellite & Remote Sensing", type: "Paid", desc: "Daily high-resolution satellite imagery of mine sites.", url: "https://www.planet.com/" },
+            { name: "Maxar SecureWatch", cat: "Satellite & Remote Sensing", type: "Paid", desc: "Premium high-res satellite imagery and spatial data.", url: "https://www.maxar.com/" },
+            { name: "Airbus Intelligence", cat: "Satellite & Remote Sensing", type: "Paid", desc: "Pleiades and Spot high-resolution optical imagery.", url: "https://www.airbus.com/" },
+            { name: "Capella Space", cat: "Satellite & Remote Sensing", type: "Paid", desc: "SAR (Synthetic Aperture Radar) satellite data for night/cloud viewing.", url: "https://www.capellaspace.com/" },
+            { name: "Iceye", cat: "Satellite & Remote Sensing", type: "Paid", desc: "SAR satellite constellation for constant monitoring.", url: "https://www.iceye.com/" },
+            { name: "NASA Reverb", cat: "Satellite & Remote Sensing", type: "Free", desc: "NASA Earth science data for thermal and environmental tracking.", url: "https://reverb.echo.nasa.gov/" },
+            { name: "MODIS", cat: "Satellite & Remote Sensing", type: "Free", desc: "Terra and Aqua satellite thermal anomalies and active fires.", url: "https://modis.gsfc.nasa.gov/" },
+            { name: "Sentinel Hub", cat: "Satellite & Remote Sensing", type: "Freemium", desc: "API for accessing Copernicus and Landsat data.", url: "https://www.sentinel-hub.com/" },
+            { name: "OpenStreetMap", cat: "Satellite & Remote Sensing", type: "Free", desc: "Open map data containing haul roads and mine outlines.", url: "https://www.openstreetmap.org/" },
+
+            // Government & Regulatory
+            { name: "BLM (USA)", cat: "Government & Regulatory", type: "Free", desc: "Bureau of Land Management mining claims and land status.", url: "https://www.blm.gov/" },
+            { name: "IBRAM (Brazil)", cat: "Government & Regulatory", type: "Free", desc: "Brazilian Mining Agency concession data.", url: "https://www.gov.br/anm" },
+            { name: "SERNAGEOMIN (Chile)", cat: "Government & Regulatory", type: "Free", desc: "Chilean National Geology and Mining Service data.", url: "https://www.sernageomin.cl/" },
+            { name: "SEGEMAR (Argentina)", cat: "Government & Regulatory", type: "Free", desc: "Argentine mining and geological survey data.", url: "https://www.segemar.gob.ar/" },
+            { name: "ANM (Colombia)", cat: "Government & Regulatory", type: "Free", desc: "Colombian National Mining Agency concessions.", url: "https://www.anm.gov.co/" },
+            { name: "GEOCATMIN (Peru)", cat: "Government & Regulatory", type: "Free", desc: "Peruvian geological, mining, and metallurgical cadastre.", url: "https://geocatmin.gob.pe/" },
+            { name: "MEM (Indonesia)", cat: "Government & Regulatory", type: "Free", desc: "Ministry of Energy and Mineral Resources (Indonesia).", url: "https://www.esdm.go.id/" },
+            { name: "DMR (South Africa)", cat: "Government & Regulatory", type: "Free", desc: "Department of Mineral Resources and Energy.", url: "https://www.dmre.gov.za/" },
+            { name: "MGB (Philippines)", cat: "Government & Regulatory", type: "Free", desc: "Mines and Geosciences Bureau of the Philippines.", url: "https://mgb.gov.ph/" },
+            { name: "Dodd-Frank Section 1502", cat: "Government & Regulatory", type: "Free", desc: "SEC conflict minerals disclosure data (DRC and adjoining countries).", url: "https://www.sec.gov/" },
+            { name: "OECD Due Diligence", cat: "Government & Regulatory", type: "Free", desc: "Guidance for responsible mineral supply chains.", url: "https://www.oecd.org/" },
+            { name: "EU Conflict Minerals Reg.", cat: "Government & Regulatory", type: "Free", desc: "EU regulation on responsible mineral sourcing.", url: "https://policy.trade.ec.europa.eu/" },
+            { name: "RCS Global (Battery Minerals)", cat: "Government & Regulatory", type: "Freemium", desc: "Responsible sourcing and ESG audit data for battery metals.", url: "https://www.rcsglobal.com/" },
+            { name: "BloombergNEF (BNEF)", cat: "Government & Regulatory", type: "Paid", desc: "Energy transition and battery materials outlook.", url: "https://about.bnef.com/" },
+            { name: "IEA (Energy & Minerals)", cat: "Government & Regulatory", type: "Free", desc: "International Energy Agency critical minerals reports.", url: "https://www.iea.org/" },
+            { name: "USGS Minerals Yearbook", cat: "Government & Regulatory", type: "Free", desc: "Annual statistical and historical data on minerals.", url: "https://www.usgs.gov/" },
+            { name: "Geological Survey of Japan", cat: "Government & Regulatory", type: "Free", desc: "AIST geological survey of Japan and deep earth resources.", url: "https://www.gsj.jp/" },
+            { name: "Geological Survey of Sweden (SGU)", cat: "Government & Regulatory", type: "Free", desc: "Swedish mineral resource data and bedrock geology.", url: "https://www.sgu.se/" },
+            { name: "Geological Survey of Ireland", cat: "Government & Regulatory", type: "Free", desc: "Irish geoscience data and mineral deposits.", url: "https://www.gsi.ie/" },
+            { name: "Ghana Geological Survey", cat: "Government & Regulatory", type: "Free", desc: "Ghanaian mineral resources and geological mapping.", url: "https://www.ggs.gov.gh/" },
+            { name: "Zambia Geological Survey", cat: "Government & Regulatory", type: "Freemium", desc: "Zambian mines department and copperbelt data.", url: "https://www.zda.org.zm/" },
+            { name: "Chilean Copper Commission (Cochilco)", cat: "Government & Regulatory", type: "Free", desc: "Chilean copper production and forecasting agency.", url: "https://www.cochilco.cl/" }
+        ];
+
+        const dataGrid = document.getElementById('dataGrid');
+        const noResults = document.getElementById('no-results');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilters = document.getElementById('categoryFilters');
+        
+        let currentFilter = 'all';
+        let currentCat = 'all';
+        let searchTerm = '';
+
+        // Populate Categories
+        const categories = [...new Set(dataSources.map(item => item.cat))];
+        const catBtn = document.createElement('button');
+        catBtn.className = 'filter-btn active px-3 py-1 rounded-full text-xs font-bold';
+        catBtn.innerText = 'All Categories';
+        catBtn.dataset.cat = 'all';
+        categoryFilters.appendChild(catBtn);
+        catBtn.addEventListener('click', () => {
+            currentCat = 'all';
+            updateActiveCat();
+            renderData();
+        });
+
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn px-3 py-1 rounded-full text-xs font-bold';
+            btn.innerText = cat;
+            btn.dataset.cat = cat;
+            categoryFilters.appendChild(btn);
+            btn.addEventListener('click', (e) => {
+                currentCat = e.target.dataset.cat;
+                updateActiveCat();
+                renderData();
+            });
+        });
+
+        function updateActiveCat() {
+            document.querySelectorAll('#categoryFilters .filter-btn').forEach(btn => {
+                if (btn.dataset.cat === currentCat) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        // Type Filters
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const val = e.currentTarget.dataset.filter;
+                currentFilter = val;
+                document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                renderData();
+            });
+        });
+
+        // Search
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderData();
+        });
+
+        function renderData() {
+            dataGrid.innerHTML = '';
+            let count = 0;
+            
+            dataSources.forEach(source => {
+                const typeMatch = currentFilter === 'all' || source.type === currentFilter;
+                const catMatch = currentCat === 'all' || source.cat === currentCat;
+                const searchMatch = source.name.toLowerCase().includes(searchTerm) || 
+                                    source.desc.toLowerCase().includes(searchTerm) || 
+                                    source.cat.toLowerCase().includes(searchTerm);
+                
+                if (typeMatch && catMatch && searchMatch) {
+                    count++;
+                    const badgeClass = source.type === 'Free' ? 'badge-free' : (source.type === 'Freemium' ? 'badge-freemium' : 'badge-paid');
+                    const card = document.createElement('a');
+                    card.href = source.url;
+                    card.target = "_blank";
+                    card.className = "glass-card p-5 rounded-lg flex flex-col justify-between hover:scale-105 transition-transform";
+                    
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <h4 class="text-lg font-bold text-white">${source.name}</h4>
+                                <span class="${badgeClass} text-xs px-2 py-1 rounded-full uppercase font-bold whitespace-nowrap">${source.type}</span>
+                            </div>
+                            <p class="text-slate-400 text-sm mb-4">${source.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-white/5 pt-3 mt-3">
+                            <span class="text-xs text-[#d4af37] uppercase tracking-wider">${source.cat}</span>
+                            <i class="fas fa-arrow-up-right-from-square text-slate-500 text-xs"></i>
+                        </div>
+                    `;
+                    dataGrid.appendChild(card);
+                }
+            });
+
+            if (count === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        renderData();
+
+    </script>
+</body>
+</html>

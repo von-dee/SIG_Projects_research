@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>God's Eye View | 200 Use Cases</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #060a10;
+            --bg-secondary: #0d141b;
+            --bg-tertiary: #161f29;
+            --accent-gold: #d4af37;
+            --accent-cyan: #00f0ff;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; z-index: -1;
+        }
+        .glass-card { background: rgba(22, 31, 41, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s ease; }
+        .glass-card:hover { border-color: rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px -5px rgba(212, 175, 55, 0.1); }
+        .nav-link { color: var(--text-muted); transition: color 0.3s; }
+        .nav-link:hover { color: var(--text-main); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+        .terminal { font-family: 'Courier New', monospace; background: #000; border: 1px solid rgba(0, 240, 255, 0.3); box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.05); }
+        .filter-btn { background-color: transparent; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); transition: all 0.2s; }
+        .filter-btn.active { background-color: var(--accent-gold); color: black; border-color: var(--accent-gold); }
+        .filter-btn:hover:not(.active) { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+        .step-item { display: flex; gap: 10px; margin-bottom: 6px; }
+        .step-num { color: var(--accent-gold); font-weight: bold; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#060a10]/80 border-b border-white/5 py-4 px-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="#" class="flex items-center gap-2">
+                <i class="fas fa-globe text-[#00f0ff] text-xl"></i>
+                <span class="font-bold tracking-wider text-lg">GOD'S EYE VIEW</span>
+            </a>
+            <div class="hidden md:flex gap-6 text-sm uppercase tracking-wider">
+                <a href="https://github.com" class="nav-link flex items-center gap-2"><i class="fab fa-github"></i> Repo</a>
+                <a href="#" class="nav-link flex items-center gap-2"><i class="fas fa-book"></i> Docs</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero / Intro -->
+    <section class="py-16 px-6 text-center border-b border-white/5">
+        <p class="text-[#00f0ff] uppercase tracking-[0.3em] text-sm mb-4">Mining & Minerals Edition</p>
+        <h1 class="text-4xl md:text-6xl font-extrabold mb-4">200 Tactical Use Cases</h1>
+        <p class="text-slate-400 max-w-3xl mx-auto text-lg">
+            A comprehensive operational manual for the God's Eye View platform. Each use case includes a step-by-step To-Do list and the exact Voice Sequence commands to trigger the action using the GPT real-time voice model.
+        </p>
+    </section>
+
+    <!-- Controls -->
+    <section class="py-8 px-6 sticky top-[65px] z-40 backdrop-blur-md bg-[#060a10]/90 border-b border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full md:w-1/2">
+                <input type="text" id="searchInput" placeholder="Search use cases (e.g., tailings, Port Hedland, CCTV)..." class="w-full bg-[#0d141b] border border-white/10 rounded-lg py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#00f0ff]">
+                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-500"></i>
+            </div>
+            <div id="categoryFilters" class="flex flex-wrap gap-2 justify-center"></div>
+        </div>
+    </section>
+
+    <!-- Use Cases Grid -->
+    <section class="py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div id="useCaseGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            <div id="no-results" class="hidden text-center text-slate-500 py-12">
+                <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                <p>No use cases match your search.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-6 border-t border-white/5 text-center text-slate-500 text-sm">
+        <p>God's Eye View &copy; 2024 // Open Source // Built for the Mining Sector</p>
+    </footer>
+
+    <script>
+        // Data Array: 200 Use Cases
+        const useCases = [
+            // --- AVIATION & FLIGHT TRACKING (1-30) ---
+            {c:"Aviation",n:"Track VIP Private Jet",d:"Monitor high-profile executive flights in real-time to verify arrival times and locations.",t:"1. Enable flights layer.\n2. Search for tail number.\n3. Open context menu for telemetry.",v:"User: 'Turn on flights.'\nAI: 'Flights are now enabled.'\nUser: 'Track tail number N12345.'\nAI: 'Flying to N12345. Tracking now.'"},
+            {c:"Aviation",n:"Monitor Laughlin AFB Training",d:"View student pilot training operations at Laughlin Air Force Base.",t:"1. Search for Laughlin AFB.\n2. Zoom in to flight line.\n3. Toggle military flight filters.",v:"User: 'Take me to Laughlin Air Force Base.'\nAI: 'Flying you over to Laughlin AFB now.'\nUser: 'Show me military flights.'\nAI: 'Military flights are now visible in yellow.'"},
+            {c:"Aviation",n:"Follow Janet 27 at Area 51",d:"Track classified Janet flights entering restricted airspace.",t:"1. Fly to Area 51.\n2. Identify Janet callsign.\n3. Click track and enter cockpit view.",v:"User: 'Please take me to Area 51.'\nAI: 'You're now at Area 51.'\nUser: 'Find Janet 27.'\nAI: 'Tracking operator unknown, Janet 27.'"},
+            {c:"Aviation",n:"View Delta Landing at Atlanta",d:"Experience a cockpit view of a Delta flight landing at Hartsfield-Jackson.",t:"1. Search Atlanta Airport.\n2. Wait for terrain to load.\n3. Select landing plane -> Cockpit mode.",v:"User: 'Take me to the busiest airport in the US.'\nAI: 'You're at Hartsfield Jackson in Atlanta.'\nUser: 'Jump into cockpit view of the landing Delta plane.'\nAI: 'Entering cockpit mode for DAL 3146.'"},
+            {c:"Aviation",n:"Track Military Helicopters at Fort Rucker",d:"Monitor helicopter training paths and circuits.",t:"1. Search Fort Rucker.\n2. Enable military flights.\n3. Observe low-altitude tracks.",v:"User: 'Go to Fort Rucker.'\nAI: 'Flying to Fort Rucker now.'\nUser: 'Turn on military flights.'\nAI: 'Military flights enabled.'"},
+            {c:"Aviation",n:"Monitor Crop Duster Activity",d:"Track low-flying agricultural aircraft to ensure safe airspace near mining sites.",t:"1. Fly to agricultural area.\n2. Enable commercial flights.\n3. Filter for low altitude/speed.",v:"User: 'Turn on commercial flights.'\nAI: 'Commercial flights are now enabled.'\nUser: 'Are there any low flying crop dusters nearby?'"},
+            {c:"Aviation",n:"Find SFO Airport Traffic",d:"Monitor inbound and outbound traffic at San Francisco International.",t:"1. Search SFO.\n2. Zoom out to view approach patterns.\n3. Click on individual planes.",v:"User: 'Search for SFO airport.'\nAI: 'Flying to SFO airport now.'"},
+            {c:"Aviation",n:"Track Cargo Plane Path",d:"Follow heavy lift cargo aircraft transporting mining machinery.",t:"1. Enable flights.\n2. Identify cargo callsign.\n3. Click to view telemetry and path.",v:"User: 'Track the heavy lift cargo plane.'\nAI: 'Following cargo flight now.'"},
+            {c:"Aviation",n:"Identify Yellow Military Flights",d:"Distinguish between commercial (white) and military (yellow) air traffic globally.",t:"1. Zoom out to globe view.\n2. Enable all flights.\n3. Look for yellow markers.",v:"User: 'Turn on all flights.'\nAI: 'Flights are now enabled.'"},
+            {c:"Aviation",n:"Use Cockpit View for Landing",d:"Get real-time telemetry from the pilot's perspective during touchdown.",t:"1. Track a landing plane.\n2. Open context menu.\n3. Select Cockpit mode.",v:"User: 'Enter cockpit view.'\nAI: 'Cockpit view enabled. Telemetry is on screen.'"},
+            {c:"Aviation",n:"Check 250km Radius Air Traffic",d:"View all air contacts within a 250km radius of a selected track.",t:"1. Track a plane.\n2. Open context menu -> Contacts.\n3. Observe radius circle.",v:"User: 'Show me contacts nearby.'\nAI: 'Context menu open. Displaying 250km radius contacts.'"},
+            {c:"Aviation",n:"Listen to NOAA Weather Radio",d:"Monitor aviation weather conditions via NOAA radio broadcasts.",t:"1. Open context menu.\n2. Enable radio.\n3. Select NOAA station tag.",v:"User: 'Enable radio.'\nAI: 'Radio enabled.'\nUser: 'Play the NOAA weather station.'\nAI: 'Playing NOAA weather radio.'"},
+            {c:"Aviation",n:"Track Night Vision Flights",d:"Monitor flights using the night vision/FLIR display mode.",t:"1. Track a flight.\n2. Open display settings.\n3. Toggle night vision mode.",v:"User: 'Turn on night vision mode.'\nAI: 'Night vision mode enabled.'"},
+            {c:"Aviation",n:"Monitor Pipeline Patrol Aircraft",d:"Track aircraft inspecting mining pipelines for leaks or damage.",t:"1. Fly to pipeline route.\n2. Enable flights.\n3. Follow low-level patrol aircraft.",v:"User: 'Follow the pipeline patrol aircraft.'\nAI: 'Tracking patrol aircraft now.'"},
+            {c:"Aviation",n:"Follow Geological Survey Plane",d:"Track airborne geophysical survey aircraft mapping mineral deposits.",t:"1. Enable flights.\n2. Identify survey flight pattern (grid).\n3. Click to track.",v:"User: 'Track the geological survey plane.'\nAI: 'Following survey aircraft.'"},
+            {c:"Aviation",n:"Track Air Ambulance Routes",d:"Monitor medevac flights transporting injured mine workers.",t:"1. Enable flights.\n2. Search for hospital or mine site.\n3. Identify helicopter ambulance.",v:"User: 'Find the medevac helicopter.'\nAI: 'Tracking air ambulance now.'"},
+            {c:"Aviation",n:"Monitor Air Show Traffic",d:"View dense, temporary air traffic during aviation events.",t:"1. Search air show location.\n2. Enable flights.\n3. Zoom in to view formations.",v:"User: 'Take me to the Reno Air Races.'\nAI: 'Flying to Reno now.'"},
+            {c:"Aviation",n:"Check Flight Telemetry",d:"View speed, altitude, and callsign of any tracked aircraft.",t:"1. Click on an aircraft.\n2. View left panel or context menu.\n3. Read telemetry data.",v:"User: 'What is the altitude of this plane?'"},
+            {c:"Aviation",n:"Identify Commercial vs Military",d:"Use color-coding to separate traffic types at a glance.",t:"1. Zoom out to globe view.\n2. Enable flights.\n3. Note white vs yellow dots.",v:"User: 'Turn on flights.'\nAI: 'Flights enabled. White is commercial, yellow is military.'"},
+            {c:"Aviation",n:"Track Flights During Earthquake",d:"Monitor air traffic responding to a natural disaster.",t:"1. Turn on earthquake layer.\n2. Fly to epicenter.\n3. Enable flights to see responders.",v:"User: 'Show me the earthquake zone.'\nAI: 'Flying to epicenter.'\nUser: 'Turn on flights.'"},
+            {c:"Aviation",n:"Monitor Border Patrol Cessnas",d:"Track low-flying border surveillance aircraft.",t:"1. Fly to border region.\n2. Enable flights.\n3. Track low-altitude Cessna.",v:"User: 'Track the border patrol plane.'"},
+            {c:"Aviation",n:"Track Flights Over Active Fires",d:"Monitor water bomber and survey planes over wildfire zones.",t:"1. Enable FIRMS fire layer.\n2. Fly to fire hotspot.\n3. Enable flights.",v:"User: 'Take me to the active fire.'\nAI: 'Flying to fire hotspot.'\nUser: 'Turn on flights.'"},
+            {c:"Aviation",n:"Follow Executive Fleet",d:"Track multiple executive aircraft leaving a corporate mine site.",t:"1. Fly to corporate airstrip.\n2. Enable flights.\n3. Track departing planes.",v:"User: 'Track the departing executive jets.'"},
+            {c:"Aviation",n:"Check Airport Choke Points",d:"View stacked aircraft holding at busy hubs.",t:"1. Search major airport.\n2. Zoom out slightly.\n3. View holding patterns.",v:"User: 'Take me to Hartsfield Jackson.'"},
+            {c:"Aviation",n:"Track Flights Near Data Centers",d:"Monitor aerial surveillance near critical infrastructure.",t:"1. Enable data center layer.\n2. Fly to major hub.\n3. Enable flights.",v:"User: 'Turn on data centers and flights.'"},
+            {c:"Aviation",n:"Monitor High Altitude Jets",d:"Track long-haul international flights via ADS-B.",t:"1. Zoom out to globe.\n2. Enable flights.\n3. Click high altitude tracks.",v:"User: 'Turn on flights.'"},
+            {c:"Aviation",n:"Track European Flight Density",d:"View dense commercial traffic over Europe.",t:"1. Fly to Europe.\n2. Zoom out.\n3. Enable flights.",v:"User: 'Take me to Europe.'\nAI: 'Flying to Europe.'\nUser: 'Turn on flights.'"},
+            {c:"Aviation",n:"Track Middle East Military Ops",d:"Monitor military flight patterns in the Middle East.",t:"1. Fly to Middle East.\n2. Enable flights.\n3. Look for yellow tracks.",v:"User: 'Take me to the Middle East.'"},
+            {c:"Aviation",n:"Check Flight Caching Paths",d:"Leave a plane tracked in background to cache its historical path.",t:"1. Track a plane.\n2. Leave it running.\n3. Zoom out later to see path.",v:"User: 'Track this plane and leave it running.'"},
+            {c:"Aviation",n:"Warm Terrain for Plane Landings",d:"Wait in area to load terrain so planes don't clip through ground.",t:"1. Fly to airport.\n2. Wait 30 seconds.\n3. Track landing plane.",v:"User: 'Take me to the airport and wait for terrain to load.'"},
+
+            // --- MARITIME & PORT LOGISTICS (31-60) ---
+            {c:"Maritime",n:"Track Vessels at Rotterdam",d:"Monitor massive ship traffic at Europe's largest port.",t:"1. Search Rotterdam.\n2. Enable vessels.\n3. Click on bulk carriers.",v:"User: 'Can you take me to Rotterdam?'\nAI: 'Flying to Rotterdam now.'\nUser: 'Turn on vessels.'\nAI: 'Vessels are now enabled.'"},
+            {c:"Maritime",n:"Orbit Port of Rotterdam",d:"Create a cinematic camera orbit around the harbor.",t:"1. Fly to port.\n2. Mark port location.\n3. Start camera orbit.",v:"User: 'Mark the port of Rotterdam and start a camera orbit around it.'\nAI: 'The camera is slowly orbiting the port now.'"},
+            {c:"Maritime",n:"Draw Route Rotterdam to Antwerp",d:"Map a walking/driving route between two ports.",t:"1. Open voice menu.\n2. Request route from A to B.\n3. View highlighted path.",v:"User: 'Draw me a route from the port of Rotterdam to Antwerp.'\nAI: 'I mapped a route. It's about 103 km.'"},
+            {c:"Maritime",n:"Fly Route Rotterdam to Antwerp",d:"Fly the camera along the drawn route smoothly.",t:"1. Draw route.\n2. Command AI to fly route.\n3. Pull back to stop.",v:"User: 'Can you fly that route now?'\nAI: 'I'll fly that route and keep the motion smooth.'"},
+            {c:"Maritime",n:"Check Empty Strait of Hormuz",d:"Observe the lack of free AIS coverage in the Strait of Hormuz.",t:"1. Fly to Strait of Hormuz.\n2. Enable vessels.\n3. Observe empty water.",v:"User: 'Take me to the Strait of Hormuz.'\nAI: 'Heading toward the Strait of Hormuz now.'"},
+            {c:"Maritime",n:"Track Military Vessels Middle East",d:"Monitor naval operations in restricted waters.",t:"1. Fly to region.\n2. Enable vessels.\n3. Identify military tags.",v:"User: 'Turn on vessels.'"},
+            {c:"Maritime",n:"Monitor English Channel Ships",d:"View dense vessel traffic in the English Channel.",t:"1. Fly to English Channel.\n2. Enable vessels.\n3. Zoom out.",v:"User: 'Take me to the English Channel.'"},
+            {c:"Maritime",n:"Cache Vessel Paths",d:"Leave a vessel tracked to cache its historical route.",t:"1. Click vessel.\n2. Leave running in background.\n3. View path later.",v:"User: 'Track this vessel and leave it running.'"},
+            {c:"Maritime",n:"Track Docked Ships",d:"Monitor ships currently moored at port.",t:"1. Fly to port.\n2. Enable vessels.\n3. Zoom in to piers.",v:"User: 'Turn on vessels.'"},
+            {c:"Maritime",n:"Zoom on Vessel Track",d:"Click a vessel to zoom in and see its details.",t:"1. Enable vessels.\n2. Click vessel icon.\n3. View info panel.",v:"User: 'Zoom in on that bulk carrier.'"},
+            {c:"Maritime",n:"Track Bulk Carriers Port Hedland",d:"Monitor iron ore export vessels in Australia.",t:"1. Fly to Port Hedland.\n2. Enable vessels.\n3. Track ore carriers.",v:"User: 'Take me to Port Hedland and turn on vessels.'"},
+            {c:"Maritime",n:"Monitor Iron Ore Loading",d:"Watch vessels docked at loading terminals.",t:"1. Fly to iron ore port.\n2. Zoom in to terminal.\n3. View docked vessels.",v:"User: 'Zoom in on the loading terminal.'"},
+            {c:"Maritime",n:"Track Smelter Ships",d:"Monitor vessels carrying alumina or copper concentrate.",t:"1. Fly to smelter port.\n2. Enable vessels.\n3. Track incoming ships.",v:"User: 'Track the ship heading to the smelter.'"},
+            {c:"Maritime",n:"Track Submarine Cable Ships",d:"Monitor vessels laying or repairing submarine cables.",t:"1. Enable submarine cable layer.\n2. Enable vessels.\n3. Follow cable ship path.",v:"User: 'Turn on submarine cables and vessels.'"},
+            {c:"Maritime",n:"Monitor European Shorelines",d:"View excellent free AIS coverage in Europe.",t:"1. Fly to Europe coast.\n2. Enable vessels.\n3. Observe density.",v:"User: 'Take me to Europe.'"},
+            {c:"Maritime",n:"Track US Coastal Vessels",d:"Monitor maritime traffic along US shores.",t:"1. Fly to US coast.\n2. Enable vessels.",v:"User: 'Turn on vessels.'"},
+            {c:"Maritime",n:"Verify Vessel Telemetry",d:"Check speed, heading, and type of tracked vessel.",t:"1. Click vessel.\n2. Open context menu.\n3. Read telemetry.",v:"User: 'What is the speed of this vessel?'"},
+            {c:"Maritime",n:"Track Cargo Ships",d:"Follow general cargo and container vessels.",t:"1. Enable vessels.\n2. Filter for cargo types.\n3. Click to track.",v:"User: 'Track the nearest cargo ship.'"},
+            {c:"Maritime",n:"Monitor Port Choke Points",d:"Identify bottleneck areas in harbor entrances.",t:"1. Fly to port entrance.\n2. Enable vessels.\n3. Observe traffic flow.",v:"User: 'Take me to the port entrance.'"},
+            {c:"Maritime",n:"Track Vessels Near Fires",d:"Monitor maritime traffic avoiding coastal wildfires.",t:"1. Enable FIRMS fires.\n2. Enable vessels.\n3. View overlap.",v:"User: 'Turn on fires and vessels.'"},
+            {c:"Maritime",n:"Track Vessels in Storms",d:"Monitor ship routing during severe weather.",t:"1. Enable weather radio.\n2. Enable vessels.\n3. Track deviations.",v:"User: 'Turn on vessels.'"},
+            {c:"Maritime",n:"Monitor Offshore Oil Rigs",d:"Track supply vessels servicing offshore platforms.",t:"1. Fly to Gulf of Mexico.\n2. Enable vessels.\n3. Track supply ships.",v:"User: 'Take me to the Gulf of Mexico.'"},
+            {c:"Maritime",n:"Track Coast Guard Cutters",d:"Monitor coast guard patrol routes.",t:"1. Fly to coastal base.\n2. Enable vessels.\n3. Identify cutter.",v:"User: 'Track the coast guard vessel.'"},
+            {c:"Maritime",n:"Track Ferries",d:"Monitor local ferry traffic and routes.",t:"1. Fly to ferry terminal.\n2. Enable vessels.\n3. Track ferry path.",v:"User: 'Track the ferry.'"},
+            {c:"Maritime",n:"Monitor Ship Queue at Port",d:"Count vessels anchored waiting for port access.",t:"1. Fly to port approaches.\n2. Zoom out.\n3. Count anchored ship icons.",v:"User: 'Show me the ships waiting at port.'"},
+            {c:"Maritime",n:"Track Vessel Path History",d:"View cached historical path of a moving vessel.",t:"1. Track vessel for 10 mins.\n2. Zoom out.\n3. View highlighted path.",v:"User: 'Show the path of this vessel.'"},
+            {c:"Maritime",n:"View Vessel Info",d:"Get details on a specific vessel.",t:"1. Click vessel.\n2. View info panel.",v:"User: 'Tell me about this vessel.'"},
+            {c:"Maritime",n:"Track LNG Carriers",d:"Monitor liquefied natural gas transport ships.",t:"1. Fly to LNG terminal.\n2. Enable vessels.\n3. Track carrier.",v:"User: 'Track the LNG carrier.'"},
+            {c:"Maritime",n:"Track Fishing Fleets",d:"Monitor commercial fishing vessel activity.",t:"1. Fly to fishing grounds.\n2. Enable vessels.\n3. Track fleet movements.",v:"User: 'Track the fishing fleet.'"},
+            {c:"Maritime",n:"Verify Free AIS Coverage Limits",d:"Compare covered vs uncovered zones (e.g., Europe vs Hormuz).",t:"1. Fly to covered area.\n2. Fly to uncovered area.\n3. Compare vessel density.",v:"User: 'Turn on vessels.'"},
+
+            // --- DISASTER & ENVIRONMENT (61-90) ---
+            {c:"Disaster",n:"Reconstruct Nepal Floods",d:"Plot USGS and social media data of a flood disaster.",t:"1. Open AI agent.\n2. Prompt to pull USGS data.\n3. Plot flood trajectory on map.",v:"User: 'Pull Nepal flood data and plot it on the map.'\nAI: 'Mapping flood trajectory now.'"},
+            {c:"Disaster",n:"Plot USGS Earthquake 5.1",d:"View epicenter and affected countries of an earthquake.",t:"1. Enable earthquakes layer.\n2. Click on 5.1 marker.\n3. View affected areas.",v:"User: 'Turn on earthquakes.'\nAI: 'Earthquakes enabled.'"},
+            {c:"Disaster",n:"Map M5.2 Landslide Path",d:"Visualize the path of destruction from a landslide.",t:"1. Pull USGS landslide data.\n2. Overlay on 3D terrain.\n3. View path.",v:"User: 'Show me the landslide path.'"},
+            {c:"Disaster",n:"Turn on NASA FIRMS Active Fires",d:"View thermal imaging of active wildfires globally.",t:"1. Open data layers.\n2. Turn off traffic/CCTV.\n3. Turn on FIRMS Active Fires.",v:"User: 'Turn on firms active fires.'\nAI: 'Fires are now on.'"},
+            {c:"Disaster",n:"Check Thermal Imaging Hotspots",d:"Zoom into fire perimeters to see thermal intensity.",t:"1. Enable FIRMS.\n2. Fly to hotspot.\n3. Zoom in to subdivisions.",v:"User: 'Take me to the nearest hotspot.'"},
+            {c:"Disaster",n:"Find First Responders via CCTV",d:"Locate emergency vehicles responding to a disaster.",t:"1. Enable CCTV and Traffic.\n2. Fly to disaster zone.\n3. View highway cameras.",v:"User: 'Turn on traffic and CCTV.'"},
+            {c:"Disaster",n:"Switch Imagery Providers for Smoke",d:"Compare Google and Sentinel imagery for smoke plume density.",t:"1. Fly to fire.\n2. Switch map source to Google.\n3. Compare with Sentinel.",v:"User: 'Switch to Google imagery.'"},
+            {c:"Disaster",n:"Monitor Coal Seam Fires",d:"Track underground coal mine fires via thermal data.",t:"1. Fly to coal region.\n2. Enable FIRMS.\n3. View persistent hotspots.",v:"User: 'Turn on fires.'"},
+            {c:"Disaster",n:"Track Forest Fire Spread",d:"Monitor the expansion of a wildfire over time.",t:"1. Enable FIRMS.\n2. Track fire perimeter daily.\n3. View historical hotspots.",v:"User: 'Show me the fire spread.'"},
+            {c:"Disaster",n:"Map Earthquake Affected Countries",d:"View borders and impacted populations of a quake.",t:"1. Enable earthquakes.\n2. Click quake marker.\n3. View geopolitical outlines.",v:"User: 'Turn on Bing labels to see borders.'"},
+            {c:"Disaster",n:"Pull Open Source Disaster Data",d:"Use AI agent to fetch live disaster datasets.",t:"1. Open AI agent.\n2. Request data.\n3. Agent plots it.",v:"User: 'Pull open source flood data.'"},
+            {c:"Disaster",n:"Plot Flood Devastation Scale",d:"View the massive scope of a flood from God's eye view.",t:"1. Fly to flood zone.\n2. Zoom out to globe view.\n3. Observe scale.",v:"User: 'Zoom out to globe view.'"},
+            {c:"Disaster",n:"Monitor Active Fire Zones",d:"Keep a live tab on critical fire areas.",t:"1. Enable FIRMS.\n2. Save area as preset.\n3. Check periodically.",v:"User: 'Save this view as a preset.'"},
+            {c:"Disaster",n:"Track Wildfire Response",d:"Monitor planes and trucks fighting fires.",t:"1. Enable FIRMS.\n2. Enable flights/traffic.\n3. Track responders.",v:"User: 'Turn on flights and fires.'"},
+            {c:"Disaster",n:"Monitor Hurricane Flooding",d:"View CCTV of flooded urban areas during a storm.",t:"1. Fly to hurricane zone.\n2. Enable CCTV.\n3. View street cameras.",v:"User: 'Turn on CCTV.'"},
+            {c:"Disaster",n:"Track Tornado Paths",d:"View scar marks left by tornadoes on satellite imagery.",t:"1. Fly to tornado zone.\n2. Switch to high-res imagery.\n3. View scar.",v:"User: 'Switch to Google 3D tiles.'"},
+            {c:"Disaster",n:"Map Tsunami Zones",d:"View coastal inundation zones post-tsunami.",t:"1. Fly to coast.\n2. Zoom in.\n3. View water line marks.",v:"User: 'Take me to the coast.'"},
+            {c:"Disaster",n:"Monitor Volcanic Eruptions",d:"Track thermal hotspots and ash plumes from volcanoes.",t:"1. Fly to volcano.\n2. Enable FIRMS.\n3. View thermal heat.",v:"User: 'Turn on fires.'"},
+            {c:"Disaster",n:"Track Oil Spill Spread",d:"Monitor ocean color changes from oil spills.",t:"1. Fly to spill location.\n2. Switch imagery providers.\n3. View slick size.",v:"User: 'Switch to Sentinel imagery.'"},
+            {c:"Disaster",n:"Monitor Mine Tailings Dam Burst",d:"Reconstruct the path of a tailings flood.",t:"1. Pull USGS data.\n2. Plot on map.\n3. View downstream villages.",v:"User: 'Plot the tailings dam burst path.'"},
+            {c:"Disaster",n:"Plot Social Media Disaster Clips",d:"Geolocate YouTube/Twitter videos onto the map.",t:"1. Ask AI agent to find clips.\n2. Agent plots them.\n3. Click pins to view.",v:"User: 'Plot social media clips of the flood on the map.'"},
+            {c:"Disaster",n:"Map Chemical Spill Zones",d:"View evacuation zones based on spill radius.",t:"1. Fly to chemical plant.\n2. Use drawing tools.\n3. Outline zone.",v:"User: 'Draw a 5km radius around the plant.'"},
+            {c:"Disaster",n:"Track Drought Impact",d:"Compare historical imagery to see receding water bodies.",t:"1. Fly to reservoir.\n2. Switch imagery timeline.\n3. Compare shoreline.",v:"User: 'Show me older imagery.'"},
+            {c:"Disaster",n:"Monitor Glacier Melt",d:"View retreating glaciers in 3D.",t:"1. Fly to mountain range.\n2. Switch to globe view.\n3. View ice caps.",v:"User: 'Take me to the Alps.'"},
+            {c:"Disaster",n:"Track Sea Level Rise",d:"Monitor coastal erosion over time.",t:"1. Fly to coast.\n2. View historical imagery.",v:"User: 'Zoom in on the coastline.'"},
+            {c:"Disaster",n:"Map Deforestation",d:"View clear cuts near mining concessions.",t:"1. Fly to mine.\n2. Switch to Sentinel.\n3. View forest loss.",v:"User: 'Switch to Sentinel imagery.'"},
+            {c:"Disaster",n:"Monitor Landslide Risk",d:"View bare earth topography for unstable slopes.",t:"1. Fly to mountain mine.\n2. Zoom in 3D.\n3. Look for scars.",v:"User: 'Tilt the camera to 3D view.'"},
+            {c:"Disaster",n:"Track Flood Path Trajectory",d:"Follow the exact route floodwaters took.",t:"1. Plot flood data.\n2. Zoom out.\n3. Follow highlighted path.",v:"User: 'Fly along the flood path.'"},
+            {c:"Disaster",n:"Monitor Seismic Activity",d:"View global earthquakes in real time.",t:"1. Enable earthquakes layer.\n2. Zoom out to globe.",v:"User: 'Turn on earthquakes.'"},
+            {c:"Disaster",n:"Verify Earthquake Depth",d:"Check if an earthquake is shallow (more dangerous) or deep.",t:"1. Click earthquake marker.\n2. View info panel for depth.",v:"User: 'Show me earthquake details.'"},
+
+            // --- INFRASTRUCTURE & PHYSICAL INTERNET (91-120) ---
+            {c:"Infrastructure",n:"Map Submarine Cables Marseilles",d:"View the dense undersea cable hub in Marseilles, France.",t:"1. Open data layers.\n2. Enable submarine cables.\n3. Fly to Marseilles.",v:"User: 'Take me to a place with the densest coverage of undersea cables.'\nAI: 'Done. You're over Marseilles.'"},
+            {c:"Infrastructure",n:"Find Densest Undersea Cable Hub",d:"Let AI determine the best location for cable hubs.",t:"1. Ask AI via voice.\n2. AI flies to location.",v:"User: 'Find the densest undersea cable hub.'"},
+            {c:"Infrastructure",n:"Analyze French Nuclear Energy",d:"Understand why data centers cluster in France.",t:"1. Fly to France.\n2. Ask AI about energy grid.",v:"User: 'Tell me more about the energy situation in France.'\nAI: 'The grid is heavily nuclear, giving it low-carbon electricity.'"},
+            {c:"Infrastructure",n:"Map Data Centers in Paris",d:"View data center clusters near Paris.",t:"1. Enable data center layer.\n2. Fly to Paris.\n3. View pins.",v:"User: 'Turn on data centers.'"},
+            {c:"Infrastructure",n:"Track Latency Routes",d:"Understand how subc cables reduce backhaul costs.",t:"1. Enable subc cables.\n2. Enable data centers.\n3. View proximity.",v:"User: 'Turn on submarine cables and data centers.'"},
+            {c:"Infrastructure",n:"Find Cable Landing Spots",d:"View where cables come ashore.",t:"1. Enable subc cables.\n2. Zoom to coastlines.\n3. View landing nodes.",v:"User: 'Zoom in on the cable landing spots.'"},
+            {c:"Infrastructure",n:"Monitor Data Center Power Grids",d:"Trace power lines from nuclear plants to data centers.",t:"1. Enable data centers.\n2. View nearby power plants.\n3. Trace lines.",v:"User: 'Show me power infrastructure.'"},
+            {c:"Infrastructure",n:"Map Physical Internet",d:"View the nervous system of the planet.",t:"1. Enable subc cables.\n2. Zoom out to globe.",v:"User: 'Turn on submarine cables.'"},
+            {c:"Infrastructure",n:"Track Fiber Routes",d:"View terrestrial fiber lines.",t:"1. Open data layers.\n2. Enable fiber lines.",v:"User: 'Turn on fiber lines.'"},
+            {c:"Infrastructure",n:"Monitor Smelter Locations",d:"View aluminum smelters near cheap power.",t:"1. Fly to smelter region.\n2. View industrial zones.",v:"User: 'Take me to an aluminum smelter.'"},
+            {c:"Infrastructure",n:"Find Low-Carbon Data Hubs",d:"Identify data centers running on nuclear/hydro.",t:"1. Enable data centers.\n2. Ask AI for low-carbon hubs.",v:"User: 'Where are the low-carbon data hubs?'"},
+            {c:"Infrastructure",n:"Map Interconnection Reliability",d:"View grid strongpoints.",t:"1. Enable power grid layer.\n2. View major intersections.",v:"User: 'Show me grid interconnections.'"},
+            {c:"Infrastructure",n:"Track Cable Ship Operations",d:"Monitor ships laying new cables.",t:"1. Enable subc cables.\n2. Enable vessels.\n3. Track cable ship.",v:"User: 'Track the cable laying ship.'"},
+            {c:"Infrastructure",n:"Monitor Server Farm Cooling",d:"View water sources near data centers.",t:"1. Fly to data center.\n2. View nearby lakes/rivers.",v:"User: 'Zoom in on the data center.'"},
+            {c:"Infrastructure",n:"Map Cell Tower Density",d:"View cellular infrastructure coverage.",t:"1. Enable cell tower layer.\n2. Zoom out.",v:"User: 'Turn on cell towers.'"},
+            {c:"Infrastructure",n:"Track Power Plant Emissions",d:"Monitor smoke from coal/gas plants.",t:"1. Fly to power plant.\n2. Enable FIRMS.\n3. View thermal heat.",v:"User: 'Turn on fires.'"},
+            {c:"Infrastructure",n:"Monitor Dam Infrastructure",d:"View hydroelectric dams and reservoirs.",t:"1. Fly to dam.\n2. Zoom in 3D.\n3. View structure.",v:"User: 'Take me to the Hoover Dam.'"},
+            {c:"Infrastructure",n:"Map Railway Networks",d:"View train lines servicing mining ports.",t:"1. Enable rail layer.\n2. Fly to mining port.",v:"User: 'Turn on railways.'"},
+            {c:"Infrastructure",n:"Track Highway Construction",d:"View new road cuts near mines.",t:"1. Fly to mine.\n2. Switch to latest imagery.\n3. View roads.",v:"User: 'Switch to latest Sentinel imagery.'"},
+            {c:"Infrastructure",n:"Monitor Border Infrastructure",d:"View fences and checkpoints.",t:"1. Fly to border.\n2. Zoom in.\n3. View high-res imagery.",v:"User: 'Take me to the border.'"},
+            {c:"Infrastructure",n:"Map Wind Farm Locations",d:"View offshore and onshore wind farms.",t:"1. Fly to wind farm.\n2. View turbine grid.",v:"User: 'Take me to a wind farm.'"},
+            {c:"Infrastructure",n:"Track Solar Farm Output",d:"View massive solar arrays in deserts.",t:"1. Fly to desert.\n2. Zoom in to solar farm.",v:"User: 'Take me to a solar farm.'"},
+            {c:"Infrastructure",n:"Monitor Oil Pipelines",d:"Trace pipeline routes across continents.",t:"1. Enable pipeline layer.\n2. Zoom out.",v:"User: 'Turn on pipelines.'"},
+            {c:"Infrastructure",n:"Map Gas Pipelines",d:"View natural gas transit routes.",t:"1. Enable gas layer.\n2. Fly to distribution hub.",v:"User: 'Turn on gas pipelines.'"},
+            {c:"Infrastructure",n:"Track Refinery Activity",d:"Monitor flare stacks at oil refineries.",t:"1. Fly to refinery.\n2. Enable FIRMS.\n3. View flares.",v:"User: 'Turn on fires.'"},
+            {c:"Infrastructure",n:"Monitor LNG Terminals",d:"View liquified natural gas export/import facilities.",t:"1. Fly to LNG port.\n2. Zoom in to tanks.",v:"User: 'Take me to an LNG terminal.'"},
+            {c:"Infrastructure",n:"Map Coal Stockpiles",d:"View coal mountains at export ports.",t:"1. Fly to coal port.\n2. Zoom in.\n3. View stockpile size.",v:"User: 'Zoom in on the coal stockpiles.'"},
+            {c:"Infrastructure",n:"Track Ore Train Routes",d:"Follow the longest trains in the world carrying ore.",t:"1. Fly to Pilbara.\n2. Enable rail layer.\n3. Follow track.",v:"User: 'Show me the ore train tracks.'"},
+            {c:"Infrastructure",n:"Monitor Port Automation",d:"View robotic cranes at modern ports.",t:"1. Fly to automated port.\n2. Zoom in to cranes.",v:"User: 'Zoom in on the port cranes.'"},
+            {c:"Infrastructure",n:"Map Logistics Hubs",d:"View central distribution centers for goods.",t:"1. Fly to logistics hub.\n2. View warehouse roofs.",v:"User: 'Take me to a logistics hub.'"},
+
+            // --- MINING & MINERALS (121-160) ---
+            {c:"Mining",n:"Track Haul Trucks at Bingham Canyon",d:"View massive haul trucks in the world's largest copper mine.",t:"1. Search Bingham Canyon.\n2. Zoom in to pit.\n3. View truck dots on roads.",v:"User: 'Take me to the Bingham Canyon mine.'\nAI: 'Flying to Bingham Canyon now.'"},
+            {c:"Mining",n:"Monitor Pilbara Shift Changes",d:"View traffic spikes at mine entrances during shift change.",t:"1. Fly to Pilbara mine.\n2. Enable traffic.\n3. View red zones at gates.",v:"User: 'Turn on traffic.'"},
+            {c:"Mining",n:"Track Rare Earth Mine Operations",d:"View restricted rare earth mineral sites.",t:"1. Search rare earth mine.\n2. Zoom in.\n3. Observe activity.",v:"User: 'Take me to the Mountain Pass mine.'"},
+            {c:"Mining",n:"View Mine Site CCTV",d:"Monitor primary crushers and load out zones.",t:"1. Open context menu.\n2. Enable CCTV.\n3. Click mine cameras.",v:"User: 'Turn on CCTV.'"},
+            {c:"Mining",n:"Map Top Secret Rare Earth Mine",d:"Use the TR3B easter egg to view restricted zones.",t:"1. Fly to restricted mine.\n2. Open context menu.\n3. Click TR3B icon.",v:"User: 'Take me to the top secret mine.'\nAI: 'Flying you over now.'"},
+            {c:"Mining",n:"Monitor Tailings Dam Stability",d:"View water levels in tailings ponds.",t:"1. Fly to mine tailings.\n2. Zoom in 3D.\n3. View dam walls.",v:"User: 'Zoom in on the tailings dam.'"},
+            {c:"Mining",n:"Track Copper Concentrate Trucks",d:"Monitor truck convoys leaving the mine.",t:"1. Fly to mine exit.\n2. Enable traffic.\n3. Track trucks.",v:"User: 'Turn on traffic.'"},
+            {c:"Mining",n:"Map BHP Logistics",d:"View port and rail operations of major miners.",t:"1. Fly to Port Hedland.\n2. View BHP facilities.",v:"User: 'Take me to Port Hedland.'"},
+            {c:"Mining",n:"Track Vale Supply Chain",d:"Monitor Brazilian iron ore exports.",t:"1. Fly to Ponta da Madeira port.\n2. Enable vessels.",v:"User: 'Take me to Brazil.'"},
+            {c:"Mining",n:"Monitor Coal Exports Port Hedland",d:"View massive coal ships loading.",t:"1. Fly to Port Hedland.\n2. Zoom in to coal berths.",v:"User: 'Zoom in on the coal berths.'"},
+            {c:"Mining",n:"Track Lithium Mine Operations",d:"View evaporation ponds in the Lithium Triangle.",t:"1. Fly to Chile/Argentina border.\n2. Zoom in to colorful ponds.",v:"User: 'Take me to the lithium triangle.'"},
+            {c:"Mining",n:"Map Cobalt Mines DRC",d:"View artisanal mining sites in Congo.",t:"1. Fly to Kolwezi, DRC.\n2. Zoom in.\n3. View dig sites.",v:"User: 'Take me to Kolwezi.'"},
+            {c:"Mining",n:"Monitor Gold Exploration",d:"View drill rigs and exploration camps.",t:"1. Fly to gold region.\n2. Zoom in.\n3. Look for grid patterns.",v:"User: 'Take me to Nevada gold country.'"},
+            {c:"Mining",n:"Track Diamond Mines",d:"View the massive Mir mine in Russia.",t:"1. Search Mir mine.\n2. Zoom in 3D.\n3. View pit.",v:"User: 'Take me to the Mir diamond mine.'"},
+            {c:"Mining",n:"Map Uranium Deposits",d:"View in-situ recovery uranium facilities.",t:"1. Fly to Wyoming uranium fields.\n2. View well fields.",v:"User: 'Take me to Wyoming.'"},
+            {c:"Mining",n:"Track Iron Ore Rail Loops",d:"View the massive trains carrying ore to the coast.",t:"1. Fly to Pilbara.\n2. Enable rail layer.\n3. Follow track.",v:"User: 'Show me the rail loops.'"},
+            {c:"Mining",n:"Monitor Bauxite Loading",d:"View bauxite ships in Guinea.",t:"1. Fly to Conakry.\n2. Enable vessels.\n3. Track ships.",v:"User: 'Take me to Conakry.'"},
+            {c:"Mining",n:"Track Nickel Smelters",d:"View smelter complexes in Indonesia.",t:"1. Fly to Sulawesi.\n2. View industrial parks.",v:"User: 'Take me to Sulawesi.'"},
+            {c:"Mining",n:"Map Rare Earth Geopolitics",d:"View global rare earth deposits.",t:"1. Open mineral deposits layer.\n2. Zoom out to globe.",v:"User: 'Turn on mineral deposits.'"},
+            {c:"Mining",n:"Monitor MSHA Safety Incidents",d:"Track rescue operations at mine sites.",t:"1. Fly to mine incident.\n2. Enable CCTV/Traffic.\n3. View responders.",v:"User: 'Turn on traffic.'"},
+            {c:"Mining",n:"Track Mineral Trade Flows",d:"View ships carrying critical minerals.",t:"1. Enable vessels.\n2. Track bulk carriers.",v:"User: 'Track the bulk carrier.'"},
+            {c:"Mining",n:"Map Smelter Energy Grids",d:"View power lines feeding aluminum smelters.",t:"1. Fly to smelter.\n2. View power infrastructure.",v:"User: 'Show me the power grid.'"},
+            {c:"Mining",n:"Track Conflict Minerals",d:"View mining sites in conflict zones.",t:"1. Fly to DRC.\n2. View border outlines.",v:"User: 'Turn on Bing labels.'"},
+            {c:"Mining",n:"Monitor Battery Metal Supply",d:"Track lithium, cobalt, and nickel shipments.",t:"1. Fly to major ports.\n2. Track vessels.",v:"User: 'Track the battery metal ships.'"},
+            {c:"Mining",n:"Map Global Ore Supply Chain",d:"View the network of mines, rails, and ports.",t:"1. Enable all logistics layers.\n2. Zoom out to globe.",v:"User: 'Turn on all layers.'"},
+            {c:"Mining",n:"Track Mineral Vessels at Port",d:"Monitor ore carriers waiting to load.",t:"1. Fly to ore port.\n2. Enable vessels.\n3. Count anchored ships.",v:"User: 'Turn on vessels.'"},
+            {c:"Mining",n:"Monitor Open Pit Walls",d:"View stability of terraced mine walls.",t:"1. Fly to open pit.\n2. Tilt 3D view.\n3. View benches.",v:"User: 'Tilt the camera to 3D view.'"},
+            {c:"Mining",n:"Track Survey Helicopters",d:"Follow heli-borne geophysical surveys.",t:"1. Fly to remote mine.\n2. Enable flights.\n3. Track helicopter.",v:"User: 'Track the survey helicopter.'"},
+            {c:"Mining",n:"Map Mining Claims",d:"View boundaries of active concessions.",t:"1. Open data layers.\n2. Enable mining claims.",v:"User: 'Turn on mining claims.'"},
+            {c:"Mining",n:"Monitor Ore Train Speeds",d:"Track the movement of ore trains via GPS.",t:"1. Fly to rail line.\n2. Enable traffic.\n3. View train icon.",v:"User: 'Turn on traffic.'"},
+            {c:"Mining",n:"Check Mine Power Consumption",d:"View sub-stations serving the mine.",t:"1. Fly to mine.\n2. View power lines.",v:"User: 'Show me power infrastructure.'"},
+            {c:"Mining",n:"Map Heavy Haul Roads",d:"View dirt roads connecting pit to crusher.",t:"1. Fly to mine.\n2. Zoom in high-res.\n3. View road dust.",v:"User: 'Zoom in on the haul roads.'"},
+            {c:"Mining",n:"Track Explosive Deliveries",d:"Monitor trucks carrying ANFO to blast sites.",t:"1. Fly to mine access.\n2. Enable traffic.\n3. Track convoy.",v:"User: 'Track the explosive delivery truck.'"},
+            {c:"Mining",n:"Monitor Tailings Spillways",d:"View emergency spillways on dam walls.",t:"1. Fly to tailings dam.\n2. Zoom in 3D.",v:"User: 'Zoom in on the dam.'"},
+            {c:"Mining",n:"Map Subsea Mining Zones",d:"View ISA exploration contracts in the Clarion-Clipperton Zone.",t:"1. Fly to Pacific Ocean.\n2. Enable subsea mining layer.",v:"User: 'Turn on subsea mining zones.'"},
+            {c:"Mining",n:"Track Deep Sea Nodule Ships",d:"Monitor prototype nodule collection vessels.",t:"1. Fly to Pacific.\n2. Enable vessels.\n3. Track ship.",v:"User: 'Track the deep sea mining ship.'"},
+            {c:"Mining",n:"Monitor Coal Seam Fires",d:"View underground coal fires via thermal imaging.",t:"1. Fly to coal region.\n2. Enable FIRMS.\n3. View hotspots.",v:"User: 'Turn on fires.'"},
+            {c:"Mining",n:"Map Aluminum Smelters",d:"View massive smelter footprints.",t:"1. Fly to smelter.\n2. Zoom out to view complex.",v:"User: 'Take me to an aluminum smelter.'"},
+            {c:"Mining",n:"Track Copper Export Hubs",d:"Monitor vessels at major copper ports.",t:"1. Fly to port.\n2. Enable vessels.",v:"User: 'Turn on vessels.'"},
+            {c:"Mining",n:"Monitor Mine Camp Infrastructure",d:"View worker accommodation villages.",t:"1. Fly to remote mine.\n2. Zoom in to camp.",v:"User: 'Zoom in on the mine camp.'"},
+
+            // --- URBAN TRAFFIC & CCTV (161-180) ---
+            {c:"Urban & CCTV",n:"Turn on Traffic Mode Austin",d:"View aggregate traffic density in Austin, TX.",t:"1. Search Austin.\n2. Open data layers.\n3. Turn on traffic.",v:"User: 'Can you turn on traffic mode please?'\nAI: 'Traffic is on.'"},
+            {c:"Urban & CCTV",n:"Verify 6:30 PM Rush Hour",d:"Confirm bumper-to-bumper traffic during peak times.",t:"1. Enable traffic.\n2. Zoom to highway.\n3. View red lines.",v:"User: 'Take me to the busiest highway.'"},
+            {c:"Urban & CCTV",n:"Check Bumper-to-Bumper Traffic",d:"View red-coded highway segments.",t:"1. Enable traffic.\n2. Look for red color coding.",v:"User: 'Show me the red traffic zones.'"},
+            {c:"Urban & CCTV",n:"View Aggregate Location Data",d:"See TomTom density data overlaid on map.",t:"1. Enable traffic layer.\n2. Zoom out to city.",v:"User: 'Turn on traffic.'"},
+            {c:"Urban & CCTV",n:"Confirm Google Maps Accuracy",d:"Verify if Google's 'busier than usual' is accurate.",t:"1. Enable traffic.\n2. Zoom into red zone.\n3. View CCTV to confirm.",v:"User: 'Turn on CCTV.'"},
+            {c:"Urban & CCTV",n:"Turn on CCTV Mode",d:"View public city cameras.",t:"1. Open right panel.\n2. Enable CCTV mode.",v:"User: 'Turn on CCTV mode.'\nAI: 'CCTV is on.'"},
+            {c:"Urban & CCTV",n:"Hover Preview CCTV Cameras",d:"Hover over camera icons to get a pop-up preview.",t:"1. Enable CCTV.\n2. Hover mouse over dot.\n3. Wait for pop-up.",v:"User: 'Show me CCTV cameras.'"},
+            {c:"Urban & CCTV",n:"View Martin Luther King Blvd",d:"Monitor traffic on specific Austin streets.",t:"1. Enable CCTV/Traffic.\n2. Click camera on MLK.\n3. View feed.",v:"User: 'Take me to Martin Luther King Blvd.'"},
+            {c:"Urban & CCTV",n:"Fly to London Traffic",d:"View massive CCTV coverage in London.",t:"1. Search London.\n2. Enable CCTV/Traffic.",v:"User: 'Can you take me to London please?'\nAI: 'The camera has flown to London.'"},
+            {c:"Urban & CCTV",n:"Check London Red Zones",d:"View heavy traffic zones in UK.",t:"1. Fly to London.\n2. Enable traffic.\n3. Look for red.",v:"User: 'Turn on traffic.'"},
+            {c:"Urban & CCTV",n:"View CCTV in CRT Mode",d:"Watch cameras with old-school CRT styling.",t:"1. Enable CCTV.\n2. Open display settings.\n3. Toggle CRT mode.",v:"User: 'Turn on CRT mode.'"},
+            {c:"Urban & CCTV",n:"Jump from Track to Track",d:"Click between planes/vessels to jump camera.",t:"1. Track plane.\n2. See nearby track.\n3. Click new track.",v:"User: 'Jump to the next track.'"},
+            {c:"Urban & CCTV",n:"Monitor City Choke Points",d:"View intersection backups via traffic colors.",t:"1. Enable traffic.\n2. Zoom out to city grid.",v:"User: 'Zoom out to the city view.'"},
+            {c:"Urban & CCTV",n:"Track Car via Low Framerate",d:"Attempt to follow a car using 5-10 min refresh CCTV.",t:"1. Find car on CCTV.\n2. Wait 10 mins.\n3. View next frame.",v:"User: 'Show me the CCTV feed.'"},
+            {c:"Urban & CCTV",n:"Monitor Commute Patterns",d:"View directional traffic flow over time.",t:"1. Enable traffic in AM.\n2. View inbound red.\n3. View outbound in PM.",v:"User: 'Turn on traffic.'"},
+            {c:"Urban & CCTV",n:"Check Highway Intensity",d:"View color coded traffic intensity.",t:"1. Enable traffic.\n2. View highway colors.",v:"User: 'Show me the highway.'"},
+            {c:"Urban & CCTV",n:"View Traffic Color Coding",d:"Understand the red/yellow/green density map.",t:"1. Enable traffic.\n2. Observe colors.",v:"User: 'Turn on traffic.'"},
+            {c:"Urban & CCTV",n:"Add Custom CCTV Modules",d:"Add your own city camera feeds via coding agent.",t:"1. Open AI agent.\n2. Prompt to add custom CCTV API.\n3. Send pull request.",v:"User: 'Add the custom CCTV module.'"},
+            {c:"Urban & CCTV",n:"Monitor Protest Activity",d:"View large crowds forming via traffic backups.",t:"1. Fly to city center.\n2. Enable traffic/CCTV.\n3. View blockages.",v:"User: 'Take me to the city center.'"},
+            {c:"Urban & CCTV",n:"Track Police Movement",d:"Listen to police radio to track units.",t:"1. Enable radio in context menu.\n2. Select police channel.",v:"User: 'Enable police radio.'"},
+
+            // --- MEDIA, AI & RECON (181-200) ---
+            {c:"Media & AI",n:"Record Camera Tour Shots",d:"Capture specific camera angles for video rendering.",t:"1. Open scenes menu.\n2. Hit New.\n3. Frame camera -> Capture shot.",v:"User: 'Create a new scene.'"},
+            {c:"Media & AI",n:"Capture Shot for Film Project",d:"Save specific views for offline rendering.",t:"1. Frame camera.\n2. Click capture shot.\n3. Hit update if needed.",v:"User: 'Capture this shot.'"},
+            {c:"Media & AI",n:"Play Back Recorded Scene",d:"Watch the camera fly through saved shots.",t:"1. Open scenes menu.\n2. Click Start.\n3. Watch playback.",v:"User: 'Start playback.'"},
+            {c:"Media & AI",n:"Screen Record Route",d:"Record your screen as the AI flies a route.",t:"1. Draw route.\n2. Fly route.\n3. Use screen recorder.",v:"User: 'Fly the route.'"},
+            {c:"Media & AI",n:"Use Tactical Mode",d:"Apply spy satellite branding to the UI.",t:"1. Open display settings.\n2. Select Tactical mode.",v:"User: 'Turn on tactical mode.'"},
+            {c:"Media & AI",n:"Enable Celestial Mode",d:"View sun and moon positions on globe.",t:"1. Zoom out to globe.\n2. Toggle celestial mode.",v:"User: 'Turn on celestial mode.'"},
+            {c:"Media & AI",n:"Find Sun/Moon Position",d:"Track shadows for geological analysis.",t:"1. Enable celestial mode.\n2. Rotate globe.\n3. View sun position.",v:"User: 'Show me the sun position.'"},
+            {c:"Media & AI",n:"Use TR3B Easter Egg",d:"Turn the globe into a TR3B craft.",t:"1. Open context menu.\n2. Click TR3B icon.",v:"User: 'Activate TR3B.'"},
+            {c:"Media & AI",n:"Monitor Area 51 Night Vision",d:"Use night vision to view Area 51.",t:"1. Go to Area 51.\n2. Open display settings.\n3. Enable night vision.",v:"User: 'Take me to Area 51 and turn on night vision.'"},
+            {c:"Media & AI",n:"Ask AI About Location",d:"Get a summary of a city or base.",t:"1. Fly to location.\n2. Hold spacebar.\n3. Ask for info.",v:"User: 'Can you tell me a little bit about Rotterdam?'"},
+            {c:"Media & AI",n:"Ask AI About Significance",d:"Understand why a base or port is important.",t:"1. Ask AI about location.\n2. Ask follow up about significance.",v:"User: 'Can you tell me a little bit about its significance?'"},
+            {c:"Media & AI",n:"Ask AI Fun Facts",d:"Get trivia about Delta airlines or other operators.",t:"1. Track a plane.\n2. Ask AI for fun facts.",v:"User: 'Got any fun facts about Delta Airlines for me?'"},
+            {c:"Media & AI",n:"Clear Map Annotations",d:"Remove all drawn routes and marks.",t:"1. Have annotations on screen.\n2. Ask AI to clear them.",v:"User: 'Please clear all annotations.'\nAI: 'Clearing those map annotations now.'"},
+            {c:"Media & AI",n:"Switch to Bing Labels",d:"View geopolitical outlines.",t:"1. Open map source.\n2. Select Bing labels.",v:"User: 'Switch to Bing labels.'"},
+            {c:"Media & AI",n:"Switch to OSM Map",d:"View traditional 2D Open Street Map.",t:"1. Open map source.\n2. Select OSM.",v:"User: 'Switch to OSM.'"},
+            {c:"Media & AI",n:"Jump to Globe View",d:"Zoom out to the 3D Earth.",t:"1. Click globe button top right.",v:"User: 'Zoom out to globe view.'"},
+            {c:"Media & AI",n:"Use Scope-Like View",d:"Change reticle appearance to look like a scope.",t:"1. Open display settings.\n2. Select scope view.",v:"User: 'Turn on scope view.'"},
+            {c:"Media & AI",n:"Feather Reticle Appearance",d:"Soften the edges of the map reticle.",t:"1. Open display settings.\n2. Feather edges.",v:"User: 'Feather the reticle.'"},
+            {c:"Media & AI",n:"Toggle Outside View",d:"Choose if detections extend past the circle.",t:"1. Open display settings.\n2. Toggle outside view clip.",v:"User: 'Clip the outside view.'"},
+            {c:"Media & AI",n:"Use Minimalist UI",d:"Remove all UI elements for clean viewing.",t:"1. Open display settings.\n2. Select minimalist/clean view.",v:"User: 'Go to clean view.'"},
+            {c:"Media & AI",n:"Expand Display Settings",d:"View full display panel.",t:"1. Click expand on display tab.",v:"User: 'Expand display settings.'"},
+            {c:"Media & AI",n:"Collapse Context Menu",d:"Hide the context menu to save space.",t:"1. Expand display.\n2. Context menu auto-collapses.",v:"User: 'Collapse context menu.'"},
+            {c:"Media & AI",n:"Power Up API Keys",d:"Enter your Google/TomTom/OpenAI keys.",t:"1. Click Power Up bottom right.\n2. Click manage.\n3. Enter keys -> Save.",v:"User: 'Open power up menu.'"},
+            {c:"Media & AI",n:"Save Keys in UI",d:"Securely store your API keys in the browser.",t:"1. Enter keys in fields.\n2. Hit save.",v:"User: 'Save my keys.'"},
+            {c:"Media & AI",n:"Install Pinocchio 8.2",d:"Use the one-click installer for non-coders.",t:"1. Go to website.\n2. Download Pinocchio 8.2.\n3. Run installer.",v:"User: 'Install Pinocchio.'"},
+            {c:"Media & AI",n:"Use AI Coding Agent Setup",d:"Drop GitHub link into Cursor/Claude Code to build.",t:"1. Copy GitHub link.\n2. Paste into AI agent.\n3. Provide prompt.",v:"User: 'Set up the repo in my AI agent.'"},
+            {c:"Media & AI",n:"Send Pull Request",d:"Contribute your custom layers to the main repo.",t:"1. Build feature.\n2. Push to your fork.\n3. Send pull request.",v:"User: 'I am sending a pull request.'"},
+            {c:"Media & AI",n:"Add ALPR Experimental Layer",d:"Add Automatic License Plate Readers to exits.",t:"1. Ask AI agent to pull ALPR branch.\n2. Test experimental layer.",v:"User: 'Pull the ALPR layer.'"},
+            {c:"Media & AI",n:"Add SDR Radio Layer",d:"Add Software Defined Radio for police scanning.",t:"1. Plug in SDR.\n2. Ask agent to add layer.\n3. Listen to local radio.",v:"User: 'Add the SDR radio layer.'"},
+            {c:"Media & AI",n:"Use Standard GPT Voice",d:"Use higher quality, more expensive voice model.",t:"1. Open voice settings.\n2. Select Standard.",v:"User: 'Switch to standard voice.'"},
+            {c:"Media & AI",n:"Use Mini GPT Voice",d:"Use cheaper, slightly lower quality voice model.",t:"1. Open voice settings.\n2. Select Mini.",v:"User: 'Switch to mini voice.'"},
+            {c:"Media & AI",n:"Hold Spacebar for Voice",d:"Push to talk instead of toggle mode.",t:"1. Hold spacebar.\n2. Speak command.\n3. Let go.",v:"User: 'Enable push to talk.'"},
+            {c:"Media & AI",n:"Verify Browser Mic Permissions",d:"Ensure browser can access your microphone.",t:"1. Open browser settings.\n2. Allow mic access for site.",v:"User: 'Check microphone permissions.'"},
+            {c:"Media & AI",n:"Open Keyless Ezri Globe",d:"View the 2D globe without needing API keys.",t:"1. Launch app without keys.\n2. View 2D Ezri globe.",v:"User: 'Launch the app.'"},
+            {c:"Media & AI",n:"Enter Cesium Community Account",d:"Get free 3D tiles for personal use.",t:"1. Sign up for Cesium.\n2. Enter key in Power Up.",v:"User: 'Add Cesium key.'"},
+            {c:"Media & AI",n:"Use Google Maps Key",d:"Add Google Maps for high-res imagery.",t:"1. Get Google Maps API key.\n2. Enter in Power Up menu.",v:"User: 'Add Google Maps key.'"}
+        ];
+
+        // Render Logic
+        const grid = document.getElementById('useCaseGrid');
+        const noResults = document.getElementById('no-results');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilters = document.getElementById('categoryFilters');
+        
+        let currentCat = 'all';
+        let searchTerm = '';
+
+        // Populate Categories
+        const categories = [...new Set(useCases.map(item => item.c))];
+        const allBtn = document.createElement('button');
+        allBtn.className = 'filter-btn active px-4 py-2 rounded-lg text-sm font-bold';
+        allBtn.innerText = 'All';
+        allBtn.dataset.cat = 'all';
+        categoryFilters.appendChild(allBtn);
+        allBtn.addEventListener('click', () => {
+            currentCat = 'all';
+            updateActiveCat();
+            renderData();
+        });
+
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn px-4 py-2 rounded-lg text-sm font-bold';
+            btn.innerText = cat;
+            btn.dataset.cat = cat;
+            categoryFilters.appendChild(btn);
+            btn.addEventListener('click', () => {
+                currentCat = btn.dataset.cat;
+                updateActiveCat();
+                renderData();
+            });
+        });
+
+        function updateActiveCat() {
+            document.querySelectorAll('#categoryFilters .filter-btn').forEach(btn => {
+                if (btn.dataset.cat === currentCat) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value.toLowerCase();
+            renderData();
+        });
+
+        function renderData() {
+            grid.innerHTML = '';
+            let count = 0;
+            
+            useCases.forEach(uc => {
+                const catMatch = currentCat === 'all' || uc.c === currentCat;
+                const searchMatch = uc.n.toLowerCase().includes(searchTerm) || 
+                                    uc.d.toLowerCase().includes(searchTerm) || 
+                                    uc.c.toLowerCase().includes(searchTerm) ||
+                                    uc.t.toLowerCase().includes(searchTerm) ||
+                                    uc.v.toLowerCase().includes(searchTerm);
+                
+                if (catMatch && searchMatch) {
+                    count++;
+                    const card = document.createElement('div');
+                    card.className = "glass-card p-5 rounded-lg flex flex-col";
+                    
+                    const stepsHtml = uc.t.split('\n').map(step => `<div class="step-item"><span class="step-num">${step.split('.')[0]}.</span><span>${step.split('.').slice(1).join('.').trim()}</span></div>`).join('');
+                    const voiceHtml = uc.v.split('\n').map(line => `<div class="${line.startsWith('User:') ? 'text-[#00f0ff]' : 'text-[#d4af37]'}">${line}</div>`).join('');
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3 border-b border-white/5 pb-3">
+                            <h4 class="text-lg font-bold text-white pr-2">${uc.n}</h4>
+                            <span class="text-xs px-2 py-1 rounded-full uppercase font-bold bg-[#d4af37]/10 text-[#d4af37] whitespace-nowrap">${uc.c}</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-4">${uc.d}</p>
+                        <div class="mb-4">
+                            <p class="text-xs uppercase tracking-wider text-slate-500 mb-2 font-bold">Step-by-Step To-Do</p>
+                            <div class="text-sm text-slate-300">${stepsHtml}</div>
+                        </div>
+                        <div class="mt-auto terminal rounded p-3 text-xs">
+                            <p class="text-slate-500 uppercase tracking-wider mb-2 text-[10px] font-bold">Voice Sequence</p>
+                            <div class="space-y-1">${voiceHtml}</div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+
+            if (count === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        renderData();
+    </script>
+</body>
+</html>

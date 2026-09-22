@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Extending God's Eye View — Adding Your Own Data Sources & Layers</title>
+<meta name="description" content="A field manual for bolting custom data sources, layers, and voice tools onto God's Eye View — the open-source 3D live globe." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07090c;
+    --bg-elev:#0b0f14;
+    --panel:#0e141b;
+    --panel-2:#121a24;
+    --ink:#d8e3ee;
+    --ink-dim:#9aa9bc;
+    --ink-faint:#5f6e81;
+    --line:#1b2530;
+    --line-soft:#141c25;
+    --amber:#ffb648;
+    --amber-soft:#ffd08a;
+    --green:#4ade80;
+    --red:#ff6b6b;
+    --cyan:#5fd3ff;
+    --violet:#a78bfa;
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    --radius:10px;
+    --shadow:0 12px 40px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:88px}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(255,182,72,.06), transparent 60%),
+      radial-gradient(900px 500px at 5% 10%, rgba(95,211,255,.05), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;
+    z-index:1000;
+  }
+
+  a{color:var(--amber-soft);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ===== Header ===== */
+  header.topbar{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px);
+    background:linear-gradient(180deg, rgba(7,9,12,.92), rgba(7,9,12,.78));
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:1400px;margin:0 auto;
+    padding:14px 28px;
+    display:flex;align-items:center;gap:18px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--mono);font-weight:700;
+    color:var(--ink);
+    letter-spacing:.5px;
+  }
+  .brand .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 14px var(--amber);
+    animation:pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{50%{opacity:.45;transform:scale(.85)}}
+  .brand small{color:var(--ink-faint);font-weight:500;letter-spacing:.3px}
+  .topbar nav{margin-left:auto;display:flex;gap:18px;align-items:center}
+  .topbar nav a{font-size:13px;color:var(--ink-dim);font-family:var(--mono)}
+  .topbar nav a:hover{color:var(--amber);text-decoration:none}
+  .badge-pill{
+    font-family:var(--mono);font-size:11px;
+    padding:4px 10px;border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--ink-faint);
+    background:rgba(255,182,72,.04);
+  }
+  .badge-pill .dot-green{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 8px var(--green)}
+
+  /* ===== Hero ===== */
+  .hero{
+    max-width:1400px;margin:0 auto;
+    padding:64px 28px 36px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .hero .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--amber);
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:18px;
+  }
+  .hero .eyebrow::before{content:"";width:34px;height:1px;background:linear-gradient(90deg,var(--amber),transparent)}
+  .hero h1{
+    font-size:clamp(34px,5vw,58px);
+    line-height:1.05;
+    margin:0 0 18px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    background:linear-gradient(180deg,#fff,#a8b6c8 80%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero h1 .accent{
+    background:linear-gradient(90deg,var(--amber),var(--amber-soft));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{
+    font-size:18px;color:var(--ink-dim);max-width:780px;margin:0 0 24px;
+  }
+  .hero .meta{
+    display:flex;flex-wrap:wrap;gap:10px;
+  }
+  .chip{
+    font-family:var(--mono);font-size:11.5px;
+    padding:6px 12px;border-radius:6px;
+    border:1px solid var(--line);background:var(--panel);
+    color:var(--ink-dim);
+  }
+  .chip.k{color:var(--green);border-color:rgba(74,222,128,.25);background:rgba(74,222,128,.05)}
+  .chip.f{color:var(--amber);border-color:rgba(255,182,72,.25);background:rgba(255,182,72,.05)}
+  .chip.m{color:var(--red);border-color:rgba(255,107,107,.25);background:rgba(255,107,107,.05)}
+
+  /* ===== Layout ===== */
+  .layout{
+    max-width:1400px;margin:0 auto;
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:0;
+    padding:0 28px;
+  }
+  aside.toc{
+    position:sticky;top:74px;
+    align-self:start;
+    height:calc(100vh - 74px);
+    overflow-y:auto;
+    padding:28px 22px 28px 0;
+    border-right:1px solid var(--line-soft);
+    font-size:13px;
+  }
+  aside.toc::-webkit-scrollbar{width:6px}
+  aside.toc::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  aside.toc .toc-label{
+    font-family:var(--mono);font-size:11px;
+    letter-spacing:.15em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 14px;
+  }
+  aside.toc ul{list-style:none;padding:0;margin:0 0 22px}
+  aside.toc li{margin:0}
+  aside.toc a{
+    display:block;
+    padding:6px 10px 6px 12px;
+    border-left:2px solid transparent;
+    color:var(--ink-dim);
+    line-height:1.4;
+    border-radius:0 4px 4px 0;
+  }
+  aside.toc a:hover{background:var(--panel);color:var(--ink);text-decoration:none}
+  aside.toc a.active{
+    border-left-color:var(--amber);
+    color:var(--amber-soft);
+    background:linear-gradient(90deg,rgba(255,182,72,.07),transparent);
+  }
+  aside.toc a.sub{padding-left:24px;font-size:12px;color:var(--ink-faint)}
+  aside.toc a.sub.active{color:var(--amber-soft)}
+
+  main.docs{padding:32px 0 100px 36px;max-width:980px}
+  main.docs section{padding-top:14px;padding-bottom:34px;border-bottom:1px solid var(--line-soft)}
+  main.docs section:last-child{border-bottom:0}
+
+  h2{
+    font-size:30px;font-weight:700;
+    margin:0 0 8px;letter-spacing:-0.01em;
+    scroll-margin-top:90px;
+    color:#fff;
+    display:flex;align-items:baseline;gap:14px;
+  }
+  h2 .num{
+    font-family:var(--mono);font-size:14px;
+    color:var(--amber);font-weight:600;
+    letter-spacing:.1em;
+  }
+  h3{
+    font-size:20px;font-weight:600;
+    margin:32px 0 10px;
+    color:#fff;
+    scroll-margin-top:90px;
+  }
+  h4{font-size:15px;font-weight:600;color:var(--amber-soft);margin:22px 0 8px;font-family:var(--mono);letter-spacing:.02em;text-transform:uppercase}
+  p{margin:0 0 14px}
+  ul,ol{padding-left:22px;margin:0 0 16px}
+  li{margin-bottom:6px}
+  strong{color:#fff;font-weight:600}
+  em{color:var(--amber-soft);font-style:normal;font-family:var(--mono);font-size:.95em}
+
+  /* Code */
+  pre{
+    background:#05080b;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 18px 18px 18px;
+    overflow-x:auto;
+    margin:14px 0 18px;
+    font-family:var(--mono);
+    font-size:13px;line-height:1.6;
+    color:#cdd6e0;
+    position:relative;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 8px 24px rgba(0,0,0,.35);
+  }
+  pre code{font-family:inherit;color:inherit;white-space:pre}
+  pre::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:linear-gradient(180deg,var(--amber),transparent);
+  }
+  pre .copy{
+    position:absolute;top:8px;right:8px;
+    font-family:var(--mono);font-size:11px;
+    padding:5px 10px;border-radius:5px;
+    background:var(--panel-2);border:1px solid var(--line);
+    color:var(--ink-dim);cursor:pointer;
+    transition:all .15s;
+  }
+  pre .copy:hover{color:var(--amber);border-color:var(--amber)}
+  pre .copy.ok{color:var(--green);border-color:rgba(74,222,128,.4)}
+  code.inline{
+    font-family:var(--mono);font-size:.86em;
+    background:rgba(255,182,72,.08);
+    border:1px solid rgba(255,182,72,.18);
+    color:var(--amber-soft);
+    padding:1px 6px;border-radius:4px;
+  }
+
+  /* Token colors */
+  .tok-c{color:#5f6e81;font-style:italic}
+  .tok-k{color:#ffb648}
+  .tok-s{color:#4ade80}
+  .tok-n{color:#5fd3ff}
+  .tok-f{color:#a78bfa}
+  .tok-p{color:#ff8fa3}
+  .tok-o{color:#9aa9bc}
+
+  /* Callouts */
+  .callout{
+    border:1px solid var(--line);
+    border-left:3px solid var(--amber);
+    background:linear-gradient(90deg,rgba(255,182,72,.05),transparent 70%);
+    padding:14px 18px;border-radius:8px;
+    margin:18px 0;
+    font-size:14px;
+  }
+  .callout.green{border-left-color:var(--green);background:linear-gradient(90deg,rgba(74,222,128,.06),transparent 70%)}
+  .callout.red{border-left-color:var(--red);background:linear-gradient(90deg,rgba(255,107,107,.06),transparent 70%)}
+  .callout.cyan{border-left-color:var(--cyan);background:linear-gradient(90deg,rgba(95,211,255,.06),transparent 70%)}
+  .callout-title{
+    font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--amber);
+    display:block;margin-bottom:4px;
+  }
+  .callout.green .callout-title{color:var(--green)}
+  .callout.red .callout-title{color:var(--red)}
+  .callout.cyan .callout-title{color:var(--cyan)}
+
+  /* Tables */
+  table{
+    width:100%;border-collapse:collapse;margin:14px 0 22px;
+    font-size:13.5px;
+    border:1px solid var(--line);border-radius:8px;overflow:hidden;
+  }
+  th,td{
+    padding:10px 14px;text-align:left;
+    border-bottom:1px solid var(--line-soft);
+    vertical-align:top;
+  }
+  thead th{
+    background:var(--panel);font-family:var(--mono);
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);font-weight:500;
+  }
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:rgba(255,182,72,.03)}
+  td code{font-family:var(--mono);font-size:12.5px;color:var(--amber-soft)}
+
+  /* File tree */
+  .tree{
+    font-family:var(--mono);font-size:13px;
+    background:#05080b;border:1px solid var(--line);border-radius:8px;
+    padding:18px 22px;line-height:1.7;color:var(--ink-dim);
+    margin:14px 0;overflow-x:auto;
+  }
+  .tree .dir{color:var(--amber);font-weight:600}
+  .tree .file{color:#cdd6e0}
+  .tree .desc{color:var(--ink-faint)}
+  .tree .new{color:var(--green)}
+  .tree .new::after{content:" ← yours";font-style:italic;font-size:11px;color:var(--green)}
+
+  /* Steps */
+  .steps{counter-reset:step;margin:22px 0 0;padding:0}
+  .step{
+    position:relative;
+    padding:18px 20px 18px 56px;
+    margin:0 0 12px;
+    border:1px solid var(--line);border-radius:10px;
+    background:linear-gradient(180deg,var(--panel),var(--bg-elev));
+  }
+  .step::before{
+    counter-increment:step;content:counter(step);
+    position:absolute;left:16px;top:18px;
+    width:28px;height:28px;border-radius:50%;
+    background:rgba(255,182,72,.12);
+    border:1px solid rgba(255,182,72,.35);
+    color:var(--amber);
+    font-family:var(--mono);font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step h4{margin:0 0 6px;color:#fff;font-family:var(--sans);font-size:16px;text-transform:none;letter-spacing:0}
+  .step p{margin:0;font-size:14px;color:var(--ink-dim)}
+
+  /* Status tags */
+  .auth{font-family:var(--mono);font-size:10.5px;padding:2px 7px;border-radius:4px;border:1px solid;margin-left:6px;vertical-align:middle}
+  .auth.g{color:var(--green);border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.06)}
+  .auth.y{color:var(--amber);border-color:rgba(255,182,72,.3);background:rgba(255,182,72,.06)}
+  .auth.r{color:var(--red);border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.06)}
+
+  /* Footer */
+  footer{
+    border-top:1px solid var(--line);
+    background:#05080b;
+    padding:36px 28px;
+  }
+  footer .inner{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink-faint)}
+  footer a{color:var(--ink-dim)}
+  footer .links{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:12px}
+
+  @media (max-width:980px){
+    .layout{grid-template-columns:1fr;padding:0 18px}
+    aside.toc{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--line-soft);padding:18px 0}
+    main.docs{padding:24px 0 60px 0}
+    .hero{padding:36px 18px 24px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      GOD'S EYE VIEW
+      <small>// dev field manual</small>
+    </div>
+    <nav>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener">github</a>
+      <a href="#quickstart">quickstart</a>
+      <a href="#anatomy">anatomy</a>
+      <a href="#checklist">checklist</a>
+    </nav>
+    <span class="badge-pill"><span class="dot-green"></span>extensible</span>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="eyebrow">Extending the Globe</div>
+  <h1>Add Your Own <span class="accent">Data Sources &amp; Layers</span></h1>
+  <p class="lead">
+    God's Eye View is a vanilla-JS / CesiumJS / Vite canvas — every layer is its own module under
+    <code class="chip" style="display:inline-block">src/data/</code>. This manual walks through the full lifecycle of a new layer:
+    pick a feed, pick a visual primitive, write the module, register it, wire the UI, optionally broker a key
+    through the server, and (if you want) hand the agent a voice tool so you can talk to it.
+  </p>
+  <div class="meta">
+    <span class="chip k">🟢 no key required to start</span>
+    <span class="chip f">🟡 free-key upgradeable</span>
+    <span class="chip m">🔴 metered (server-brokered)</span>
+    <span class="chip">vanilla JS · no framework</span>
+    <span class="chip">MIT licensed</span>
+  </div>
+</section>
+
+<!-- ============ LAYOUT ============ -->
+<div class="layout">
+
+  <!-- ============ TOC ============ -->
+  <aside class="toc" id="toc">
+    <p class="toc-label">Contents</p>
+    <ul>
+      <li><a href="#why">Why extend</a></li>
+      <li><a href="#arch">Architecture at a glance</a></li>
+      <li><a href="#anatomy">Anatomy of a layer</a></li>
+      <li><a href="#primitives">Visual primitives</a></li>
+      <li><a href="#patterns">Data patterns</a></li>
+      <li><a href="#quickstart">Quickstart</a></li>
+      <li><a href="#step1">1 · Pick a feed</a></li>
+      <li><a href="#step2">2 · Scaffold the module</a></li>
+      <li><a href="#step3">3 · Implement the lifecycle</a></li>
+      <li><a href="#step4">4 · Register in main.js</a></li>
+      <li><a href="#step5">5 · Wire the UI</a></li>
+      <li><a href="#step6">6 · Bundle static data</a></li>
+      <li><a href="#step7">7 · API keys &amp; proxy</a></li>
+      <li><a href="#step8">8 · Voice tools</a></li>
+      <li><a href="#step9">9 · Share-link state</a></li>
+      <li><a href="#best">Best practices</a></li>
+      <li><a href="#examples">Learn from existing layers</a></li>
+      <li><a href="#debug">Testing &amp; debugging</a></li>
+      <li><a href="#pr">Submitting a PR</a></li>
+      <li><a href="#checklist">Ship checklist</a></li>
+    </ul>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="docs">
+
+    <!-- WHY -->
+    <section id="why">
+      <h2><span class="num">00</span>Why extend</h2>
+      <p>
+        The shipped globe already fuses fifteen live and bundled sources — flights, ships, satellites, earthquakes,
+        CCTV, transit, fires, radio, space missions, and more. But the project is explicit about its purpose:
+        <em>"every layer here is a pattern you can point at your own data sources."</em> The maintainers actively
+        want you to bolt things on — community PRs already include ALPR cameras and SDR radio, and the README
+        opens issues for missing layers.
+      </p>
+      <p>
+        Typical reasons people extend the globe:
+      </p>
+      <ul>
+        <li><strong>Reconstruct an event</strong> — flood paths, earthquake shake maps, wildfire perimeters from Planet/Viirs, plotted against ground imagery.</li>
+        <li><strong>Monitor your own infrastructure</strong> — fleet GPS, sensor telemetry, IoT positions, ship reporting from your own AIS source.</li>
+        <li><strong>Add a city pack</strong> — your transit authority's GTFS-Realtime feed, your local CCTV, your bikeshare.</li>
+        <li><strong>Swap a feed</strong> — replace a free/limited provider with a paid one (satellite AIS, Sentinel hub, commercial SAR).</li>
+        <li><strong>Reskin reality</strong> — custom GLSL sensor looks, custom 3D models per contact class.</li>
+      </ul>
+      <div class="callout green">
+        <span class="callout-title">The line, restated</span>
+        God's Eye View models events, assets, infrastructure, and systems — <strong>not named people</strong>.
+        Anything face-recognition, person-tracking, or individual-search crosses the project line and won't merge.
+        Build for systems and signals, not for surveillance of individuals.
+      </div>
+    </section>
+
+    <!-- ARCH -->
+    <section id="arch">
+      <h2><span class="num">01</span>Architecture at a glance</h2>
+      <p>
+        The app is intentionally framework-free: vanilla JavaScript, CesiumJS for the 3D globe, Vite for the dev
+        server, and the OpenAI Realtime API for voice. That means there's no React reconciliation to fight, no
+        store middleware to learn — a layer is just a module that talks to the Cesium viewer and registers itself
+        with a tiny orchestrator.
+      </p>
+      <div class="tree">
+<span class="dir">src/</span>
+├── <span class="file">main.js</span>                 <span class="desc"># Bootstrap: Google 3D tiles, layer registration</span>
+├── <span class="file">ui.js</span>                   <span class="desc"># Runtime UI — panels, HUD, control facade</span>
+├── <span class="file">hud.js</span>                  <span class="desc"># Intelligence HUD + AI scene summary</span>
+├── <span class="file">keySetup.js</span>             <span class="desc"># POWER UP panel — in-app provider keys</span>
+├── <span class="file">mapStackController.js</span>   <span class="desc"># Basemap switching</span>
+├── <span class="dir">voice/</span>                   <span class="desc"># OpenAI Realtime session + 28 tools</span>
+├── <span class="dir">data/</span>                    <span class="desc"># One module per layer + orchestration + context store</span>
+│   ├── <span class="file">iconOrientation.js</span>  <span class="desc"># Screen-projected headings + horizon cull</span>
+│   ├── <span class="file">flights.js</span>
+│   ├── <span class="file">military.js</span>
+│   ├── <span class="file">vessels.js</span>
+│   ├── <span class="file">satellites.js</span>
+│   ├── <span class="file">earthquakes.js</span>
+│   ├── <span class="file">traffic.js</span>
+│   ├── <span class="file">cctv.js</span>
+│   ├── <span class="file">radio.js</span>
+│   ├── <span class="file">transit.js</span>
+│   ├── <span class="file">bikeshare.js</span>
+│   ├── <span class="file">directions.js</span>
+│   ├── <span class="file">fires.js</span>
+│   ├── <span class="file">spaceMissions.js</span>
+│   ├── <span class="file">installations.js</span>
+│   ├── <span class="file">datacenters.js</span>      <span class="desc"># bundled static</span>
+│   ├── <span class="file">dams.js</span>             <span class="desc"># bundled static</span>
+│   ├── <span class="file">submarineCables.js</span>  <span class="desc"># bundled static</span>
+│   └── <span class="dir">local_data/</span>          <span class="desc"># Bundled datasets (per-folder provenance)</span>
+│       ├── <span class="file">datacenters.geojson</span>
+│       └── <span class="new">yourLayer.geojson</span>
+└── <span class="dir">scenes/</span>                   <span class="desc"># Cinematic scene director</span>
+      </div>
+      <p>
+        Every existing layer is a readable reference implementation. The fastest way to learn the project shape
+        is to open <code class="inline">src/data/earthquakes.js</code> next to <code class="inline">src/data/transit.js</code>
+        and diff the patterns — they both poll, but one is a 24h snapshot and the other streams GTFS-Realtime.
+      </p>
+    </section>
+
+    <!-- ANATOMY -->
+    <section id="anatomy">
+      <h2><span class="num">02</span>Anatomy of a layer</h2>
+      <p>
+        A layer is a plain ES module exporting a single object literal. The orchestrator in
+        <code class="inline">src/data/</code> calls into this contract — it is small, but every field is load-bearing.
+      </p>
+      <pre id="code-anatomy"><button class="copy" data-copy="code-anatomy">copy</button><code><span class="tok-c">// src/data/myLayer.js</span>
+<span class="tok-k">export const</span> <span class="tok-f">myLayer</span> = {
+  <span class="tok-c">// ── Identity ───────────────────────────────────────</span>
+  id: <span class="tok-s">'my-layer'</span>,                  <span class="tok-c">// stable string, used in share URLs</span>
+  name: <span class="tok-s">'My Layer'</span>,               <span class="tok-c">// display name in the LAYERS panel</span>
+  category: <span class="tok-s">'live'</span>,              <span class="tok-c">// 'live' | 'static' | 'simulated'</span>
+  description: <span class="tok-s">'One-line summary shown in the panel.'</span>,
+  icon: <span class="tok-s">'📡'</span>,                    <span class="tok-c">// emoji or path to an SVG</span>
+
+  <span class="tok-c">// ── Capability flags ─────────────────────────────</span>
+  defaultEnabled: <span class="tok-k">false</span>,
+  requiresKey: <span class="tok-k">null</span>,              <span class="tok-c">// null | 'aisstream' | 'tomtom' | 'yourkey'</span>
+  refreshMs: <span class="tok-n">30000</span>,               <span class="tok-c">// polling interval; null for static</span>
+  maxEntities: <span class="tok-n">5000</span>,               <span class="tok-c">// hard cap, viewport-bounded recommended</span>
+
+  <span class="tok-c">// ── State (private) ──────────────────────────────</span>
+  _viewer: <span class="tok-k">null</span>,
+  _entities: <span class="tok-k">new</span> <span class="tok-f">Map</span>(),
+  _enabled: <span class="tok-k">false</span>,
+  _lastFetch: <span class="tok-n">0</span>,
+
+  <span class="tok-c">// ── Lifecycle ─────────────────────────────────────</span>
+  <span class="tok-k">async</span> <span class="tok-f">init</span>(viewer, ctx) {
+    <span class="tok-k">this</span>._viewer = viewer;
+    <span class="tok-k">this</span>._ctx = ctx;              <span class="tok-c">// { keys, locale, voice, shareState }</span>
+    <span class="tok-k">this</span>._dataSource = <span class="tok-k">await</span> <span class="tok-k">this</span>._buildSource();
+  },
+
+  <span class="tok-k">async</span> <span class="tok-f">enable</span>() {
+    <span class="tok-k">if</span> (<span class="tok-k">this</span>._enabled) <span class="tok-k">return</span>;
+    <span class="tok-k">this</span>._enabled = <span class="tok-k">true</span>;
+    <span class="tok-k">await</span> <span class="tok-k">this</span>._refresh();
+    <span class="tok-k">this</span>._startLoop();
+  },
+
+  <span class="tok-k">async</span> <span class="tok-f">disable</span>() {
+    <span class="tok-k">this</span>._enabled = <span class="tok-k">false</span>;
+    <span class="tok-k">this</span>._stopLoop();
+    <span class="tok-k">for</span> (<span class="tok-k">const</span> e <span class="tok-k">of</span> <span class="tok-k">this</span>._entities.values()) <span class="tok-k">this</span>._viewer.entities.remove(e);
+    <span class="tok-k">this</span>._entities.clear();
+  },
+
+  <span class="tok-c">// ── Per-frame tick (called by orchestrator) ──────</span>
+  <span class="tok-f">update</span>(dt, now) {
+    <span class="tok-c">// interpolate positions, cull off-screen, project headings</span>
+    <span class="tok-k">for</span> (<span class="tok-k">const</span> e <span class="tok-k">of</span> <span class="tok-k">this</span>._entities.values()) <span class="tok-k">this</span>._tickEntity(e, dt, now);
+  },
+
+  <span class="tok-c">// ── Fetch &amp; ingest ────────────────────────────────</span>
+  <span class="tok-k">async</span> <span class="tok-f">refresh</span>() { <span class="tok-k">return</span> <span class="tok-k">this</span>._refresh(); },
+
+  <span class="tok-c">// ── Selection / contacts ───────────────────────────</span>
+  <span class="tok-f">onTrack</span>(entity) { <span class="tok-c">/* optional: surface telemetry card */</span> },
+  <span class="tok-f">contactsNearby</span>(lat, lon, radiusKm) { <span class="tok-c">/* for the 250km Contacts roster */</span> },
+
+  <span class="tok-c">// ── Share-link state ──────────────────────────────</span>
+  <span class="tok-f">serializeState</span>() { <span class="tok-k">return</span> { filters: <span class="tok-k">this</span>._filters }; },
+  <span class="tok-f">deserializeState</span>(s) { <span class="tok-k">if</span> (s?.filters) <span class="tok-k">this</span>._filters = s.filters; },
+
+  <span class="tok-c">// ── Internal helpers (private) ────────────────────</span>
+  <span class="tok-k">async</span> <span class="tok-f">_buildSource</span>() { <span class="tok-c">…</span> },
+  <span class="tok-k">async</span> <span class="tok-f">_refresh</span>() { <span class="tok-c">…</span> },
+  <span class="tok-f">_tickEntity</span>(e, dt, now) { <span class="tok-c">…</span> },
+};</code></pre>
+      <p>
+        The orchestrator handles all the cross-cutting concerns: per-frame <code class="inline">update()</code>
+        dispatch, share-link (de)serialization, contacts roster queries, and dispatching clicks to the right
+        layer's <code class="inline">onTrack()</code>. You write the layer; the orchestrator wires it to the world.
+      </p>
+    </section>
+
+    <!-- PRIMITIVES -->
+    <section id="primitives">
+      <h2><span class="num">03</span>Visual primitives</h2>
+      <p>
+        Cesium gives you a small set of building blocks. Pick the one that matches what your data <em>is</em>:
+      </p>
+      <table>
+        <thead>
+          <tr><th>Primitive</th><th>Use it for</th><th>Reference layer</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>Billboard</code></td><td>World-stable icons with screen-projected heading — aircraft, ships, bikes, cameras.</td><td>flights, vessels, cctv</td></tr>
+          <tr><td><code>Polyline</code></td><td>Trails, routes, orbit rings, walking directions, submarine cables.</td><td>directions, satellites, submarineCables</td></tr>
+          <tr><td><code>Polygon</code> / <code>GeoJSON</code></td><td>Annotation boundaries, fire perimeters, neighborhood overlays.</td><td>voice whiteboard, fires</td></tr>
+          <tr><td><code>Model</code> (glTF)</td><td>Per-class 3D models — 787, ATR-72, Citation, Bell 206, MQ-9. Glyph swaps to model on approach.</td><td>flights (3D hangar)</td></tr>
+          <tr><td><code>Primitive</code> (custom shader)</td><td>Viewshed volumes, sensor looks (CRT / NVG / FLIR / Noir / Snow), detection overlays.</td><td>cctv viewshed, sensor styles</td></tr>
+          <tr><td><code>ImageryLayer</code></td><td>Raster overlays — FIRMS active-fire tiles, OSM basemap, Esri.</td><td>fires, mapStackController</td></tr>
+          <tr><td><code>3DTileset</code></td><td>Google Photorealistic 3D, photogrammetry, point clouds.</td><td>mapStackController</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <span class="callout-title">World-stable icons</span>
+        Aircraft and ships must point along their true real-world heading at every camera angle — looking straight down
+        <em>and</em> across the horizon. The project handles this in <code class="inline">src/data/iconOrientation.js</code>
+        via per-frame screen-space course projection. Don't roll your own; call into the shared helper so your
+        layer behaves identically to flights and vessels.
+      </div>
+    </section>
+
+    <!-- PATTERNS -->
+    <section id="patterns">
+      <h2><span class="num">04</span>Data patterns</h2>
+      <p>
+        Existing layers fall into four shapes. Each has its own ingestion rhythm:
+      </p>
+      <table>
+        <thead><tr><th>Pattern</th><th>Examples</th><th>Cadence</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Static bundled</strong></td>
+            <td>datacenters, dams, submarine cables</td>
+            <td>Loaded once at init from <code>local_data/</code></td>
+            <td>GeoJSON provenance per folder; ship the license alongside the data</td>
+          </tr>
+          <tr>
+            <td><strong>Polling REST</strong></td>
+            <td>OpenSky, USGS, NASA FIRMS, Launch Library</td>
+            <td>Every <code class="inline">refreshMs</code>; render one interval behind real time</td>
+            <td>Use a credit governor — never call more than the provider allows</td>
+          </tr>
+          <tr>
+            <td><strong>Streaming WebSocket</strong></td>
+            <td>AISStream (ships)</td>
+            <td>Continuous; batch-ingest every ~1s</td>
+            <td>Server-brokered when a key is involved; browser-only when keyless</td>
+          </tr>
+          <tr>
+            <td><strong>Stateless propagation</strong></td>
+            <td>CelesTrak TLEs → SGP4 → satellites</td>
+            <td>Re-fetch TLE daily; propagate per-frame</td>
+            <td>GMST realignment keeps orbit rings locked; never drift, never flicker</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout cyan">
+        <span class="callout-title">Smooth motion from choppy data</span>
+        Live feeds arrive every 15–30s. The globe renders one interval behind real time and
+        <em>interpolates between known fixes</em>; dead reckoning fills the gaps. When you implement
+        <code class="inline">update(dt, now)</code>, interpolate — don't snap.
+      </div>
+    </section>
+
+    <!-- QUICKSTART -->
+    <section id="quickstart">
+      <h2><span class="num">05</span>Quickstart</h2>
+      <p>
+        If you can clone, install, and open a single file, you can ship a layer in an evening. The whole flow
+        reduces to nine steps.
+      </p>
+      <ol class="steps">
+        <li class="step"><h4>Pick a feed</h4><p>Decide what you want on the globe and which of the four data patterns it matches.</p></li>
+        <li class="step"><h4>Scaffold the module</h4><p>Create <code class="inline">src/data/myLayer.js</code> from the anatomy template above.</p></li>
+        <li class="step"><h4>Implement the lifecycle</h4><p><code class="inline">init</code>, <code class="inline">enable</code>, <code class="inline">disable</code>, <code class="inline">update</code>, <code class="inline">refresh</code>.</p></li>
+        <li class="step"><h4>Register in main.js</h4><p>Add the layer to the orchestrator's registry; it now appears in the LAYERS panel.</p></li>
+        <li class="step"><h4>Wire the UI</h4><p>Toggle, filter chips, contextual menu entries — all declarative against the registry.</p></li>
+        <li class="step"><h4>Bundle static data</h4><p>If you ship a dataset, drop it in <code class="inline">src/data/local_data/</code> with provenance + license.</p></li>
+        <li class="step"><h4>Add an API key (optional)</h4><p>Broker private keys server-side; only Google Maps &amp; Cesium ion live in the browser.</p></li>
+        <li class="step"><h4>Add a voice tool (optional)</h4><p>Let users say "turn on my layer" or "what's the nearest contact on my layer?"</p></li>
+        <li class="step"><h4>Serialize share state</h4><p>So a URL can round-trip your layer's filters and tracked contact.</p></li>
+      </ol>
+      <p>The next sections walk each step in detail.</p>
+    </section>
+
+    <!-- STEP 1 -->
+    <section id="step1">
+      <h2><span class="num">06</span>Step 1 · Pick a feed</h2>
+      <p>
+        Before writing any code, classify your feed. The classification dictates everything downstream: whether
+        you need a key, whether the call is browser-side or server-brokered, how often you refresh, and which
+        visual primitive fits.
+      </p>
+      <h4>Decision matrix</h4>
+      <table>
+        <thead><tr><th>Feed type</th><th>Auth</th><th>Where</th><th>Layer category</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Public, keyless</td><td><span class="auth g">🟢 none</span></td><td>Browser</td><td>live</td><td>USGS earthquakes, adsb.lol</td></tr>
+          <tr><td>Public, free key</td><td><span class="auth y">🟡 free key</span></td><td>Browser (restrict at provider) or server</td><td>live</td><td>AISStream, FIRMS, TomTom</td></tr>
+          <tr><td>Metered / private</td><td><span class="auth r">🔴 metered</span></td><td><strong>Server proxy only</strong></td><td>live</td><td>OpenAI, OpenSky OAuth, camera frames</td></tr>
+          <tr><td>Static file</td><td><span class="auth g">🟢 none</span></td><td>Bundled in repo</td><td>static</td><td>datacenters, dams, cables</td></tr>
+          <tr><td>Simulated</td><td><span class="auth g">🟢 none</span></td><td>Local compute</td><td>simulated</td><td>Traffic along OSM roads</td></tr>
+        </tbody>
+      </table>
+      <div class="callout red">
+        <span class="callout-title">Hard rule</span>
+        If your feed needs a private key — even a free one — broker it through the server-side proxy. The browser
+        may only ever see a Cesium ion or Google Maps key, both restricted at the provider. Server brokering
+        applies SSRF protection, response caps, and sanitized errors.
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="step2">
+      <h2><span class="num">07</span>Step 2 · Scaffold the module</h2>
+      <p>Drop a new file in <code class="inline">src/data/</code> and export a layer object using the anatomy template.</p>
+      <pre id="code-scaffold"><button class="copy" data-copy="code-scaffold">copy</button><code><span class="tok-c">// src/data/shipSpotters.js — example custom layer</span>
+<span class="tok-k">import</span> { createElement } <span class="tok-k">from</span> <span class="tok-s">'../util/dom.js'</span>;
+<span class="tok-k">import</span> { projectHeading } <span class="tok-k">from</span> <span class="tok-s">'./iconOrientation.js'</span>;
+<span class="tok-k">import</span> { fetchJson } <span class="tok-k">from</span> <span class="tok-s">'../util/fetch.js'</span>;
+
+<span class="tok-k">export const</span> <span class="tok-f">shipSpotters</span> = {
+  id: <span class="tok-s">'ship-spotters'</span>,
+  name: <span class="tok-s">'Ship Spotters (community AIS)'</span>,
+  category: <span class="tok-s">'live'</span>,
+  description: <span class="tok-s">'Community ADS-B / AIS receiver network'</span>,
+  icon: <span class="tok-s">'🚢'</span>,
+  defaultEnabled: <span class="tok-k">false</span>,
+  requiresKey: <span class="tok-k">null</span>,     <span class="tok-c">// keyless feed</span>
+  refreshMs: <span class="tok-n">20000</span>,
+  maxEntities: <span class="tok-n">8000</span>,
+
+  _viewer: <span class="tok-k">null</span>,
+  _entities: <span class="tok-k">new</span> <span class="tok-f">Map</span>(),
+  _enabled: <span class="tok-k">false</span>,
+
+  <span class="tok-k">async</span> <span class="tok-f">init</span>(viewer, ctx) {
+    <span class="tok-k">this</span>._viewer = viewer;
+    <span class="tok-k">this</span>._ctx = ctx;
+  },
+
+  <span class="tok-c">// …lifecycle methods follow…</span>
+};</code></pre>
+      <p>
+        Keep the file small and one-purpose. If you have a parser, a renderer, and an ingestor, split them into
+        sibling files and import — the existing layers do exactly this. There is no build step magic; Vite
+        resolves relative imports natively.
+      </p>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="step3">
+      <h2><span class="num">08</span>Step 3 · Implement the lifecycle</h2>
+
+      <h4>enable / disable</h4>
+      <pre id="code-enable"><button class="copy" data-copy="code-enable">copy</button><code><span class="tok-k">async</span> <span class="tok-f">enable</span>() {
+  <span class="tok-k">if</span> (<span class="tok-k">this</span>._enabled) <span class="tok-k">return</span>;
+  <span class="tok-k">this</span>._enabled = <span class="tok-k">true</span>;
+  <span class="tok-k">await</span> <span class="tok-k">this</span>._refresh();          <span class="tok-c">// first ingest</span>
+  <span class="tok-k">this</span>._loop = setInterval(() =&gt; <span class="tok-k">this</span>._refresh(), <span class="tok-k">this</span>.refreshMs);
+},
+
+<span class="tok-k">async</span> <span class="tok-f">disable</span>() {
+  <span class="tok-k">this</span>._enabled = <span class="tok-k">false</span>;
+  clearInterval(<span class="tok-k">this</span>._loop);
+  <span class="tok-k">for</span> (<span class="tok-k">const</span> e <span class="tok-k">of</span> <span class="tok-k">this</span>._entities.values()) <span class="tok-k">this</span>._viewer.entities.remove(e);
+  <span class="tok-k">this</span>._entities.clear();
+},</code></pre>
+
+      <h4>refresh — fetch, normalize, upsert</h4>
+      <pre id="code-refresh"><button class="copy" data-copy="code-refresh">copy</button><code><span class="tok-k">async</span> <span class="tok-f">_refresh</span>() {
+  <span class="tok-k">const</span> url = <span class="tok-s">'https://api.example.com/v1/positions'</span>;
+  <span class="tok-k">let</span> data;
+  <span class="tok-k">try</span> {
+    data = <span class="tok-k">await</span> <span class="tok-f">fetchJson</span>(url, { timeoutMs: <span class="tok-n">8000</span> });
+  } <span class="tok-k">catch</span> (err) {
+    console.warn(<span class="tok-s">'[shipSpotters] refresh failed'</span>, err);
+    <span class="tok-k">return</span>;                       <span class="tok-c">// keep last known good state</span>
+  }
+
+  <span class="tok-k">const</span> next = <span class="tok-k">new</span> <span class="tok-f">Map</span>();
+  <span class="tok-k">for</span> (<span class="tok-k">const</span> fix <span class="tok-k">of</span> data.vessels) {
+    <span class="tok-k">const</span> id = fix.mmsi ?? fix.icao ?? fix.id;
+    <span class="tok-k">if</span> (!id) <span class="tok-k">continue</span>;
+
+    <span class="tok-k">let</span> e = <span class="tok-k">this</span>._entities.get(id);
+    <span class="tok-k">if</span> (!e) {
+      e = <span class="tok-k">this</span>._viewer.entities.add({
+        id: <span class="tok-s">`sp-`</span> + id,
+        billboard: { image: <span class="tok-s">'./icons/ship.svg'</span>, heightReference: Cesium.HeightReference.NONE },
+        properties: <span class="tok-k">new</span> Cesium.PropertyBag({ fix, trail: [] }),
+      });
+    }
+
+    <span class="tok-c">// update interpolated target — the update() loop lerps toward this</span>
+    e.properties.fix.setValue(fix);
+    e.properties.trail.getValue().push([fix.lon, fix.lat, fix.alt ?? <span class="tok-n">0</span>]);
+    next.set(id, e);
+  }
+
+  <span class="tok-c">// drop contacts that disappeared</span>
+  <span class="tok-k">for</span> (<span class="tok-k">const</span> [id, e] <span class="tok-k">of</span> <span class="tok-k">this</span>._entities) {
+    <span class="tok-k">if</span> (!next.has(id)) <span class="tok-k">this</span>._viewer.entities.remove(e);
+  }
+  <span class="tok-k">this</span>._entities = next;
+  <span class="tok-k">this</span>._lastFetch = performance.now();
+},</code></pre>
+
+      <h4>update — per-frame interpolation &amp; heading projection</h4>
+      <pre id="code-update"><button class="copy" data-copy="code-update">copy</button><code><span class="tok-f">update</span>(dt, now) {
+  <span class="tok-k">if</span> (!<span class="tok-k">this</span>._enabled) <span class="tok-k">return</span>;
+
+  <span class="tok-k">for</span> (<span class="tok-k">const</span> e <span class="tok-k">of</span> <span class="tok-k">this</span>._entities.values()) {
+    <span class="tok-k">const</span> fix = e.properties.fix.getValue();
+    <span class="tok-k">if</span> (!fix) <span class="tok-k">continue</span>;
+
+    <span class="tok-c">// dead-reckon between known fixes (15–30s data, smooth on screen)</span>
+    <span class="tok-k">const</span> t = Math.min(<span class="tok-n">1</span>, (now - <span class="tok-k">this</span>._lastFetch) / <span class="tok-k">this</span>.refreshMs);
+    <span class="tok-k">const</span> pos = <span class="tok-k">this</span>._lerpPosition(e._prev, fix, t);
+
+    e.position = Cesium.Cartesian3.fromDegrees(pos.lon, pos.lat, pos.alt);
+
+    <span class="tok-c">// shared helper — keeps headings world-stable across every camera angle</span>
+    <span class="tok-f">projectHeading</span>(e, fix.heading ?? <span class="tok-n">0</span>);
+  }
+},
+
+_lerpPosition(a, b, t) {
+  <span class="tok-k">if</span> (!a) <span class="tok-k">return</span> b;
+  <span class="tok-k">return</span> {
+    lon: a.lon + (b.lon - a.lon) * t,
+    lat: a.lat + (b.lat - a.lat) * t,
+    alt: (a.alt ?? <span class="tok-n">0</span>) + ((b.alt ?? <span class="tok-n">0</span>) - (a.alt ?? <span class="tok-n">0</span>)) * t,
+  };
+},</code></pre>
+
+      <h4>onTrack — surface the telemetry card</h4>
+      <pre id="code-track"><button class="copy" data-copy="code-track">copy</button><code><span class="tok-f">onTrack</span>(entity) {
+  <span class="tok-k">const</span> fix = entity.properties.fix.getValue();
+  <span class="tok-k">return</span> {
+    title: fix.name ?? fix.callsign ?? <span class="tok-s">'Unknown contact'</span>,
+    rows: [
+      [<span class="tok-s">'MMSI'</span>, fix.mmsi ?? <span class="tok-s">'—'</span>],
+      [<span class="tok-s">'Speed'</span>, `${fix.sog ?? <span class="tok-n">0</span>} kn`],
+      [<span class="tok-s">'Heading'</span>, `${fix.heading ?? <span class="tok-n">0</span>}°`],
+      [<span class="tok-s">'Destination'</span>, fix.destination ?? <span class="tok-s">'—'</span>],
+    ],
+    actions: [
+      { label: <span class="tok-s">'Cockpit'</span>, kind: <span class="tok-s">'cockpit'</span> },     <span class="tok-c">// if your layer supports it</span>
+      { label: <span class="tok-s">'Nearest CCTV'</span>, kind: <span class="tok-s">'cctv-handoff'</span> },
+    ],
+  };
+},</code></pre>
+    </section>
+
+    <!-- STEP 4 -->
+    <section id="step4">
+      <h2><span class="num">09</span>Step 4 · Register in main.js</h2>
+      <p>
+        <code class="inline">src/main.js</code> bootstraps the globe and hands the layer registry to the orchestrator.
+        Adding your layer is a two-line change.
+      </p>
+      <pre id="code-register"><button class="copy" data-copy="code-register">copy</button><code><span class="tok-c">// src/main.js</span>
+<span class="tok-k">import</span> { flights }       <span class="tok-k">from</span> <span class="tok-s">'./data/flights.js'</span>;
+<span class="tok-k">import</span> { vessels }       <span class="tok-k">from</span> <span class="tok-s">'./data/vessels.js'</span>;
+<span class="tok-k">import</span> { earthquakes }  <span class="tok-k">from</span> <span class="tok-s">'./data/earthquakes.js'</span>;
+<span class="tok-c">// …</span>
+<span class="tok-k">import</span> { shipSpotters }  <span class="tok-k">from</span> <span class="tok-s">'./data/shipSpotters.js'</span>;   <span class="tok-c">// ← add</span>
+
+<span class="tok-k">const</span> <span class="tok-f">LAYERS</span> = [
+  flights,
+  vessels,
+  earthquakes,
+  <span class="tok-c">// …</span>
+  shipSpotters,                              <span class="tok-c">// ← add</span>
+];
+
+<span class="tok-k">async function</span> <span class="tok-f">bootstrap</span>() {
+  <span class="tok-k">const</span> viewer = <span class="tok-k">await</span> <span class="tok-f">buildViewer</span>({ tiles, terrain });
+  <span class="tok-k">const</span> orch  = <span class="tok-k">await</span> orchestrator.<span class="tok-f">create</span>({ viewer, layers: LAYERS, ctx });
+  ui.<span class="tok-f">attach</span>(orch);   <span class="tok-c">// LAYERS panel reflects the new entry automatically</span>
+}
+
+bootstrap();</code></pre>
+      <p>
+        The orchestrator is the single source of truth for what's on the globe. UI panels, the contacts roster,
+        the HUD summary, the voice agent, and share-link (de)serialization all read from it — so once you
+        register, every other system sees your layer with no further wiring.
+      </p>
+    </section>
+
+    <!-- STEP 5 -->
+    <section id="step5">
+      <h2><span class="num">10</span>Step 5 · Wire the UI</h2>
+      <p>
+        The LAYERS panel on the left side of the screen is generated from the registry — your layer's
+        <code class="inline">name</code>, <code class="inline">icon</code>, and <code class="inline">description</code>
+        render automatically. For richer controls (filter chips, density sliders, sensor-style color pickers),
+        declare them in the layer object:
+      </p>
+      <pre id="code-ui"><button class="copy" data-copy="code-ui">copy</button><code>controls: [
+  { id: <span class="tok-s">'class'</span>, label: <span class="tok-s">'Class'</span>, type: <span class="tok-s">'select'</span>,
+    options: [<span class="tok-s">'all'</span>, <span class="tok-s">'tanker'</span>, <span class="tok-s">'cargo'</span>, <span class="tok-s">'passenger'</span>] },
+  { id: <span class="tok-s">'density'</span>, label: <span class="tok-s">'Density'</span>, type: <span class="tok-s">'range'</span>, min: <span class="tok-n">0</span>, max: <span class="tok-n">100</span>, step: <span class="tok-n">5</span> },
+  { id: <span class="tok-s">'trails'</span>, label: <span class="tok-s">'Trails'</span>, type: <span class="tok-s">'toggle'</span> },
+],
+
+<span class="tok-f">onControl</span>(id, value) {
+  <span class="tok-k">if</span> (id === <span class="tok-s">'class'</span>) <span class="tok-k">this</span>._filterClass = value;
+  <span class="tok-k">if</span> (id === <span class="tok-s">'density'</span>) <span class="tok-k">this</span>._density = value;
+  <span class="tok-k">this</span>._refresh();   <span class="tok-c">// re-query with the new filter</span>
+},</code></pre>
+      <p>
+        Control types currently understood: <code class="inline">toggle</code>, <code class="inline">range</code>,
+        <code class="inline">select</code>, <code class="inline">button</code>. The orchestrator renders them in the
+        LAYERS panel under your layer's row, persists values to <code class="inline">localStorage</code>, and
+        round-trips them through share links via <code class="inline">serializeState</code>.
+      </p>
+      <div class="callout">
+        <span class="callout-title">Contacts roster</span>
+        If your layer tracks moving things, implement <code class="inline">contactsNearby(lat, lon, radiusKm)</code>
+        returning a sorted array. The 250 km Contacts roster automatically merges your results with flights,
+        vessels, and installations — no UI work needed.
+      </div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section id="step6">
+      <h2><span class="num">11</span>Step 6 · Bundle static data</h2>
+      <p>
+        For non-streaming datasets — your own list of sensors, a curated set of points of interest, a disaster
+        reconstruction — drop a file under <code class="inline">src/data/local_data/</code>. Each folder carries
+        its own <code class="inline">README.md</code> with provenance and license; the project's
+        <code class="inline">DATA_SOURCES.md</code> rolls these up.
+      </p>
+      <div class="tree">
+<span class="dir">src/data/local_data/</span>
+├── <span class="dir">datacenters/</span>
+│   ├── <span class="file">datacenters.geojson</span>
+│   └── <span class="file">README.md</span>           <span class="desc"># provenance, license, last-updated</span>
+├── <span class="dir">dams/</span>
+├── <span class="dir">submarine_cables/</span>
+└── <span class="dir">nepal_flood_2024/</span>        <span class="new">your reconstruction</span>
+    ├── <span class="file">usgs_m52.geojson</span>
+    ├── <span class="file">flood_path.geojson</span>
+    ├── <span class="file">observer_clips.geojson</span>   <span class="desc"># lat/lon/link for each social clip</span>
+    └── <span class="file">README.md</span>
+      </div>
+      <p>Load it once at init:</p>
+      <pre id="code-bundle"><button class="copy" data-copy="code-bundle">copy</button><code><span class="tok-k">async</span> <span class="tok-f">_buildSource</span>() {
+  <span class="tok-k">const</span> res = <span class="tok-k">await</span> <span class="tok-f">fetch</span>(<span class="tok-s">'./data/local_data/nepal_flood_2024/usgs_m52.geojson'</span>);
+  <span class="tok-k">return</span> res.<span class="tok-f">json</span>();
+},</code></pre>
+      <div class="callout green">
+        <span class="callout-title">Reconstruction pattern</span>
+        The maintainer's Nepal flood walkthrough is the canonical example: pull public data (USGS, Planet/Viirs,
+        officially reported sources), plot the path, attach observer video clips as billboarded pins along
+        the timeline. The same shape works for wildfire perimeters, quake shake maps, and storm tracks.
+      </div>
+    </section>
+
+    <!-- STEP 7 -->
+    <section id="step7">
+      <h2><span class="num">12</span>Step 7 · API keys &amp; the server proxy</h2>
+      <p>
+        If your layer needs a private key, you have three integration points:
+      </p>
+      <ol>
+        <li><strong>POWER UP panel</strong> — declare your provider in <code class="inline">src/keySetup.js</code> so users can paste a key in-app.</li>
+        <li><strong>Server proxy route</strong> — add a route under the dev server that injects the key from <code class="inline">.env</code> or the macOS Keychain, never exposing it to the browser.</li>
+        <li><strong>Layer flag</strong> — set <code class="inline">requiresKey: 'yourkey'</code> so the panel disables the layer until a key is present.</li>
+      </ol>
+
+      <h4>Declaring the key slot</h4>
+      <pre id="code-keyslot"><button class="copy" data-copy="code-keyslot">copy</button><code><span class="tok-c">// src/keySetup.js</span>
+<span class="tok-k">export const</span> <span class="tok-f">PROVIDERS</span> = [
+  { id: <span class="tok-s">'cesium'</span>,     label: <span class="tok-s">'Cesium ion'</span>,        tier: <span class="tok-s">'free'</span>,   envVar: <span class="tok-s">'CESIUM_ION_TOKEN'</span> },
+  { id: <span class="tok-s">'google'</span>,     label: <span class="tok-s">'Google Maps'</span>,      tier: <span class="tok-s">'metered'</span>, envVar: <span class="tok-s">'GOOGLE_MAPS_KEY'</span> },
+  { id: <span class="tok-s">'aisstream'</span>, label: <span class="tok-s">'AISStream'</span>,        tier: <span class="tok-s">'free'</span>,   envVar: <span class="tok-s">'AISSTREAM_KEY'</span> },
+  { id: <span class="tok-s">'yourkey'</span>,   label: <span class="tok-s">'Your Provider'</span>,    tier: <span class="tok-s">'free'</span>,   envVar: <span class="tok-s">'YOUR_PROVIDER_KEY'</span> },  <span class="tok-c">// ← add</span>
+];</code></pre>
+
+      <h4>Server proxy</h4>
+      <pre id="code-proxy"><button class="copy" data-copy="code-proxy">copy</button><code><span class="tok-c">// server/routes/yourkey.js  (Vite dev middleware)</span>
+<span class="tok-k">import</span> { ssrfGuard, cappedFetch } <span class="tok-k">from</span> <span class="tok-s">'./util.js'</span>;
+
+<span class="tok-k">export async function</span> <span class="tok-f">handle</span>(req, res) {
+  <span class="tok-k">const</span> key = process.env.YOUR_PROVIDER_KEY;
+  <span class="tok-k">if</span> (!key) <span class="tok-k">return</span> res.<span class="tok-f">status</span>(<span class="tok-n">503</span>).<span class="tok-f">json</span>({ error: <span class="tok-s">'not_configured'</span> });
+
+  <span class="tok-k">const</span> target = <span class="tok-f">ssrfGuard</span>(req.query.url);   <span class="tok-c">// block 169.254/16, RFC1918, etc.</span>
+  <span class="tok-k">const</span> upstream = <span class="tok-k">await</span> <span class="tok-f">cappedFetch</span>(target, {
+    headers: { Authorization: <span class="tok-s">'Bearer '</span> + key },
+    maxBytes: <span class="tok-n">2_000_000</span>,                  <span class="tok-c">// response cap</span>
+    timeoutMs: <span class="tok-n">8000</span>,
+  });
+
+  res.<span class="tok-f">json</span>(upstream);                         <span class="tok-c">// sanitized — no key in body</span>
+}</code></pre>
+
+      <div class="callout red">
+        <span class="callout-title">Threat model</span>
+        The dev server binds to localhost by default. If you opt in to LAN sharing, any reachable user can call
+        your brokered endpoints. Set per-IP throttles (<code class="inline">GEV_RATELIMIT_*</code>), configure
+        provider quotas/budgets, and never expose the Provider Settings panel remotely — it's disabled when
+        <code class="inline">--host 0.0.0.0</code> is set. App-level throttles are <strong>not</strong> billing caps.
+      </div>
+    </section>
+
+    <!-- STEP 8 -->
+    <section id="step8">
+      <h2><span class="num">13</span>Step 8 · Voice tools (optional)</h2>
+      <p>
+        The voice agent under <code class="inline">src/voice/</code> is an OpenAI Realtime session with 28 tools
+        across four jobs: <em>direct it</em>, <em>annotate it</em>, <em>interrogate it</em>, <em>operate it</em>.
+        Adding your own tool is the cleanest way to make your layer talkable.
+      </p>
+
+      <h4>Declare the tool</h4>
+      <pre id="code-tool"><button class="copy" data-copy="code-tool">copy</button><code><span class="tok-c">// src/voice/tools/shipSpottersQuery.js</span>
+<span class="tok-k">export const</span> <span class="tok-f">shipSpottersQuery</span> = {
+  name: <span class="tok-s">'ship_spotters_query'</span>,
+  description: <span class="tok-s">'Query the community AIS layer. Use when the user asks about ships near a place, by class, by destination, or by name.'</span>,
+  parameters: {
+    type: <span class="tok-s">'object'</span>,
+    properties: {
+      place:    { type: <span class="tok-s">'string'</span>, description: <span class="tok-s">'A location name or "current view".'</span> },
+      shipClass:{ type: <span class="tok-s">'string'</span>, enum: [<span class="tok-s">'tanker'</span>, <span class="tok-s">'cargo'</span>, <span class="tok-s">'passenger'</span>, <span class="tok-s">'all'</span>] },
+      minSpeed: { type: <span class="tok-s">'number'</span>, description: <span class="tok-s">'Minimum speed in knots.'</span> },
+    },
+    required: [<span class="tok-s">'place'</span>],
+  },
+
+  <span class="tok-k">async</span> <span class="tok-f">run</span>(args, ctx) {
+    <span class="tok-k">const</span> layer = ctx.orch.getLayer(<span class="tok-s">'ship-spotters'</span>);
+    <span class="tok-k">if</span> (!layer || !layer._enabled) {
+      <span class="tok-k">return</span> { ok: <span class="tok-k">false</span>, reason: <span class="tok-s">'layer_disabled'</span> };
+    }
+
+    <span class="tok-k">const</span> center = <span class="tok-k">await</span> ctx.geocode(args.place);
+    <span class="tok-k">const</span> contacts = layer.<span class="tok-f">contactsNearby</span>(center.lat, center.lon, <span class="tok-n">250</span>);
+
+    <span class="tok-k">const</span> filtered = contacts
+      .filter(c =&gt; !args.shipClass || args.shipClass === <span class="tok-s">'all'</span> || c.class === args.shipClass)
+      .filter(c =&gt; !args.minSpeed || c.sog &gt;= args.minSpeed)
+      .slice(<span class="tok-n">0</span>, <span class="tok-n">12</span>);
+
+    <span class="tok-k">return</span> {
+      ok: <span class="tok-k">true</span>,
+      spoken: `${filtered.length} ships near ${args.place}`,
+      contacts: filtered.map(c =&gt; ({ name: c.name, mmsi: c.mmsi, sog: c.sog, destination: c.destination })),
+    };
+  },
+};</code></pre>
+
+      <h4>Register it</h4>
+      <pre id="code-toolreg"><button class="copy" data-copy="code-toolreg">copy</button><code><span class="tok-c">// src/voice/index.js</span>
+<span class="tok-k">import</span> { shipSpottersQuery } <span class="tok-k">from</span> <span class="tok-s">'./tools/shipSpottersQuery.js'</span>;
+
+<span class="tok-k">export const</span> <span class="tok-f">TOOLS</span> = [
+  <span class="tok-c">// …existing 28…</span>
+  shipSpottersQuery,
+];</code></pre>
+      <p>
+        Now you can say <em>"how many tankers are near Rotterdam on the community feed?"</em> and get a spoken
+        count plus a populated contacts card. The agent is instructed to only confirm actions that succeeded —
+        your tool's <code class="inline">ok: false</code> paths keep it honest.
+      </p>
+      <div class="callout">
+        <span class="callout-title">Honest and secure</span>
+        The agent only confirms actions that succeeded. Your OPENAI_API_KEY never touches the browser; the client
+        only gets a short-lived session token. Layer keys you read out of <code class="inline">ctx.orch</code> are
+        the same keys the rest of the app uses — never re-fetch from <code class="inline">process.env</code> in a
+        voice tool.
+      </div>
+    </section>
+
+    <!-- STEP 9 -->
+    <section id="step9">
+      <h2><span class="num">14</span>Step 9 · Share-link state</h2>
+      <p>
+        Every layer's filters, density sliders, and tracked contact serialize into the URL via
+        <code class="inline">serializeState</code> / <code class="inline">deserializeState</code>. A live tracked
+        contact is a handoff, not a bookmark — when someone opens your share link, the contact keeps moving.
+      </p>
+      <pre id="code-share"><button class="copy" data-copy="code-share">copy</button><code><span class="tok-f">serializeState</span>() {
+  <span class="tok-k">return</span> {
+    enabled: <span class="tok-k">this</span>._enabled,
+    filters: { class: <span class="tok-k">this</span>._filterClass, density: <span class="tok-k">this</span>._density },
+    trackedId: <span class="tok-k">this</span>._trackedId ?? <span class="tok-k">null</span>,
+  };
+},
+
+<span class="tok-f">deserializeState</span>(s) {
+  <span class="tok-k">if</span> (s?.filters) {
+    <span class="tok-k">this</span>._filterClass = s.filters.class;
+    <span class="tok-k">this</span>._density    = s.filters.density;
+  }
+  <span class="tok-k">if</span> (s?.enabled) <span class="tok-k">this</span>.<span class="tok-f">enable</span>();
+  <span class="tok-k">if</span> (s?.trackedId) <span class="tok-k">this</span>._pendingTrackId = s.trackedId;
+},</code></pre>
+      <p>
+        The orchestrator handles URL parsing and dispatch — you just provide the snapshot. Round-trip test by
+        enabling your layer, tracking a contact, copying the URL, and opening it in a fresh tab.
+      </p>
+    </section>
+
+    <!-- BEST PRACTICES -->
+    <section id="best">
+      <h2><span class="num">15</span>Best practices</h2>
+
+      <h4>Performance</h4>
+      <ul>
+        <li><strong>Cap entities.</strong> Set <code class="inline">maxEntities</code> and cull outside the viewport. The flights layer only shows contacts in or near the current view — thousands globally, hundreds rendered.</li>
+        <li><strong>Interpolate, don't snap.</strong> Live feeds arrive every 15–30s; render one interval behind real time and lerp between known fixes. Dead reckon the gaps.</li>
+        <li><strong>Cache aggressively.</strong> Disk-cache static lists (TLEs, bundled data). Memoize geocoded place names. The OpenSky credit governor and TomTom daily tile budget are reference patterns.</li>
+        <li><strong>Heights on the real ground.</strong> Entity heights are aligned to work with Google 3D tiles so aircraft park on aprons and cameras stand on street corners. Use <code class="inline">HeightReference.CLAMP_TO_GROUND</code> for ground-fixed entities.</li>
+      </ul>
+
+      <h4>Security</h4>
+      <ul>
+        <li><strong>Broker every private key server-side.</strong> The only keys the browser may see are Google Maps and Cesium ion — both URL-restricted at the provider.</li>
+        <li><strong>SSRF-protect every proxy.</strong> Block link-local, RFC1918, and loopback targets. Cap response size. Sanitize errors so the key never leaks in a stack trace.</li>
+        <li><strong>Per-IP throttles.</strong> Set <code class="inline">GEV_RATELIMIT_*</code> for any provider you broker. App throttles are not billing caps — set provider budgets too.</li>
+        <li><strong>Disable Provider Settings on shared instances.</strong> The panel auto-disables when <code class="inline">--host 0.0.0.0</code> is set; don't override this.</li>
+      </ul>
+
+      <h4>Honesty</h4>
+      <ul>
+        <li><strong>Label modeled data.</strong> Space Missions replay trajectories are labeled <em>RECONSTRUCTED ESTIMATE</em> in the UI. CCTV camera poses are <em>estimated priors you calibrate by dragging a gizmo</em>. If your layer is inferred, modeled, or coarse, say so — in the panel and in the telemetry card.</li>
+        <li><strong>Stale data is okay; silent stale data is not.</strong> Surface the timestamp of the last good fix. If your feed goes dark, show "feed degraded" rather than freeze the world.</li>
+        <li><strong>No person-tracking.</strong> Don't merge PRs that build named-person search, face recognition, or individual tracking. People are not a query type.</li>
+      </ul>
+    </section>
+
+    <!-- EXAMPLES -->
+    <section id="examples">
+      <h2><span class="num">16</span>Learn from existing layers</h2>
+      <p>The best documentation is the source itself. Pair this manual with these reference files:</p>
+      <table>
+        <thead><tr><th>File</th><th>Pattern</th><th>What to steal</th></tr></thead>
+        <tbody>
+          <tr><td><code>data/earthquakes.js</code></td><td>Polling REST, keyless</td><td>Simplest end-to-end layer — fetch, billboard, telemetry card.</td></tr>
+          <tr><td><code>data/vessels.js</code></td><td>WebSocket streaming</td><td>AISStream batching, server proxy, dead reckoning.</td></tr>
+          <tr><td><code>data/satellites.js</code></td><td>Stateless propagation</td><td>SGP4, GMST-locked orbit rings, daily TLE re-fetch.</td></tr>
+          <tr><td><code>data/flights.js</code></td><td>Polling with credit governor</td><td>OpenSky budgeting, 3D model swap on approach, cockpit mode.</td></tr>
+          <tr><td><code>data/cctv.js</code></td><td>Multi-city aggregation</td><td>Per-provider adapters, viewshed primitive, pose calibration gizmo.</td></tr>
+          <tr><td><code>data/transit.js</code></td><td>GTFS-Realtime</td><td>Delayed playback between reports, mode-colored detection labels.</td></tr>
+          <tr><td><code>data/datacenters.js</code></td><td>Bundled static</td><td>GeoJSON load from <code>local_data/</code>, viewport-bounded rendering.</td></tr>
+          <tr><td><code>data/directions.js</code></td><td>OSRM routing</td><td>Street-following path, drone-shot camera along a route.</td></tr>
+          <tr><td><code>data/iconOrientation.js</code></td><td>Shared helper</td><td>Call into this — never roll your own heading projection.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- DEBUG -->
+    <section id="debug">
+      <h2><span class="num">17</span>Testing &amp; debugging</h2>
+      <p>The project ships a small dev ergonomics surface — use it.</p>
+      <ul>
+        <li><code class="inline">npm run doctor</code> — reports Node/npm readiness, primary provider routes, and where each configured provider was found (without printing credential values).</li>
+        <li><code class="inline">npm run dev</code> — Vite dev server on <code class="inline">http://localhost:4173</code>.</li>
+        <li><code class="inline">./scripts/dev-fresh.sh</code> (macOS) — clears the Vite cache and pulls configured keys straight from Keychain. Starts keyless too.</li>
+        <li><code class="inline">?setup=1</code> — reopens the POWER UP panel if a compact layout hides it.</li>
+        <li><code class="inline">?layer=ship-spotters&amp;track=&lt;id&gt;</code> — share-link round-trip test for your layer.</li>
+      </ul>
+      <div class="callout cyan">
+        <span class="callout-title">Work with a coding agent</span>
+        The maintainer explicitly recommends cloning the repo into Cursor / Claude Code / Codex / Antigravity and
+        describing the layer you want in natural language. The repo's vanilla-JS shape is intentionally
+        agent-friendly — small files, no framework magic, no hidden conventions. State what your layer does,
+        what feed it reads, and what it should look like; let the agent wire it.
+      </div>
+    </section>
+
+    <!-- PR -->
+    <section id="pr">
+      <h2><span class="num">18</span>Submitting a PR</h2>
+      <p>The project welcomes community layers — ALPR cameras and SDR radio are already in flight as PRs.</p>
+      <ol>
+        <li>Open an issue first describing the layer and the feed. The maintainers will flag duplicates, key-handling concerns, or scope issues before you write code.</li>
+        <li>Fork, branch <code class="inline">feat/layer-&lt;name&gt;</code>, implement against this manual.</li>
+        <li>Drop a <code class="inline">README.md</code> in <code class="inline">local_data/&lt;your_dataset&gt;/</code> with provenance, license, and last-updated date.</li>
+        <li>If you added a key, update <code class="inline">SECURITY.md</code> with the new brokered route and any LAN-sharing implications.</li>
+        <li>Include at least one share-link round-trip test in your PR description (URL with your layer enabled + a tracked contact).</li>
+        <li>Don't cross the line — person-tracking, face recognition, and named-person search won't merge.</li>
+      </ol>
+    </section>
+
+    <!-- CHECKLIST -->
+    <section id="checklist">
+      <h2><span class="num">19</span>Ship checklist</h2>
+      <div class="callout green">
+        <span class="callout-title">Before you open the PR</span>
+        <ul style="margin:6px 0 0">
+          <li>Layer module lives at <code class="inline">src/data/&lt;name&gt;.js</code> and exports the full lifecycle contract.</li>
+          <li>Registered in <code class="inline">src/main.js</code>; appears in the LAYERS panel with name, icon, description.</li>
+          <li>Uses <code class="inline">iconOrientation.js</code> for world-stable headings (no spinning, no viewport-locking).</li>
+          <li>Interpolates between fixes — smooth motion, not snap-step.</li>
+          <li>Respects <code class="inline">maxEntities</code> and viewport culling.</li>
+          <li>Labels modeled/inferred data honestly (<em>RECONSTRUCTED ESTIMATE</em>, <em>estimated prior</em>, etc.).</li>
+          <li>Private keys brokered server-side; SSRF guard, response caps, sanitized errors.</li>
+          <li>Static data in <code class="inline">local_data/</code> with provenance + license.</li>
+          <li>Optional: voice tool registered in <code class="inline">src/voice/</code> with honest <code class="inline">ok: false</code> paths.</li>
+          <li>Optional: share-link state serializes filters + tracked contact and round-trips.</li>
+          <li>Does not enable named-person search, face recognition, or individual tracking.</li>
+        </ul>
+      </div>
+      <p style="margin-top:28px;color:var(--ink-faint);font-size:14px">
+        God's Eye View is the canonical live 3D client from the project that kicked off the recent wave of
+        spatial-intelligence tools — and it's a canvas. The layers here are the signals one person could find and
+        fuse. Add a city pack, a data source, a style, a voice tool. Bring that window to others.
+      </p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="inner">
+    <div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.1em">GOD'S EYE VIEW · DEV FIELD MANUAL</div>
+      <div style="margin-top:6px">Released under the MIT License. Bundled and live datasets carry their own terms — see DATA_SOURCES.md.</div>
+    </div>
+    <div class="links">
+      <a href="https://github.com/bilawalsidhu/gods-eye-view" target="_blank" rel="noopener">github repo</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/SECURITY.md" target="_blank" rel="noopener">SECURITY.md</a>
+      <a href="https://github.com/bilawalsidhu/gods-eye-view/blob/main/docs/CURRENT-STATE.md" target="_blank" rel="noopener">CURRENT-STATE.md</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ============ Copy buttons ============
+  document.querySelectorAll('.copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.copy);
+      if (!target) return;
+      const text = target.querySelector('code').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copied ✓';
+        btn.classList.add('ok');
+        setTimeout(() => { btn.textContent = 'copy'; btn.classList.remove('ok'); }, 1400);
+      });
+    });
+  });
+
+  // ============ Scroll-spy TOC ============
+  const headings = Array.from(document.querySelectorAll('main.docs h2[id]'));
+  const links = Array.from(document.querySelectorAll('aside.toc a[href^="#"]'));
+  const linkFor = id => links.find(a => a.getAttribute('href') === '#' + id);
+
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const active = linkFor(entry.target.id);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  headings.forEach(h => spy.observe(h));
+</script>
+
+</body>
+</html>
