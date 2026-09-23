@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mining Operations & Production — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#ff7043;--accent-soft:rgba(255,112,67,0.14);--accent-glow:rgba(255,112,67,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link is-active" data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#ff7043;border-color:#ff7043;background:rgba(255,112,67,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#ff7043"></span>
+    ⛏️ Mining Operations & Production · 12 sources
+  </div>
+  <h1 class="hero__title">Mining Operations & Production</h1>
+  <p class="hero__subtitle">Asset-level production, reserves, cost curves, tailings inventories, and corporate ownership. The layer that converts geological potential into economic reality. Combine with commodity prices for NPV calculations; combine with satellite imagery for production verification; combine with shipping data for export reconciliation.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="12">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">7</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">0</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">5</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">12 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">USGS Minerals Yearbook</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download Yearbook chapters → extract mine-level production → geocode by site name</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>USGS MYB is the public-domain baseline for country-level production by commodity — the single source every government, analyst, and academic references.</li><li>Mine-level chapters list operators and capacities — surfaces legacy operations still listed but inactive, useful for restart-screening.</li><li>3-year rolling averages smooth out strike years and reveal underlying decline curves invisible in single-year data.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">MYB capacity vs. actual production ratio per mine is a 'utilisation' metric — sustained &lt;70% utilisation flags structural problems (ore depletion, geotechnical issues, labour unrest) that company filings often obscure.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/minerals_yearbook/<span class="tok-num">2024</span>.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">USGS MCS</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download MCS PDF + data tables → parse reserves/production → attach to country polygons as choropleth</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>MCS country reserves + production gives a 'reserves life' (R/P) index per country per commodity — surfaces supply-concentration risk (e.g. DRC for Co, China for REE, South Africa for PGM).</li><li>Year-over-year reserves revisions reveal exploration success — declining reserves despite production signals depletion outpacing replacement.</li><li>MCS is the global benchmark for geopolitical supply-risk analysis — every critical-minerals policy paper references it.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Build a 'supply-concentration Herfindahl-Hirschman Index (HHI)' per commodity from MCS country shares — HHI &gt; 2,500 surfaces supply-security red flags (REEs at ~6,000, far above the 2,500 'highly concentrated' threshold).</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityReserves.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityReserves.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/mcs/2024_reserves.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">ICMM Tailings</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download Global Tailings Disclosure CSV → geocode dams → include hazard/volume/consequence fields</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ICMM's tailings disclosure (post-Brumadinho) covers ~1,000 dams from 60+ operators — the only public global tailings inventory with consequence classification.</li><li>Per-dam hazard rating × downstream population × distance to watercourse yields a tailings-risk index independent of operator self-assessment.</li><li>Construction-method field (upstream / downstream / centerline) is the single strongest predictor of failure — upstream dams in active seismic zones are the global red flag.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">ICMM tailings + InSAR deformation + GFW forest loss + downstream population = a tailings-dam early-warning matrix. The ~50 dams with extreme consequence + upstream construction + mm-scale wall deformation are the next failure candidates — a portfolio risk metric impossible without EO cross-validation.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>tailings.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 tailings.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">Global Tailings Review</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download GTR CSV from globaltailingsreview.org → merge with ICMM for fuller coverage</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GTR extends ICMM coverage to non-member operators — surfaces tailings at junior and state-owned mines that ICMM misses.</li><li>GTR's standardised GTRM (Global Tailings Standard) conformity field is the only independent ESG metric for tailings management — surfaces laggards regardless of ICMM membership.</li><li>Merge with ICMM to remove duplicates by dam-name + lat/lon clustering — a unified global tailings database with ~2,200 dams.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GTR + ICMM deduplicated tailings inventory, joined with downstream-population rasters (WorldPop), surfaces ~5 million people living within 50 km of an extreme-consequence upstream dam — the global tailings-exposure metric that ESG funds should be using.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>tailings.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 tailings.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/tailings_dams/gtr.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">World Mining Congress</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download WMC country production stats → attach to country boundary GeoJSON for choropleth</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>WMC country × commodity production is the cross-check for USGS MCS — discrepancies surface under- or over-reporting by individual countries.</li><li>WMC includes mining-method breakdown (surface vs. underground) per country — surfaces the underground-heavy jurisdictions with higher safety risks.</li><li>Per-country mining-sector employment figures enable productivity calculations (tonnes per worker) — a benchmarking metric for mining jurisdictions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">WMC mining employment + production + BMI commodity prices = 'labour productivity USD/worker' ranking per country. Australia and Chile lead at ~$600k/worker; many African jurisdictions are &lt; $50k/worker — surfacing the structural competitiveness gap.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityProduction.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityProduction.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/wmc/production_by_country.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">BGS WMP</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download BGS 5-year rolling stats → parse country × commodity × year → bundle as time-series JSON</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>BGS WMP is the European-perspective complement to USGS MCS — surfaces EU-critical materials (Mg, REE, Nb) with more detail than MCS.</li><li>5-year rolling averages smooth out single-year shocks — surfaces long-term decline trajectories (e.g. European fluorspar).</li><li>Country-by-commodity matrix reveals EU import dependency for each CRM — a policy input that the EU CRM list itself references.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">BGS WMP 5-year trend + USGS MCS annual snapshot = a triangulated country-production estimate with confidence intervals — surfacing where USGS and BGS disagree on production numbers (frequently Chinese REE and tungsten).</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityProduction.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityProduction.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/bgs_wmp/5yr_production.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">S&amp;P Global MI</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain S&amp;P API access (enterprise) → broker with response caps → fetch asset-level reserves/production</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>S&amp;P Global MI is the gold-standard asset-level mining database — used by every major bank, with reserves and production at mine level.</li><li>Per-asset ownership chain (parent → subsidiary → JVs) reveals true beneficial ownership — surfaces state-backed minority stakes that complicate M&amp;A.</li><li>Asset-level cash cost + sustaining capex + byproduct credits = all-in sustaining cost (AISC) — the single most-watched production-cost metric in mining.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">S&amp;P MI asset-level cost curve per commodity, joined with live LME prices, produces a real-time 'margin map' — the mines below current price but above their cash cost are the swing producers who ramp up or down first, leading commodity price direction.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/spglobal/asset?mineId=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">MineSpans (McKinsey)</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain MineSpans access (paid) → export cost curves as CSV → bundle or use API broker</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>MineSpans is the only dataset with bottom-up cost models for ~600 mines — derived from equipment, labour, energy, and consumables data rather than company disclosures.</li><li>Per-mine productivity (tonnes per employee, equipment hours per tonne) benchmarks operators against peers — surfaces under-performers and best-practice exemplars.</li><li>MineSpans cost-curve breakpoints predict commodity price floors — the 90th percentile cost mine is the marginal producer setting the price floor.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">MineSpans cost-curve percentile per mine × current commodity price = a real-time mine-by-mine survival probability. Mines consistently in the top decile of the cost curve are the candidates for closure during price downturns — a leading indicator of supply contraction.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mineCosts.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mineCosts.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/minespans/cost_curves.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">Raw Materials Data</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain RMD access (paid) → export mine &amp; smelter ownership/production → geocode &amp; bundle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>RMD is the longest-running mining ownership database (since 1980s) — surfaces historical ownership chains that other databases miss.</li><li>Smelter-level data (not just mines) is unique — surfaces bottlenecks in the mine→refinery→smelter chain (e.g. Chinese rare-earth refinery concentration).</li><li>Per-company portfolio analysis reveals commodity diversification — single-commodity juniors are the highest bankruptcy risk in price downturns.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">RMD ownership chains joined with SEDAR+ filings and OpenCorporates registry data produces a multi-source corporate-structure graph — surfacing the beneficial-ownership chains that hide beneficial state or sanctioned ownership in major mines.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/rmd/mines_smelters.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">S&amp;P SNL Mining</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use SNL API for M&amp;A and pipeline → broker through server → render M&amp;A events as timeline annotations</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SNL M&amp;A transaction database is the deal-flow layer — surfaces early-stage option agreements before final closing, a leading indicator of corporate interest.</li><li>Per-target resource vs. deal-value ratio is a 'price per ounce' metric — surfaces cheap or expensive acquisitions relative to commodity peers.</li><li>M&amp;A activity by commodity, ranked, identifies 'hot' commodities (recent lithium) vs. 'cold' — a market-sentiment proxy for capital allocation.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SNL M&amp;A deal flow + S&amp;P Platts commodity prices + LME warehouse stocks = a 'capital-cycle indicator' per commodity. Rising M&amp;A + falling stocks + rising prices signals peak-of-cycle; the inverse signals trough. The 2011 iron-ore peak and 2016 trough were both visible 6 months ahead in this composite.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>miningMA.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 miningMA.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/snl/transactions?commodity=copper'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">CRU Group</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain CRU API access (paid) → fetch mine cost curves &amp; production forecasts → broker server-side</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>CRU's independent cost-curve analysis is the alternative to MineSpans — frequently diverges on individual mine estimates, surfacing analyst judgement differences.</li><li>CRU's 5-year production forecasts by mine are the analyst-community consensus — useful baseline for testing your own forecasts.</li><li>CRU's 10-year supply-demand balances drive commodity-price forecasts across the industry.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">CRU + MineSpans + S&amp;P MI cost-curve estimates, averaged with confidence intervals, produces a triangulated cost curve more reliable than any single source. Mines where all three agree are 'consensus'; mines with high variance are analyst-disagreement hotspots worth investigating.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mineCosts.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mineCosts.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/cru/costcurve?commodity=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">12</span>
+    <h3 class="source-card__title">Wood Mackenzie</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain WoodMac access (enterprise) → fetch asset database &amp; outlooks → broker with strict caps</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>WoodMac's asset database is the third leg of the cost-curve tripod (with MineSpans and CRU) — frequently the most detailed for energy-transition commodities (Li, Co, Ni, graphite).</li><li>WoodMac's 20-year demand outlooks (especially for EV-battery materials) are the most-cited in investor decks.</li><li>Per-asset ESG scoring by WoodMac is increasingly used by Tier-1 banks for project-finance decisions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">WoodMac's 20-year Li demand forecast + S&amp;P MI asset database + USGS MCS reserves = a 'structural deficit timer' per battery mineral. The 2027 nickel sulfate deficit and 2028 lithium hydroxide deficit were both visible in this composite 4+ years ahead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/woodmac/asset?mineId=...'</span>)</code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="earth-observation.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">🛰️ Earth Observation &amp; Satellite</div></a><a href="commodity-prices.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Commodity Prices &amp; Financials 💹</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geophysics, Seismic & Hazards — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#ef5350;--accent-soft:rgba(239,83,80,0.14);--accent-glow:rgba(239,83,80,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link is-active" data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#ef5350;border-color:#ef5350;background:rgba(239,83,80,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#ef5350"></span>
+    🌋 Geophysics, Seismic & Hazards · 8 sources
+  </div>
+  <h1 class="hero__title">Geophysics, Seismic & Hazards</h1>
+  <p class="hero__subtitle">Earthquakes, volcanoes, magnetics, gravity, space weather. The layer that gives the third dimension and the dynamic hazard frame. Combined with mine locations for risk assessment, with heat flow for geothermal potential, and with seismic stations for exploration targeting, this layer protects operations and unlocks blind deposits.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="8">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">1</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">7</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">0</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">8 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">USGS Earthquakes</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use USGS GeoJSON summary feed (free, no key) → poll all_day.geojson every 60s → render by magnitude</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>USGS real-time earthquake feed is the global standard — every M2.5+ within minutes.</li><li>Per-mine earthquake-density baseline (events per km² per year) is a seismic-risk metric — surfaces mines in active fault zones.</li><li>Earthquake swarms near tailings dams are an early-warning signal — Brumadinho was preceded by 6 months of elevated local seismicity.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">USGS earthquakes within 50 km of ICMM tailings dams × dam consequence classification = a 'tailings-seismic-risk matrix'. The ~50 high-consequence upstream dams in seismic zones are the next failure candidates — visible to anyone combining these two free datasets.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>earthquakes.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 earthquakes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">EMSC</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use EMSC RSS/JSON feed (free) → poll every 60s → display as secondary source alongside USGS</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>EMSC is the European complement to USGS — stronger coverage in European and Mediterranean regions.</li><li>USGS + EMSC together provide redundant earthquake coverage — useful for catching events either source misses.</li><li>EMSC's felt-reports (user-submitted) give macroseismic intensity data unavailable in USGS machine feed.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">EMSC felt-reports + USGS shake maps + mine locations = a 'mine-felt-intensity' dataset. Mines in regions with frequent 'felt' intensity &gt; V are candidates for seismic monitoring infrastructure — a recommendation often missing from mine-design reports.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>earthquakes.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 earthquakes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.seismicportal.eu/fdsnws/event/<span class="tok-num">1</span>/query?format=json'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">EarthScope (IRIS)</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / XML</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use IRIS FDSN-WS event &amp; waveform service (free) → fetch station locations → render as billboards</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IRIS/EarthScope hosts the global seismographic network — station locations reveal national seismic-monitoring density.</li><li>Per-region station-density is a proxy for seismic hazard awareness — sparse stations often correlate with under-monitored mining regions.</li><li>IRIS waveform data enables passive-seismic exploration — surfaces (HTF) microseismic monitoring of hydraulic stimulation.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">IRIS seismic-station locations + USGS earthquake density + mining-cadastre boundaries = a 'passive-seismic exploration potential' map. Mines near dense seismic networks can leverage public waveform data for hydrothermal-fluid monitoring — a free geophysical dataset usually requiring paid surveys.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>seismicStations.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / XML</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 seismicStations.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//service.iris.edu/fdsnws/event/<span class="tok-num">1</span>/query?format=xml'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">Global Volcanism Program</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download Smithsonian GVP Holocene volcano database (CSV) → convert to GeoJSON → bundle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GVP is the global volcanic database — every Holocene (last 10,000 years) volcano with location, type, and eruption history.</li><li>Per-mine proximity to active volcanoes is a geothermal-energy and geotechnical-risk proxy — Chilean Cu porphyries and Indonesian mines are most exposed.</li><li>Volcanic-hosted massive sulfide (VMS) deposits are spatially associated with GVP features — surfaces exploration targets in arc settings.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GVP Holocene volcanoes + SEGEMAR geology (andesitic volcaniclastics) + EarthChem whole-rock geochemistry (calc-alkaline arc signature) = a 3-source 'Andean porphyry Cu prospectivity' map. This composite surfaces blind porphyry targets beneath younger volcanic cover — a technique used to discover the Caspiche and Cerro Casale deposits.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>volcanoes.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 volcanoes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/gvp_volcanoes/holocene.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">NOAA SWPC</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use NOAA SWPC JSON API (free) → poll for geomagnetic storm alerts → display HUD warning when Kp &gt; 5</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>NOAA SWPC planetary K-index is the global geomagnetic-activity monitor — Kp &gt; 5 = geomagnetic storm.</li><li>Severe geomagnetic storms (Kp &gt; 7) disrupt GPS-guided mining equipment and high-precision surveying — operational risk for modern automated mines.</li><li>Storm-time ionospheric disturbances affect radio communications in remote mines — surfaces need for redundant comms.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">NOAA SWPC Kp index + GPS base-station logs + mining-equipment outage reports = a 'space-weather operational-risk' composite. The 2024 May Kp=9 storm caused documented GPS outages at Australian Pilbara mines — this composite would have flagged the risk 24+ hours ahead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>spaceWeather.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 spaceWeather.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//services.swpc.noaa.gov/json/planetary_k_index_1m.json'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">EMAG2 v3</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use NOAA NCEI EMAG2 WMS for global magnetic anomaly grid → add as basemap toggle for exploration</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>EMAG2 v3 is the global magnetic-anomaly grid at 2 arc-minute resolution — the only free global magnetic dataset.</li><li>Magnetic anomalies reveal basement structure and intrusion locations — surfaces blind porphyry and IOCG targets beneath cover.</li><li>EMAG2 anomaly gradients over known metallogenic belts reveal extension targets — e.g. continuation of Yilgarn Au province beneath cover.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">EMAG2 magnetic anomalies + BGI WGM gravity + OneGeology bedrock = a 3-source 'basement-structure' interpretation map. This composite surfaces deep crustal boundaries that control deposit localisation — the same technique that predicted the Olympic Dam IOCG discovery.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'EMAG2_V3'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">BGI WGM</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use BGI global gravity WMS for Bouguer anomaly maps → add as basemap toggle for basement interpretation</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>BGI WGM (World Gravity Map) is the global Bouguer anomaly grid at ~10 km resolution — the only free global gravity dataset.</li><li>Gravity lows often signal sedimentary basins overlying basement — surfaces undercover extension of known mineral belts.</li><li>Gravity highs correlate with mafic intrusions — surfaces Ni-Cu-PGE prospectivity (e.g. Sudbury, Bushveld).</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">BGI gravity + EMAG2 magnetics + Macrostrat stratigraphy = a 'basement-terrane' interpretation map. Boundaries between gravity-magnetic domains often correspond to major crustal sutures — surfaces deep structural controls on mineralisation that surface geology alone misses.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'BGI_WGM'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">Copernicus EMS</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Copernicus EMS Rapid Mapping (free) → poll for activations during crises → display delineation maps</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Copernicus EMS Rapid Mapping is the only free crisis-response mapping service — activated within hours of major disasters.</li><li>EMS activations near mine sites are independent verification of incidents — surfaces events before company disclosure.</li><li>EMS delineation products give per-event disturbance extent — useful for impact quantification.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Copernicus EMS activations + USGS earthquake feed + OpenAerialMap UAV captures = a 'mine-disaster verification pipeline'. Any mine within 50 km of a Copernicus EMS activation is flagged for immediate monitoring — surfacing operational disruptions 2-4 days before official disclosure.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>rapidMapping.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 rapidMapping.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//emergency.copernicus.eu/mapping/.../activations'</span>)</span></code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="esg-environmental.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">🌱 ESG, Environmental &amp; Social</div></a><a href="infrastructure-energy.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Infrastructure, Energy &amp; Water ⚡</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

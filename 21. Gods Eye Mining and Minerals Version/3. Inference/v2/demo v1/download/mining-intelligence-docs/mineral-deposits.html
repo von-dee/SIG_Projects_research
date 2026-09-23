@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mineral Deposits & Geology — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#f5a623;--accent-soft:rgba(245,166,35,0.14);--accent-glow:rgba(245,166,35,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link is-active" data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#f5a623;border-color:#f5a623;background:rgba(245,166,35,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#f5a623"></span>
+    🪨 Mineral Deposits & Geology · 17 sources
+  </div>
+  <h1 class="hero__title">Mineral Deposits & Geology</h1>
+  <p class="hero__subtitle">Bedrock maps, mine registers, geochemistry, heat flow, and lithological lexicons — the foundational geological layer for every mineral intelligence workflow. Combine regional surveys (OneGeology, BGS, SGU) with national occurrences (MRDS, ARDF, SAMINDABA) and global geochemistry (EarthChem, Mindat) to triangulate from continent-scale tectonics down to deposit-scale paragenesis.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="17">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">5</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">11</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">1</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">17 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">USGS MRDS</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">GeoJSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download CSV from mrdata.usgs.gov → convert with ogr2ogr → place in local_data/mrds/</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Cross-correlate commodity vs. deposit-type to identify under-explored metallogenic belts — e.g. all MRDS occurrences of molybdenum-porphyry inside a 50 km buffer of an active Cu-porphyry cluster flags blind Mo potential.</li><li>The development_status field (Prospect → Producer → Past Producer) lets you compute a 'brownfield-density' kernel: high past-producer density with low active production signals rejuvenation opportunities.</li><li>By intersecting MRDS points with USGS State geology polygons you can derive a commodity probability raster per lithological unit — a poor-man's weights-of-evidence model.</li><li>Operation_type (Underground / Open Pit / Placer) combined with primary commodity gives a quick CAPEX heuristic: open-pit bulk tonnage vs. underground high-grade.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Build a temporal production curve for any US district by mining the year_first_produced / year_last_produced fields and joining to USGS Minerals Yearbook tonnages — yields a 120-year basin-maturity profile that highlights rejuvenation windows.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>GeoJSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'./data/local_data/mrds/mrds.geojson'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">USGS Active Mines</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Filter MRDS where site_status == 'Active' → export as GeoJSON</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>The active subset is your ground-truth for current land-use — overlay with Sentinel-2 to detect new pit expansion permits and quantify hectares disturbed per metric tonne produced.</li><li>Joining active-mine points to commodity prices produces a real-time NPV surface: a 10% Cu price move lights up marginal operations first, predicting restart/strike risk.</li><li>Active-mine centroid density per state is a proxy for permitting friction — compare Wyoming vs. Nevada vs. Arizona to benchmark regulatory environments.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Stream active-mine filter into a 'restart-watcher': any mine that flips from Active → Inactive in the monthly MRDS refresh is auto-flagged and cross-referenced against EDGAR filings for closure rationale (depletion, strike, environmental).</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>mrds.filter(m =&gt; m.status === <span <span class="tok-key">class</span>="tok-str">'Active'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">OneGeology</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register WebMapServiceImageryProvider with portal URL → add as basemap toggle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OneGeology is the only globally-harmonised bedrock dataset — switch it on when crossing a border to instantly see whether the same lithological group continues under the fence (e.g. Fennoscandian greenstone belts across Finland-Sweden-Norway).</li><li>Use the lithology legend to filter for favorable host rocks (BIF, black shale, carbonatite) and overlay with MRDS density — gaps in occurrence coverage within mapped favorable rocks are first-pass exploration targets.</li><li>Stratigraphic age (Archean vs. Proterozoic vs. Phanerozoic) lets you bucket terrains by metallogenic epoch — Archean cratons for Au/Fe, Proterozoic for Ni-Cu-PGE &amp; SedEx, Phanerozoic for porphyry &amp; epithermal.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Compute a 'lithological-favorability index' per 1° cell: intersect OneGeology polygons with USGS deposit-model curves (Cox &amp; Singer) to produce a 0–1 score for each commodity class — a global screening raster that updates with each OneGeology refresh.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">new</span> Cesium.WebMapServiceImageryProvider({url, layers})</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">Macrostrat</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">GeoJSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Pull bedrock polygons from macrostrat.org/api/v2 → cache → render as GeoJsonDataSource</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Macrostrat provides lithostratigraphic columns with thickness and age — sum thickness of units per environment class (marine, fluvial, aeolian) to reconstruct basin subsidence curves.</li><li>The ref_no / colour_code links back to the original state survey, enabling drill-down to the published paper or map sheet that defined the unit — full provenance tracking.</li><li>Unit-level metadata (lithology, strat_name, t_age, b_age) makes it possible to compute an unconformity density map — high unconformity density correlates with long-lived tectonic accommodation and IOCG/uranium potential.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Macrostrat's carbonate vs. siliciclastic ratio per epoch is a paleoclimate proxy — combine with Global Heat Flow data to identify basins where paleo-reservoir architecture meets present-day geothermal gradient, surfacing hidden sedimentary-hosted Cu or geothermal-lithium plays.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>geology.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>GeoJSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 geology.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>viewer.dataSources.add(Cesium.GeoJsonDataSource.load(...))</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">Geoscience Australia</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use GA Portal WMS for MINEDEX → add as regional geology toggle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GA's 1:1M Surface Geology WMS, combined with MINEDEX occurrences, lets you map Australia's mineral system tracts — e.g. Yilgarn Au-only vs. Mt Isa Cu-Pb-Zn-Ag belts — at province scale.</li><li>Depth-to-basement rasters from GA's SEEBASE project allow filtering of outcropping vs. covered terrains — covered extensions of known belts are the prime undercover exploration play.</li><li>GA gravity and magnetic WMS layers (also free) give the third dimension — combine with mapped structural lineaments to identify blind intrusions beneath cover.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Stack GA's total magnetic intensity (TMI) over SEEBASE basement depth and MINEDEX occurrences — a workflow that has historically predicted the Olympic Dam IOCG discovery pattern and now flags analogous settings under the Officer Basin.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>url: <span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//services.ga.gov.au/...'</span></span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">BGS Geology</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Request BGS bedrock WMS for UK onshore → add as regional basemap</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>BGS 625k bedrock is the highest-resolution free UK geology layer — combine with BGS GeoIndex boreholes to add depth-control that no surface map alone can provide.</li><li>DiGMapPlus lithology polygons intersect cleanly with the Mines Inspectorate abandonment plans — letting you identify old workings beneath modern infrastructure for ground-stability risk.</li><li>The lexicon-linked BGS stratigraphy enables automated cross-referencing: every borehole interval is matched to its regional equivalent, surfacing miscorrelations that hint at unrecognised faulting.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">BGS 50k Superficial deposits layer + GeoIndex borehole depth-data yields a 3D model of drift thickness — critical for separating true bedrock anomalies from false positives in geochemistry or geophysics over Quaternary cover.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'BGS_Geology_625k_Bedrock'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">GeoIndex (BGS)</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">JSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Query GeoIndex for boreholes/minerals → plot as billboards with depth metadata</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GeoIndex exposes 1M+ borehole logs with depth, lithology, and start/end coordinates — the single richest free subsurface dataset in the world.</li><li>Cross-reference borehole lithology against BGS lexicon to build a 3D voxel model of any UK district — visualisation of stratigraphy at depth that no surface WMS can show.</li><li>Borehole start-date lets you correlate groundwater levels across decades — a long-term hydrogeological dataset that constrains dewatering requirements for any UK mining proposal.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Mine the borehole abstracts (free-text lithology descriptions) with NLP to extract hydrocarbon shows, mineralization mentions, and geotechnical RQD values — a free text-mining-derived geotechnical &amp; mineral inventory of the UK subsurface.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>boreholes.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>JSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 boreholes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'http:<span <span class="tok-key">class</span>="tok-com">//mapapps2.bgs.ac.uk/geoindex/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">ARDF (Alaska)</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download from ardf.wr.usgs.gov → convert CSV → bundle in local_data/ardf/</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ARDF records include production tonnes, grade, and a narrative description — a level of detail absent from MRDS. Filter for 'lode gold' in the Tintina Gold Province and you get a ready-made belt-scale compilation.</li><li>Each ARDF number encodes the 1:250k quadrangle — letting you pivot any analysis by USGS quad sheet and compare with the published MRDS quad-level summaries.</li><li>The deposit-model field lets you benchmark Alaska's orogenic Au density against similar terrains in Yukon and Eastern Siberia — trans-border metallogenic comparison.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">ARDF's narrative field frequently mentions visible gold, sulfide species, and alteration minerals — parse these to compute a per-occurrence alteration-assemblage fingerprint, then cluster occurrences into metallogenic subtypes that the categorical deposit-model field misses.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/ardf_alaska/ardf.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">NRCan Geoscience</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Fetch MINCAN from NRCan GeoSpatial service → render as commodity-colored billboards</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>MINCAN is Canada's national occurrences database — more complete than MRDS for Canadian provinces and includes grade/tonnage where available.</li><li>Combining MINCAN with the Geological Survey of Canada's bedrock WMS lets you reproduce the public-domain map used in the Canadian Mineral and Mining Industry Report — the standard reference for Canadian mineral tenure analysis.</li><li>MINCAN's commodity field supports multi-commodity occurrences — surfaces polymetallic VMS-style deposits missed by single-commodity filters.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Overlay MINCAN's rare-element pegmatite occurrences (Li-Cs-Ta) on NRCan's permafrost WMS — the permafrost boundary constrains drilling season length, letting you rank Li projects by year-round operability, not just grade.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>url: <span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//geo.nrcan.gc.ca/...'</span></span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">SGU (Sweden)</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use SGU WMS for bedrock/till → add as Fennoscandian regional sublayer</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SGU's 1:50k bedrock is the highest-detail free national geology layer in Europe — exposes Fennoscandian greenstone belts at the resolution needed for orogenic Au targeting.</li><li>SGU's till-geochemistry WMS (also free) is unique — sample-point density of ~1 per 7 km² across all of Sweden, with aqua-regia digest values for 35+ elements. A grassroots geochem layer most countries charge for.</li><li>Combine SGU till geochem with SGU airborne magnetic WMS — the historical discovery engine for the Skellefte and Bergslagen districts, now available as free layers.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SGU till-geochemistry Cu/As ratio is a pathfinder for VMS mineralization — compute a per-cell Cu/As z-score across the Skellefte field, rank cells, and intersect with magnetic lineaments to prioritise drill-ready targets in a single afternoon.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'SGU_Bedrock_50k'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">GS Namibia</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">GeoJSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download shapefiles from GS Namibia → ogr2ogr → bundle in local_data/namibia/</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Namibia's mineral occurrences database is the authoritative open source for Damara Belt Cu-Zn-Pb-Au and the Erongo pegmatite field (Li-Nb-Ta).</li><li>Each occurrence is cross-referenced to the Namibian Mining Cadastre — lets you check tenure status programmatically without the cadastre portal.</li><li>Damara Belt occurrences are tagged with structural setting (syn-tectonic vs. post-tectonic) — surfaces the orogenic vs. anorogenic mineralization phases of the belt.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Combine GS Namibia occurrences with the SGU-style Fennoscandian methodology (Cu/As pathfinder in till) using Namibian-caliche geochem — Damara Belt VMS targets stand out at the same z-score thresholds that work in Sweden, validating cross-continental metallogenic transfer.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>GeoJSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/namibia_minerals/occurrences.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">12</span>
+    <h3 class="source-card__title">CGS (South Africa)</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain SAMINDABA → filter Au/PGM/Mn/Cr → bundle in local_data/samindaba/</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SAMINDABA is the global gold standard for national mineral databases — the Witwatersrand, Bushveld and Kalahari Mn-field are coded with grade, tonnage, and stratigraphic unit.</li><li>Bushveld PGE occurrences are tagged by reef (UG2, Merensky, Platreef) — enables per-reef economic analysis and surfacing of stratigraphic offsets that indicate structural remobilisation.</li><li>Witwatersrand Au occurrences carry palaeo-placer environment codes — combined with current production, surfaces the residual endowment per mine lease.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SAMINDABA's depth-to-reef metadata, joined with current strike lengths and channel widths, yields a per-lease volumetric endowment estimate that can be benchmarked against the company's JORC/SEC reporting — surfacing under-reported or over-reported reserves.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mines.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mines.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/samindaba/samindaba.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">13</span>
+    <h3 class="source-card__title">SEGEMAR</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use SEGEMAR WMS for Argentine geology → focus on Andean porphyry &amp; Puna lithium</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SEGEMAR's 1:250k Argentine geology WMS is the only free, online source for the Puna Plateau — the world's third-largest Li brine region after Bolivia and Chile.</li><li>Andean porphyry Cu belts in Argentina are segmented by SEGEMAR lithology — surfaces the metallogenic break between the Miocene Farallón Negro cluster and the older Famatinian arc.</li><li>The SEGEMAR structural overlay highlights the N-S trending lineaments that control both Li brine trap sites and porphyry emplacement — a single structural dataset serving two commodities.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Combine SEGEMAR mapped evaporite polygons with Sentinel-2 indices of the same salars — the difference between mapped evaporite area and remotely-sensed brine extent is a quick proxy for brine saturation and economic viability.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>url: <span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.segemar.gob.ar/...'</span></span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">14</span>
+    <h3 class="source-card__title">EarthChem</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">JSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Query EarthChem API for whole-rock geochemistry by bbox → render as billboards with chemistry</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>EarthChem's 30M+ whole-rock analyses are the largest open geochem archive — query by bbox and element to map lithogeochemical provinces at any scale.</li><li>Per-sample tectonic setting tag (ARC / MORB / OIB / CONT) enables automated discrimination diagrams for any region — surfaces cryptic terrane boundaries that bedrock maps miss.</li><li>Pegmatite and rare-element granite samples tagged with Ta-Nb-Li values let you map the global LCT-pegmatite province without needing a separate pegmatite database.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Compute a per-1° cell 'fertility index' for Sn-W-Mo granites: count EarthChem samples with K/Rb &lt; 100 and Rb &gt; 400 ppm. Combined with mapped granites of the right age, this surfaces the top 1% of Sn-prospective intrusions globally.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>geochemistry.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>JSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 geochemistry.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//earthchem.org/api/v1/samples?...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">15</span>
+    <h3 class="source-card__title">Mindat.org</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">JSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Mindat API (free signup) → broker key server-side → render 1M+ localities as clustered billboards</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Mindat's 1M+ mineral localities is the world's largest mineral occurrence database by an order of magnitude — includes collector-grade occurrences that MRDS-style production databases miss.</li><li>The mineral-to-locality graph lets you compute mineral co-occurrence networks — e.g. all localities with both scheelite and wolframite cluster along specific Sn-W belts invisible to commodity-filtered views.</li><li>Mindat's IMA-approved mineral list (5,700+ species) means you can search for exotic indicators like ferberite, hubnerite, or columbite-(Fe) — pathfinder species that hint at undeveloped Sn-W-Ta deposits.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Build a 'mineral-vector fingerprint' per locality: a 5,700-dim sparse vector of confirmed species. Cluster these vectors to discover mineralogical provinces that don't correspond to any named metallogenic belt — a data-driven re-discovery of provinces like the 'Cornubian Sn-Cu-W-As' province.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mineralLocalities.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>JSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mineralLocalities.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/mindat/localities?mineral=quartz'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">16</span>
+    <h3 class="source-card__title">USGS NGMDB</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register NGMDB geologic map WMS as US basemap → add stratigraphic lexicon lookup</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>NGMDB is the federated catalog of every US state survey's bedrock map — one-stop access to 1:24k / 1:100k / 1:250k sheets that would otherwise require scraping 50 state portals.</li><li>The lexicon-linked stratigraphic names let you trace a unit across state borders even when the state surveys disagree on nomenclature — surfaces disagreements that hint at miscorrelation.</li><li>NGMDB includes the National Geologic Map Database's geochronology layer — surfaces published U-Pb / Ar-Ar ages that constrain deposit models.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">NGMDB's geochronology pins, joined with deposit-model curves, let you date metallogenic epochs in any US state — e.g. the Laramide porphyry epoch (74-58 Ma) emerges clearly from a simple age-histogram of dated intrusions in Arizona.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'ngmdb_bedrock'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">17</span>
+    <h3 class="source-card__title">Global Heat Flow</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download IHFC CSV with lat/lon/mW_m2 → convert → color-code by heat-flow value</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IHFC global heat-flow points are the only freely-available proxy for crustal radioactivity and tectonic heat — combine with U-Th-K geochemistry to identify high-F heat-producing granites (prospective for Sn-U-F).</li><li>Heat-flow &gt; 80 mW/m² in stable cratons signals hidden thermal events — frequently the signature of undiscovered IOCG or unconformity U deposits.</li><li>Per-region heat-flow mean is a proxy for geothermal gradient — convert to °C/km and use as the temperature input for any sediment-hosted Cu or lithium-brine solubility model.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Build a global 'thermal-favorability' raster: heat-flow above 75 mW/m² AND gravity low AND mapped A-type granite within 50 km = prime Sn-U-F prospectivity. This combination of three layers flagged the Rössing Uranium district before any mineral occurrence data was used.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>heatFlow.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 heatFlow.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/heat_flow/ihfc.geojson</code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="index.html" class="page-nav__link"><div class="page-nav__label">← Back</div><div class="page-nav__title">Atlas Overview</div></a><a href="earth-observation.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Earth Observation &amp; Satellite 🛰️</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

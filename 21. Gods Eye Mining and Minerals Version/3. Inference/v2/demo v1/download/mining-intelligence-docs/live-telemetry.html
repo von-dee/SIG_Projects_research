@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Operational Telemetry — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#7e57c2;--accent-soft:rgba(126,87,194,0.14);--accent-glow:rgba(126,87,194,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link is-active" data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#7e57c2;border-color:#7e57c2;background:rgba(126,87,194,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#7e57c2"></span>
+    📡 Live Operational Telemetry · 8 sources
+  </div>
+  <h1 class="hero__title">Live Operational Telemetry</h1>
+  <p class="hero__subtitle">CelesTrak satellites, GTFS transit, GBFS bikeshare, radio stations, traffic, routing. The layer that proves a Cesium globe is alive — operational data flowing every minute. Combined with mine and shipping layers, this enables contextual intelligence: when satellite AIS gaps align with vessel transponder silence, the question 'what are they hiding?' becomes answerable.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="8">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">0</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">6</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">2</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">8 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">CelesTrak</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / TLE</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Fetch TLE catalogs from celestrak.org (free) → disk-cache → propagate with SGP4 per-frame → GMST-realign</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>CelesTrak TLE catalog is the free global satellite tracking source — 8,000+ active objects with positions updated hourly.</li><li>Per-pass satellite overflights enable mine-site imagery acquisition planning — surfaces the next high-resolution pass over any mine.</li><li>Satellite conjunction analysis (close approaches) is now publicly accessible — surfaces collision risk for key Earth-observation assets.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">CelesTrak satellite positions + ICEYE/Capella tasking schedules + mine operational status = a 'satellite-tasking prediction' model. Knowing which SAR satellites will pass over a given mine in the next 7 days enables operational-activity forecasting — predicting when fresh imagery will be available to verify reported activities.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>satellites.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / TLE</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 satellites.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">GTFS-Realtime</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">Protobuf</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Fetch operator GTFS-RT protobuf feeds (free) → parse with gtfs-realtime-bindings → render with delayed playback</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GTFS-Realtime is the standard for live transit data — bus and rail positions for 1,000+ cities globally.</li><li>Per-mine-city transit frequency is a proxy for local workforce mobility — surfaces company-town operations.</li><li>Mining-camp transit routes (e.g. FIFO shuttle buses) are increasingly published as GTFS — surfaces operational workforce size.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GTFS-Realtime + mining-camp locations + OpenSky charter flights = a 'workforce-activity' composite. Surges in camp transit + charter flight arrivals signal operational ramp-ups — visible 2-4 weeks before production reports confirm.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>transit.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>Protobuf</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 transit.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">GBFS</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Fetch GBFS station_status.json from operators (free) → poll every 60s → render bikeshare availability</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GBFS (General Bikeshare Feed Specification) is the global standard for bikeshare data — 500+ cities.</li><li>Per-station bike availability is a hyper-local mobility proxy — surfaces commuting patterns.</li><li>Mining-town bikeshare (e.g. Kiruna, Sweden; Mt Isa, Australia) is emerging — surfaces small-town mobility patterns.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GBFS in mining towns + GTFS transit + openstreetmap road network = a 'mine-town mobility' monitor. Changes in mobility patterns often precede announcements of mine closures or expansions — a leading indicator visible weeks ahead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>bikeshare.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 bikeshare.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">Radio Browser</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Radio Browser API (free) → fetch geolocated station list → render as billboards → click to play audio</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Radio Browser is the free global radio-station directory — 30,000+ stations with geo-coordinates.</li><li>Per-region radio-station density is a media-coverage proxy — sparse stations correlate with remote mining regions.</li><li>Local-radio news monitoring (where streams are available) surfaces regional mining news often missing from international feeds.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Radio Browser geolocated stations + local news monitoring + mining-cadastre boundaries = a 'regional-news-monitoring' system. Local radio in mining regions often breaks stories days before international newswires — surfaces community-level mining intelligence.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>radio.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 radio.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">TomTom Traffic</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for TomTom API key (freemium) → declare as tomtom → poll flow speeds → drive traffic simulation</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>TomTom traffic flow data is the commercial-grade road-traffic monitor — surfaces congestion on mine-access roads.</li><li>Per-mine access-road congestion is a logistics-efficiency proxy — surfaces haulage bottlenecks.</li><li>TomTom historical speeds enable freight-time modelling — input for mine-to-port logistics cost.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">TomTom access-road congestion + OpenRailwayMap rail proximity + PortWatch port calls = a 'mine-logistics bottleneck' monitor. Congestion on mine-access roads with no rail alternative and high port-call frequency surfaces structural logistics constraints — visible in this composite months before production impacts appear.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>traffic.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 traffic.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">OSRM</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use OSRM API on FOSSGIS servers (free) → click A/B on globe → route traces on terrain → fly camera along it</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OSRM (Open Source Routing Machine) is the free global routing service — surface-road routes between any two points.</li><li>Per-mine-to-port OSRM route distance + TomTom travel time enables freight-cost modelling — surfaces the logistics-cost component of delivered cost.</li><li>OSRM multi-stop routing enables mine-to-mill-to-port optimisation — input for mining-logistics network design.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">OSRM routes + TomTom traffic + PortWatch port calls + Clarksons freight rates = a 'door-to-door delivered cost' model per mine per commodity. This composite surfaces the full logistics-cost component of mine competitiveness — often &gt;30% of delivered cost for inland mines.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>directions.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 directions.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">OpenStreetMap</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use OSM tile servers or Overpass API → render as 2D basemap fallback → query for roads/buildings/site polygons</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OSM is the only free global base map — surface roads, buildings, points of interest, and infrastructure for any mining region.</li><li>Per-mine OSM building-density is a proxy for site infrastructure maturity — surfaces development stage without imagery.</li><li>OSM's tag system (man_made=mine, man_made=tailings_pond) enables direct querying of mining infrastructure.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">OSM mining-tagged features + Sentinel-2 disturbance + SEDAR+ project boundaries = a 'mining-infrastructure verification' composite. OSM-tagged mine features that don't match Sentinel-2 disturbance or SEDAR+ project boundaries are flagged for review — surfaces informal or undocumented mining.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">Launch Library 2</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Launch Library 2 API (freemium) → poll 30-day orbital launches → render launch pads &amp; trajectories</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Launch Library 2 is the global space-launch tracking API — every orbital launch with payload details.</li><li>Per-mission EO-satellite deployment tracking enables forward-looking EO capacity forecasts — surfaces future imagery supply.</li><li>Mining-relevant satellites (ICEYE, Capella, Planet) launches are tracked — surfaces EO capacity additions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Launch Library 2 EO-satellite launches + CelesTrak catalog + ICEYE/Capella tasking schedules = a 'future EO-capacity' forecast. Knowing when the next batch of ICEYE or Planet satellites launches enables planning for future monitoring capacity — surfacing capacity additions months ahead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>spaceMissions.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 spaceMissions.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="academic-research.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">📚 Academic, Research &amp; News</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

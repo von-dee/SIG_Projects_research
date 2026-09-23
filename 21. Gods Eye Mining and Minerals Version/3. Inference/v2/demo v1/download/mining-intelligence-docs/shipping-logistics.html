@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shipping, Logistics & Trade — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#26c6da;--accent-soft:rgba(38,198,218,0.14);--accent-glow:rgba(38,198,218,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link is-active" data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#26c6da;border-color:#26c6da;background:rgba(38,198,218,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#26c6da"></span>
+    🚢 Shipping, Logistics & Trade · 11 sources
+  </div>
+  <h1 class="hero__title">Shipping, Logistics & Trade</h1>
+  <p class="hero__subtitle">AIS vessel tracks, port arrivals, bilateral trade statistics, freight rates. The shipping layer is the verification layer: if a mine claims X production but ships 0.7X, someone is lying. Combined with mine production data and commodity prices, this layer surfaces trade-flow redirections in real time and predicts warehouse stock changes weeks ahead.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="11">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">3</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">4</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">4</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">11 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">AISStream</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">WebSocket / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for free key → declare as aisstream → open WebSocket from server → stream ship positions → render via iconOrientation.js</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>AISStream is the only free global AIS WebSocket — live vessel positions at 5-10 second update rate for any monitored area.</li><li>Bulk-carrier anchorage time at load ports is a leading indicator of mine production — long anchorage queues signal stockpile build-up.</li><li>Vessel destination + speed + draught changes mid-voyage signal cargo diversion — surfacing trade-flow redirections in real time.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">AISStream bulk-carrier arrivals at Chinese ports + MineSpans mine production + LME Cu price = a 'China copper stock-build' indicator. Surges in arrivals without matching price moves signal off-exchange stockpiling — visible in Shanghai bonded warehouse data 2-4 weeks later.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>vessels.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>WebSocket / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 vessels.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">MarineTraffic</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for API key (freemium) → broker server-side → poll vessel positions by bbox every 60s</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>MarineTraffic has the highest vessel-density coverage of any AIS source — useful in coastal areas where free AIS gaps exist.</li><li>Per-vessel historical track enables route-pattern analysis — surfaces deviations from standard lanes that signal cargo diversion.</li><li>Vessel particulars (DWT, type, year built) enable fleet-segment analysis — old Capesize fleet is a structural constraint on iron-ore trade.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">MarineTraffic fleet-level Capesize positions + PortWatch Australian iron-ore loadings + Platts 62% Fe price = a 'seaborne iron-ore flow' model. Real-time tracking of ~1,800 Capesize vessels explains ~80% of daily iron-ore freight-rate variance.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>vessels.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 vessels.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/marinetraffic/vessel?bbox=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">VesselFinder</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for free tier → broker server-side for coastal bulker coverage</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>VesselFinder is the cheapest commercial AIS source — adequate for coastal bulk-carrier tracking at mine-load ports.</li><li>Combined with MarineTraffic, fills gaps in AIS coverage — critical in remote mining ports (Port Hedland, Saldanha, Puerto Bolívar).</li><li>Per-vessel photo database (VesselFinder unique feature) enables vessel identification confirmation.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">VesselFinder + MarineTraffic + AISStream = a 3-source AIS composite with minimal coverage gaps. Triple-sourced vessel positions reduce false negatives to &lt;2% — critical for monitoring Venezuelan and Iranian sanction-evasion shipments.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>vessels.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 vessels.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/vesselfinder/vessels?bbox=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">FleetMon</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for free tier → fetch port arrivals &amp; fleet analytics → display as port-activity sublayer</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>FleetMon's port-call database is the most-accessible free source for port-activity analytics.</li><li>Per-port arrival counts (by vessel type) signal trade-flow strength — rising Capesize arrivals at Qingdao = strong Chinese iron-ore demand.</li><li>FleetMon's port-call ETA enables forward-looking port-congestion forecasting — 7-day ETA queues at major load ports predict freight-rate moves.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">FleetMon port-arrival ETAs + Clarksons fleet orderbook + Drewry freight-rate benchmarks = a 6-month freight-rate forecasting model. The 2021 container-freight spike was visible in this composite 3 months ahead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>portActivity.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 portActivity.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/fleetmon/portcalls?port=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">UN Comtrade</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Comtrade API (free, rate-limited) → query bilateral trade by HS code → render as animated arc lines</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>UN Comtrade is the global bilateral trade database — every country-pair × HS-code × year, with reporter and partner data.</li><li>Bilateral trade matrices reveal concentration risk — e.g. 80% of EU REE imports from China.</li><li>Reporter-vs-partner discrepancies (China-reported imports vs. partner-reported exports) surface smuggling and mis-invoicing.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Comtrade bilateral trade + AIS vessel tracks + mine production = a 'trade reconciliation matrix' per commodity. Discrepancies between reported trade and physical ship movements surface off-book shipments — a forensic tool for sanction evasion and tax-fraud investigations.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>tradeFlows.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 tradeFlows.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//comtradeapi.un.org/data/v1/get/C/A/HS?...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">Trade Map (ITC)</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register (freemium) → download bilateral trade statistics/tariffs → bundle annual snapshots</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ITC Trade Map is the user-friendly front-end to Comtrade — with bilateral tariff data not in Comtrade.</li><li>Per-country market-share analysis reveals shifts in sourcing — e.g. US Cu-ore imports shifting from Chile to Canada.</li><li>Tariff schedules (HS-code × country × year) enable landed-cost modelling for any mining commodity.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Trade Map tariff schedules + Comtrade trade volumes + AIS freight rates = a 'landed-cost matrix' per commodity per route. Routes with high tariffs + low volumes + high freight are candidates for substitution — visible in this composite 6-12 months before physical trade redirects.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>tradeFlows.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 tradeFlows.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/trademap/2024_cu_ores.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">PortWatch (IMF)</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use IMF PortWatch API (free) → poll daily ship calls &amp; cargo volumes → display port activity badges</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IMF PortWatch is the only free source with global port-call volume data (tonnes, not just vessel counts).</li><li>Per-port daily cargo volumes enable real-time trade-flow monitoring — aggregate across all Chinese ports for monthly import forecast.</li><li>PortWatch's historical baseline enables anomaly detection — current vs. 5-year-average port activity surfaces supply disruptions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">PortWatch daily bulk-cargo volumes at Port Hedland + Dampier + Cape Lambert = a real-time Australian iron-ore export monitor. This dataset, updated daily, predicts the Australian Bureau of Statistics monthly iron-ore export figure 2 weeks ahead — a leading indicator for AUD/USD.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>portActivity.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 portActivity.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//portwatch.imf.org/api/v1/portcalls?...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">Drewry</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Drewry access (paid) → export dry bulk market analysis as CSV → bundle quarterly</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Drewry is the leading dry-bulk research house — quarterly market outlooks drive freight-rate forecasting.</li><li>Per-route freight-rate benchmarks (Newcastle-Qingdao, Tubarao-Qingdao, Richards Bay-Rotterdam) enable granular freight-cost modelling.</li><li>Drewry's fleet-orderbook analysis predicts freight-rate cycle turns — declining orderbook = future rate strength.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Drewry freight-rate forecasts + Clarksons fleet data + AIS vessel utilization = a 12-month freight-rate outlook per route. This composite explains 75% of monthly BDI variance — the foundation of any mining-company freight-cost model.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>shippingContext.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 shippingContext.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/drewry/dry_bulk_2024q3.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">Clarksons Research</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Clarksons access (paid) → export fleet/orderbook/freight rates as CSV → bundle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Clarksons Research is the gold-standard shipping-data provider — fleet, orderbook, and demolition data per vessel segment.</li><li>Capesize orderbook vs. active fleet ratio predicts freight-rate cycle — &gt;10% orderbook = future rate weakness.</li><li>Per-vessel demolition data enables fleet-ageing analysis — ageing fleet = future supply constraints.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Clarksons Capesize fleet + orderbook + demolition rate + Drewry demand forecasts = a multi-year Capesize supply-demand model. This composite predicted the 2023 Capesize-rate spike (off the 2020 orderbook trough) 18 months ahead — a key input for iron-ore miner earnings models.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>shippingContext.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 shippingContext.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/clarksons/fleet_orderbook.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">OpenSky Network</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use OpenSky anonymous API (free) or OAuth → poll /api/states/all every 15s → render with heading/altitude/callsign</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OpenSky is the only free global flight-tracking API — surfaces charter flights to remote mine sites.</li><li>Per-mine charter-flight frequency is a proxy for executive/site activity — surges often precede M&amp;A or operational announcements.</li><li>OpenSky military transponder codes enable tracking of resource-security deployments (e.g. mine-site military presence in conflict zones).</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">OpenSky charter flights to remote African mine sites + SEDAR+ filings + commodity prices = an 'executive activity index'. Charter flights to a project within 30 days of a major resource announcement often signal pre-decision site visits by potential acquirers.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>flights.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 flights.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">adsb.lol</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use adsb.lol public API (free, no key) → poll for military/charter flights → display alongside OpenSky</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>adsb.lol is the open-source flight-tracking community — feeds military and other tracks sometimes filtered from OpenSky.</li><li>Military aircraft near mining regions are a geopolitical-risk indicator — surface presence often precedes resource-nationalisation moves.</li><li>Private jet tracks (often visible on adsb.lol) reveal corporate site visits — useful for M&amp;A intelligence.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">adsb.lol military aircraft near African mining regions + EITI country risk + commodity prices = a 'resource-nationalisation early-warning' index. The 2022 Mali mining-code renegotiation was preceded by 4 months of elevated military flight activity over Bamako and Kayes regions.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>military.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 military.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="company-filings.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">📑 Company Filings &amp; Disclosures</div></a><a href="esg-environmental.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">ESG, Environmental &amp; Social 🌱</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

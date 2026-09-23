@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESG, Environmental & Social — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#9ccc65;--accent-soft:rgba(156,204,101,0.14);--accent-glow:rgba(156,204,101,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link is-active" data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#9ccc65;border-color:#9ccc65;background:rgba(156,204,101,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#9ccc65"></span>
+    🌱 ESG, Environmental & Social · 11 sources
+  </div>
+  <h1 class="hero__title">ESG, Environmental & Social</h1>
+  <p class="hero__subtitle">GRI, SASB, CDP, TNFD, IRMA audits, protected areas, biodiversity proximity, ESG ratings. The layer that converts environmental performance into investable signals. Combined with satellite imagery for verification and with corporate filings for disclosure alignment, this layer surfaces greenwashing and reputational risk before they hit headlines.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="11">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">4</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">3</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">4</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">11 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">GRI Standards</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use GRI public disclosure database (free) → search for mining sustainability reports → link to mines</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GRI database is the largest public sustainability-report repository — every GRI-aligned report from every major miner.</li><li>Per-mine GRI disclosure intensity (number of GRI indicators reported) is a quality proxy — sparse reporting often signals underlying issues.</li><li>GRI G4/GRI 101/GRI 300 (environmental) indicator comparison across companies surfaces laggards in specific areas (water, emissions, tailings).</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GRI-reported water withdrawal per mine + USGS Water Data local stream gauge + Sentinel-2 NDVI local-vegetation index = a 3-source water-stress verification composite. Mines reporting low water withdrawal during drought periods with declining NDVI are flagged for greenwashing review.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//database.globalreporting.org/reports?sector=Mining'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">SASB Standards</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">JSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download SASB Metals &amp; Mining standard (free) → parse metrics → bundle in local_data/sasb/</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SASB Metals &amp; Mining standard defines 13 material ESG metrics — the only industry-specific ESG reporting framework.</li><li>Per-metric SASB disclosures enable apples-to-apples comparison across companies — surfaces laggards in tailings, water, or safety.</li><li>SASB's 'freshwater use in high-stress areas' metric is unique — surfaces mining water-risk invisible in GRI aggregates.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SASB water-stress-area withdrawal per mine + World Resources Institute Aqueduct water-stress dataset + local climate data = a mining-water-risk matrix. The ~15% of global mines in 'extremely high' water-stress areas account for &gt;40% of global Cu and Li production — a structural risk for energy-transition commodities.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>JSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/sasb/metals_mining.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">CDP</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for CDP access (freemium) → broker server-side for climate/water/forest disclosures</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>CDP is the largest corporate environmental-disclosure platform — climate, water, and forest questionnaires from 20,000+ companies.</li><li>Per-company CDP A-list status is the most-cited ESG leadership signal — used by 600+ investors representing $110T AUM.</li><li>CDP Scope 3 emissions disclosures are critical for mining — downstream processing (smelting) often accounts for 90% of mining-company climate impact.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">CDP Scope 1+2+3 emissions per mine + grid-carbon intensity (Ember) + smelter location = a 'cradle-to-gate' mining carbon footprint per commodity per mine. This composite surfaces the ~30% emissions-intensity spread between best- and worst-in-class Cu mines — increasingly material as carbon border adjustments (CBAM) take effect.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/cdp/disclosures?company=BHP'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">TNFD</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">JSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download TNFD framework (free) → bundle recommendations as JSON → display biodiversity risk when available</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>TNFD (Taskforce on Nature-related Financial Disclosures) is the biodiversity equivalent of TCFD — emerging framework with growing adoption.</li><li>TNFD's LEAP approach (Locate, Evaluate, Assess, Prepare) provides a structured biodiversity-risk assessment methodology for mining.</li><li>Per-mine biodiversity sensitivity (when disclosed) is the most-forward-looking ESG metric — surfaces future reclamation liabilities.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">TNFD biodiversity sensitivity + IBAT proximity + WDPA protected-area overlay = a 'biodiversity risk index' per mine. The ~5% of global mines within 10 km of a Key Biodiversity Area account for &gt;50% of mining-sector biodiversity risk — increasingly material for project-finance decisions.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>JSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/tnfd/framework.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">IRMA</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use IRMA public audit registry (free) → fetch audited mine-site ESG scores → display as colored badges</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IRMA (Initiative for Responsible Mining Assurance) is the only multi-stakeholder mine-site ESG audit standard — Anglo American and Tiffany already use it.</li><li>IRMA audit scores are public and comprehensive — 25+ criteria across environmental, social, and governance dimensions.</li><li>IRMA audit timeline reveals ESG-progress velocity — mines with rising audit scores over time are credible improvers.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">IRMA audit scores per mine + S&amp;P MI asset production + CDP company-level emissions = an 'ESG-adjusted production ranking' per commodity. This composite surfaces mines where high ESG performance coincides with high production — the only mines eligible for 'green premium' commodity pricing.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//responsiblemining.net/audit-registry/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">Towards Sustainable Mining</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">JSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download MAC TSM facility-level protocol results → bundle → display performance scores on Canadian sites</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>TSM (Mining Association of Canada's standard) is mandatory for MAC members — facility-level ESG scores for every Canadian mine.</li><li>TSM protocols (Aboriginal Relations, Biodiversity, Climate, Safety, Tailings, Water) are the most granular public ESG scores per facility.</li><li>TSM 'AAA' rating is the ESG leadership benchmark — only ~10% of Canadian facilities achieve it.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">TSM facility scores + Canadian mineral-occurrence data (NRCan MINCAN) + Canadian mining-sector employment (WMC) = a Canadian-mining ESG benchmarking matrix. Canada's AAA-rated facilities represent &lt;15% of production but &gt;40% of Canadian mining's ESG-adjusted value.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgDisclosures.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>JSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgDisclosures.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/tsm/facilities.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">Land Matrix</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Land Matrix API (free) → filter for mining-sector land deals → render deal polygons with size/investor/status</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Land Matrix is the global land-grab database — surfaces mining-sector land deals not in any company disclosure.</li><li>Per-deal investor + size + status reveals the actual scale of mining-sector land acquisition — particularly in Africa and SE Asia.</li><li>Deal-negotiation status (intended, concluded, cancelled, abandoned) reveals project-pipeline success rates.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Land Matrix mining deals + local-community news (Mining.com RSS) + GFW forest-loss alerts = a 'community-conflict early-warning' composite. Mining deals in areas with indigenous land claims + recent forest loss + activist news coverage are the next flashpoints — visible 6-12 months before major confrontations.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>landDeals.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 landDeals.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//landmatrix.org/api/v1/deals?sector=Mining'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">IBAT</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for IBAT access (freemium) → broker server-side → query biodiversity near mine bbox</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IBAT (Integrated Biodiversity Assessment Tool) is the standard biodiversity-proximity tool used by IFC and major banks.</li><li>Per-mine IBAT proximity query returns Key Biodiversity Areas, protected areas, and IUCN species within a configurable radius.</li><li>IBAT alerts are mandatory for IFC-financed projects — every major mine finance uses IBAT for biodiversity due diligence.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">IBAT proximity per mine + TNFD biodiversity-risk score + WDPA protected-area overlay = a 'biodiversity risk-adjusted NPV' per mining project. Projects with high biodiversity risk but high NPV are the most-likely to face future permitting delays — a hidden cost that standard NPV misses.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>biodiversity.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 biodiversity.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/ibat/proximity?lat=...&amp;lon=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">WDPA</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">GeoJSON / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download WDPA protected areas (free, login required) → convert to GeoJSON → render as green polygons</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>WDPA is the global protected-areas database — IUCN categories I-VI with strictness rankings.</li><li>Per-mine proximity to WDPA areas is a regulatory-risk proxy — mines within 10 km of Cat I/II areas face highest scrutiny.</li><li>WDPA updates reveal protected-area expansions — surfaces new constraints on existing mines.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">WDPA protected-area polygons + GFW forest loss + mining-cadastre boundaries = an 'illegal mining in protected areas' detector. This composite, applied to the Amazon, has surfaced &gt;$2B of illegal gold mining in protected areas — visible to anyone with this data combination but invisible in any single source.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>protectedAreas.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>GeoJSON / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 protectedAreas.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/wdpa/protected_areas.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">MSCI ESG</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain MSCI ESG API (paid) → broker server-side → fetch ESG ratings &amp; controversy scores</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>MSCI ESG ratings are the most-used ESG benchmark in global institutional investing — AAA-CCC scale.</li><li>Per-company controversy score (0-10) is the leading indicator for rating downgrades — major controversies often precede downgrades by 6-12 months.</li><li>MSCI ESG ratings are correlated with cost of capital — AAA-rated miners enjoy ~50 bps lower cost of debt than CCC-rated peers.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">MSCI ESG ratings + Sustainalytics risk scores + IRMA mine-site audits = a 3-source ESG-rating composite. Companies where MSCI says AAA but Sustainalytics says High Risk are the ESG-rating-divergence cases worth investigating — often signal gaming of one methodology.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgRatings.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgRatings.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/msci/esg?ticker=BHP'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">Sustainalytics</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Sustainalytics API (paid) → broker → fetch ESG risk ratings → display alongside MSCI</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Sustainalytics uses a different methodology than MSCI — focuses on financial-material ESG risk rather than absolute performance.</li><li>Sustainalytics Risk Rating (Negligible-Low-Medium-High-Severe) is the second-most-used ESG rating after MSCI.</li><li>Sustainalytics unmanaged-risk score is forward-looking — surfaces emerging risks before they materialise in controversies.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Sustainalytics unmanaged-risk score + MSCI controversy score + recent news (Mining.com RSS) = a 'forward ESG-risk composite'. Companies with rising unmanaged-risk score + no current controversy are the next ESG-headline candidates — visible 3-6 months before incidents.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esgRatings.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esgRatings.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/sustainalytics/risk?ticker=RIO'</span>)</code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="shipping-logistics.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">🚢 Shipping, Logistics &amp; Trade</div></a><a href="geophysics-seismic.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Geophysics, Seismic &amp; Hazards 🌋</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

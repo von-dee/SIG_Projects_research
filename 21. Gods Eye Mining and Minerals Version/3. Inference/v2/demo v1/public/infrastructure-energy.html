@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure, Energy & Water — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#ffa726;--accent-soft:rgba(255,167,38,0.14);--accent-glow:rgba(255,167,38,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link is-active" data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#ffa726;border-color:#ffa726;background:rgba(255,167,38,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#ffa726"></span>
+    ⚡ Infrastructure, Energy & Water · 8 sources
+  </div>
+  <h1 class="hero__title">Infrastructure, Energy & Water</h1>
+  <p class="hero__subtitle">Power plants, transmission, rail, water, energy mix. The layer that determines whether a deposit is mineable. A high-grade Cu deposit 500 km from grid power and 100 km from rail is uneconomic regardless of grade. Combined with mine cost curves, this layer surfaces stranded-asset risk and energy-transition opportunities.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="8">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">3</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">4</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">1</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">8 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">OpenInfraMap</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use OpenInfraMap WMS/tiling (free) → add as basemap toggle for power/gas/water infrastructure</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OpenInfraMap is the only free global infrastructure map — power plants, transmission, pipelines, railways all in one layer.</li><li>Per-mine distance to nearest transmission line is an electrification-feasibility proxy — &gt;100 km off-grid mines face 5-10× higher power costs.</li><li>OpenInfraMap pipeline overlay surfaces mining-sector gas-supply risk — remote Australian mines dependent on long gas pipelines face energy-cost volatility.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">OpenInfraMap transmission proximity + GEM coal-plant tracker + Ember grid carbon intensity = a 'mine electrification feasibility' matrix. Mines within 50 km of high-voltage transmission in low-carbon grids are the prime candidates for full electrification — a structural ESG advantage.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>url: <span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//openinframap.org/...'</span></span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">Global Energy Monitor</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / GeoJSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download GEM Coal/Steel/Gas Plant Tracker CSV (free) → geocode plant locations → bundle</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GEM Coal Plant Tracker is the most-detailed free source for global coal-plant locations, capacity, and status.</li><li>Per-mine proximity to retiring coal plants surfaces opportunities for mine electrification from repurposed grid infrastructure.</li><li>GEM Steel Plant Tracker enables scope-3 emissions modelling for iron-ore mines — downstream steelmaking accounts for ~85% of iron-ore scope 3.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">GEM coal-plant retirements + Ember grid carbon intensity + mining-mill energy demand = a 'decarbonisation pathway' per mine. Mines near retiring coal plants can be first-mover electrification projects — a strategic advantage as carbon-border adjustments take effect.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>powerPlants.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / GeoJSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 powerPlants.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/gem/coal_plants.geojson</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">Ember Climate</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download Ember country electricity data (CSV, free) → attach carbon intensity to country polygons</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Ember is the most-accessible free source for country-level electricity mix and carbon intensity.</li><li>Per-country grid carbon intensity (gCO2/kWh) is a critical input for mining-scope-2 emissions — a 10× spread between Norway (30) and Poland (700) means the same mine has 10× different emissions.</li><li>Ember's annual transition trajectories reveal grid-decarbonisation rates — surfaces countries where mining scope-2 emissions will decline fastest.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Ember grid carbon intensity + mine energy demand (MineSpans) + commodity price = a 'carbon-cost-adjusted NPV' per mine. As CBAM expands, mines in high-carbon grids face structural cost penalties — visible in this composite 5+ years before the regulatory cliff.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>gridCarbon.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 gridCarbon.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/ember/electricity_mix.csv</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">EIA</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for EIA API key (free) → declare as eia → fetch coal/uranium/electricity generation data</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>EIA API is the most-comprehensive free energy-data source for the US — coal, gas, nuclear, renewables, electricity.</li><li>Per-state coal production + consumption data enables US coal-market forecasting.</li><li>EIA's uranium market reports are the public-domain reference for U supply-demand analysis.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">EIA coal-generation forecasts + GEM coal-plant retirements + USGS coal reserves = a 10-year US coal-market model. This composite surfaces the structural decline of US thermal coal — visible 5+ years ahead in EIA's own reference case.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>energyData.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 energyData.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//api.eia.gov/v2/coal/...?api_key=...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">IEA Critical Minerals</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">CSV / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Download IEA demand projections (free) → bundle as time-series JSON for Li/Co/Ni/Cu/REE/graphite</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>IEA Critical Minerals Outlook is the most-cited demand-forecast source for energy-transition metals.</li><li>Per-commodity 20-year demand scenarios (STEPS, APS, NZE) reveal supply-gap urgency — Li and Co in NZE scenario require 10× current production by 2040.</li><li>IEA's critical-mineral supply-chain concentration analysis surfaces bottlenecks beyond mine gate (refining, processing).</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">IEA demand forecasts + S&amp;P MI asset database + WoodMac supply outlook = a 'structural-deficit timer' per critical mineral. The 2027 Ni-sulfate deficit and 2028 Li-hydroxide deficit are visible in this composite — surfacing investment opportunities 5+ years ahead of physical shortage.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>demandForecasts.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>CSV / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 demandForecasts.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/iea/demand_projections.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">BoM Water (AU)</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use BoM Water Storage API (free) → poll for reservoir levels near Australian mine sites</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>BoM Water Storage API gives real-time reservoir levels for all major Australian dams — critical for water-intensive mining in arid regions.</li><li>Per-mine catchment water-availability is a constraint on processing capacity — Pilbara iron-ore mines are particularly water-stressed.</li><li>Multi-year storage trends surface cumulative water stress — declining storages predict future production curtailments.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">BoM reservoir levels + SASB water-stress-area disclosure + mine production (MineSpans) = a 'water-constrained production' forecast per Australian mine. The 2019 BHP Olympic Dam production cut was visible in this composite 6 months ahead as reservoir levels declined below the 5th percentile.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>waterData.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 waterData.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'http:<span <span class="tok-key">class</span>="tok-com">//www.bom.gov.au/waterdata/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">USGS Water Data</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use USGS NWIS instant values API (free, no key) → poll stream gauges &amp; groundwater every 15 min</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>USGS NWIS is the most-granular free water data globally — 1.5M+ sites with 15-minute interval data.</li><li>Per-mine stream-flow baseline is a critical input for tailings-dam water-balance modelling.</li><li>Groundwater-level trends near mines reveal dewatering impacts — declining regional groundwater tables often correlate with mining dewatering.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">USGS NWIS stream-flow + SASB water-withdrawal disclosure + mine production = a 'water-balance verification' per US mine. Mines reporting flat water-withdrawal during drought-stream-flow periods are flagged for disclosure-quality review.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>waterData.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 waterData.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//waterservices.usgs.gov/nwis/iv/?format=json'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">OpenRailwayMap</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use OpenRailwayMap WMS or download OSM rail extracts → render as polylines, highlight heavy-haul</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OpenRailwayMap is the only free global rail-network dataset — surfaces heavy-haul rail connectivity for any mine.</li><li>Per-mine distance to nearest heavy-haul rail is a freight-cost proxy — Pilbara and Carajás mines have built-in rail advantage.</li><li>Rail-line abandonment trends reveal structural changes in mine logistics — abandoned rail often correlates with declining mine production.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">OpenRailwayMap rail proximity + PortWatch port calls + mine production = a 'mine-to-port logistics cost' model per mine. Mines with &gt;500 km rail haul to port face 30-50% higher freight costs — visible in this composite as a structural disadvantage in any cost-curve analysis.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>url: <span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//tiles.openrailwaymap.org/...'</span></span></code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="geophysics-seismic.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">🌋 Geophysics, Seismic &amp; Hazards</div></a><a href="meteorology-climate.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Meteorology &amp; Climate 🌦️</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

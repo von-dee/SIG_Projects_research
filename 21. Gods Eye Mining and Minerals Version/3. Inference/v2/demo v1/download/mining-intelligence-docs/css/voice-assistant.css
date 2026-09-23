@@ -1,0 +1,589 @@
+/* ============================================================
+   Atlas Voice — Floating Voice/Chat Widget (v2)
+   Persistent chat, live session, natural Z.ai TTS
+   ============================================================ */
+
+:root {
+  --va-bg: #0b0e18;
+  --va-surface: rgba(20, 25, 42, 0.95);
+  --va-surface-2: rgba(28, 34, 56, 0.85);
+  --va-border: rgba(120, 140, 200, 0.22);
+  --va-border-strong: rgba(140, 165, 230, 0.4);
+  --va-text: #f4f6ff;
+  --va-text-2: #c8cfe6;
+  --va-text-3: #8892b0;
+  --va-accent: #4fc3f7;
+  --va-accent-2: #f5a623;
+  --va-success: #66bb6a;
+  --va-error: #ef5350;
+  --va-recording: #ef5350;
+  --va-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  --va-radius: 14px;
+}
+
+/* ---- Floating launcher button ---- */
+.atlas-voice-launcher {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--va-accent), var(--va-accent-2));
+  border: none;
+  cursor: pointer;
+  z-index: 99998;
+  box-shadow: 0 8px 24px rgba(79, 195, 247, 0.45), 0 4px 12px rgba(0,0,0,0.4);
+  display: grid;
+  place-items: center;
+  transition: transform 0.25s, box-shadow 0.25s;
+  animation: vaPulse 3s infinite;
+}
+.atlas-voice-launcher:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 32px rgba(79, 195, 247, 0.6), 0 6px 16px rgba(0,0,0,0.5);
+}
+.atlas-voice-launcher svg {
+  width: 26px;
+  height: 26px;
+  color: white;
+  fill: white;
+}
+.atlas-voice-launcher.is-recording {
+  background: linear-gradient(135deg, var(--va-recording), #d32f2f);
+  animation: vaRecPulse 1s infinite;
+}
+.atlas-voice-launcher__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 14px;
+  height: 14px;
+  background: var(--va-success);
+  border-radius: 50%;
+  border: 2px solid var(--va-bg);
+  display: none;
+}
+.atlas-voice-launcher.is-listening .atlas-voice-launcher__badge {
+  display: block;
+  background: var(--va-recording);
+}
+
+@keyframes vaPulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(79, 195, 247, 0.45), 0 4px 12px rgba(0,0,0,0.4); }
+  50% { box-shadow: 0 8px 24px rgba(79, 195, 247, 0.7), 0 4px 16px rgba(245, 166, 35, 0.4); }
+}
+@keyframes vaRecPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ---- Chat panel ---- */
+.atlas-voice-panel {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 400px;
+  max-width: calc(100vw - 48px);
+  max-height: 600px;
+  height: 70vh;
+  background: var(--va-surface);
+  border: 1px solid var(--va-border);
+  border-radius: var(--va-radius);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  z-index: 99999;
+  box-shadow: var(--va-shadow);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  color: var(--va-text-2);
+}
+.atlas-voice-panel.is-open {
+  display: flex;
+  animation: vaSlideUp 0.3s ease;
+}
+@keyframes vaSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Panel header ---- */
+.atlas-voice-header {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(79, 195, 247, 0.15), rgba(245, 166, 35, 0.08));
+  border-bottom: 1px solid var(--va-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.atlas-voice-header__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--va-accent), var(--va-accent-2));
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.atlas-voice-header__icon svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+.atlas-voice-header__title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--va-text);
+  letter-spacing: -0.01em;
+}
+.atlas-voice-header__subtitle {
+  font-size: 10px;
+  color: var(--va-text-3);
+  margin-top: 1px;
+}
+.atlas-voice-header__actions {
+  display: flex;
+  gap: 4px;
+}
+.atlas-voice-header__btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--va-text-3);
+  transition: all 0.15s;
+}
+.atlas-voice-header__btn:hover {
+  background: var(--va-surface-2);
+  color: var(--va-text);
+  border-color: var(--va-border);
+}
+.atlas-voice-header__btn svg { width: 14px; height: 14px; }
+
+/* ---- Live session banner ---- */
+.atlas-voice-live-banner {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: linear-gradient(90deg, rgba(239, 83, 80, 0.18), rgba(239, 83, 80, 0.08));
+  border-bottom: 1px solid rgba(239, 83, 80, 0.4);
+  font-size: 11px;
+  color: #ffdcd6;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+.atlas-voice-live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef5350;
+  flex-shrink: 0;
+  animation: vaLivePulse 1.2s infinite;
+  box-shadow: 0 0 8px #ef5350;
+}
+@keyframes vaLivePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ---- Live session toggle button ---- */
+.va-live-btn { position: relative; }
+.va-live-btn.is-live {
+  color: #ef5350 !important;
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.4) !important;
+}
+.va-live-btn.is-live svg { animation: vaLivePulse 1.2s infinite; }
+
+/* ---- Chat body ---- */
+.atlas-voice-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--va-border-strong) transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.atlas-voice-body::-webkit-scrollbar { width: 6px; }
+.atlas-voice-body::-webkit-scrollbar-thumb { background: var(--va-border-strong); border-radius: 3px; }
+
+.va-msg {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  word-wrap: break-word;
+}
+.va-msg--user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--va-accent), #29b6f6);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.va-msg--assistant {
+  align-self: flex-start;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-bottom-left-radius: 4px;
+  color: var(--va-text-2);
+}
+.va-msg--system {
+  align-self: center;
+  background: transparent;
+  color: var(--va-text-3);
+  font-size: 11px;
+  font-style: italic;
+  padding: 4px 8px;
+}
+.va-msg--assistant a { color: var(--va-accent); text-decoration: underline; }
+.va-msg__provider {
+  display: block;
+  margin-top: 6px;
+  font-size: 9px;
+  opacity: 0.7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.va-typing {
+  align-self: flex-start;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 12px;
+  border-bottom-left-radius: 4px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 4px;
+}
+.va-typing__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--va-text-3);
+  animation: vaTypingBounce 1.4s infinite;
+}
+.va-typing__dot:nth-child(2) { animation-delay: 0.2s; }
+.va-typing__dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes vaTypingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ---- Status indicator ---- */
+.atlas-voice-status {
+  padding: 6px 16px;
+  background: var(--va-bg);
+  border-top: 1px solid var(--va-border);
+  font-size: 10.5px;
+  color: var(--va-text-3);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.atlas-voice-status__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--va-success);
+  box-shadow: 0 0 6px var(--va-success);
+}
+.atlas-voice-status.is-listening .atlas-voice-status__dot { background: var(--va-recording); box-shadow: 0 0 6px var(--va-recording); animation: vaPulse 1s infinite; }
+.atlas-voice-status.is-thinking .atlas-voice-status__dot { background: var(--va-accent-2); box-shadow: 0 0 6px var(--va-accent-2); }
+.atlas-voice-status.is-speaking .atlas-voice-status__dot { background: var(--va-accent-2); box-shadow: 0 0 8px var(--va-accent-2); animation: vaPulse 1s infinite; }
+.atlas-voice-status.is-error .atlas-voice-status__dot { background: var(--va-error); box-shadow: 0 0 6px var(--va-error); }
+
+/* ---- Input row ---- */
+.atlas-voice-input {
+  padding: 12px;
+  border-top: 1px solid var(--va-border);
+  background: var(--va-bg);
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.atlas-voice-input__text {
+  flex: 1;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--va-text);
+  font-family: inherit;
+  font-size: 13px;
+  resize: none;
+  max-height: 100px;
+  min-height: 40px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.atlas-voice-input__text:focus { border-color: var(--va-accent); }
+.atlas-voice-input__text::placeholder { color: var(--va-text-3); }
+
+.atlas-voice-input__mic,
+.atlas-voice-input__send,
+.atlas-voice-input__stop {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.atlas-voice-input__mic {
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  color: var(--va-text-2);
+}
+.atlas-voice-input__mic:hover {
+  background: var(--va-surface);
+  border-color: var(--va-accent);
+  color: var(--va-accent);
+}
+.atlas-voice-input__mic.is-recording {
+  background: var(--va-recording);
+  color: white;
+  border-color: var(--va-recording);
+  animation: vaPulse 1s infinite;
+}
+.atlas-voice-input__mic svg { width: 18px; height: 18px; }
+
+.atlas-voice-input__send {
+  background: linear-gradient(135deg, var(--va-accent), #29b6f6);
+  color: white;
+}
+.atlas-voice-input__send:hover { transform: scale(1.05); }
+.atlas-voice-input__send:disabled { opacity: 0.4; cursor: not-allowed; }
+.atlas-voice-input__send svg { width: 16px; height: 16px; }
+
+.atlas-voice-input__stop {
+  background: linear-gradient(135deg, #ef5350, #d32f2f);
+  color: white;
+  animation: vaPulse 1.5s infinite;
+}
+.atlas-voice-input__stop:hover { transform: scale(1.05); }
+.atlas-voice-input__stop svg { width: 14px; height: 14px; }
+
+/* ---- Settings modal ---- */
+.atlas-voice-settings {
+  position: absolute;
+  inset: 0;
+  background: var(--va-surface);
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+  backdrop-filter: blur(20px);
+}
+.atlas-voice-settings.is-open { display: flex; }
+.atlas-voice-settings__head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--va-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.atlas-voice-settings__title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--va-text);
+}
+.atlas-voice-settings__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  scrollbar-width: thin;
+}
+.atlas-voice-settings__body::-webkit-scrollbar { width: 6px; }
+.atlas-voice-settings__body::-webkit-scrollbar-thumb { background: var(--va-border-strong); border-radius: 3px; }
+
+.va-setting-group { margin-bottom: 18px; }
+.va-setting-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--va-accent);
+  margin-bottom: 8px;
+}
+.va-setting-help {
+  font-size: 11px;
+  color: var(--va-text-3);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.va-setting-select {
+  width: 100%;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--va-text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+.va-setting-select:focus { border-color: var(--va-accent); }
+.va-setting-select option { background: var(--va-bg); color: var(--va-text); }
+.va-setting-input {
+  width: 100%;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--va-text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.va-setting-input:focus { border-color: var(--va-accent); }
+.va-setting-input::placeholder { color: var(--va-text-3); }
+
+.va-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+.va-toggle-row__label { font-size: 13px; color: var(--va-text-2); }
+.va-toggle {
+  width: 36px;
+  height: 20px;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.va-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--va-text-3);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+.va-toggle.is-on {
+  background: linear-gradient(135deg, var(--va-accent), #29b6f6);
+  border-color: var(--va-accent);
+}
+.va-toggle.is-on::after { left: 18px; background: white; }
+
+.va-save-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, var(--va-accent), #29b6f6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: transform 0.15s;
+}
+.va-save-btn:hover { transform: scale(1.01); }
+
+.va-provider-info {
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: rgba(79, 195, 247, 0.08);
+  border-left: 2px solid var(--va-accent);
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--va-text-3);
+  line-height: 1.5;
+}
+
+/* ---- Quick suggestions chips ---- */
+.atlas-voice-suggestions {
+  padding: 8px 12px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--va-border);
+  background: var(--va-bg);
+}
+.va-suggestion-chip {
+  font-size: 11px;
+  padding: 4px 10px;
+  background: var(--va-surface-2);
+  border: 1px solid var(--va-border);
+  border-radius: 100px;
+  color: var(--va-text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.va-suggestion-chip:hover {
+  background: var(--va-surface);
+  border-color: var(--va-accent);
+  color: var(--va-accent);
+}
+
+/* ---- Voice waveform during recording ---- */
+.atlas-voice-waveform {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 12px;
+}
+.atlas-voice-waveform.is-active { display: flex; }
+.atlas-voice-waveform__bar {
+  width: 3px;
+  background: var(--va-recording);
+  border-radius: 2px;
+  animation: vaWave 0.8s infinite ease-in-out;
+}
+.atlas-voice-waveform__bar:nth-child(1) { animation-delay: 0s; height: 30%; }
+.atlas-voice-waveform__bar:nth-child(2) { animation-delay: 0.1s; height: 60%; }
+.atlas-voice-waveform__bar:nth-child(3) { animation-delay: 0.2s; height: 100%; }
+.atlas-voice-waveform__bar:nth-child(4) { animation-delay: 0.3s; height: 70%; }
+.atlas-voice-waveform__bar:nth-child(5) { animation-delay: 0.4s; height: 40%; }
+@keyframes vaWave {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1.3); }
+}
+
+/* ---- Mobile responsive ---- */
+@media (max-width: 600px) {
+  .atlas-voice-panel {
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  .atlas-voice-launcher {
+    bottom: 16px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}

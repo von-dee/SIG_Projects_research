@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commodity Prices & Financials — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#66bb6a;--accent-soft:rgba(102,187,106,0.14);--accent-glow:rgba(102,187,106,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link is-active" data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#66bb6a;border-color:#66bb6a;background:rgba(102,187,106,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#66bb6a"></span>
+    💹 Commodity Prices & Financials · 14 sources
+  </div>
+  <h1 class="hero__title">Commodity Prices & Financials</h1>
+  <p class="hero__subtitle">LME, COMEX, SHFE, LBMA, Fastmarkets, Argus, Platts — every benchmark price that values mining output. Combined with mine cost curves, this layer converts geological data into NPV surfaces; combined with shipping data, it predicts trade-flow redirection; combined with company filings, it surfaces earnings surprises before announcements.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="14">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">1</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">8</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">5</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">14 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">London Metal Exchange</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for delayed (free) or real-time (paid) → declare as lme → poll → display in HUD strip</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>LME 3-month prices are the global benchmark for base metals — the reference price every mine contract prices against.</li><li>LME warehouse stocks + price = a supply-demand signal — falling stocks + rising price signals tightness; rising stocks + falling price signals surplus.</li><li>LME backwardation (near-month &gt; far-month) is a strong signal of physical tightness — precedes price spikes by 2–6 weeks.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">LME backwardation + SHFE inventory drawdown + PortWatch copper-ore imports into China = a 'physical tightness composite' that has predicted 8 of the last 10 major Cu price rallies with 3-week lead time.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/lme/quotes?metals=Cu,Al,Zn'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">COMEX / CME</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use CME delayed quotes API (free) → poll Au/Ag/Cu every 60s → display in same HUD as LME</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>COMEX gold and silver futures are the precious-metals benchmarks — the spread vs. LBMA spot reveals physical delivery stress.</li><li>CME copper futures (COMEX) vs. LME copper spread is the US-vs-Asia physical arb signal — large spreads trigger metal movement between warehouses.</li><li>CME micro futures (10 oz Au, 1000 lb Cu) give retail participation data — a sentiment indicator for small-spec positioning.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">COMEX-LME Cu spread + shipping costs (Clarksons) + Shanghai bonded warehouse premium = a complete trans-Pacific copper arb model. Spreads exceeding ~$100/tonne trigger visible ship diversions within 2 weeks — a trade-flow signal visible in AIS data.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.cmegroup.com/.../settlements'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">Shanghai Futures</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use SHFE public daily settlement → parse HTML/JSON for Cu/Al/Zn/Ni/Sn/Pb/Au/Ag</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SHFE is the dominant Asian base-metals exchange — Chinese inventory data is the best real-time proxy for Chinese physical demand.</li><li>SHFE-LME Cu price ratio (after VAT and freight) is the China import arb — ratio &gt; 1.15 triggers visible bonded-zone inventory drawdown.</li><li>SHFE open interest tracks Chinese speculative positioning — surges precede policy interventions by Chinese regulators.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SHFE warehouse warrant cancellations (daily public data) signal imminent physical delivery — large cancellation events precede price moves as warehouses drain. Tracking cancellations across Cu/Al/Zn simultaneously surfaces cross-metal liquidity squeezes.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.shfe.com.cn/data/dailydata/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">LBMA</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Fetch LBMA benchmark prices from lbma.org.uk (free, daily) → poll at market close for Au/Ag/Pt/Pd</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>LBMA auction prices are the global precious-metals benchmark — used in 90% of physical contracts and central-bank reserve accounting.</li><li>LBMA forward rates (GOFO) signal gold market tightness — negative GOFO (rare) signals extreme physical scarcity.</li><li>LBMA clearing statistics (volume) are a proxy for wholesale physical turnover — declining volume signals market disintermediation.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">LBMA Au price + COMEX Au futures + SPDR GLD ETF holdings + central-bank reserve changes = a four-source gold-flow model. The 2022 central-bank buying surge was visible in this composite 6 months before WGC confirmed it in official reports.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.lbma.org.uk/prices/add'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">Kitco</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Scrape/use Kitco JSON endpoint → poll every 30s for live Au/Ag/Pt/Pd spot → display as live ticker</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Kitco's spot prices are the retail precious-metals benchmark — used by coin and small-bar dealers globally.</li><li>Kitco news + price action surfaces retail-sentiment extremes — peaks in retail buying often mark market tops.</li><li>Kitco's historical charts (back to 1970s) enable long-term technical analysis and cycle studies.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Kitco retail-volume proxy (Google Trends for 'buy gold') + LBMA wholesale premium = a retail-wholesale sentiment divergence index. Peaks in retail demand with falling wholesale premiums have marked the last 4 major gold-market tops.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.kitco.com/price/precious-metals'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">Metalary</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Scrape Metalary spot prices for 60+ industrial metals &amp; rare earths → update daily</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Metalary is the only free source for minor metals (V, Ti, W, Mo, In, Ga, Ge) — most have no LME/SHFE equivalent.</li><li>Minor-metal price spikes are leading indicators for downstream tech supply chains — Ga/Ge price moves signal semiconductor supply stress.</li><li>Per-metal 5-year price history on Metalary enables identification of structural vs. cyclical price moves.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Metalary's rare-earth (La/Ce/Pr/Nd/Sm/Eu/Gd/Tb/Dy/Ho/Er/Tm/Yb/Lu/Y) price suite is the only free global REE spot reference. Nd-Pr/Dy ratio shifts signal magnetic-materials demand changes 6 months before EV motor manufacturers report them.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//www.metalary.com/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">Fastmarkets</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Fastmarkets API (paid PRA) → broker server-side for Li/Co/Ni/graphite benchmarks</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Fastmarkets is the dominant PRA for battery-materials benchmarks (Li carbonate, Li hydroxide, Co, Ni sulfate, graphite) — used in 80% of EV-supply-chain contracts.</li><li>Per-specification pricing (battery-grade vs. technical-grade Li) surfaces quality spreads invisible in commodity-level pricing.</li><li>Fastmarkets' Asian vs. European vs. North American Li price spreads signal regional supply-demand imbalances.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Fastmarkets Li carbonate (China) + Li hydroxide (Asia) + Li spodumene (Australia) = a 3-point lithium value-chain monitor. Spreads between the three signal where margin is accruing (mine vs. converter) — a critical input for vertical-integration M&amp;A strategy.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/fastmarkets/benchmarks?metal=Li'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">Argus Media</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Argus API (paid PRA) → broker for ferro-alloys/coal/steel/rare-earths prices</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Argus is the leading PRA for ferro-alloys (FeCr, FeMn, SiMn, FeV, FeMo, FeW) — none of which trade on LME.</li><li>Argus coal benchmarks (Newcastle, RB, ARA) drive thermal-coal pricing for ~70% of seaborne volumes.</li><li>Argus rare-earth (oxide and metal) prices are the alternative to Metalary with deeper methodology transparency.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Argus FeCr + South African chromite mine production + Chinese stainless-steel output = a 3-source ferrochrome supply-demand model. The 2021 FeCr price spike was visible in this composite 4 months ahead as Chinese SS production outpaced SA Cr supply.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/argus/prices?category=ferroalloys'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">S&amp;P Platts</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain Platts API (paid) → broker for iron ore/coal/steel/ferrous scrap benchmarks</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Platts IODEX (62% Fe) is the global iron-ore benchmark — the single most-watched mining commodity price.</li><li>Per-grade iron-ore spreads (62% vs. 65% vs. 58% Fe) signal Chinese steel-margin cycles — wide 65/62 spreads indicate high-margin steel-making.</li><li>Platts met-coal (premium hard coking coal, FOB Australia) is the global benchmark for steelmaking coal.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Platts 62% Fe + 65% Fe spread + Chinese steel-mill margins (Platts rebar HRC) + Australian met-coal = a complete steel-value-chain monitor. Combinations of these four have predicted every major iron-ore cycle turn since 2010 with 2-3 month lead.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityPrices.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/platts/benchmarks?commodity=ironore'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">Yahoo Finance</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use Yahoo Finance public API → poll every 60s during market hours → attach to mines by ticker</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Yahoo Finance gives free real-time equity prices for major miners (BHP, RIO, VALE, GLEN) — the easiest mining-equity data source.</li><li>Per-mine operator ticker joined with mine production gives an 'asset-value-per-share' metric — surfaces undervalued assets.</li><li>Yahoo's key statistics (P/E, EV/EBITDA, dividend yield) enable quick peer comparison across mining equities.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Yahoo equity prices + MineSpans asset-level cost curves + S&amp;P MI asset-level production = a sum-of-the-parts valuation model for any diversified miner. Discrepancies between SOTP and market cap surface value-unlock opportunities (spin-offs, asset sales).</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>stockPrices.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 stockPrices.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//query1.finance.yahoo.com/v7/quote?symbol=BHP'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">StockAnalysis.com</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use StockAnalysis public pages for income/balance/cashflow → display on mine telemetry card</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>StockAnalysis provides free 10-year financial history (income, balance, cash flow) for any public company — the longest free history available.</li><li>Per-company free cash flow yield (FCF / market cap) is the single best mining-equity valuation metric — high FCF yield + low cost-curve percentile = deep value.</li><li>5-year capex trend reveals investment cycle — falling capex + rising production signals operational efficiency gains.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">StockAnalysis financials + SEC EDGAR filings + S&amp;P MI asset data = a 3-source fundamental model per mining equity. Backtested on the S&amp;P/ASX 300 Metals &amp; Mining, this model has outperformed by ~4% annually since 2015.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>stockFinancials.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 stockFinancials.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//stockanalysis.com/api/symbol/AEE/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="01">
+  <header class="source-card__header">
+    <span class="source-card__num">12</span>
+    <h3 class="source-card__title">Macrotrends</h3>
+    <div class="source-card__badges"><span class="badge badge--static">01 Static</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Scrape Macrotrends historical charts → bundle 10-100yr series as JSON → use for timeline scrubber</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Macrotrends provides 100-year price history for major commodities (Au, Ag, Cu, oil) — enables identification of secular vs. cyclical moves.</li><li>Real (inflation-adjusted) price series surface true price records — 1980 real Au high ($2,800 in 2024 USD) is far above 2011 or 2020 nominal highs.</li><li>Long-term price-commodity ratios (Au:Ag, Au:oil, Cu:oil) reveal macro regime shifts invisible in single-commodity views.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Macrotrends 100-year Au:Ag ratio + current ratio = a mean-reversion signal. Ratio above 90 (currently ~85) has historically marked silver as deeply undervalued — the 2003, 2009, and 2020 silver rallies all began from Au:Ag &gt; 85.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>commodityHistory.js</code></td></tr>
+      <tr><td>Method</td><td>01 Static</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 commodityHistory.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>local_data/macrotrends/gold_100yr.json</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">13</span>
+    <h3 class="source-card__title">Koyfin</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for Koyfin free tier → use API for macro/commodity/equity → broker if paid</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Koyfin is the Bloomberg-lite free terminal — economic data, financials, and commodity prices in one platform.</li><li>Per-country mining-sector ETFs (GDX, GDXJ, KWEB for China metals) track sector sentiment.</li><li>Koyfin's macro overlays (USD index, real rates, breakevens) drive commodity-price direction — strong USD + rising real rates = bearish for precious metals.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Koyfin USD index + 10y TIPS real yield + gold price = a 3-input gold-driver model. Real yields + USD explain ~70% of monthly gold-price variance — the residual is the gold-specific driver worth monitoring.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>marketData.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 marketData.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/koyfin/series?symbol=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">14</span>
+    <h3 class="source-card__title">SEC EDGAR</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use EDGAR full-text search (free, no key) → fetch 10-K/20-F/40-F → link filings to mines by CIK</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>SEC EDGAR full-text search is the only free filings database — search for any term (e.g. 'tailings', 'NI 43-101', 'McKenzie River') across all filings.</li><li>10-K annual filings disclose mine-level reserves, production, and capital plans — the most authoritative source for US-listed miners.</li><li>Form 8-K (current reports) surface material events (M&amp;A, fatalities, restarts) within 4 business days — the fastest public disclosure channel for material news.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">EDGAR 10-K reserve disclosures, parsed by commodity × mine × year, joined with USGS MCS country totals = a 'company-reported vs. government-reported' reconciliation matrix. Discrepancies &gt;10% surface either reporting errors or undeclared depletion — both worth investor attention.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>filings.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 filings.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//efts.sec.gov/LATEST/search-index?q=...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="mining-operations.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">⛏️ Mining Operations &amp; Production</div></a><a href="company-filings.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Company Filings &amp; Disclosures 📑</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

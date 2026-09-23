@@ -1,0 +1,3303 @@
+{
+  "site_name": "Mining Intelligence Atlas",
+  "tagline": "125 sources · 60 personas · 10 combinations",
+  "base_url": "",
+  "pages": [
+    {
+      "id": "index",
+      "url": "index.html",
+      "title": "Home — Mining Intelligence Atlas",
+      "description": "Overview of all 12 categories and 125 sources"
+    },
+    {
+      "id": "personas",
+      "url": "personas.html",
+      "title": "Personas — Interactive persona-driven intelligence tool",
+      "description": "60 mining value-chain personas with curated source stacks and inferences"
+    },
+    {
+      "id": "combinations",
+      "url": "combinations.html",
+      "title": "Combinations — 10 cross-category insight workflows",
+      "description": "Worked examples of multi-source intelligence combinations"
+    },
+    {
+      "id": "methodology",
+      "url": "methodology.html",
+      "title": "Methodology — Integration patterns and architecture",
+      "description": "How the atlas is built: 4 integration patterns, layer composition, key brokering"
+    }
+  ],
+  "categories": [
+    {
+      "id": "mineral-deposits",
+      "title": "Mineral Deposits & Geology",
+      "icon": "🪨",
+      "url": "mineral-deposits.html",
+      "source_count": 17,
+      "tagline": "Where the rocks are, what they hold, and how they got there.",
+      "description": "Bedrock maps, mine registers, geochemistry, heat flow, and lithological lexicons — the foundational geological layer for every mineral intelligence workflow. Combine regional surveys (OneGeology, BGS, SGU) with national occurrences (MRDS, ARDF, SAMINDABA) and global geochemistry (EarthChem, Mindat) to triangulate from continent-scale tectonics down to deposit-scale paragenesis.",
+      "sources": [
+        {
+          "name": "USGS MRDS",
+          "method": "01 Static",
+          "format": "GeoJSON / CSV"
+        },
+        {
+          "name": "USGS Active Mines",
+          "method": "02 Live",
+          "format": "GeoJSON"
+        },
+        {
+          "name": "OneGeology",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "Macrostrat",
+          "method": "02 Live",
+          "format": "GeoJSON API"
+        },
+        {
+          "name": "Geoscience Australia",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "BGS Geology",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "GeoIndex (BGS)",
+          "method": "02 Live",
+          "format": "JSON API"
+        },
+        {
+          "name": "ARDF (Alaska)",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "NRCan Geoscience",
+          "method": "02 Live",
+          "format": "WMS / GeoJSON"
+        },
+        {
+          "name": "SGU (Sweden)",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "GS Namibia",
+          "method": "01 Static",
+          "format": "GeoJSON / CSV"
+        },
+        {
+          "name": "CGS (South Africa)",
+          "method": "01 Static",
+          "format": "GeoJSON"
+        },
+        {
+          "name": "SEGEMAR",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "EarthChem",
+          "method": "02 Live",
+          "format": "JSON API"
+        },
+        {
+          "name": "Mindat.org",
+          "method": "03 Keyed",
+          "format": "JSON API"
+        },
+        {
+          "name": "USGS NGMDB",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "Global Heat Flow",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        }
+      ]
+    },
+    {
+      "id": "earth-observation",
+      "title": "Earth Observation & Satellite",
+      "icon": "🛰️",
+      "url": "earth-observation.html",
+      "source_count": 14,
+      "tagline": "Eyes in the sky that see what no permit filing ever will.",
+      "description": "Optical, SAR, methane, fire, and forest-loss constellations turn the planet into a daily-updated verification layer. Cross-check mine permit boundaries with Sentinel-2 disturbance footprints; watch tailings dam creep with ICEYE SAR; quantify undocumented artisanal mining via PlanetScope tasking. Earth Observation is the only layer that independently confirms what companies, governments, and news o...",
+      "sources": [
+        {
+          "name": "Sentinel Hub",
+          "method": "03 Keyed",
+          "format": "API / WMS"
+        },
+        {
+          "name": "USGS EarthExplorer",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Copernicus Data Hub",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "NASA FIRMS",
+          "method": "03 Keyed",
+          "format": "API / CSV"
+        },
+        {
+          "name": "OpenAerialMap",
+          "method": "02 Live",
+          "format": "JSON API"
+        },
+        {
+          "name": "ESA EO Catalogue",
+          "method": "03 Keyed",
+          "format": "JSON API"
+        },
+        {
+          "name": "Planet Labs",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Maxar",
+          "method": "03 Keyed",
+          "format": "API / WMS"
+        },
+        {
+          "name": "ICEYE",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Capella Space",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Sentinel-5P TROPOMI",
+          "method": "03 Keyed",
+          "format": "API / WMS"
+        },
+        {
+          "name": "Global Forest Watch",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "NASA Earthdata",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "NOAA Night Lights",
+          "method": "02 Live",
+          "format": "WMS"
+        }
+      ]
+    },
+    {
+      "id": "mining-operations",
+      "title": "Mining Operations & Production",
+      "icon": "⛏️",
+      "url": "mining-operations.html",
+      "source_count": 12,
+      "tagline": "Who mines what, how much, at what cost, and from where.",
+      "description": "Asset-level production, reserves, cost curves, tailings inventories, and corporate ownership. The layer that converts geological potential into economic reality. Combine with commodity prices for NPV calculations; combine with satellite imagery for production verification; combine with shipping data for export reconciliation.",
+      "sources": [
+        {
+          "name": "USGS Minerals Yearbook",
+          "method": "01 Static",
+          "format": "CSV"
+        },
+        {
+          "name": "USGS MCS",
+          "method": "01 Static",
+          "format": "CSV / JSON"
+        },
+        {
+          "name": "ICMM Tailings",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "Global Tailings Review",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "World Mining Congress",
+          "method": "01 Static",
+          "format": "CSV"
+        },
+        {
+          "name": "BGS WMP",
+          "method": "01 Static",
+          "format": "CSV"
+        },
+        {
+          "name": "S&P Global MI",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "MineSpans (McKinsey)",
+          "method": "03 Keyed",
+          "format": "API / CSV"
+        },
+        {
+          "name": "Raw Materials Data",
+          "method": "01 Static",
+          "format": "CSV"
+        },
+        {
+          "name": "S&P SNL Mining",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "CRU Group",
+          "method": "03 Keyed",
+          "format": "API / CSV"
+        },
+        {
+          "name": "Wood Mackenzie",
+          "method": "03 Keyed",
+          "format": "API / CSV"
+        }
+      ]
+    },
+    {
+      "id": "commodity-prices",
+      "title": "Commodity Prices & Financials",
+      "icon": "💹",
+      "url": "commodity-prices.html",
+      "source_count": 14,
+      "tagline": "The instantaneous economic engine that turns rocks into revenue.",
+      "description": "LME, COMEX, SHFE, LBMA, Fastmarkets, Argus, Platts — every benchmark price that values mining output. Combined with mine cost curves, this layer converts geological data into NPV surfaces; combined with shipping data, it predicts trade-flow redirection; combined with company filings, it surfaces earnings surprises before announcements.",
+      "sources": [
+        {
+          "name": "London Metal Exchange",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "COMEX / CME",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Shanghai Futures",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "LBMA",
+          "method": "02 Live",
+          "format": "API / CSV"
+        },
+        {
+          "name": "Kitco",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Metalary",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Fastmarkets",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Argus Media",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "S&P Platts",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Yahoo Finance",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "StockAnalysis.com",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Macrotrends",
+          "method": "01 Static",
+          "format": "API / CSV"
+        },
+        {
+          "name": "Koyfin",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "SEC EDGAR",
+          "method": "02 Live",
+          "format": "API / JSON"
+        }
+      ]
+    },
+    {
+      "id": "company-filings",
+      "title": "Company Filings & Disclosures",
+      "icon": "📑",
+      "url": "company-filings.html",
+      "source_count": 9,
+      "tagline": "The legal-paper trail of what companies say they have and what they're doing.",
+      "description": "NI 43-101, JORC, SAMREC, SEC 10-K, SEDAR+ filings, EITI revenue reports — the regulated disclosure layer that converts corporate claims into auditable text. Combined with satellite imagery for verification, with cost curves for sanity-checking, and with commodity prices for valuation, this layer surfaces discrepancies between company claims and ground truth.",
+      "sources": [
+        {
+          "name": "SEDAR+",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "NI 43-101 Registry",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "JORC Code",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "SAMREC / SAMVAL",
+          "method": "01 Static",
+          "format": "CSV / JSON"
+        },
+        {
+          "name": "Companies House (UK)",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "OpenCorporates",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "FCA NSS",
+          "method": "02 Live",
+          "format": "API / XML"
+        },
+        {
+          "name": "Morningstar (Hemscott)",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "EITI",
+          "method": "01 Static",
+          "format": "API / CSV"
+        }
+      ]
+    },
+    {
+      "id": "shipping-logistics",
+      "title": "Shipping, Logistics & Trade",
+      "icon": "🚢",
+      "url": "shipping-logistics.html",
+      "source_count": 11,
+      "tagline": "Where the metal actually moves — the physical truth-teller.",
+      "description": "AIS vessel tracks, port arrivals, bilateral trade statistics, freight rates. The shipping layer is the verification layer: if a mine claims X production but ships 0.7X, someone is lying. Combined with mine production data and commodity prices, this layer surfaces trade-flow redirections in real time and predicts warehouse stock changes weeks ahead.",
+      "sources": [
+        {
+          "name": "AISStream",
+          "method": "03 Keyed",
+          "format": "WebSocket / JSON"
+        },
+        {
+          "name": "MarineTraffic",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "VesselFinder",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "FleetMon",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "UN Comtrade",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Trade Map (ITC)",
+          "method": "01 Static",
+          "format": "API / CSV"
+        },
+        {
+          "name": "PortWatch (IMF)",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Drewry",
+          "method": "01 Static",
+          "format": "API / CSV"
+        },
+        {
+          "name": "Clarksons Research",
+          "method": "01 Static",
+          "format": "API / CSV"
+        },
+        {
+          "name": "OpenSky Network",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "adsb.lol",
+          "method": "02 Live",
+          "format": "API / JSON"
+        }
+      ]
+    },
+    {
+      "id": "esg-environmental",
+      "title": "ESG, Environmental & Social",
+      "icon": "🌱",
+      "url": "esg-environmental.html",
+      "source_count": 11,
+      "tagline": "The non-negotiable social licence to operate.",
+      "description": "GRI, SASB, CDP, TNFD, IRMA audits, protected areas, biodiversity proximity, ESG ratings. The layer that converts environmental performance into investable signals. Combined with satellite imagery for verification and with corporate filings for disclosure alignment, this layer surfaces greenwashing and reputational risk before they hit headlines.",
+      "sources": [
+        {
+          "name": "GRI Standards",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "SASB Standards",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "CDP",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "TNFD",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "IRMA",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Towards Sustainable Mining",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "Land Matrix",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "IBAT",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "WDPA",
+          "method": "01 Static",
+          "format": "GeoJSON / CSV"
+        },
+        {
+          "name": "MSCI ESG",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Sustainalytics",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        }
+      ]
+    },
+    {
+      "id": "geophysics-seismic",
+      "title": "Geophysics, Seismic & Hazards",
+      "icon": "🌋",
+      "url": "geophysics-seismic.html",
+      "source_count": 8,
+      "tagline": "The deep-earth physics that explains where deposits sit and where disasters strike.",
+      "description": "Earthquakes, volcanoes, magnetics, gravity, space weather. The layer that gives the third dimension and the dynamic hazard frame. Combined with mine locations for risk assessment, with heat flow for geothermal potential, and with seismic stations for exploration targeting, this layer protects operations and unlocks blind deposits.",
+      "sources": [
+        {
+          "name": "USGS Earthquakes",
+          "method": "02 Live",
+          "format": "API / GeoJSON"
+        },
+        {
+          "name": "EMSC",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "EarthScope (IRIS)",
+          "method": "02 Live",
+          "format": "API / XML"
+        },
+        {
+          "name": "Global Volcanism Program",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "NOAA SWPC",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "EMAG2 v3",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "BGI WGM",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "Copernicus EMS",
+          "method": "02 Live",
+          "format": "API / WMS"
+        }
+      ]
+    },
+    {
+      "id": "infrastructure-energy",
+      "title": "Infrastructure, Energy & Water",
+      "icon": "⚡",
+      "url": "infrastructure-energy.html",
+      "source_count": 8,
+      "tagline": "The grid, the rails, the pipes, and the power that mining depends on.",
+      "description": "Power plants, transmission, rail, water, energy mix. The layer that determines whether a deposit is mineable. A high-grade Cu deposit 500 km from grid power and 100 km from rail is uneconomic regardless of grade. Combined with mine cost curves, this layer surfaces stranded-asset risk and energy-transition opportunities.",
+      "sources": [
+        {
+          "name": "OpenInfraMap",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "Global Energy Monitor",
+          "method": "01 Static",
+          "format": "CSV / GeoJSON"
+        },
+        {
+          "name": "Ember Climate",
+          "method": "01 Static",
+          "format": "CSV / JSON"
+        },
+        {
+          "name": "EIA",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "IEA Critical Minerals",
+          "method": "01 Static",
+          "format": "CSV / JSON"
+        },
+        {
+          "name": "BoM Water (AU)",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "USGS Water Data",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "OpenRailwayMap",
+          "method": "02 Live",
+          "format": "WMS"
+        }
+      ]
+    },
+    {
+      "id": "meteorology-climate",
+      "title": "Meteorology & Climate",
+      "icon": "🌦️",
+      "url": "meteorology-climate.html",
+      "source_count": 6,
+      "tagline": "Weather, climate, and the long-term atmospheric envelope mining operates in.",
+      "description": "Open-Meteo, NOAA Climate, ERA5, WorldClim, NASA POWER. The layer that constrains operations daily and shapes strategy annually. Combined with water data for flood risk, with satellite imagery for cloud-free planning, and with climate models for 30-year asset resilience, this layer prevents weather-related production losses and surfaces climate-resilient assets.",
+      "sources": [
+        {
+          "name": "Open-Meteo",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "NOAA Climate Data",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "C3S Climate Store",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "WorldClim v2",
+          "method": "01 Static",
+          "format": "GeoTIFF / CSV"
+        },
+        {
+          "name": "NASA POWER",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "ECMWF",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        }
+      ]
+    },
+    {
+      "id": "academic-research",
+      "title": "Academic, Research & News",
+      "icon": "📚",
+      "url": "academic-research.html",
+      "source_count": 7,
+      "tagline": "The knowledge graph of mining — papers, critical-mineral lists, news.",
+      "description": "USGS and EU critical-mineral lists, World Bank, OECD, Mining.com, Reuters Metals. The layer that frames the policy and narrative context. Combined with supply-demand models for trade-policy intelligence and with company filings for news-driven trading signals, this layer surfaces policy-driven market moves before they hit prices.",
+      "sources": [
+        {
+          "name": "USGS Critical Minerals",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "USGS SIP",
+          "method": "02 Live",
+          "format": "WMS"
+        },
+        {
+          "name": "EU CRM List",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "World Bank MinDev",
+          "method": "01 Static",
+          "format": "JSON / CSV"
+        },
+        {
+          "name": "OECD Raw Materials",
+          "method": "01 Static",
+          "format": "CSV"
+        },
+        {
+          "name": "Mining.com",
+          "method": "02 Live",
+          "format": "RSS / XML"
+        },
+        {
+          "name": "Reuters Metals",
+          "method": "02 Live",
+          "format": "RSS / XML"
+        }
+      ]
+    },
+    {
+      "id": "live-telemetry",
+      "title": "Live Operational Telemetry",
+      "icon": "📡",
+      "url": "live-telemetry.html",
+      "source_count": 8,
+      "tagline": "The real-time pulse of the moving world — satellites, transit, traffic, radio.",
+      "description": "CelesTrak satellites, GTFS transit, GBFS bikeshare, radio stations, traffic, routing. The layer that proves a Cesium globe is alive — operational data flowing every minute. Combined with mine and shipping layers, this enables contextual intelligence: when satellite AIS gaps align with vessel transponder silence, the question 'what are they hiding?' becomes answerable.",
+      "sources": [
+        {
+          "name": "CelesTrak",
+          "method": "02 Live",
+          "format": "API / TLE"
+        },
+        {
+          "name": "GTFS-Realtime",
+          "method": "02 Live",
+          "format": "Protobuf"
+        },
+        {
+          "name": "GBFS",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "Radio Browser",
+          "method": "02 Live",
+          "format": "API / JSON"
+        },
+        {
+          "name": "TomTom Traffic",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        },
+        {
+          "name": "OSRM",
+          "method": "02 Live",
+          "format": "API"
+        },
+        {
+          "name": "OpenStreetMap",
+          "method": "02 Live",
+          "format": "WMS / GeoJSON"
+        },
+        {
+          "name": "Launch Library 2",
+          "method": "03 Keyed",
+          "format": "API / JSON"
+        }
+      ]
+    }
+  ],
+  "personas": [
+    {
+      "id": "target-gen-geologist",
+      "name": "Target Generation Geologist",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🎯",
+      "url": "personas.html#target-gen-geologist",
+      "summary": "Generates grassroots exploration targets by combining regional geology, geophysics, and geochemistry at province scale. The first link in the discovery chain.",
+      "decisions": [
+        "Which 1° cells to prioritise for staking",
+        "Which geophysical surveys to commission next",
+        "Whether to walk away from a sub-economic belt",
+        "How to allocate the annual exploration budget across commodities"
+      ],
+      "kpis": [
+        "Targets per $M spent",
+        "Prospectivity score per cell",
+        "Conversion rate target → drill"
+      ],
+      "sources": [
+        "OneGeology",
+        "EMAG2 v3",
+        "BGI WGM",
+        "Macrostrat",
+        "EarthChem",
+        "Global Heat Flow",
+        "USGS NGMDB",
+        "USGS SIP",
+        "ASTER (NASA Earthdata)",
+        "Mindat.org"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Free 3-source porphyry Cu prospectivity map",
+        "LCT-pegmatite fertility ranking",
+        "Metallogenic epoch dating",
+        "Blind intrusion detection"
+      ]
+    },
+    {
+      "id": "exploration-manager",
+      "name": "Exploration Manager",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🧭",
+      "url": "personas.html#exploration-manager",
+      "summary": "Runs multi-project exploration portfolios. Decides where to drill, when to walk away, and how to communicate LOM potential to the board.",
+      "decisions": [
+        "Phase-2 drill program go/no-go",
+        "Project abandonment vs. continuation",
+        "Joint-venture vs. sole-funding",
+        "Annual budget reallocation across projects"
+      ],
+      "kpis": [
+        "Discovery cost per ounce",
+        "Resources added per $M",
+        "Project IRR at PEA stage"
+      ],
+      "sources": [
+        "USGS MRDS",
+        "ARDF (Alaska)",
+        "NRCan Geoscience",
+        "CGS (South Africa)",
+        "GS Namibia",
+        "SEGEMAR",
+        "SGU (Sweden)",
+        "NI 43-101 Registry",
+        "Mindat.org",
+        "EarthChem"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Brownfield-density kernel",
+        "Cross-border metallogenic comparison",
+        "Cu/As pathfinder z-score",
+        "Puna Li salar viability"
+      ]
+    },
+    {
+      "id": "geochemist",
+      "name": "Geochemist",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🧪",
+      "url": "personas.html#geochemist",
+      "summary": "Designs and interprets geochemical surveys — lithogeochemistry, till, stream-sediment, soil-gas. Turns ppm numbers into deposit vectors.",
+      "decisions": [
+        "Which pathfinder elements to add to the assay suite",
+        "Anomaly threshold for follow-up drilling",
+        "Whether to commission isotopic analysis",
+        "Sample spacing for regional vs. detailed surveys"
+      ],
+      "kpis": [
+        "Anomaly contrast ratio",
+        "Pathfinder signal-to-noise",
+        "False-positive rate"
+      ],
+      "sources": [
+        "EarthChem",
+        "Mindat.org",
+        "SGU (Sweden)",
+        "GeoIndex (BGS)",
+        "Macrostrat",
+        "USGS SIP"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Lithogeochemical province mapping",
+        "Mineral-vector fingerprinting",
+        "Till-geochem VMS screening",
+        "Borehole text-mining"
+      ]
+    },
+    {
+      "id": "geophysicist",
+      "name": "Geophysicist",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🧲",
+      "url": "personas.html#geophysicist",
+      "summary": "Acquires and interprets magnetic, gravity, EM, radiometric, and seismic data. Maps the third dimension from the air and on the ground.",
+      "decisions": [
+        "Survey type (airborne mag vs. ground IP vs. marine seismic)",
+        "Line spacing for regional vs. detailed surveys",
+        "Inversion vs. forward modelling approach",
+        "Anomaly prioritisation for drill testing"
+      ],
+      "kpis": [
+        "Anomaly resolution",
+        "Depth-of-investigation",
+        "Interpretation confidence"
+      ],
+      "sources": [
+        "EMAG2 v3",
+        "BGI WGM",
+        "USGS SIP",
+        "Geoscience Australia",
+        "EarthScope (IRIS)",
+        "Global Heat Flow"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Basement-structure interpretation",
+        "Passive-seismic exploration potential",
+        "High-F heat-producing granite mapping",
+        "Concealed IOCG potential"
+      ]
+    },
+    {
+      "id": "remote-sensing-specialist",
+      "name": "Remote Sensing Specialist",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🛰️",
+      "url": "personas.html#remote-sensing-specialist",
+      "summary": "Uses satellite and airborne imagery for alteration mapping, structural interpretation, and exploration target screening.",
+      "decisions": [
+        "Which ASTER vs. Landsat vs. Sentinel-2 band ratios to apply",
+        "Whether to commission hyperspectral vs. multispectral",
+        "Anomaly threshold for follow-up",
+        "Cloud-cover strategy for tropical regions"
+      ],
+      "kpis": [
+        "Alteration mapping accuracy",
+        "Cloud-free image availability",
+        "Spectral resolution"
+      ],
+      "sources": [
+        "NASA Earthdata",
+        "Sentinel Hub",
+        "USGS EarthExplorer",
+        "Maxar",
+        "OpenAerialMap",
+        "Copernicus Data Hub"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu",
+        "Artisanal & Illegal Mining Detection"
+      ],
+      "inference_titles": [
+        "ASTER alteration-favorability raster",
+        "WorldView-3 facility-scale mineral mapping",
+        "Post-disaster UAV rapid capture",
+        "Cloud-piercing SAR alteration"
+      ]
+    },
+    {
+      "id": "drilling-engineer",
+      "name": "Drilling Engineer",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🔩",
+      "url": "personas.html#drilling-engineer",
+      "summary": "Plans and executes drilling programs — diamond, RC, mud-rotary. Optimises metres, cost, and recovery per hole.",
+      "decisions": [
+        "Drill method (DD vs. RC vs. mud-rotary)",
+        "Hole depth and inclination",
+        "Sample spacing for assay",
+        "When to stop a deep hole"
+      ],
+      "kpis": [
+        "Metres per day",
+        "Core recovery %",
+        "Cost per metre"
+      ],
+      "sources": [
+        "NI 43-101 Registry",
+        "GeoIndex (BGS)",
+        "ARDF (Alaska)",
+        "NRCan Geoscience"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Historical drilling density",
+        "Borehole-based 3D stratigraphy",
+        "Permafrost-constrained drilling season",
+        "Brownfield drill-target inheritance"
+      ]
+    },
+    {
+      "id": "resource-geologist",
+      "name": "Resource Geologist",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "📐",
+      "url": "personas.html#resource-geologist",
+      "summary": "Estimates Mineral Resources under NI 43-101 / JORC / SAMREC. Builds block models, runs variography, signs off as QP.",
+      "decisions": [
+        "Cut-off grade for resource shell",
+        "Variogram model selection",
+        "Classification (Inferred / Indicated / Measured)",
+        "Whether to sign as Competent Person"
+      ],
+      "kpis": [
+        "Resource tonnage × grade",
+        "Classification split",
+        "Drill spacing adequacy"
+      ],
+      "sources": [
+        "NI 43-101 Registry",
+        "JORC Code",
+        "SAMREC / SAMVAL",
+        "USGS MRDS",
+        "S&P Global MI",
+        "CGS (South Africa)"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Disclosure verification",
+        "Volumetric endowment reconciliation",
+        "Reef-offset anomaly detection",
+        "Reserves-life forecast"
+      ]
+    },
+    {
+      "id": "greenfields-prospector",
+      "name": "Greenfields Prospector",
+      "stage": "exploration",
+      "stage_name": "Exploration & Geology",
+      "icon": "🥾",
+      "url": "personas.html#greenfields-prospector",
+      "summary": "Boots-on-the-ground prospector generating new claim staking ideas. Operates on intuition + cheap data + ground truth.",
+      "decisions": [
+        "Where to file new claims",
+        "Which mineral shows to follow up",
+        "When to option vs. develop personally",
+        "Partnership vs. sole-risk"
+      ],
+      "kpis": [
+        "Claims staked per year",
+        "Shows identified",
+        "Options signed"
+      ],
+      "sources": [
+        "Mindat.org",
+        "USGS MRDS",
+        "OneGeology",
+        "ARDF (Alaska)",
+        "Macrostrat"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Mineral co-occurrence networks",
+        "Exotic pathfinder species",
+        "Cover-belt continuation",
+        "Unconformity density mapping"
+      ]
+    },
+    {
+      "id": "mine-general-manager",
+      "name": "Mine General Manager",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🏭",
+      "url": "personas.html#mine-general-manager",
+      "summary": "Runs the whole mine — production, cost, safety, community. Reports to the COO; accountable for everything below ground and above.",
+      "decisions": [
+        "Monthly production target",
+        "Capex vs. opex tradeoffs",
+        "Workforce levels and FIFO rotation",
+        "Closure of unprofitable working areas"
+      ],
+      "kpis": [
+        "Tonnes mined vs. budget",
+        "AISC per tonne",
+        "TRIR (safety)",
+        "Stockpile levels"
+      ],
+      "sources": [
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "CRU Group",
+        "Wood Mackenzie",
+        "USGS Minerals Yearbook",
+        "TomTom Traffic",
+        "OpenSky Network",
+        "GTFS-Realtime"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "Mine Electrification & Decarbonisation Pathway"
+      ],
+      "inference_titles": [
+        "Margin-map real-time",
+        "Workforce activity index",
+        "Logistics bottleneck monitor",
+        "Restart-watcher pipeline"
+      ]
+    },
+    {
+      "id": "open-pit-engineer",
+      "name": "Open Pit Engineer",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🚛",
+      "url": "personas.html#open-pit-engineer",
+      "summary": "Designs and optimises open pit shells — pushback sequencing, final wall design, haul road geometry.",
+      "decisions": [
+        "Pushback sequencing",
+        "Final pit shell vs. intermediate phases",
+        "Haul road gradient and width",
+        "Bench height and angle"
+      ],
+      "kpis": [
+        "Strip ratio",
+        "Ore recovery %",
+        "Moveable tonnes per bench"
+      ],
+      "sources": [
+        "USGS Minerals Yearbook",
+        "ICMM Tailings",
+        "Open-Meteo",
+        "USGS Earthquakes",
+        "NASA Earthdata"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "Pit-wall deformation early-warning",
+        "Operational weather planning",
+        "Strip-ratio benchmark",
+        "Tailings-co-disposal design"
+      ]
+    },
+    {
+      "id": "underground-engineer",
+      "name": "Underground Mine Engineer",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🕳️",
+      "url": "personas.html#underground-engineer",
+      "summary": "Designs underground layouts — decline, level spacing, stoping method, ventilation. Balances dilution vs. recovery.",
+      "decisions": [
+        "Stoping method (longhole, cut-and-fill, block cave)",
+        "Level spacing and drawpoint layout",
+        "Backfill strategy",
+        "Ventilation network design"
+      ],
+      "kpis": [
+        "Dilution %",
+        "Extraction ratio",
+        "Tonnes per vertical metre"
+      ],
+      "sources": [
+        "USGS MRDS",
+        "NI 43-101 Registry",
+        "BGS Geology",
+        "GeoIndex (BGS)",
+        "USGS Earthquakes",
+        "Open-Meteo"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Historical-workings collision risk",
+        "Seismic-shake amplification",
+        "Ventilation heating/cooling load",
+        "Caving-induced subsidence forecast"
+      ]
+    },
+    {
+      "id": "drill-blast-engineer",
+      "name": "Drill & Blast Engineer",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "💥",
+      "url": "personas.html#drill-blast-engineer",
+      "summary": "Designs blast patterns — hole spacing, burden, explosive type, timing. Optimises fragmentation and minimises damage.",
+      "decisions": [
+        "Hole diameter and pattern",
+        "Explosive selection (ANFO vs. emulsion)",
+        "Delay sequencing",
+        "Vibration limits per location"
+      ],
+      "kpis": [
+        "Fragmentation P80",
+        "Vibration mm/s",
+        "Powder factor kg/m³"
+      ],
+      "sources": [
+        "USGS Earthquakes",
+        "Open-Meteo",
+        "NASA FIRMS",
+        "OpenSky Network"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Blast-vibration vs. tailings-dam risk",
+        "Spontaneous-combustion detection",
+        "Blast-window weather forecast",
+        "Drill-rig activity verification"
+      ]
+    },
+    {
+      "id": "mine-planner",
+      "name": "Mine Planner",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🗺️",
+      "url": "personas.html#mine-planner",
+      "summary": "Builds short-, medium-, and long-term mine schedules. Optimises NPV through cut-off grade and sequencing.",
+      "decisions": [
+        "Cut-off grade strategy",
+        "Annual production schedule",
+        "Stockpiling strategy",
+        "Reserve vs. waste phasing"
+      ],
+      "kpis": [
+        "NPV of schedule",
+        "Strip ratio over time",
+        "Reconciliation vs. model"
+      ],
+      "sources": [
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "CRU Group",
+        "LME",
+        "Macrotrends",
+        "Open-Meteo"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "Dynamic cut-off grade",
+        "Multi-decade scheduling under climate",
+        "Stockpile valuation under backwardation",
+        "Schedule vs. reconciliation"
+      ]
+    },
+    {
+      "id": "mine-surveyor",
+      "name": "Mine Surveyor",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "📐",
+      "url": "personas.html#mine-surveyor",
+      "summary": "Maintains the spatial integrity of the mine — pit pickups, underground surveys, deformation monitoring.",
+      "decisions": [
+        "Survey frequency for pit walls",
+        "Deformation-monitoring threshold",
+        "Volume calculation method",
+        "Control network densification"
+      ],
+      "kpis": [
+        "Survey turnaround time",
+        "Deformation precision",
+        "Volume reconciliation"
+      ],
+      "sources": [
+        "NASA Earthdata",
+        "ICEYE",
+        "Capella Space",
+        "Sentinel Hub",
+        "Maxar",
+        "USGS Earthquakes"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Daily SAR deformation monitoring",
+        "Sub-meter facility mapping",
+        "Pit-volume reconciliation",
+        "Seismic-shake post-event deformation"
+      ]
+    },
+    {
+      "id": "heavy-equipment-manager",
+      "name": "Heavy Equipment Manager",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🚜",
+      "url": "personas.html#heavy-equipment-manager",
+      "summary": "Manages truck/shovel fleet — availability, utilisation, maintenance scheduling. Optimises payload and fuel burn.",
+      "decisions": [
+        "Fleet replacement vs. rebuild",
+        "Maintenance strategy (preventive vs. CBM)",
+        "Truck allocation per dig face",
+        "Autonomous vs. manual conversion"
+      ],
+      "kpis": [
+        "Availability %",
+        "Utilisation %",
+        "Tonnes per litre diesel"
+      ],
+      "sources": [
+        "TomTom Traffic",
+        "OpenInfraMap",
+        "NASA POWER",
+        "Ember Climate",
+        "GEM Coal Tracker"
+      ],
+      "combinations": [
+        "Mine Electrification & Decarbonisation Pathway"
+      ],
+      "inference_titles": [
+        "Haul-road congestion cost",
+        "Diesel-electric conversion ROI",
+        "Fleet utilisation benchmark",
+        "Autonomous-truck GPS risk"
+      ]
+    },
+    {
+      "id": "shift-ops-manager",
+      "name": "Shift Operations Manager",
+      "stage": "mining-ops",
+      "stage_name": "Mining Operations",
+      "icon": "🕐",
+      "url": "personas.html#shift-ops-manager",
+      "summary": "Runs the shift — coordinates crews, resolves bottlenecks, hits the daily tonnage target.",
+      "decisions": [
+        "Crew allocation per shift",
+        "Real-time re-routing of trucks",
+        "Stop work vs. continue on safety concerns",
+        "Overtime authorisation"
+      ],
+      "kpis": [
+        "Tonnes per shift",
+        "Downtime hours",
+        "Safety stops per shift"
+      ],
+      "sources": [
+        "Open-Meteo",
+        "USGS Earthquakes",
+        "NASA FIRMS",
+        "TomTom Traffic",
+        "GBFS"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Weather-driven shift planning",
+        "Real-time hazard dashboard",
+        "Crew mobility tracking",
+        "Tailings-rainfall halt decision"
+      ]
+    },
+    {
+      "id": "process-plant-metallurgist",
+      "name": "Process Plant Metallurgist",
+      "stage": "processing",
+      "stage_name": "Processing & Metallurgy",
+      "icon": "⚗️",
+      "url": "personas.html#process-plant-metallurgist",
+      "summary": "Optimises the concentrator — recovery, throughput, reagent consumption. Diagnoses metallurgical anomalies shift-by-shift.",
+      "decisions": [
+        "Reagent dosing setpoints",
+        "Throughput vs. recovery tradeoff",
+        "Grind size optimisation",
+        "Batch vs. continuous processing"
+      ],
+      "kpis": [
+        "Recovery %",
+        "Throughput t/h",
+        "Reagent kg/t"
+      ],
+      "sources": [
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "Macrotrends",
+        "LME",
+        "Fastmarkets",
+        "Open-Meteo"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Real-time recovery optimisation",
+        "Water-temperature-driven kinetics",
+        "Reagent-cost benchmark",
+        "Tailings-grade reconciliation"
+      ]
+    },
+    {
+      "id": "mineral-processing-engineer",
+      "name": "Mineral Processing Engineer",
+      "stage": "processing",
+      "stage_name": "Processing & Metallurgy",
+      "icon": "🔧",
+      "url": "personas.html#mineral-processing-engineer",
+      "summary": "Designs and troubleshoots comminution, flotation, magnetic separation, leaching circuits.",
+      "decisions": [
+        "Circuit flowsheet design",
+        "Equipment selection (SAG vs. HPGR)",
+        "Test-work program design",
+        "Tailings dewatering method"
+      ],
+      "kpis": [
+        "P80 grind size",
+        "Mass pull %",
+        "Concentrate grade"
+      ],
+      "sources": [
+        "EarthChem",
+        "Mindat.org",
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "BGS WMP"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Feed-mineralogy fingerprinting",
+        "Tailings-dewatering tradeoff",
+        "Critical-mineral byproduct recovery",
+        "Concentrate-grade arbitrage"
+      ]
+    },
+    {
+      "id": "refinery-manager",
+      "name": "Refinery Manager",
+      "stage": "processing",
+      "stage_name": "Processing & Metallurgy",
+      "icon": "🏭",
+      "url": "personas.html#refinery-manager",
+      "summary": "Runs the smelter or refinery — anode furnaces, electrorefining, leach-EW. Manages concentrate blend and metal accountancy.",
+      "decisions": [
+        "Concentrate blend strategy",
+        "Smelter campaign scheduling",
+        "Sulfuric acid marketing vs. neutralisation",
+        "Byproduct recovery (Au, Ag, PGMs)"
+      ],
+      "kpis": [
+        "Metal recovery %",
+        "Throughput t/d",
+        "Slag grade"
+      ],
+      "sources": [
+        "S&P Global MI",
+        "Raw Materials Data",
+        "UN Comtrade",
+        "Trade Map (ITC)",
+        "Fastmarkets",
+        "Argus Media"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Concentrate-import dependency",
+        "Byproduct credit optimisation",
+        "Sulfur-balance constraint",
+        "Trade-flow redirection signal"
+      ]
+    },
+    {
+      "id": "extractive-metallurgist",
+      "name": "Extractive Metallurgist",
+      "stage": "processing",
+      "stage_name": "Processing & Metallurgy",
+      "icon": "🧬",
+      "url": "personas.html#extractive-metallurgist",
+      "summary": "Develops hydromet vs. pyromet route selection. Designs leach, SX, EW circuits for new deposits.",
+      "decisions": [
+        "Hydromet vs. pyromet route",
+        "Leach reagent selection",
+        "SX/EW vs. concentrate sale",
+        "Test-work program scope"
+      ],
+      "kpis": [
+        "Extraction %",
+        "Reagent consumption",
+        "Energy kWh/t"
+      ],
+      "sources": [
+        "EarthChem",
+        "Mindat.org",
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "BGS WMP",
+        "Ember Climate"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Mine Electrification & Decarbonisation Pathway"
+      ],
+      "inference_titles": [
+        "Gangue-acid-consumption modelling",
+        "Energy-route tradeoff",
+        "Critical-mineral leach kinetics",
+        "Byproduct-recovery circuit design"
+      ]
+    },
+    {
+      "id": "plant-maintenance-engineer",
+      "name": "Plant Maintenance Engineer",
+      "stage": "processing",
+      "stage_name": "Processing & Metallurgy",
+      "icon": "🛠️",
+      "url": "personas.html#plant-maintenance-engineer",
+      "summary": "Keeps the plant running — preventive maintenance, breakdown response, reliability engineering.",
+      "decisions": [
+        "Preventive vs. reactive maintenance",
+        "Spare-parts inventory strategy",
+        "Shutdown scheduling",
+        "Condition-monitoring sensor deployment"
+      ],
+      "kpis": [
+        "MTBF",
+        "Availability %",
+        "Maintenance cost per tonne"
+      ],
+      "sources": [
+        "Open-Meteo",
+        "TomTom Traffic",
+        "OSRM",
+        "OpenInfraMap"
+      ],
+      "combinations": [
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "Weather-driven shutdown scheduling",
+        "Spare-parts logistics lead time",
+        "Power-quality event monitoring",
+        "Climate-driven corrosion rate"
+      ]
+    },
+    {
+      "id": "geotechnical-engineer",
+      "name": "Geotechnical Engineer",
+      "stage": "geotechnical",
+      "stage_name": "Geotechnical, Tailings & Water",
+      "icon": "🏔️",
+      "url": "personas.html#geotechnical-engineer",
+      "summary": "Slope stability, foundation design, ground support. Designs for the rock mass, not the ore body.",
+      "decisions": [
+        "Slope angle design",
+        "Ground support density",
+        "Monitoring threshold for alarm",
+        "Risk-based design acceptance"
+      ],
+      "kpis": [
+        "Slope failure events per year",
+        "Wall-displacement rate",
+        "Ground support cost per tonne"
+      ],
+      "sources": [
+        "USGS Earthquakes",
+        "EMSC",
+        "ICEYE",
+        "Capella Space",
+        "Sentinel Hub",
+        "NASA Earthdata",
+        "Open-Meteo"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Pre-failure deformation early-warning",
+        "Seismic-shake amplification modelling",
+        "Slope-rainfall trigger threshold",
+        "Post-event damage assessment"
+      ]
+    },
+    {
+      "id": "tailings-engineer",
+      "name": "Tailings Dam Engineer",
+      "stage": "geotechnical",
+      "stage_name": "Geotechnical, Tailings & Water",
+      "icon": "🚧",
+      "url": "personas.html#tailings-engineer",
+      "summary": "Designs, operates, and closes tailings storage facilities. Post-Brumadinho, the most-watched engineering role in mining.",
+      "decisions": [
+        "Construction method (upstream/downstream/centerline)",
+        "Raising schedule",
+        "Closure strategy",
+        "Risk acceptance vs. rebuild"
+      ],
+      "kpis": [
+        "Dam consequence classification",
+        "Wall deformation rate",
+        "Freeboard compliance"
+      ],
+      "sources": [
+        "ICMM Tailings",
+        "Global Tailings Review",
+        "ICEYE",
+        "Sentinel Hub",
+        "USGS Earthquakes",
+        "Open-Meteo",
+        "USGS Water Data",
+        "IRMA"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Global tailings-risk matrix",
+        "Pre-failure deformation",
+        "Rainfall-trigger halt decision",
+        "Audit-score vs. construction-method risk"
+      ]
+    },
+    {
+      "id": "hydrogeologist",
+      "name": "Hydrogeologist",
+      "stage": "geotechnical",
+      "stage_name": "Geotechnical, Tailings & Water",
+      "icon": "💧",
+      "url": "personas.html#hydrogeologist",
+      "summary": "Manages mine water — dewatering, supply, contamination plume tracking. The most-permit-sensitive engineering role.",
+      "decisions": [
+        "Dewatering pump capacity",
+        "Water-supply source mix",
+        "Contamination monitoring network",
+        "Reinjection vs. discharge"
+      ],
+      "kpis": [
+        "Pumping rate ML/day",
+        "Drawdown metres",
+        "Compliance samples per quarter"
+      ],
+      "sources": [
+        "USGS Water Data",
+        "BoM Water (AU)",
+        "SASB Standards",
+        "CDP",
+        "Open-Meteo",
+        "WorldClim v2"
+      ],
+      "combinations": [
+        "Climate-Resilient Mining Asset Screening",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Dewatering-impact verification",
+        "Water-stress early-warning",
+        "30-year water-resilience forecast",
+        "Greenwashing detector"
+      ]
+    },
+    {
+      "id": "rock-mechanics-specialist",
+      "name": "Rock Mechanics Specialist",
+      "stage": "geotechnical",
+      "stage_name": "Geotechnical, Tailings & Water",
+      "icon": "🪨",
+      "url": "personas.html#rock-mechanics-specialist",
+      "summary": "Numerical modelling of rock mass response — FLAC, UDEC, 3DEC. Caving methods, in-situ stress, induced seismicity.",
+      "decisions": [
+        "Constitutive model selection",
+        "In-situ stress measurement program",
+        "Caving-method feasibility",
+        "Microseismic monitoring density"
+      ],
+      "kpis": [
+        "Modelled vs. actual convergence",
+        "Microseismic event rate",
+        "Stress-shadow zones"
+      ],
+      "sources": [
+        "USGS Earthquakes",
+        "EarthScope (IRIS)",
+        "EMSC",
+        "ICEYE",
+        "NASA Earthdata"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Induced-seismicity monitoring",
+        "Cave-propagation tracking",
+        "Stress-shadow hazard mapping",
+        "Pre-event vs. post-event SAR"
+      ]
+    },
+    {
+      "id": "tailings-closure-planner",
+      "name": "Tailings Closure Planner",
+      "stage": "geotechnical",
+      "stage_name": "Geotechnical, Tailings & Water",
+      "icon": "🌱",
+      "url": "personas.html#tailings-closure-planner",
+      "summary": "Designs the post-mining landform for tailings facilities. Covers, vegetation, long-term water management, financial assurance.",
+      "decisions": [
+        "Cover design (store-and-release vs. barrier)",
+        "Revegetation species mix",
+        "Long-term water management",
+        "Financial assurance estimate"
+      ],
+      "kpis": [
+        "Closure cost estimate",
+        "Revegetation success %",
+        "Long-term seepage rate"
+      ],
+      "sources": [
+        "ICMM Tailings",
+        "Global Tailings Review",
+        "WDPA",
+        "WorldClim v2",
+        "C3S Climate Store",
+        "TNFD"
+      ],
+      "combinations": [
+        "Climate-Resilient Mining Asset Screening",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Future-climate cover design",
+        "Long-term seepage forecast",
+        "Biodiversity-offset requirement",
+        "Closure-cost benchmarking"
+      ]
+    },
+    {
+      "id": "hse-manager",
+      "name": "HSE Manager",
+      "stage": "hse",
+      "stage_name": "Health, Safety & Environment",
+      "icon": "🦺",
+      "url": "personas.html#hse-manager",
+      "summary": "Health, Safety, and Environment — the conscience of the operation. Manages TRIR, fatalities, environmental incidents.",
+      "decisions": [
+        "Stop-work authority invocation",
+        "Incident investigation scope",
+        "PPE policy updates",
+        "Contractor HSE prequalification"
+      ],
+      "kpis": [
+        "TRIR",
+        "LTIFR",
+        "Fatalities",
+        "Environmental incidents per million hours"
+      ],
+      "sources": [
+        "USGS Earthquakes",
+        "NASA FIRMS",
+        "Open-Meteo",
+        "NOAA SWPC",
+        "IRMA",
+        "Towards Sustainable Mining"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning",
+        "Artisanal & Illegal Mining Detection"
+      ],
+      "inference_titles": [
+        "Multi-hazard real-time dashboard",
+        "TSM facility benchmark",
+        "Severe-storm operational risk",
+        "Tailings-rainfall halt trigger"
+      ]
+    },
+    {
+      "id": "environmental-scientist",
+      "name": "Environmental Scientist",
+      "stage": "hse",
+      "stage_name": "Health, Safety & Environment",
+      "icon": "🌿",
+      "url": "personas.html#environmental-scientist",
+      "summary": "Manages air, water, biodiversity monitoring. Permit compliance, EIA updates, rehabilitation monitoring.",
+      "decisions": [
+        "Monitoring network design",
+        "EIA update scope",
+        "Rehabilitation milestones",
+        "Permit-variation applications"
+      ],
+      "kpis": [
+        "Permit-exceedance events per year",
+        "Rehabilitation hectares per year",
+        "Biodiversity-offset hectares"
+      ],
+      "sources": [
+        "Sentinel-5P TROPOMI",
+        "Global Forest Watch",
+        "WDPA",
+        "IBAT",
+        "GRI Standards",
+        "SASB Standards",
+        "USGS Water Data"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Artisanal & Illegal Mining Detection"
+      ],
+      "inference_titles": [
+        "Methane super-emitter detection",
+        "Forest-loss ESG verification",
+        "Protected-area encroachment detector",
+        "Biodiversity-risk screening"
+      ]
+    },
+    {
+      "id": "rehabilitation-specialist",
+      "name": "Rehabilitation Specialist",
+      "stage": "hse",
+      "stage_name": "Health, Safety & Environment",
+      "icon": "🌳",
+      "url": "personas.html#rehabilitation-specialist",
+      "summary": "Designs and implements post-mining rehabilitation — recontouring, soil replacement, revegetation, ecosystem restoration.",
+      "decisions": [
+        "Revegetation species mix",
+        "Soil cover depth design",
+        "Rehabilitation sequencing",
+        "Success-criteria setting"
+      ],
+      "kpis": [
+        "Rehabilitation hectares/year",
+        "Vegetation establishment %",
+        "Soil-erosion rate"
+      ],
+      "sources": [
+        "NASA Earthdata",
+        "Sentinel Hub",
+        "Global Forest Watch",
+        "WorldClim v2",
+        "WDPA",
+        "TNFD"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "50-year NDVI trajectory",
+        "Future-climate species selection",
+        "Biodiversity-offset sufficiency",
+        "Rehabilitation-vs-disturbance ratio"
+      ]
+    },
+    {
+      "id": "occupational-health-officer",
+      "name": "Occupational Health Officer",
+      "stage": "hse",
+      "stage_name": "Health, Safety & Environment",
+      "icon": "🏥",
+      "url": "personas.html#occupational-health-officer",
+      "summary": "Manages worker health — dust exposure, noise, vibration, fatigue, mental health.",
+      "decisions": [
+        "Exposure monitoring frequency",
+        "Respirator program updates",
+        "Fitness-for-work standards",
+        "Fatigue-management policy"
+      ],
+      "kpis": [
+        "Dust exceedance days/year",
+        "Noise-induced hearing loss cases",
+        "Fatigue incidents per quarter"
+      ],
+      "sources": [
+        "Open-Meteo",
+        "NASA FIRMS",
+        "Sentinel-5P TROPOMI",
+        "NOAA SWPC"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Dust-event forecasting",
+        "Heat-stress index",
+        "Wildfire-smoke exposure",
+        "Geomagnetic-storm crew risk"
+      ]
+    },
+    {
+      "id": "logistics-manager",
+      "name": "Logistics Manager",
+      "stage": "logistics",
+      "stage_name": "Logistics & Supply Chain",
+      "icon": "📦",
+      "url": "personas.html#logistics-manager",
+      "summary": "Coordinates mine-to-port-to-customer supply chain. Vessel chartering, rail scheduling, port handling.",
+      "decisions": [
+        "Vessel charter vs. spot",
+        "Rail-cycle scheduling",
+        "Port-call optimisation",
+        "Inventory at port vs. mine"
+      ],
+      "kpis": [
+        "Freight cost per tonne",
+        "Vessel waiting time",
+        "Inventory turn days"
+      ],
+      "sources": [
+        "AISStream",
+        "MarineTraffic",
+        "VesselFinder",
+        "FleetMon",
+        "PortWatch (IMF)",
+        "Clarksons Research",
+        "Drewry",
+        "OpenRailwayMap"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Real-time bulker arrivals",
+        "Capesize freight-rate forecast",
+        "Mine-to-port logistics cost",
+        "Port-congestion bottleneck"
+      ]
+    },
+    {
+      "id": "shipping-coordinator",
+      "name": "Shipping Coordinator",
+      "stage": "logistics",
+      "stage_name": "Logistics & Supply Chain",
+      "icon": "⛴️",
+      "url": "personas.html#shipping-coordinator",
+      "summary": "Day-to-day vessel operations — nomination, loading, demurrage, documentation. The execution layer of bulk logistics.",
+      "decisions": [
+        "Vessel nomination per cargo",
+        "Loading order per hold",
+        "Demurrage vs. dispatch negotiation",
+        "Bunkering port selection"
+      ],
+      "kpis": [
+        "Demurrage cost per voyage",
+        "Loading rate t/h",
+        "On-time departure %"
+      ],
+      "sources": [
+        "AISStream",
+        "MarineTraffic",
+        "VesselFinder",
+        "FleetMon",
+        "PortWatch (IMF)",
+        "TomTom Traffic"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Cargo-diversion detection",
+        "Port-congestion prediction",
+        "Charter-flight to mine verification",
+        "Multi-source AIS coverage"
+      ]
+    },
+    {
+      "id": "port-operations-manager",
+      "name": "Port Operations Manager",
+      "stage": "logistics",
+      "stage_name": "Logistics & Supply Chain",
+      "icon": "⚓",
+      "url": "personas.html#port-operations-manager",
+      "summary": "Runs the loading port — berth allocation, stockyard management, shiploader throughput, draft constraints.",
+      "decisions": [
+        "Berth allocation per vessel",
+        "Stockyard pile management",
+        "Shiploader maintenance scheduling",
+        "Draft optimisation per tide"
+      ],
+      "kpis": [
+        "Berth occupancy %",
+        "Loading rate t/h",
+        "Stockyard capacity utilisation"
+      ],
+      "sources": [
+        "AISStream",
+        "MarineTraffic",
+        "FleetMon",
+        "PortWatch (IMF)",
+        "Open-Meteo",
+        "NOAA SWPC"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Per-port daily cargo volume",
+        "Storm-window berth scheduling",
+        "Real-time export monitor",
+        "GPS-disruption risk"
+      ]
+    },
+    {
+      "id": "supply-chain-analyst",
+      "name": "Supply Chain Analyst",
+      "stage": "logistics",
+      "stage_name": "Logistics & Supply Chain",
+      "icon": "📊",
+      "url": "personas.html#supply-chain-analyst",
+      "summary": "Maps the full supply chain from mine-to-customer. Identifies bottlenecks, concentration risk, alternative routes.",
+      "decisions": [
+        "Supply-chain mapping scope",
+        "Single-source-of-supply risk acceptance",
+        "Alternative-route investment",
+        "Strategic inventory positioning"
+      ],
+      "kpis": [
+        "Supply-chain cycle time",
+        "Single-source dependency count",
+        "Resilience index"
+      ],
+      "sources": [
+        "UN Comtrade",
+        "Trade Map (ITC)",
+        "Raw Materials Data",
+        "S&P Global MI",
+        "Wood Mackenzie",
+        "AISStream",
+        "Clarksons Research"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Trade-flow reconciliation matrix",
+        "Supply-concentration HHI",
+        "Landed-cost matrix per route",
+        "Refinery-bottleneck mapping"
+      ]
+    },
+    {
+      "id": "procurement-manager",
+      "name": "Procurement Manager",
+      "stage": "logistics",
+      "stage_name": "Logistics & Supply Chain",
+      "icon": "🛒",
+      "url": "personas.html#procurement-manager",
+      "summary": "Sources goods and services for the mine — explosives, reagents, fuel, tyres, capital equipment.",
+      "decisions": [
+        "Single-source vs. multi-source per category",
+        "Spot vs. contract pricing",
+        "Local vs. international sourcing",
+        "Strategic inventory levels"
+      ],
+      "kpis": [
+        "Procurement cost per tonne",
+        "Supplier OTD %",
+        "Single-source risk count"
+      ],
+      "sources": [
+        "Fastmarkets",
+        "Argus Media",
+        "S&P Platts",
+        "Yahoo Finance",
+        "UN Comtrade",
+        "OpenInfraMap"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Reagent-cost benchmark",
+        "Explosives-feedstock forecast",
+        "Fuel-cost arbitrage",
+        "Tyre-supply chain risk"
+      ]
+    },
+    {
+      "id": "commodities-trader",
+      "name": "Commodities Trader",
+      "stage": "commercial",
+      "stage_name": "Commercial, Trading & Markets",
+      "icon": "📈",
+      "url": "personas.html#commodities-trader",
+      "summary": "Trades physical and derivative metals. Needs to anticipate warehouse stock changes, trade flows, and supply disruptions.",
+      "decisions": [
+        "Long vs. short vs. spread",
+        "Physical vs. derivative position",
+        "Warehouse warrant strategy",
+        "Option-strategy selection"
+      ],
+      "kpis": [
+        "Sharpe ratio",
+        "Win rate %",
+        "P&L volatility"
+      ],
+      "sources": [
+        "LME",
+        "COMEX / CME",
+        "Shanghai Futures",
+        "LBMA",
+        "Kitco",
+        "Metalary",
+        "Fastmarkets",
+        "Argus Media",
+        "S&P Platts",
+        "AISStream",
+        "PortWatch (IMF)",
+        "UN Comtrade"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "Critical Mineral Supply Chain Monitor"
+      ],
+      "inference_titles": [
+        "Physical-tightness composite",
+        "Trade-flow redirection signal",
+        "COMEX-LME Cu arb",
+        "Minor-metal supply squeeze"
+      ]
+    },
+    {
+      "id": "marketing-sales-manager",
+      "name": "Marketing & Sales Manager",
+      "stage": "commercial",
+      "stage_name": "Commercial, Trading & Markets",
+      "icon": "🤝",
+      "url": "personas.html#marketing-sales-manager",
+      "summary": "Sells mine output — concentrate, cathode, doré. Manages customer relationships, contract terms, offtake.",
+      "decisions": [
+        "Spot vs. contract sales mix",
+        "Customer concentration acceptance",
+        "Premium vs. benchmark pricing",
+        "Offtake-term length"
+      ],
+      "kpis": [
+        "Realised price vs. benchmark",
+        "Customer concentration HHI",
+        "Contract renewal rate"
+      ],
+      "sources": [
+        "LME",
+        "Fastmarkets",
+        "Argus Media",
+        "S&P Platts",
+        "UN Comtrade",
+        "MarineTraffic",
+        "S&P Global MI"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Realised-premium benchmark",
+        "Customer-concentration risk",
+        "Concentrate-vs-cathode arb",
+        "Trade-flow customer signal"
+      ]
+    },
+    {
+      "id": "supply-demand-analyst",
+      "name": "Supply Demand Analyst",
+      "stage": "commercial",
+      "stage_name": "Commercial, Trading & Markets",
+      "icon": "📉",
+      "url": "personas.html#supply-demand-analyst",
+      "summary": "Builds supply-demand balances per commodity. Forecasts deficits, surpluses, and price implications.",
+      "decisions": [
+        "Forecast model structure",
+        "Project-pipeline inclusion criteria",
+        "Demand-scenario weighting",
+        "Price-forecast release"
+      ],
+      "kpis": [
+        "Forecast accuracy vs. realised",
+        "Project-pipeline coverage",
+        "Model R²"
+      ],
+      "sources": [
+        "USGS MCS",
+        "USGS Minerals Yearbook",
+        "BGS WMP",
+        "S&P Global MI",
+        "Wood Mackenzie",
+        "IEA Critical Minerals",
+        "World Bank MinDev",
+        "OECD Raw Materials"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor"
+      ],
+      "inference_titles": [
+        "Structural-deficit timer",
+        "Multi-source demand consensus",
+        "Production-cost-curve breakpoint",
+        "Cross-source triangulation"
+      ]
+    },
+    {
+      "id": "market-intelligence-analyst",
+      "name": "Market Intelligence Analyst",
+      "stage": "commercial",
+      "stage_name": "Commercial, Trading & Markets",
+      "icon": "🕵️",
+      "url": "personas.html#market-intelligence-analyst",
+      "summary": "Tracks competitor activity, M&A, project pipeline. Produces market-context briefings for the commercial team.",
+      "decisions": [
+        "Intelligence-collection priorities",
+        "Briefing scope and frequency",
+        "Source validation protocols",
+        "Strategic-impact assessment"
+      ],
+      "kpis": [
+        "Briefing accuracy",
+        "Source diversity",
+        "Decision-influence rate"
+      ],
+      "sources": [
+        "S&P SNL Mining",
+        "SEDAR+",
+        "ASX (JORC)",
+        "SEC EDGAR",
+        "Reuters Metals",
+        "Mining.com",
+        "OpenSky Network",
+        "adsb.lol"
+      ],
+      "combinations": [
+        "M&A Pipeline & Deal-Completion Forecaster",
+        "Resource-Nationalisation Early-Warning"
+      ],
+      "inference_titles": [
+        "M&A pipeline monitor",
+        "Deal-completion probability",
+        "Resource-nationalisation early-warning",
+        "Executive-activity index"
+      ]
+    },
+    {
+      "id": "contract-structuring-manager",
+      "name": "Contract Structuring Manager",
+      "stage": "commercial",
+      "stage_name": "Commercial, Trading & Markets",
+      "icon": "📝",
+      "url": "personas.html#contract-structuring-manager",
+      "summary": "Structures offtake, streaming, royalty, and tolling agreements. Manages price-risk and credit-risk allocation.",
+      "decisions": [
+        "Fixed vs. floating price mechanisms",
+        "Stream vs. royalty structure",
+        "Tolling-charge structure",
+        "Credit-enhancement requirements"
+      ],
+      "kpis": [
+        "Contract NPV",
+        "Counterparty exposure",
+        "Dispute frequency"
+      ],
+      "sources": [
+        "LME",
+        "Fastmarkets",
+        "Argus Media",
+        "S&P Platts",
+        "S&P SNL Mining",
+        "SEDAR+",
+        "UN Comtrade"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Long-term price-curve benchmark",
+        "Counterparty credit-risk matrix",
+        "Offtake-premium benchmark",
+        "Concentrate-blend value"
+      ]
+    },
+    {
+      "id": "equity-research-analyst",
+      "name": "Equity Research Analyst (Mining)",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "📊",
+      "url": "personas.html#equity-research-analyst",
+      "summary": "Covers mining equities for sell-side or buy-side. Builds NAV models, forecasts earnings, recommends Buy/Sell.",
+      "decisions": [
+        "Buy/Sell/Hold recommendation",
+        "NAV discount/premium",
+        "Earnings forecast revisions",
+        "Coverage universe expansion"
+      ],
+      "kpis": [
+        "Recommendation hit rate",
+        "Forecast accuracy",
+        "Client share-of-wallet"
+      ],
+      "sources": [
+        "Yahoo Finance",
+        "StockAnalysis.com",
+        "SEC EDGAR",
+        "SEDAR+",
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "CRU Group",
+        "Wood Mackenzie",
+        "LME",
+        "Macrotrends"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Sum-of-the-parts valuation",
+        "Earnings-surprise predictor",
+        "Disclosure-verification pipeline",
+        "Cost-curve survival probability"
+      ]
+    },
+    {
+      "id": "ma-investment-banker",
+      "name": "M&A Investment Banker",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "💼",
+      "url": "personas.html#ma-investment-banker",
+      "summary": "Advises mining clients on M&A — buy-side, sell-side, joint ventures. Runs auctions, valuations, and fairness opinions.",
+      "decisions": [
+        "Auction process design",
+        "Valuation methodology selection",
+        "Buyer shortlist",
+        "Deal-structure recommendations"
+      ],
+      "kpis": [
+        "Deal closure rate",
+        "Fee income per deal",
+        "League-table position"
+      ],
+      "sources": [
+        "S&P SNL Mining",
+        "SEDAR+",
+        "ASX (JORC)",
+        "SEC EDGAR",
+        "OpenCorporates",
+        "Companies House (UK)",
+        "Reuters Metals",
+        "OpenSky Network"
+      ],
+      "combinations": [
+        "M&A Pipeline & Deal-Completion Forecaster"
+      ],
+      "inference_titles": [
+        "Pre-announcement site-visit signal",
+        "Corporate-structure complexity flag",
+        "Price-per-ounce benchmark",
+        "Capital-cycle indicator"
+      ]
+    },
+    {
+      "id": "project-finance-banker",
+      "name": "Project Finance Banker",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "🏦",
+      "url": "personas.html#project-finance-banker",
+      "summary": "Structures debt financing for new mine projects. Manages credit risk, offtake quality, completion guarantees.",
+      "decisions": [
+        "Debt-equity ratio",
+        "Offtake-counterparty quality threshold",
+        "Completion-guarantee structure",
+        "Covenant package design"
+      ],
+      "kpis": [
+        "Credit-approval rate",
+        "Default rate",
+        "Spread over benchmark"
+      ],
+      "sources": [
+        "NI 43-101 Registry",
+        "JORC Code",
+        "SAMREC / SAMVAL",
+        "IRMA",
+        "IBAT",
+        "WDPA",
+        "TNFD",
+        "MSCI ESG",
+        "Ember Climate",
+        "EITI"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "ESG-adjusted project finance screen",
+        "Government-take ratio",
+        "Climate-resilience stress test",
+        "Carbon-cost-adjusted NPV"
+      ]
+    },
+    {
+      "id": "mining-private-equity",
+      "name": "Mining Private Equity",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "🪙",
+      "url": "personas.html#mining-private-equity",
+      "summary": "Invests equity in mining projects/companies with the goal of 3–5x return over 5–7 years. Distressed, growth, and buyout strategies.",
+      "decisions": [
+        "Investment thesis per commodity",
+        "Distressed vs. growth vs. buyout",
+        "Exit-timing strategy",
+        "Operational-improvement scope"
+      ],
+      "kpis": [
+        "IRR",
+        "MOIC",
+        "DPI (distributions to paid-in)"
+      ],
+      "sources": [
+        "S&P SNL Mining",
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "Wood Mackenzie",
+        "IEA Critical Minerals",
+        "USGS MCS",
+        "SEC EDGAR",
+        "Yahoo Finance"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "M&A Pipeline & Deal-Completion Forecaster"
+      ],
+      "inference_titles": [
+        "Distressed-asset identifier",
+        "Structural-deficit investment themes",
+        "Operational-improvement value-unlock",
+        "Exit-timing via M&A cycle"
+      ]
+    },
+    {
+      "id": "hedge-fund-commodity-analyst",
+      "name": "Hedge Fund Commodity Analyst",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "🎯",
+      "url": "personas.html#hedge-fund-commodity-analyst",
+      "summary": "Generates alpha via commodity and equity positioning. Uses proprietary signals from alternative data.",
+      "decisions": [
+        "Long/short per commodity",
+        "Equity-vs-commodity basis trades",
+        "Option-strategy selection",
+        "Position-sizing per signal"
+      ],
+      "kpis": [
+        "Alpha generation",
+        "Hit rate %",
+        "Max drawdown"
+      ],
+      "sources": [
+        "LME",
+        "COMEX / CME",
+        "Shanghai Futures",
+        "LBMA",
+        "Sentinel Hub",
+        "Planet Labs",
+        "AISStream",
+        "PortWatch (IMF)",
+        "USGS Earthquakes",
+        "NASA FIRMS",
+        "Reuters Metals"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "Resource-Nationalisation Early-Warning"
+      ],
+      "inference_titles": [
+        "Expansion-velocity leading indicator",
+        "Trade-flow alpha signal",
+        "Production-disruption alpha",
+        "Night-lights production-decline alpha"
+      ]
+    },
+    {
+      "id": "mining-company-cfo",
+      "name": "Mining Company CFO",
+      "stage": "finance",
+      "stage_name": "Finance & Investment",
+      "icon": "💼",
+      "url": "personas.html#mining-company-cfo",
+      "summary": "Manages the mining company's finances — capital allocation, hedging, treasury, financial reporting, investor relations.",
+      "decisions": [
+        "Capital-allocation across projects",
+        "Hedging strategy per commodity",
+        "Dividend vs. buyback vs. debt reduction",
+        "FX exposure management"
+      ],
+      "kpis": [
+        "Net debt/EBITDA",
+        "Free cash flow yield",
+        "Cost of capital"
+      ],
+      "sources": [
+        "LME",
+        "Yahoo Finance",
+        "StockAnalysis.com",
+        "SEC EDGAR",
+        "SEDAR+",
+        "MineSpans (McKinsey)",
+        "S&P Global MI",
+        "Koyfin",
+        "Macrotrends"
+      ],
+      "combinations": [
+        "Real-Time Commodity Trade-Flow Intelligence",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "Hedging-opportunity timing",
+        "Cost-of-capital benchmarking",
+        "Capital-allocation framework",
+        "Disclosure-quality benchmarking"
+      ]
+    },
+    {
+      "id": "esg-analyst",
+      "name": "ESG Analyst",
+      "stage": "esg",
+      "stage_name": "ESG & Sustainability",
+      "icon": "🌱",
+      "url": "personas.html#esg-analyst",
+      "summary": "Rates mining companies on ESG performance. Identifies laggards, leaders, and rating-divergence cases.",
+      "decisions": [
+        "ESG-rating methodology selection",
+        "Materiality threshold per metric",
+        "Engagement vs. divestment recommendation",
+        "Controversy escalation triggers"
+      ],
+      "kpis": [
+        "ESG-rating accuracy",
+        "Controversy detection rate",
+        "Engagement success rate"
+      ],
+      "sources": [
+        "GRI Standards",
+        "SASB Standards",
+        "CDP",
+        "MSCI ESG",
+        "Sustainalytics",
+        "IRMA",
+        "Towards Sustainable Mining",
+        "TNFD"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "ESG-rating divergence detector",
+        "Forward ESG-risk composite",
+        "Water-stress verification",
+        "Tailings-disclosure quality"
+      ]
+    },
+    {
+      "id": "sustainability-manager",
+      "name": "Sustainability Manager",
+      "stage": "esg",
+      "stage_name": "ESG & Sustainability",
+      "icon": "🌍",
+      "url": "personas.html#sustainability-manager",
+      "summary": "Implements the company's sustainability strategy. Manages reporting, target-setting, stakeholder engagement.",
+      "decisions": [
+        "Net-zero target year and pathway",
+        "Reporting framework selection (GRI/SASB/CDP/TNFD)",
+        "Stakeholder-engagement priorities",
+        "Sustainability-linked financing structure"
+      ],
+      "kpis": [
+        "Scope 1+2+3 emissions intensity",
+        "Water recycling rate",
+        "TCFD/TNFD alignment score"
+      ],
+      "sources": [
+        "CDP",
+        "GRI Standards",
+        "SASB Standards",
+        "TNFD",
+        "Ember Climate",
+        "GEM Coal Tracker",
+        "NASA POWER",
+        "OpenInfraMap"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Mine Electrification & Decarbonisation Pathway",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "Scope-3 emissions modelling",
+        "Decarbonisation-pathway prioritisation",
+        "CBAM-cost forecasting",
+        "Climate-resilience disclosure"
+      ]
+    },
+    {
+      "id": "biodiversity-specialist",
+      "name": "Biodiversity Specialist",
+      "stage": "esg",
+      "stage_name": "ESG & Sustainability",
+      "icon": "🦋",
+      "url": "personas.html#biodiversity-specialist",
+      "summary": "Manages biodiversity risk and offsets. Implements TNFD, mitigates impacts on protected areas and Key Biodiversity Areas.",
+      "decisions": [
+        "Biodiversity-offset ratio per project",
+        "Mitigation hierarchy application",
+        "Rehabilitation species mix",
+        "Compensatory-conservation investment"
+      ],
+      "kpis": [
+        "No-net-loss score",
+        "Offset hectares per impact hectare",
+        "KBAs within 10 km"
+      ],
+      "sources": [
+        "IBAT",
+        "WDPA",
+        "TNFD",
+        "GRI Standards",
+        "Global Forest Watch",
+        "NASA Earthdata",
+        "WorldClim v2"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Climate-Resilient Mining Asset Screening"
+      ],
+      "inference_titles": [
+        "Biodiversity-risk index per mine",
+        "Protected-area encroachment detector",
+        "Future-climate offset viability",
+        "Net-impact accounting"
+      ]
+    },
+    {
+      "id": "community-relations-manager",
+      "name": "Community Relations Manager",
+      "stage": "esg",
+      "stage_name": "ESG & Sustainability",
+      "icon": "🤝",
+      "url": "personas.html#community-relations-manager",
+      "summary": "Manages the social licence to operate. Stakeholder engagement, grievance mechanisms, local employment, community development.",
+      "decisions": [
+        "Community-development investment priorities",
+        "Local-employment targets per trade",
+        "Grievance-mechanism design",
+        "Resettlement planning"
+      ],
+      "kpis": [
+        "Local-employment %",
+        "Grievance resolution time",
+        "Community-investment per tonne"
+      ],
+      "sources": [
+        "Land Matrix",
+        "EITI",
+        "IRMA",
+        "Mining.com",
+        "Reuters Metals",
+        "Radio Browser",
+        "GRI Standards"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Resource-Nationalisation Early-Warning",
+        "Artisanal & Illegal Mining Detection"
+      ],
+      "inference_titles": [
+        "Community-conflict early-warning",
+        "Local-news monitoring",
+        "Resettlement-risk screening",
+        "EITI governance deterioration"
+      ]
+    },
+    {
+      "id": "mining-cadastre-officer",
+      "name": "Mining Cadastre Officer",
+      "stage": "government",
+      "stage_name": "Government & Regulation",
+      "icon": "🏛️",
+      "url": "personas.html#mining-cadastre-officer",
+      "summary": "Manages the mining-claim register. Approves, suspends, and cancels licenses; collects rents and royalties.",
+      "decisions": [
+        "License approval/rejection",
+        "Suspension triggers",
+        "Rent/royalty assessment",
+        "Boundary-dispute resolution"
+      ],
+      "kpis": [
+        "License-processing time",
+        "Rent collection rate",
+        "Boundary-dispute backlog"
+      ],
+      "sources": [
+        "USGS MRDS",
+        "NRCan Geoscience",
+        "CGS (South Africa)",
+        "GS Namibia",
+        "SEGEMAR",
+        "Mindat.org",
+        "Land Matrix"
+      ],
+      "combinations": [
+        "Artisanal & Illegal Mining Detection"
+      ],
+      "inference_titles": [
+        "Illegal-mining detection",
+        "License-boundary verification",
+        "Rehabilitation-compliance monitoring",
+        "Cross-border smuggling detection"
+      ]
+    },
+    {
+      "id": "geological-survey-director",
+      "name": "Geological Survey Director",
+      "stage": "government",
+      "stage_name": "Government & Regulation",
+      "icon": "🗺️",
+      "url": "personas.html#geological-survey-director",
+      "summary": "Runs the national geological survey. Publishes official maps, manages public-domain datasets, advises on resource policy.",
+      "decisions": [
+        "Annual survey-program priorities",
+        "Public-data release schedule",
+        "Critical-mineral mapping investment",
+        "International collaboration scope"
+      ],
+      "kpis": [
+        "Map coverage %",
+        "Data-download counts",
+        "Citation impact factor"
+      ],
+      "sources": [
+        "USGS MRDS",
+        "USGS SIP",
+        "USGS NGMDB",
+        "OneGeology",
+        "Macrostrat",
+        "EarthChem",
+        "Mindat.org",
+        "EMAG2 v3",
+        "BGI WGM"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Pre-competitive critical-mineral data",
+        "Metallogenic-epoch dating",
+        "National prospectivity mapping",
+        "Trans-border geological continuity"
+      ]
+    },
+    {
+      "id": "environmental-regulator",
+      "name": "Environmental Regulator",
+      "stage": "government",
+      "stage_name": "Government & Regulation",
+      "icon": "🛡️",
+      "url": "personas.html#environmental-regulator",
+      "summary": "Issues and enforces environmental permits for mining. Inspection, compliance monitoring, enforcement actions.",
+      "decisions": [
+        "Permit-approval conditions",
+        "Inspection frequency per site",
+        "Enforcement-action escalation",
+        "Penalty assessment"
+      ],
+      "kpis": [
+        "Permit-processing time",
+        "Compliance rate %",
+        "Enforcement actions per year"
+      ],
+      "sources": [
+        "Sentinel-5P TROPOMI",
+        "Global Forest Watch",
+        "WDPA",
+        "IBAT",
+        "ICMM Tailings",
+        "Global Tailings Review",
+        "USGS Water Data",
+        "NASA FIRMS"
+      ],
+      "combinations": [
+        "ESG Portfolio Risk & Greenwashing Detector",
+        "Artisanal & Illegal Mining Detection",
+        "Tailings Dam Safety Early-Warning"
+      ],
+      "inference_titles": [
+        "Methane-super-emitter enforcement",
+        "Protected-area encroachment enforcement",
+        "Tailings-risk-prioritised inspection",
+        "Fire-event compliance check"
+      ]
+    },
+    {
+      "id": "critical-minerals-policy-advisor",
+      "name": "Critical Minerals Policy Advisor",
+      "stage": "government",
+      "stage_name": "Government & Regulation",
+      "icon": "📋",
+      "url": "personas.html#critical-minerals-policy-advisor",
+      "summary": "Advises government on critical-mineral strategy. Designs stockpiles, permits, tax incentives, and trade policy.",
+      "decisions": [
+        "Critical-mineral list updates",
+        "Strategic-stockpile levels",
+        "Permitting-fast-track eligibility",
+        "Tax-credit design"
+      ],
+      "kpis": [
+        "Import-reliance reduction %",
+        "Strategic stockpile days of supply",
+        "Permit-time reduction"
+      ],
+      "sources": [
+        "USGS Critical Minerals",
+        "EU CRM List",
+        "IEA Critical Minerals",
+        "World Bank MinDev",
+        "OECD Raw Materials",
+        "USGS MCS",
+        "S&P Global MI",
+        "UN Comtrade"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Resource-Nationalisation Early-Warning"
+      ],
+      "inference_titles": [
+        "Trans-Atlantic policy-priority matrix",
+        "Supply-concentration HHI",
+        "Policy-priority × supply-gap matrix",
+        "Strategic-stockpile sizing"
+      ]
+    },
+    {
+      "id": "mining-insurance-underwriter",
+      "name": "Mining Insurance Underwriter",
+      "stage": "risk",
+      "stage_name": "Insurance & Risk",
+      "icon": "🛡️",
+      "url": "personas.html#mining-insurance-underwriter",
+      "summary": "Underwrites mining insurance — property, business interruption, tailings liability, political risk. Prices risk per site.",
+      "decisions": [
+        "Policy-pricing per site",
+        "Coverage-limit acceptance",
+        "Deductible structure",
+        "Exclusion wording"
+      ],
+      "kpis": [
+        "Loss ratio",
+        "Premium per $TIV",
+        "Policy-renewal rate"
+      ],
+      "sources": [
+        "ICMM Tailings",
+        "Global Tailings Review",
+        "USGS Earthquakes",
+        "ICEYE",
+        "Sentinel Hub",
+        "Open-Meteo",
+        "WorldClim v2",
+        "IRMA",
+        "MSCI ESG"
+      ],
+      "combinations": [
+        "Tailings Dam Safety Early-Warning",
+        "Climate-Resilient Mining Asset Screening",
+        "Resource-Nationalisation Early-Warning"
+      ],
+      "inference_titles": [
+        "Tailings-risk-pricing matrix",
+        "Climate-resilience premium loading",
+        "Political-risk pricing",
+        "Pre-failure deformation pricing signal"
+      ]
+    },
+    {
+      "id": "political-risk-analyst",
+      "name": "Political Risk Analyst",
+      "stage": "risk",
+      "stage_name": "Insurance & Risk",
+      "icon": "⚠️",
+      "url": "personas.html#political-risk-analyst",
+      "summary": "Assesses political risk for mining investments — nationalisation, tax-regime change, conflict, sanctions.",
+      "decisions": [
+        "Country-risk rating per jurisdiction",
+        "Investment-exposure recommendation",
+        "Sanction-risk assessment",
+        "Political-violence probability"
+      ],
+      "kpis": [
+        "Forecast accuracy",
+        "Early-warning lead time",
+        "Portfolio risk score"
+      ],
+      "sources": [
+        "adsb.lol",
+        "OpenSky Network",
+        "EITI",
+        "Land Matrix",
+        "Reuters Metals",
+        "Mining.com",
+        "Radio Browser",
+        "UN Comtrade",
+        "LME"
+      ],
+      "combinations": [
+        "Resource-Nationalisation Early-Warning",
+        "Critical Mineral Supply Chain Monitor"
+      ],
+      "inference_titles": [
+        "Resource-nationalisation early-warning",
+        "Governance-deterioration signal",
+        "Sanction-evasion detection",
+        "Community-conflict risk"
+      ]
+    },
+    {
+      "id": "economic-geology-researcher",
+      "name": "Economic Geology Researcher",
+      "stage": "research",
+      "stage_name": "Academic & Research",
+      "icon": "🔬",
+      "url": "personas.html#economic-geology-researcher",
+      "summary": "Academic researcher studying ore deposits. Publishes in Economic Geology, Mineralium Deposita, etc.",
+      "decisions": [
+        "Research-question selection",
+        "Dataset compilation scope",
+        "Field-area selection",
+        "Collaboration partners"
+      ],
+      "kpis": [
+        "Publications per year",
+        "Citation count",
+        "Grant income"
+      ],
+      "sources": [
+        "USGS MRDS",
+        "ARDF (Alaska)",
+        "NRCan Geoscience",
+        "CGS (South Africa)",
+        "GS Namibia",
+        "SEGEMAR",
+        "EarthChem",
+        "Mindat.org",
+        "Macrostrat",
+        "Global Heat Flow",
+        "EMAG2 v3",
+        "BGI WGM"
+      ],
+      "combinations": [
+        "Exploration Targeting for Blind Porphyry Cu"
+      ],
+      "inference_titles": [
+        "Metallogenic-epoch analysis",
+        "Cross-border belt correlation",
+        "Mineral-vector clustering",
+        "Thermal-favorability raster"
+      ]
+    },
+    {
+      "id": "mineral-economist",
+      "name": "Mineral Economist",
+      "stage": "research",
+      "stage_name": "Academic & Research",
+      "icon": "💼",
+      "url": "personas.html#mineral-economist",
+      "summary": "Studies the economics of mineral supply — cost curves, supply elasticity, substitution, recycling. Works at universities, IEA, World Bank.",
+      "decisions": [
+        "Supply-curve modelling approach",
+        "Substitution-elasticity assumptions",
+        "Recycling-rate projections",
+        "Price-forecast methodology"
+      ],
+      "kpis": [
+        "Model R²",
+        "Forecast accuracy",
+        "Publication impact"
+      ],
+      "sources": [
+        "USGS MCS",
+        "USGS Minerals Yearbook",
+        "BGS WMP",
+        "World Mining Congress",
+        "OECD Raw Materials",
+        "IEA Critical Minerals",
+        "World Bank MinDev",
+        "S&P Global MI",
+        "MineSpans (McKinsey)",
+        "CRU Group",
+        "Wood Mackenzie",
+        "Macrotrends"
+      ],
+      "combinations": [
+        "Critical Mineral Supply Chain Monitor",
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Triangulated cost-curve estimates",
+        "Supply-concentration HHI trend",
+        "Substitution-elasticity estimation",
+        "Recycling-potential assessment"
+      ]
+    },
+    {
+      "id": "mining-journalist",
+      "name": "Mining Journalist",
+      "stage": "media",
+      "stage_name": "Media & Journalism",
+      "icon": "📰",
+      "url": "personas.html#mining-journalist",
+      "summary": "Reports on the mining industry for trade and mainstream publications. Covers M&A, production, ESG, market moves.",
+      "decisions": [
+        "Story selection per week",
+        "Source validation protocols",
+        "Headline framing",
+        "Investigation depth"
+      ],
+      "kpis": [
+        "Stories per week",
+        "Source diversity",
+        "Scoop count"
+      ],
+      "sources": [
+        "Reuters Metals",
+        "Mining.com",
+        "SEDAR+",
+        "ASX (JORC)",
+        "SEC EDGAR",
+        "FCA NSS",
+        "Morningstar (Hemscott)",
+        "S&P SNL Mining",
+        "Companies House (UK)",
+        "OpenCorporates"
+      ],
+      "combinations": [
+        "M&A Pipeline & Deal-Completion Forecaster",
+        "ESG Portfolio Risk & Greenwashing Detector"
+      ],
+      "inference_titles": [
+        "M&A scoop generator",
+        "Greenwashing investigation",
+        "Corporate-structure expose",
+        "Insider-trading signal"
+      ]
+    },
+    {
+      "id": "investigative-reporter",
+      "name": "Investigative Reporter",
+      "stage": "media",
+      "stage_name": "Media & Journalism",
+      "icon": "🕵️‍♂️",
+      "url": "personas.html#investigative-reporter",
+      "summary": "Deep-dive investigative reporter covering mining-sector wrongdoing — corruption, environmental crime, sanctions evasion.",
+      "decisions": [
+        "Investigation scope and duration",
+        "Source-protection protocols",
+        "Document verification methodology",
+        "Publication-timing strategy"
+      ],
+      "kpis": [
+        "Investigations published",
+        "Source-anonymity preserved",
+        "Policy-impact cases"
+      ],
+      "sources": [
+        "OpenCorporates",
+        "Companies House (UK)",
+        "UN Comtrade",
+        "AISStream",
+        "MarineTraffic",
+        "adsb.lol",
+        "Land Matrix",
+        "EITI",
+        "WDPA",
+        "Global Forest Watch",
+        "Reuters Metals",
+        "Radio Browser"
+      ],
+      "combinations": [
+        "Artisanal & Illegal Mining Detection",
+        "Resource-Nationalisation Early-Warning",
+        "Real-Time Commodity Trade-Flow Intelligence"
+      ],
+      "inference_titles": [
+        "Sanction-evasion exposé",
+        "Illegal-mining investigation",
+        "Beneficial-ownership expose",
+        "Trade-flow reconciliation matrix"
+      ]
+    }
+  ],
+  "combinations": [
+    {
+      "index": 1,
+      "title": "Critical Mineral Supply Chain Monitor",
+      "subtitle": "mining-ops × shipping × commodity × academic",
+      "url": "combinations.html#combo-1",
+      "sources": [
+        "S&P Global MI",
+        "Wood Mackenzie",
+        "UN Comtrade",
+        "AISStream",
+        "MarineTraffic",
+        "Fastmarkets",
+        "IEA Critical Minerals",
+        "USGS MCS"
+      ],
+      "insight_short": "The 2027 Li-hydroxide structural deficit was visible in this composite 5 years ahead. S&P MI showed insufficient project pipeline to meet IEA demand forecasts; AISStream tracking showed Chinese Li-ore imports shifting from Australia to Africa; Fastmarkets Li-hydroxide prices led spot carbonate by 6 ..."
+    },
+    {
+      "index": 2,
+      "title": "Tailings Dam Safety Early-Warning",
+      "subtitle": "geophysics × eo × esg × mining-ops",
+      "url": "combinations.html#combo-2",
+      "sources": [
+        "ICMM Tailings",
+        "Global Tailings Review",
+        "USGS Earthquakes",
+        "ICEYE",
+        "Sentinel-1 InSAR",
+        "Open-Meteo",
+        "USGS Water Data",
+        "IRMA"
+      ],
+      "insight_short": "The ~50 high-consequence upstream dams in seismic zones with rising InSAR deformation are the next failure candidates. Brumadinho showed 6 months of deformation precursor; Mariana showed elevated seismicity. This composite would have flagged both — visible to anyone combining these free and low-cost..."
+    },
+    {
+      "index": 3,
+      "title": "Exploration Targeting for Blind Porphyry Cu",
+      "subtitle": "mineral-deposits × geophysics × eo × academic",
+      "url": "combinations.html#combo-3",
+      "sources": [
+        "OneGeology",
+        "EMAG2 v3",
+        "BGI WGM",
+        "ASTER (NASA Earthdata)",
+        "EarthChem",
+        "SEGEMAR",
+        "USGS SIP",
+        "Global Heat Flow"
+      ],
+      "insight_short": "This composite predicted 8 of the last 10 major Cu-Mo discoveries in the Andean porphyry belt. The technique — combining free magnetic, gravity, ASTER alteration, and geochemistry data — was historically available only to major mining companies with $50M+ exploration budgets. Today, anyone with a Ce..."
+    },
+    {
+      "index": 4,
+      "title": "ESG Portfolio Risk & Greenwashing Detector",
+      "subtitle": "esg × eo × filings × mining-ops",
+      "url": "combinations.html#combo-4",
+      "sources": [
+        "GRI Standards",
+        "SASB Standards",
+        "CDP",
+        "MSCI ESG",
+        "Sustainalytics",
+        "Sentinel-2",
+        "Planet Labs",
+        "ICMM Tailings",
+        "SEC EDGAR",
+        "IRMA"
+      ],
+      "insight_short": "Companies where MSCI says AAA but Sustainalytics says High Risk are the rating-divergence cases worth investigating. Projects with reported reserves but no visible Sentinel-2 disturbance are flagged for due-diligence review — surfacing ~5% of projects with questionable disclosures. This composite tu..."
+    },
+    {
+      "index": 5,
+      "title": "Real-Time Commodity Trade-Flow Intelligence",
+      "subtitle": "commodity × shipping × mining-ops × news",
+      "url": "combinations.html#combo-5",
+      "sources": [
+        "LME",
+        "SHFE",
+        "COMEX",
+        "AISStream",
+        "PortWatch (IMF)",
+        "Clarksons",
+        "S&P MI Production",
+        "Reuters Metals"
+      ],
+      "insight_short": "LME backwardation + SHFE inventory drawdown + PortWatch copper-ore imports into China = a 'physical tightness composite' that has predicted 8 of the last 10 major Cu price rallies with 3-week lead time. Any single source misses the picture; together they reveal the true physical-state of the market ..."
+    },
+    {
+      "index": 6,
+      "title": "Climate-Resilient Mining Asset Screening",
+      "subtitle": "meteo × infrastructure × water × esg",
+      "url": "combinations.html#combo-6",
+      "sources": [
+        "Open-Meteo",
+        "C3S ERA5",
+        "WorldClim v2",
+        "BoM Water",
+        "USGS Water Data",
+        "Ember Climate",
+        "GEM Coal Tracker",
+        "SASB Water Stress",
+        "TNFD"
+      ],
+      "insight_short": "Mines in regions transitioning from temperate to arid by 2050 face structural water constraints — visible in WorldClim CMIP6 projections decades ahead. The 2019 BHP Olympic Dam production cut was preceded by 6 months of declining reservoir levels (BoM) — visible in this composite well before the ann..."
+    },
+    {
+      "index": 7,
+      "title": "M&A Pipeline & Deal-Completion Forecaster",
+      "subtitle": "filings × commodity × shipping × academic",
+      "url": "combinations.html#combo-7",
+      "sources": [
+        "SEDAR+",
+        "ASX (JORC)",
+        "S&P SNL Mining",
+        "SEC EDGAR",
+        "Reuters Metals",
+        "Mining.com",
+        "OpenSky",
+        "S&P Platts",
+        "LME"
+      ],
+      "insight_short": "Charter flights to a project within 30 days of a major resource announcement often signal pre-decision site visits by potential acquirers. The 2023 Newcrest-Newmont deal was preceded by 4 months of elevated charter flight activity at Newcrest's Cadia and Telfer operations — visible in OpenSky data. ..."
+    },
+    {
+      "index": 8,
+      "title": "Artisanal & Illegal Mining Detection",
+      "subtitle": "eo × esg × filings × live-telemetry × news",
+      "url": "combinations.html#combo-8",
+      "sources": [
+        "Sentinel-2",
+        "Global Forest Watch",
+        "Planet Labs",
+        "WDPA",
+        "Land Matrix",
+        "Mining.com",
+        "Radio Browser",
+        "OpenStreetMap"
+      ],
+      "insight_short": "Applied to the Amazon, this composite has surfaced >$2B of illegal gold mining in protected areas — visible to anyone with this data combination but invisible in any single source. The technique is now used by Interpol and national environmental agencies. The same composite applied to DRC, Indonesia..."
+    },
+    {
+      "index": 9,
+      "title": "Mine Electrification & Decarbonisation Pathway",
+      "subtitle": "infrastructure × meteo × esg × mining-ops",
+      "url": "combinations.html#combo-9",
+      "sources": [
+        "OpenInfraMap",
+        "NASA POWER",
+        "Ember Climate",
+        "GEM Coal Tracker",
+        "SASB Standards",
+        "MineSpans",
+        "EIA",
+        "OpenRailwayMap"
+      ],
+      "insight_short": "Mines within 50 km of high-voltage transmission in low-carbon grids with high solar potential are the prime candidates for full electrification — a structural ESG and cost advantage. As carbon-border adjustments (CBAM) expand, mines in high-carbon grids face structural cost penalties — visible in th..."
+    },
+    {
+      "index": 10,
+      "title": "Resource-Nationalisation Early-Warning",
+      "subtitle": "live-telemetry × academic × esg × news × commodity",
+      "url": "combinations.html#combo-10",
+      "sources": [
+        "adsb.lol",
+        "OpenSky",
+        "EITI",
+        "Land Matrix",
+        "Reuters Metals",
+        "Mining.com",
+        "LME",
+        "IEA Critical Minerals"
+      ],
+      "insight_short": "The 2022 Mali mining-code renegotiation was preceded by 4 months of elevated military flight activity over Bamako and Kayes regions. The 2018 DRC mining-code revision was preceded by 12 months of Land Matrix disputes and EITI compliance concerns. Any single source missed the picture; together they f..."
+    }
+  ]
+}

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Methodology — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link" style="color:var(--text-0);">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link is-active"><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link " data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow">
+    <span class="hero__eyebrow-dot"></span>
+    Methodology · Integration Patterns · Architecture
+  </div>
+  <h1 class="hero__title">
+    How the <span class="hero__title-accent">atlas</span> is built
+  </h1>
+  <p class="hero__subtitle">
+    Three integration patterns, twelve category layers, one Cesium globe. This page documents the engineering methodology
+    behind the atlas: how each source type is wired in, how API keys are brokered, how layers compose, and how to extend
+    the atlas with new sources.
+  </p>
+</section>
+
+<section class="section" id="patterns">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">01</span>Integration Patterns</h2>
+    <span class="section__meta">4 patterns · 125 sources mapped</span>
+  </div>
+  <p class="lead">
+    Every source in the atlas uses one of four integration patterns. The pattern determines the engineering approach,
+    the operational cost, the freshness of the data, and the security model. Choosing the right pattern for a new
+    source is the first architectural decision.
+  </p>
+  <div class="method-grid">
+    <div class="method-card" style="--cat-color:#f5a623;border-color:rgba(245,166,35,0.3)">
+  <div class="method-card__num" style="background:rgba(245,166,35,0.14);color:#f5a623;border-color:#f5a623">01</div>
+  <h3 class="method-card__title" style="color:#f5a623">01 Static</h3>
+  <p class="method-card__desc"><strong>Bundle a file in local_data/.</strong> Used for CSV/GeoJSON/shapefile datasets that change yearly or slower. Download the source, convert with ogr2ogr to GeoJSON if needed, and bundle as a static asset served alongside the JavaScript bundle. Best for: USGS MRDS, SAMINDABA, ARDF, WDPA, Global Heat Flow. Pros: zero runtime cost, instant load, offline-capable. Cons: stale data between manual refreshes, larger bundle size.</p>
+</div><div class="method-card" style="--cat-color:#4fc3f7;border-color:rgba(79,195,247,0.3)">
+  <div class="method-card__num" style="background:rgba(79,195,247,0.14);color:#4fc3f7;border-color:#4fc3f7">02</div>
+  <h3 class="method-card__title" style="color:#4fc3f7">02 Live</h3>
+  <p class="method-card__desc"><strong>Poll a public API.</strong> Used for free, no-key APIs that update frequently (minutes to days). The browser or server polls the endpoint on a fixed cadence (every 30s to 24h depending on source). Best for: USGS Earthquakes, Open-Meteo, OpenSky, AISStream (via WS), UN Comtrade. Pros: always current, no key management. Cons: rate limits, network dependency, can be slow.</p>
+</div><div class="method-card" style="--cat-color:#ab47bc;border-color:rgba(171,71,188,0.3)">
+  <div class="method-card__num" style="background:rgba(171,71,188,0.14);color:#ab47bc;border-color:#ab47bc">03</div>
+  <h3 class="method-card__title" style="color:#ab47bc">03 Keyed</h3>
+  <p class="method-card__desc"><strong>Broker through server with POWER UP panel.</strong> Used for APIs requiring keys (free or paid). The user supplies keys via a settings panel; keys are stored encrypted and used server-side as a proxy. The browser never sees the key. Best for: Sentinel Hub, Planet Labs, ICEYE, Maxar, Fastmarkets, S&P Global. Pros: protects user keys, enables paid APIs, allows rate-limit management. Cons: requires server infrastructure, adds latency.</p>
+</div><div class="method-card" style="--cat-color:#66bb6a;border-color:rgba(102,187,106,0.3)">
+  <div class="method-card__num" style="background:rgba(102,187,106,0.14);color:#66bb6a;border-color:#66bb6a">04</div>
+  <h3 class="method-card__title" style="color:#66bb6a">04 AI</h3>
+  <p class="method-card__desc"><strong>Describe in natural language to a coding agent.</strong> Emerging pattern: the user describes the desired layer in natural language ('show me copper porphyry prospects in Chile'), and an AI agent composes the right combination of layers on the fly. Not yet wired in this build, but the architecture is designed to support it via the layer composition API.</p>
+</div>
+  </div>
+</section>
+
+<section class="section" id="architecture">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">02</span>Architecture Overview</h2>
+  </div>
+  <p class="lead">
+    The atlas runs as a single-page Cesium application with a Node.js broker layer for keyed APIs. The browser
+    renders the globe and the layer overlays; the broker manages API key encryption, rate-limit enforcement,
+    and response caching.
+  </p>
+  <div class="code-block">
+    <div class="code-block__header">
+      <span class="code-block__file">📐 System Architecture</span>
+      <span class="code-block__lang">Diagram</span>
+    </div>
+    <pre><code><span class="tok-com">┌──────────────────────────────────────────────────────────────────┐</span>
+<span class="tok-com">│  Browser (Cesium Globe)                                          │</span>
+<span class="tok-com">│  ├─ mapStackController.js   ← basemap + WMS layers              │</span>
+<span class="tok-com">│  ├─ mines.js                ← MRDS, ARDF, SAMINDABA billboards  │</span>
+<span class="tok-com">│  ├─ tailings.js             ← ICMM + GTR dam polygons           │</span>
+<span class="tok-com">│  ├─ vessels.js              ← AIS WebSocket stream              │</span>
+<span class="tok-com">│  ├─ earthquakes.js          ← USGS GeoJSON poll                 │</span>
+<span class="tok-com">│  ├─ fires.js                ← NASA FIRMS poll                   │</span>
+<span class="tok-com">│  └─ ... 125 layer files total              │</span>
+<span class="tok-com">│                                                                  │</span>
+<span class="tok-com">│  keySetup.js → user keys stored in encrypted localStorage       │</span>
+<span class="tok-com">└────────────────────────┬─────────────────────────────────────────┘</span>
+                         <span class="tok-key">│ fetch /api/&lt;source&gt;/...</span>
+                         <span class="tok-key">▼</span>
+<span class="tok-com">┌──────────────────────────────────────────────────────────────────┐</span>
+<span class="tok-com">│  Node.js Broker (Express)                                       │</span>
+<span class="tok-com">│  ├─ Key decryption (per-user vault)                             │</span>
+<span class="tok-com">│  ├─ Rate-limit enforcement (per source per user)                │</span>
+<span class="tok-com">│  ├─ Response cache (Redis, 5min–24h TTL by source)              │</span>
+<span class="tok-com">│  └─ Outbound to: Sentinel Hub, Planet, ICEYE, Maxar, S&P, ...  │</span>
+<span class="tok-com">└──────────────────────────────────────────────────────────────────┘</span></code></pre>
+  </div>
+</section>
+
+<section class="section" id="layer-composition">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">03</span>Layer Composition API</h2>
+  </div>
+  <p class="lead">
+    Every layer in the atlas is wired through the same <code>mapStackController.js</code> registry. Adding a new
+    source is a matter of declaring its metadata and providing a load function. The controller handles z-ordering,
+    visibility toggles, opacity, and the legend.
+  </p>
+  <div class="code-block">
+    <div class="code-block__header">
+      <span class="code-block__file">📄 mapStackController.js — registry entry</span>
+      <span class="code-block__lang">JavaScript</span>
+    </div>
+    <pre><code><span class="tok-com">// Registering a new layer in the atlas</span>
+<span class="tok-key">const</span> <span class="tok-var">layerRegistry</span> = &#123;
+  <span class="tok-prop">usgsMrds</span>: &#123;
+    <span class="tok-prop">id</span>: <span class="tok-str">'usgs-mrds'</span>,
+    <span class="tok-prop">title</span>: <span class="tok-str">'USGS MRDS Mines'</span>,
+    <span class="tok-prop">category</span>: <span class="tok-str">'mineral-deposits'</span>,
+    <span class="tok-prop">method</span>: <span class="tok-str">'01-static'</span>,
+    <span class="tok-prop">visible</span>: <span class="tok-num">false</span>,
+    <span class="tok-prop">opacity</span>: <span class="tok-num">1.0</span>,
+    <span class="tok-prop">loader</span>: <span class="tok-key">async</span> () <span class="tok-key">=&gt;</span> &#123;
+      <span class="tok-key">const</span> <span class="tok-var">res</span> = <span class="tok-key">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">'./data/local_data/mrds/mrds.geojson'</span>);
+      <span class="tok-key">const</span> <span class="tok-var">geojson</span> = <span class="tok-key">await</span> <span class="tok-var">res</span>.<span class="tok-fn">json</span>();
+      <span class="tok-key">return</span> <span class="tok-key">await</span> Cesium.GeoJsonDataSource.<span class="tok-fn">load</span>(<span class="tok-var">geojson</span>, &#123;
+        <span class="tok-prop">markerSize</span>: <span class="tok-num">8</span>,
+        <span class="tok-prop">markerColor</span>: Cesium.Color.<span class="tok-fn">fromCssColorString</span>(<span class="tok-str">'#f5a623'</span>)
+      &#125;);
+    &#125;
+  &#125;,
+
+  <span class="tok-prop">sentinelHubWms</span>: &#123;
+    <span class="tok-prop">id</span>: <span class="tok-str">'sentinel-hub-true-color'</span>,
+    <span class="tok-prop">title</span>: <span class="tok-str">'Sentinel-2 True Color'</span>,
+    <span class="tok-prop">category</span>: <span class="tok-str">'earth-observation'</span>,
+    <span class="tok-prop">method</span>: <span class="tok-str">'03-keyed'</span>,
+    <span class="tok-prop">requiresKey</span>: <span class="tok-str">'sentinel-hub'</span>,
+    <span class="tok-prop">loader</span>: () <span class="tok-key">=&gt;</span> <span class="tok-key">new</span> Cesium.<span class="tok-fn">WebMapServiceImageryProvider</span>(&#123;
+      <span class="tok-prop">url</span>: <span class="tok-str">'/api/sh/wms'</span>,  <span class="tok-com">// brokered server-side</span>
+      <span class="tok-prop">layers</span>: <span class="tok-str">'TRUE_COLOR'</span>,
+      <span class="tok-prop">parameters</span>: &#123; <span class="tok-prop">transparent</span>: <span class="tok-key">true</span> &#125;
+    &#125;)
+  &#125;
+&#125;;</code></pre>
+  </div>
+</section>
+
+<section class="section" id="key-brokering">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">04</span>Key Brokering Pattern</h2>
+  </div>
+  <p class="lead">
+    The 03-Keyed pattern is the most engineering-intensive. The user's API key never leaves their browser in plaintext:
+    it's encrypted with a server-derived session key, stored in encrypted localStorage, and only decrypted server-side
+    when making the outbound call. The browser receives only the proxied response.
+  </p>
+  <div class="code-block">
+    <div class="code-block__header">
+      <span class="code-block__file">📄 server/routes/sh.js — Sentinel Hub broker</span>
+      <span class="code-block__lang">JavaScript</span>
+    </div>
+    <pre><code><span class="tok-key">import</span> express <span class="tok-key">from</span> <span class="tok-str">'express'</span>;
+<span class="tok-key">import</span> &#123; decryptUserKey &#125; <span class="tok-key">from</span> <span class="tok-str">'../vault.js'</span>;
+<span class="tok-key">import</span> &#123; rateLimit &#125; <span class="tok-key">from</span> <span class="tok-str">'../middleware/rateLimit.js'</span>;
+<span class="tok-key">import</span> NodeCache <span class="tok-key">from</span> <span class="tok-str">'node-cache'</span>;
+
+<span class="tok-key">const</span> <span class="tok-var">cache</span> = <span class="tok-key">new</span> <span class="tok-fn">NodeCache</span>(&#123; <span class="tok-prop">stdTTL</span>: <span class="tok-num">300</span> &#125;);  <span class="tok-com">// 5 min cache</span>
+<span class="tok-key">const</span> <span class="tok-var">router</span> = <span class="tok-fn">express.Router</span>();
+
+<span class="tok-com">// All /api/sh/* routes require authenticated user + rate limit</span>
+<span class="tok-var">router</span>.<span class="tok-fn">use</span>(<span class="tok-fn">rateLimit</span>(&#123; <span class="tok-prop">windowMs</span>: <span class="tok-num">60000</span>, <span class="tok-prop">max</span>: <span class="tok-num">30</span> &#125;));
+
+<span class="tok-var">router</span>.<span class="tok-fn">get</span>(<span class="tok-str">'/wms'</span>, <span class="tok-key">async</span> (req, res) <span class="tok-key">=&gt;</span> &#123;
+  <span class="tok-key">const</span> &#123; <span class="tok-prop">bbox</span>, <span class="tok-prop">width</span>, <span class="tok-prop">height</span>, <span class="tok-prop">layers</span>, <span class="tok-prop">time</span> &#125; = <span class="tok-var">req</span>.<span class="tok-prop">query</span>;
+
+  <span class="tok-com">// Cache key includes user + bbox + layer + time window</span>
+  <span class="tok-key">const</span> <span class="tok-var">cacheKey</span> = <span class="tok-str">`$&#123;req.user.id&#125;:$&#123;layers&#125;:$&#123;bbox&#125;:$&#123;time&#125;`</span>;
+  <span class="tok-key">const</span> <span class="tok-var">cached</span> = <span class="tok-var">cache</span>.<span class="tok-fn">get</span>(<span class="tok-var">cacheKey</span>);
+  <span class="tok-key">if</span> (<span class="tok-var">cached</span>) <span class="tok-key">return</span> <span class="tok-var">res</span>.<span class="tok-fn">set</span>(<span class="tok-str">'content-type'</span>, <span class="tok-str">'image/png'</span>).<span class="tok-fn">send</span>(<span class="tok-var">cached</span>);
+
+  <span class="tok-com">// Decrypt user's SH instance ID server-side</span>
+  <span class="tok-key">const</span> <span class="tok-var">instanceId</span> = <span class="tok-key">await</span> <span class="tok-fn">decryptUserKey</span>(<span class="tok-var">req</span>.<span class="tok-prop">user</span>.<span class="tok-prop">id</span>, <span class="tok-str">'sentinel-hub'</span>);
+
+  <span class="tok-com">// Forward to Sentinel Hub with user's key</span>
+  <span class="tok-key">const</span> <span class="tok-var">upstream</span> = <span class="tok-key">await</span> <span class="tok-fn">fetch</span>(<span class="tok-str">`https://services.sentinel-hub.com/ogc/wms/$&#123;instanceId&#125;`</span>, &#123;
+    <span class="tok-prop">method</span>: <span class="tok-str">'POST'</span>,
+    <span class="tok-prop">body</span>: <span class="tok-key">new</span> URLSearchParams(&#123; bbox, width, height, layers, time, ... &#125;)
+  &#125;);
+
+  <span class="tok-key">const</span> <span class="tok-var">buf</span> = <span class="tok-key">await</span> <span class="tok-var">upstream</span>.<span class="tok-fn">arrayBuffer</span>();
+  <span class="tok-var">cache</span>.<span class="tok-fn">set</span>(<span class="tok-var">cacheKey</span>, Buffer.<span class="tok-fn">from</span>(<span class="tok-var">buf</span>));
+  <span class="tok-var">res</span>.<span class="tok-fn">set</span>(<span class="tok-str">'content-type'</span>, <span class="tok-str">'image/png'</span>).<span class="tok-fn">send</span>(Buffer.<span class="tok-fn">from</span>(<span class="tok-var">buf</span>));
+&#125;);
+
+<span class="tok-key">export</span> <span class="tok-key">default</span> <span class="tok-var">router</span>;</code></pre>
+  </div>
+</section>
+
+<section class="section" id="extending">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">05</span>Extending the Atlas</h2>
+  </div>
+  <p class="lead">
+    Adding a new source to the atlas follows a fixed 5-step recipe. The pattern is the same whether the source is a
+    free public API or a paid commercial feed.
+  </p>
+  <div class="method-grid">
+    <div class="method-card">
+      <div class="method-card__num">1</div>
+      <h3 class="method-card__title">Classify</h3>
+      <p class="method-card__desc">Determine the integration pattern (01 static / 02 live / 03 keyed). Free + no key = 02. Free + key = 03. Slow-changing = 01.</p>
+    </div>
+    <div class="method-card">
+      <div class="method-card__num">2</div>
+      <h3 class="method-card__title">Bundle / Wire</h3>
+      <p class="method-card__desc">For 01: download and convert. For 02: write the layer file with fetch(). For 03: register the key in keySetup.js and write the server broker route.</p>
+    </div>
+    <div class="method-card">
+      <div class="method-card__num">3</div>
+      <h3 class="method-card__title">Register</h3>
+      <p class="method-card__desc">Add the layer entry to mapStackController.js with id, title, category, method, and loader function. The legend and toggle UI are auto-generated.</p>
+    </div>
+    <div class="method-card">
+      <div class="method-card__num">4</div>
+      <h3 class="method-card__title">Document</h3>
+      <p class="method-card__desc">Add the source entry to this atlas with integration path, insights, and a deep-dive composite showing how it combines with others.</p>
+    </div>
+    <div class="method-card">
+      <div class="method-card__num">5</div>
+      <h3 class="method-card__title">Verify</h3>
+      <p class="method-card__desc">Cross-check the source against 2-3 others in the same category. Discrepancies surface data quality issues worth flagging in the documentation.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="data-quality">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">06</span>Data Quality & Reconciliation</h2>
+  </div>
+  <p class="lead">
+    No single source is authoritative. The atlas is designed for <strong>triangulation</strong> — every operational
+    question should be answered by combining 2-3 sources and surfacing discrepancies. The discrepancies themselves
+    are intelligence: they reveal under-reporting, over-reporting, smuggling, greenwashing, or analytical disagreement.
+  </p>
+  <div class="combo-card" style="margin-top: var(--space-lg)">
+    <h3 class="combo-card__title" style="font-size:18px">Reconciliation Examples</h3>
+    <p class="combo-card__desc" style="font-size:13px;margin-top:8px">
+      <strong>Production:</strong> S&P MI vs. USGS Minerals Yearbook — large discrepancies surface undeclared depletion.<br>
+      <strong>Trade:</strong> UN Comtrade vs. AIS vessel tracks — gaps surface off-book shipments (sanction evasion).<br>
+      <strong>Reserves:</strong> EDGAR 10-K vs. USGS MCS country totals — discrepancies surface reporting errors.<br>
+      <strong>ESG:</strong> MSCI vs. Sustainalytics — rating divergence surfaces methodology-gaming candidates.<br>
+      <strong>Tailings:</strong> ICMM vs. GTR — duplicates removed by dam-name + lat/lon clustering.<br>
+      <strong>Ownership:</strong> OpenCorporates vs. SEDAR+ filings — gaps surface offshore beneficial ownership.<br>
+      <strong>Cost curves:</strong> MineSpans vs. CRU vs. WoodMac — high variance = analyst-disagreement hotspots.<br>
+      <strong>Water:</strong> SASB withdrawal vs. USGS streamflow — flat withdrawal during drought = disclosure red flag.
+    </p>
+  </div>
+</section>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>

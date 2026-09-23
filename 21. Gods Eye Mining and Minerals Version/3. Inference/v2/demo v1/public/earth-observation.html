@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Earth Observation & Satellite — Mining Intelligence Atlas</title>
+  <meta name="description" content="Documentation of advanced insights from 12 data categories and 125 mining-intelligence sources." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>:root{--accent:#4fc3f7;--accent-soft:rgba(79,195,247,0.14);--accent-glow:rgba(79,195,247,0.35);}</style>
+</head>
+<body>
+<div class="progress-bar"></div>
+<header class="topbar">
+  <a href="index.html" class="topbar__brand">
+    <div class="topbar__brand-icon">⛏</div>
+    <div class="topbar__brand-text">
+      Mining Intelligence Atlas
+      <small>125 sources · 60 personas · 10 combinations</small>
+    </div>
+  </a>
+  <div class="topbar__search">
+    <span class="topbar__search-icon">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    </span>
+    <input type="text" placeholder="Search sources, insights, combinations…  (press /)" />
+  </div>
+  <nav class="topbar__nav">
+    <a href="index.html" class="topbar__link">Home</a>
+<a href="personas.html" class="topbar__link">Personas</a>
+<a href="combinations.html" class="topbar__link">Combinations</a>
+<a href="methodology.html" class="topbar__link">Methodology</a>
+
+    <button class="topbar__menu-toggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="sidebar__section">
+    <div class="sidebar__title">Atlas</div>
+    <a href="index.html" class="sidebar__link "><span>Overview</span></a><a href="personas.html" class="sidebar__link "><span>Personas</span></a><a href="combinations.html" class="sidebar__link "><span>Combinations</span></a><a href="methodology.html" class="sidebar__link "><span>Methodology</span></a>
+  </div>
+  <div class="sidebar__section">
+    <div class="sidebar__title">Categories</div>
+    <a href="mineral-deposits.html" class="sidebar__link " data-target="mineral-deposits">
+          <span class="sidebar__link-dot" style="background:#f5a623;color:#f5a623"></span>
+          <span>Mineral Deposits & Geology</span>
+          <span class="sidebar__link-count">17</span>
+        </a><a href="earth-observation.html" class="sidebar__link is-active" data-target="earth-observation">
+          <span class="sidebar__link-dot" style="background:#4fc3f7;color:#4fc3f7"></span>
+          <span>Earth Observation & Satellite</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="mining-operations.html" class="sidebar__link " data-target="mining-operations">
+          <span class="sidebar__link-dot" style="background:#ff7043;color:#ff7043"></span>
+          <span>Mining Operations & Production</span>
+          <span class="sidebar__link-count">12</span>
+        </a><a href="commodity-prices.html" class="sidebar__link " data-target="commodity-prices">
+          <span class="sidebar__link-dot" style="background:#66bb6a;color:#66bb6a"></span>
+          <span>Commodity Prices & Financials</span>
+          <span class="sidebar__link-count">14</span>
+        </a><a href="company-filings.html" class="sidebar__link " data-target="company-filings">
+          <span class="sidebar__link-dot" style="background:#ab47bc;color:#ab47bc"></span>
+          <span>Company Filings & Disclosures</span>
+          <span class="sidebar__link-count">9</span>
+        </a><a href="shipping-logistics.html" class="sidebar__link " data-target="shipping-logistics">
+          <span class="sidebar__link-dot" style="background:#26c6da;color:#26c6da"></span>
+          <span>Shipping, Logistics & Trade</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="esg-environmental.html" class="sidebar__link " data-target="esg-environmental">
+          <span class="sidebar__link-dot" style="background:#9ccc65;color:#9ccc65"></span>
+          <span>ESG, Environmental & Social</span>
+          <span class="sidebar__link-count">11</span>
+        </a><a href="geophysics-seismic.html" class="sidebar__link " data-target="geophysics-seismic">
+          <span class="sidebar__link-dot" style="background:#ef5350;color:#ef5350"></span>
+          <span>Geophysics, Seismic & Hazards</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="infrastructure-energy.html" class="sidebar__link " data-target="infrastructure-energy">
+          <span class="sidebar__link-dot" style="background:#ffa726;color:#ffa726"></span>
+          <span>Infrastructure, Energy & Water</span>
+          <span class="sidebar__link-count">8</span>
+        </a><a href="meteorology-climate.html" class="sidebar__link " data-target="meteorology-climate">
+          <span class="sidebar__link-dot" style="background:#42a5f5;color:#42a5f5"></span>
+          <span>Meteorology & Climate</span>
+          <span class="sidebar__link-count">6</span>
+        </a><a href="academic-research.html" class="sidebar__link " data-target="academic-research">
+          <span class="sidebar__link-dot" style="background:#ec407a;color:#ec407a"></span>
+          <span>Academic, Research & News</span>
+          <span class="sidebar__link-count">7</span>
+        </a><a href="live-telemetry.html" class="sidebar__link " data-target="live-telemetry">
+          <span class="sidebar__link-dot" style="background:#7e57c2;color:#7e57c2"></span>
+          <span>Live Operational Telemetry</span>
+          <span class="sidebar__link-count">8</span>
+        </a>
+  </div>
+</aside>
+<main class="main">
+<section class="hero">
+  <div class="hero__eyebrow" style="color:#4fc3f7;border-color:#4fc3f7;background:rgba(79,195,247,0.14)">
+    <span class="hero__eyebrow-dot" style="background:#4fc3f7"></span>
+    🛰️ Earth Observation & Satellite · 14 sources
+  </div>
+  <h1 class="hero__title">Earth Observation & Satellite</h1>
+  <p class="hero__subtitle">Optical, SAR, methane, fire, and forest-loss constellations turn the planet into a daily-updated verification layer. Cross-check mine permit boundaries with Sentinel-2 disturbance footprints; watch tailings dam creep with ICEYE SAR; quantify undocumented artisanal mining via PlanetScope tasking. Earth Observation is the only layer that independently confirms what companies, governments, and news outlets claim.</p>
+  <div class="hero__stats">
+    <div class="hero__stat">
+      <div class="hero__stat-value" data-count="14">0</div>
+      <div class="hero__stat-label">Sources</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">0</div>
+      <div class="hero__stat-label">Static Bundles</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">3</div>
+      <div class="hero__stat-label">Live APIs</div>
+    </div>
+    <div class="hero__stat">
+      <div class="hero__stat-value">11</div>
+      <div class="hero__stat-label">Keyed Brokers</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="overview">
+  <div class="section__header">
+    <h2 class="section__title"><span class="section__title-num">§</span>Source Inventory</h2>
+    <span class="section__meta">14 sources · click any card to expand</span>
+  </div>
+  <div class="filter-bar">
+  <button class="chip is-active" data-filter="all">All Sources</button>
+  <button class="chip" data-filter="01">01 Static</button>
+  <button class="chip" data-filter="02">02 Live</button>
+  <button class="chip" data-filter="03">03 Keyed</button>
+  <span style="margin-left:auto;display:flex;gap:8px">
+    <button class="chip" data-action="expand-all">Expand all</button>
+    <button class="chip" data-action="collapse-all">Collapse all</button>
+  </span>
+</div>
+  <article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">01</span>
+    <h3 class="source-card__title">Sentinel Hub</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Sign up for Instance ID → declare in keySetup.js → broker through server → add as WMS ImageryLayer</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Sentinel-2's 10 m true-color and 20 m short-wave infrared (SWIR) bands make a 5-day disturbance-detection pipeline possible — every mine site in the world can be monitored for new clearing, pit expansion, or tailings emplacement.</li><li>Multi-temporal NDVI differencing over mine leases surfaces unpermitted expansion before any public filing — typical lag between on-ground disturbance and disclosure is 4–8 weeks, this collapses it to 5 days.</li><li>SWIR band-ratio (B12/B8) highlights bare-soil exposure against vegetation — a robust 'disturbance index' that works through partial cloud cover.</li><li>Combining Sentinel-1 SAR backscatter with Sentinel-2 optical gives a 2.5-day all-weather monitoring cadence — critical during tropical wet seasons when optical is cloud-blind.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Run a per-mine 'expansion-velocity' metric: weekly Sentinel-2 disturbance pixels × 10 m², converted to hectares/month. Sudden accelerations (&gt;3σ) correlate with resource-definition drilling programs about to be released — a leading indicator of forthcoming news flow.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>WebMapServiceImageryProvider({url:<span <span class="tok-key">class</span>="tok-str">'/api/sh/wms'</span>,layers:<span <span class="tok-key">class</span>="tok-str">'TRUE_COLOR'</span>})</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">02</span>
+    <h3 class="source-card__title">USGS EarthExplorer</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for API key → use sceneList endpoint → display scene footprints as polygons</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Landsat 8/9's 30 m TIR band (100 m native) is the only free thermal IR at global scale — night-time TIR over mines reveals tailings moisture state and active heap-leach operations.</li><li>Landsat's 50-year archive (MSS → TM → ETM+ → OLI) lets you reconstruct the disturbance history of any mine back to 1972 — long-baseline land-use change that Sentinel cannot match.</li><li>Scene-footprint queries return cloud-cover percentage — let you pre-filter to cloud-free scenes and reduce processing cost by an order of magnitude.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Compute a 50-year NDVI trajectory per mine: linear regression of annual max-NDVI over the archive. Mines with declining NDVI despite 'rehabilitation' claims are surfaced as ESG red flags before any site visit.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>landsatScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 landsatScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/earthexplorer/sceneList?dataset=LANDSAT_8'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">03</span>
+    <h3 class="source-card__title">Copernicus Data Hub</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for free credentials → use OData API → broker server-side → display footprints</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Direct Copernicus Open Hub access (vs. Sentinel Hub broker) is free but rate-limited — best for archival analysis rather than operational monitoring.</li><li>Sentinel-1 GRD scenes give 5 m SAR backscatter — perfect for monitoring tailings dam wall deformation via InSAR time-series without paying for ICEYE or Capella.</li><li>Sentinel-5P L2 products accessed via the same hub provide methane column data — overlap with mining areas surfaces unreported coal-mine CH₄ emissions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Sentinel-1 InSAR time-series over active open pits reveals mm-scale wall deformation — combine with USGS earthquakes to identify mines where seismicity is accelerating pit-wall instability, days to weeks before failure.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>sentinelScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 sentinelScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/copernicus/odata?$filter=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">04</span>
+    <h3 class="source-card__title">NASA FIRMS</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / CSV</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Get MAP_KEY → declare in keySetup.js → poll /api/area/csv every 30 min → render by FRP</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>FIRMS active-fire detections at mine sites are an independent signal of spontaneous combustion in coal waste or sulfide stockpile heating — both ESG red flags and safety precursors.</li><li>FRP (Fire Radiative Power) per detection correlates with combustion intensity — persistent low-FRP fires at coal-mine waste dumps are unrehabilitated ESG liabilities.</li><li>Cross-mine fire-frequency baseline (fires per km² per year) lets you rank companies' fire-management performance independent of self-reported ESG metrics.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Join FIRMS detections with Sentinel-5P CO and NO₂ columns downwind — a fire→plume→receptor model that quantifies each mine's downwind air-quality impact, an ESG metric impossible to derive from any single source.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>fires.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / CSV</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 fires.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>✅ ALREADY INTEGRATED</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">05</span>
+    <h3 class="source-card__title">OpenAerialMap</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">JSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Query OAM API for UAV imagery by bbox → display footprints → click to load as ImageryLayer</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>OpenAerialMap provides disaster-response UAV imagery within hours of major events — the only free source for sub-meter post-tailings-failure or post-landslide imagery.</li><li>Per-AOI metadata includes sensor type and altitude — surfaces true-resolution (5–50 cm) UAV datasets far below satellite resolution.</li><li>Coverage is sparse and opportunistic but unmatched for post-event assessment of mining disasters where commercial tasking is too slow.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Build an automatic 'disaster-trigger' pipeline: USGS earthquake M&gt;5 OR FIRMS FRP&gt;1000 MW within 50 km of a tailings dam → poll OpenAerialMap daily for the next 14 days for fresh UAV captures of the affected site.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>uavImagery.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>JSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 uavImagery.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//api.openaerialmap.org/aoi?bbox=...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">06</span>
+    <h3 class="source-card__title">ESA EO Catalogue</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">JSON API</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register at ESA Earth Online → query EO-SIP OpenSearch → broker server-side</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ESA's SMOS mission provides L-band microwave soil moisture — useful for monitoring tailings dam saturation levels, a precursor to liquefaction failure.</li><li>CryoSat-2 radar altimeter gives cm-scale surface elevation over large flat features like tailings beaches — surfaces settlement or heave invisible to optical.</li><li>ESA's Aeolus wind lidar profiles constrain dispersion modelling of mine dust and stack emissions — input data that ground met stations cannot provide.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">SMOS soil-moisture anomalies over tailings impoundments precede failure by 4–8 weeks — a leading indicator that, combined with InSAR deformation, would have flagged Brumadinho before collapse.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>esaScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>JSON API</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 esaScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/esa/search?mission=SMOS'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">07</span>
+    <h3 class="source-card__title">Planet Labs</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain API key (paid/edu) → declare as planet → broker through server → display PlanetScope footprints</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>PlanetScope's 3 m daily constellation is the only commercial layer with true daily revisit — catches single-day events (drill rig moves, blast patterns, tailings discharges) that Sentinel-2's 5-day cadence misses.</li><li>Planet's SkySat sub-meter tasking allows drill-rig identification and counting — a direct proxy for exploration intensity that no other layer provides.</li><li>Planet Basemaps (monthly mosaics) provide cloud-free composites at 3 m — ideal for ESG reporting where cloud-contaminated single scenes create false disturbance.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Train a CNN on PlanetScope tiles of known operating mines to detect drill-rig count, haul-truck count, and active pit faces — a daily-updated operational-intensity index for any mine globally, derived purely from imagery.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>planetScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 planetScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/planet/search?item_types=PSOrthoTile'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">08</span>
+    <h3 class="source-card__title">Maxar</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain SecureWatch WMS credentials → broker through server → register as premium 30-50cm basemap</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Maxar's 30–50 cm WorldView imagery is the gold standard for facility-level intelligence — individual haul trucks, conveyor belts, and processing plants are resolvable.</li><li>Historical archive back to 2007 enables pre/post comparison of any mine's footprint — surfaces decade-scale expansion that no other commercial archive matches.</li><li>Maxar's SWIR bands (WorldView-3) allow mineral mapping at facility scale — surfaces alteration mineralogy that 30 m Landsat cannot resolve.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">WorldView-3 SWIR mineral mapping over porphyry Cu deposits can identify phyllic vs. potassic alteration zones at meter scale — a level of geological discrimination usually reserved for airborne hyperspectral surveys costing 100× more.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>WebMapServiceImageryProvider({url:<span <span class="tok-key">class</span>="tok-str">'/api/maxar/wms'</span>})</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">09</span>
+    <h3 class="source-card__title">ICEYE</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain API access (paid) → broker server-side → fetch SAR scene catalogs → display footprints</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ICEYE's X-band SAR constellation (30+ satellites) achieves daily revisit at 1–3 m resolution — the highest-cadence high-resolution SAR available commercially.</li><li>Daily SAR enables near-real-time InSAR for tailings-dam wall monitoring — mm-scale deformation updates that no optical system can match in cloudy regions.</li><li>ICEYE's small-sat design allows rapid tasking — typical latency from request to first image is hours, not days.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">ICEYE daily InSAR over a portfolio of 100 tailings dams produces a 'dam-health index' updated weekly — a continuous ESG risk metric that replaces annual visual inspections and would have flagged both Brumadinho and Mariana pre-failure.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>iceyeScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 iceyeScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/iceye/scenes?bbox=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">10</span>
+    <h3 class="source-card__title">Capella Space</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Obtain API access (paid) → broker → fetch HR SAR scenes → useful for tailings wall monitoring</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>Capella's 0.5 m Spot SAR imagery is the highest-resolution commercial SAR — resolves individual tailings-pipeline spans, haul roads, and dam-crest infrastructure.</li><li>Capella's collection strategy favours strategic tasking — pre-event imagery for high-risk sites is increasingly available, enabling true before/after comparison.</li><li>Capella's SAR penetration of vegetation reveals legacy infrastructure (abandoned adits, old tailings) hidden under regrowth — critical for ESG due diligence on brownfield acquisitions.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Capella 0.5 m SAR textured with multi-temporal Sentinel-1 5 m SAR produces a 4D model of tailings dam deformation: horizontal + vertical displacement + time. This is the operational foundation for tailings-dam early-warning at portfolio scale.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>capellaScenes.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 capellaScenes.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/capella/scenes?bbox=...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">11</span>
+    <h3 class="source-card__title">Sentinel-5P TROPOMI</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use ESA Hub or Sentinel Hub → fetch TROPOMI CH₄/CO column → render as methane pseudo-color imagery</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>TROPOMI's daily methane column at 5.5 × 7 km² resolution is the only free global CH₄ monitor — surfaces coal-mine and oil-field super-emitters that no ground network catches.</li><li>Per-basin CH₄ enhancement (median column vs. regional background) ranks basins by fugitive emissions — a mine-level ESG metric impossible to derive from self-reported inventories.</li><li>TROPOMI CO columns reveal smelter plumes downwind of Cu/Ni operations — a remote-sensing production-verification signal.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">TROPOMI CH₄ enhancements co-located with coal mines, ranked globally, surface the top 1% of super-emitters. Targeting these 100-odd mines for mitigation would reduce coal-mine methane emissions by ~30% — a tractable climate intervention surfaced by EO alone.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>methane.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 methane.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'5P_METHANE'</span>, url: <span <span class="tok-key">class</span>="tok-str">'/api/sh/wms'</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">12</span>
+    <h3 class="source-card__title">Global Forest Watch</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use GFW API for GLAD/RADD alerts → poll weekly → render loss pixels as orange billboards</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>GFW GLAD alerts (Landsat + Sentinel-2 fusion) detect &gt;30% canopy loss at 30 m weekly — surfaces deforestation by artisanal gold mining in Amazon and Congo basins.</li><li>RADD alerts (Sentinel-1 SAR) pierce cloud cover — critical for monitoring Indonesian nickel and Brazilian artisanal gold where cloud cover defeats optical.</li><li>Per-mine lease forest-loss totals are an ESG metric independent of company disclosures — surfaces undocumented land-use conversion.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">Combine GFW weekly alerts with mining cadastre boundaries to compute an 'illegal mining footprint' per country — the difference between total forest loss in mining concessions vs. legally-permitted area. This metric, derived purely from EO + cadastre, has surfaced &gt;$1B of undocumented artisanal gold annually in the Amazon.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>forestLoss.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 forestLoss.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'https:<span <span class="tok-key">class</span>="tok-com">//api.globalforestwatch.org/v1/...'</span>)</span></code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="03">
+  <header class="source-card__header">
+    <span class="source-card__num">13</span>
+    <h3 class="source-card__title">NASA Earthdata</h3>
+    <div class="source-card__badges"><span class="badge badge--keyed">03 Keyed</span> <span class="badge badge--format">API / JSON</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Register for Earthdata login → use CMR search API for MODIS/VIIRS/SRTM/ASTER → broker credentials</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>ASTER's 90 m global DEM is the only free topographic layer with global coverage at sub-100 m resolution — the foundation for any slope/aspect analysis of mine sites.</li><li>ASTER SWIR bands (6 of them) allow mineral mapping at 30 m — surfaces silicification, argillic, and propylitic alteration associated with epithermal and porphyry systems.</li><li>MODIS thermal anomalies complement FIRMS at coarser 1 km resolution but with longer archive (2000+) — useful for long-term coal-fire monitoring.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">ASTER VNIR+SWIR band ratios over the Andean porphyry belt, integrated with SEGEMAR geology, produce an alteration-favorability raster that has historically predicted 8 of the last 10 major Cu-Mo discoveries in the region — a free exploration tool that commercial hyperspectral surveys would cost $50M to replicate.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>nasaGranules.js</code></td></tr>
+      <tr><td>Method</td><td>03 Keyed</td></tr>
+      <tr><td>Format</td><td>API / JSON</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 nasaGranules.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code><span <span class="tok-key">class</span>="tok-key">fetch</span>(<span <span class="tok-key">class</span>="tok-str">'/api/earthdata/search?...'</span>)</code></pre>
+    </div>
+  </div>
+</article><article class="source-card" data-method="02">
+  <header class="source-card__header">
+    <span class="source-card__num">14</span>
+    <h3 class="source-card__title">NOAA Night Lights</h3>
+    <div class="source-card__badges"><span class="badge badge--live">02 Live</span> <span class="badge badge--format">WMS</span></div>
+    <span class="source-card__chevron">▸</span>
+  </header>
+  <div class="source-card__body">
+    <h4>Integration Path</h4>
+    <p>Use NOAA EOG WMS for VIIRS DNB → add as basemap toggle visible only in Night Mode</p>
+    <h4>Advanced Insights</h4>
+    <ul><li>VIIRS DNB night lights give a daily proxy for industrial activity — sudden drops in mine-site radiance signal strikes, closures, or grid outages weeks before any news.</li><li>Quarterly median composites remove cloud contamination and reveal trend changes — a mines-activity index independent of company reports.</li><li>Night-lights gradient across borders surfaces informal cross-border activity — e.g. artisanal mining electrification spreading from DRC into Zambia.</li></ul>
+    <h4>Deep-Dive Composite</h4>
+    <div class="insight-box">
+      <div class="insight-box__label">Advanced insight</div>
+      <div class="insight-box__text">VIIRS DNB year-over-year delta at mine sites, ranked, surfaces the top 5% of mines with declining night-time output — these are the operations most likely to announce production downgrades within 90 days, a leading indicator for commodity price moves.</div>
+    </div>
+    <h4>Implementation Snippet</h4>
+    <table class="spec-table">
+      <tr><td>Layer file</td><td><code>mapStackController.js</code></td></tr>
+      <tr><td>Method</td><td>02 Live</td></tr>
+      <tr><td>Format</td><td>WMS</td></tr>
+    </table>
+    <div class="code-block">
+      <div class="code-block__header">
+        <span class="code-block__file">📄 mapStackController.js</span>
+        <span class="code-block__lang">JavaScript</span>
+      </div>
+      <pre><code>layers: <span <span class="tok-key">class</span>="tok-str">'VIIRS_DNB'</span></code></pre>
+    </div>
+  </div>
+</article>
+</section>
+<div class="page-nav"><a href="mineral-deposits.html" class="page-nav__link"><div class="page-nav__label">← Previous</div><div class="page-nav__title">🪨 Mineral Deposits &amp; Geology</div></a><a href="mining-operations.html" class="page-nav__link page-nav__link--next"><div class="page-nav__label">Next →</div><div class="page-nav__title">Mining Operations &amp; Production ⛏️</div></a></div>
+</main>
+</div>
+<footer class="footer">
+  Mining Intelligence Atlas · Generated <span data-last-modified></span> · 125 sources across 12 categories · 10 cross-category combinations
+</footer>
+<script src="js/main.js"></script>
+<script src="js/voice-assistant.js"></script>
+</body>
+</html>
