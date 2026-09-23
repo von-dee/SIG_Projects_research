@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero to $212M · The Detailed Execution Roadmap · Mining Intelligence Atlas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0a0e; --obsidian:#111016; --ash:#1a1922; --bone:#ebe6dc;
+    --bone-dim:#b8b3a6; --muted:#6c6859; --copper:#c89858; --brass:#d4b87a;
+    --moss:#7a8a6f; --rust:#c4634a; --slag:#9a96a8; --line:#2a2730;
+    --gold:#e8c46a; --jade:#4a8a6f; --iron:#8a6a5a; --ash2:#3a3740;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--void);color:var(--bone);overflow-x:hidden}
+  .font-display{font-family:'Fraunces',serif;font-optical-sizing:auto}
+  .font-mono{font-family:'JetBrains Mono',monospace}
+  
+  .topo-bg{position:fixed;inset:0;z-index:-2;opacity:.3;pointer-events:none}
+  .topo-bg svg{width:100%;height:100%}
+  .topo-path{fill:none;stroke:var(--copper);stroke-width:.5;opacity:.25}
+  .atmo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+    radial-gradient(ellipse 60% 50% at 20% 15%,rgba(200,152,88,.08),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 70%,rgba(232,196,106,.05),transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(196,99,74,.03),transparent 70%)}
+  .dust{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  
+  .card{background:linear-gradient(180deg,rgba(26,25,34,.92),rgba(17,16,22,.92));
+    border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;
+    transition:all .35s cubic-bezier(.4,0,.2,1)}
+  .card:hover{border-color:rgba(200,152,88,.3);box-shadow:0 8px 24px -8px rgba(200,152,88,.1)}
+  
+  .hero-title{background:linear-gradient(120deg,#ebe6dc 0%,#d4b87a 35%,#c89858 55%,#e8c46a 75%,#ebe6dc 100%);
+    background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:shimmer 8s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--copper);
+    box-shadow:0 0 0 0 rgba(200,152,88,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,152,88,.6)}70%{box-shadow:0 0 0 8px rgba(200,152,88,0)}100%{box-shadow:0 0 0 0 rgba(200,152,88,0)}}
+  
+  /* Sticky side nav */
+  .sidenav{position:fixed;left:0;top:0;bottom:0;width:220px;z-index:40;
+    background:rgba(10,10,14,.85);backdrop-filter:blur(12px);
+    border-right:1px solid var(--line);padding:80px 16px 16px;overflow-y:auto}
+  .sidenav a{display:block;padding:6px 12px;font-size:11px;font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--bone-dim);
+    border-radius:6px;transition:all .2s;margin-bottom:2px;line-height:1.4}
+  .sidenav a:hover{color:var(--copper);background:rgba(200,152,88,.05)}
+  .sidenav a.active{color:var(--gold);background:rgba(232,196,106,.08);border-left:2px solid var(--gold)}
+  .main-content{margin-left:220px}
+  @media(max-width:1024px){.sidenav{display:none}.main-content{margin-left:0}}
+  
+  /* Phase timeline */
+  .phase-node{cursor:pointer;transition:all .3s;position:relative;z-index:2;text-align:center}
+  .phase-node .ring{width:44px;height:44px;border-radius:50%;border:2px solid var(--void);
+    background:var(--c,var(--copper));display:inline-flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:var(--void);
+    transition:all .3s;box-shadow:0 0 0 4px var(--void),0 0 20px rgba(200,152,88,.3)}
+  .phase-node:hover .ring{transform:scale(1.15);box-shadow:0 0 0 4px var(--void),0 0 30px rgba(200,152,88,.5)}
+  .phase-node.active .ring{background:var(--gold);box-shadow:0 0 0 4px var(--void),0 0 30px rgba(232,196,106,.6);transform:scale(1.2)}
+  .phase-node .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--bone-dim);margin-top:8px;max-width:130px;line-height:1.3}
+  .phase-node.active .label{color:var(--gold);font-weight:600}
+  
+  .phase-line{position:absolute;top:22px;left:5%;right:5%;height:2px;
+    background:linear-gradient(90deg,var(--copper) 0%,var(--brass) 20%,var(--moss) 40%,var(--gold) 60%,var(--rust) 80%,var(--slag) 100%);z-index:1}
+  
+  /* Workstream detail */
+  .ws-block{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+  .ws-header{display:flex;align-items:center;gap:10px;padding:12px 16px;
+    background:rgba(0,0,0,.3);cursor:pointer;transition:all .2s;
+    border-bottom:1px solid transparent}
+  .ws-header:hover{background:rgba(200,152,88,.05)}
+  .ws-block.open .ws-header{border-bottom-color:var(--line)}
+  .ws-chevron{transition:transform .3s}
+  .ws-block.open .ws-chevron{transform:rotate(90deg)}
+  .ws-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .ws-block.open .ws-body{max-height:2000px}
+  .ws-content{padding:14px 16px}
+  .ws-task{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:13px;
+    color:var(--bone-dim);line-height:1.55;border-bottom:1px solid rgba(42,39,48,.5)}
+  .ws-task:last-child{border-bottom:none}
+  .ws-task .num{flex-shrink:0;width:20px;height:20px;border-radius:50%;
+    background:rgba(200,152,88,.1);border:1px solid rgba(200,152,88,.25);
+    display:flex;align-items:center;justify-content:center;font-size:10px;
+    font-family:'JetBrains Mono',monospace;color:var(--copper);margin-top:1px}
+  
+  /* Week cards */
+  .week-card{border:1px solid var(--line);border-radius:10px;overflow:hidden;
+    background:rgba(0,0,0,.3);transition:all .25s}
+  .week-card:hover{border-color:rgba(200,152,88,.3)}
+  .week-head{padding:10px 14px;background:rgba(200,152,88,.05);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:between;gap:8px}
+  .week-body{padding:10px 14px}
+  .week-task{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:12px;
+    color:var(--bone-dim);line-height:1.5}
+  .week-task .dot{flex-shrink:0;width:4px;height:4px;border-radius:50%;background:var(--copper);margin-top:7px}
+  
+  /* Data tables */
+  .dtable{width:100%;border-collapse:collapse;font-size:12px}
+  .dtable th{text-align:left;padding:8px 10px;font-size:10px;font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+    border-bottom:1px solid var(--line);background:rgba(0,0,0,.3)}
+  .dtable td{padding:8px 10px;border-bottom:1px solid rgba(42,39,48,.5);color:var(--bone-dim);vertical-align:top}
+  .dtable tr:hover td{background:rgba(200,152,88,.02);color:var(--bone)}
+  
+  /* Risk heat cells */
+  .risk-cell{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
+    font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .risk-low{background:rgba(122,138,111,.12);color:var(--moss);border:1px solid rgba(122,138,111,.25)}
+  .risk-med{background:rgba(212,184,122,.12);color:var(--brass);border:1px solid rgba(212,184,122,.25)}
+  .risk-high{background:rgba(196,99,74,.15);color:var(--rust);border:1px solid rgba(196,99,74,.3)}
+  
+  /* Gate badges */
+  .gate-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;
+    border-radius:100px;font-size:11px;font-family:'JetBrains Mono',monospace;
+    background:rgba(122,138,111,.08);border:1px solid rgba(122,138,111,.25);color:var(--moss);
+    margin-bottom:6px;line-height:1.4}
+  
+  /* Fund bars */
+  .fund-bar{height:44px;border-radius:8px;display:flex;align-items:center;
+    padding:0 14px;border:1px solid var(--line);position:relative;overflow:hidden}
+  .fund-bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:8px;opacity:.12}
+  .fund-bar .amt{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;position:relative;z-index:2}
+  
+  /* Check items */
+  .check-item{display:flex;align-items:flex-start;gap:12px;padding:12px;
+    border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.3);
+    transition:all .2s;cursor:pointer}
+  .check-item:hover{border-color:var(--copper);background:rgba(200,152,88,.04)}
+  .check-box{flex-shrink:0;width:20px;height:20px;border:2px solid var(--copper);border-radius:5px;
+    display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:1px}
+  .check-item.checked .check-box{background:var(--copper)}
+  .check-item.checked .check-box::after{content:'';width:10px;height:6px;
+    border-left:2px solid var(--void);border-bottom:2px solid var(--void);
+    transform:rotate(-45deg) translate(1px,-1px)}
+  .check-item.checked .check-text{text-decoration:line-through;color:var(--muted)}
+  
+  /* Product launch dependency */
+  .launch-item{display:flex;align-items:center;gap:12px;padding:10px 14px;
+    border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.25);transition:all .2s}
+  .launch-item:hover{border-color:rgba(200,152,88,.3)}
+  .launch-phase{flex-shrink:0;width:32px;height:32px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;
+    font-weight:700;font-size:14px;color:var(--void)}
+  
+  /* KPI cards */
+  .kpi-card{padding:14px;border:1px solid var(--line);border-radius:10px;
+    background:linear-gradient(135deg,rgba(26,25,34,.8),rgba(11,11,15,.8))}
+  .kpi-val{font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1}
+  .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:4px}
+  
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--void)}
+  ::-webkit-scrollbar-thumb{background:var(--ash2);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--copper)}
+  
+  .section-num{font-family:'JetBrains Mono',monospace;font-size:11px;
+    text-transform:uppercase;letter-spacing:.3em;color:var(--gold)}
+  
+  .divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--copper) 50%,transparent);opacity:.2}
+  
+  /* Tabs */
+  .tab-bar{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;flex-wrap:wrap}
+  .tab-btn{padding:8px 16px;font-size:12px;font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;letter-spacing:.08em;color:var(--bone-dim);
+    background:transparent;border:none;border-bottom:2px solid transparent;
+    cursor:pointer;transition:all .2s;border-radius:6px 6px 0 0}
+  .tab-btn:hover{color:var(--copper)}
+  .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .tab-panel{display:none}
+  .tab-panel.active{display:block;animation:fadeIn .4s}
+  
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- Backgrounds -->
+<div class="topo-bg">
+<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" id="topoSvg">
+<g id="topoGroup"></g>
+</svg>
+</div>
+<div class="atmo"></div>
+<canvas class="dust" id="dustCanvas"></canvas>
+
+<!-- ===================== SIDE NAV ===================== -->
+<nav class="sidenav" id="sidenav">
+  <div class="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)] mb-3 px-3">Navigate</div>
+  <a href="#hero">00 · Executive Summary</a>
+  <a href="#phases">01 · Six-Phase Map</a>
+  <a href="#phase-detail">02 · Phase Detail</a>
+  <a href="#first90">03 · First 90 Days</a>
+  <a href="#conquest">04 · Customer Conquest</a>
+  <a href="#launch">05 · Product Launch Seq</a>
+  <a href="#hiring">06 · Hiring Plan</a>
+  <a href="#economics">07 · Unit Economics</a>
+  <a href="#tech">08 · Tech Architecture</a>
+  <a href="#competition">09 · Competitive Matrix</a>
+  <a href="#pricing">10 · Pricing Strategy</a>
+  <a href="#gtm">11 · GTM Playbook</a>
+  <a href="#content">12 · Content Calendar</a>
+  <a href="#events">13 · Event Calendar</a>
+  <a href="#compliance">14 · Compliance Timeline</a>
+  <a href="#board">15 · Board Cadence</a>
+  <a href="#funding">16 · Funding Roadmap</a>
+  <a href="#risk">17 · Risk Matrix</a>
+  <a href="#moat">18 · The Moat</a>
+  <a href="#kill">19 · Kill Criteria</a>
+</nav>
+
+<div class="main-content">
+
+<!-- ===================== NAV BAR ===================== -->
+<nav class="fixed top-0 left-[220px] right-0 z-50 backdrop-blur-md bg-[rgba(10,10,14,0.7)] border-b border-[var(--line)] hidden lg:block">
+  <div class="px-6 py-4 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-3">
+      <svg width="24" height="24" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#e8c46a"/></svg>
+      <span class="font-display text-base tracking-tight">Zero to $212M · Detailed Execution Plan</span>
+    </a>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(232,196,106,0.1)] border border-[rgba(232,196,106,0.3)]">
+      <span class="pulse-dot" style="background:var(--gold)"></span>
+      <span class="text-xs font-mono text-[var(--gold)]">60 MONTHS · 25 PRODUCTS · $212M ARR</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header id="hero" class="relative pt-24 pb-12 px-6">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="flex items-center gap-3 mb-6">
+      <div class="h-px w-12 bg-[var(--gold)]"></div>
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">The Detailed Execution Roadmap · 20 Sections · 60 Months</span>
+    </div>
+    
+    <h1 class="font-display text-[clamp(44px,7vw,104px)] leading-[0.92] tracking-tight mb-6 hero-title">
+      From Zero<br/>
+      to $212M.<br/>
+      <span class="text-[var(--bone-dim)] italic">In detail.</span>
+    </h1>
+    
+    <div class="grid lg:grid-cols-12 gap-6 mt-8">
+      <p class="lg:col-span-7 text-base leading-relaxed text-[var(--bone-dim)] max-w-2xl">
+        A granular, week-by-week, role-by-role, dollar-by-dollar execution plan to build the <span class="text-[var(--bone)] font-medium">Bloomberg for Physical Commodities</span>. This document names the customers to call, the engineers to hire, the APIs to wire, the conferences to attend, the investors to pitch, and the exact milestones that gate each phase. <span class="text-[var(--gold)]">Print it. Pin it. Execute one section at a time.</span>
+      </p>
+      <div class="lg:col-span-5 lg:pl-8 lg:border-l border-[var(--line)]">
+        <div class="grid grid-cols-4 gap-3">
+          <div><div class="font-display text-3xl text-[var(--copper)]">6</div><div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-1">Phases</div></div>
+          <div><div class="font-display text-3xl text-[var(--gold)]">60</div><div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-1">Months</div></div>
+          <div><div class="font-display text-3xl text-[var(--moss)]">25</div><div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-1">Products</div></div>
+          <div><div class="font-display text-3xl text-[var(--rust)]">$212M</div><div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mt-1">ARR</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== 01 · PHASE MAP ===================== -->
+<section id="phases" class="px-6 py-12 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 01</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">The Six-Phase Map</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Click any phase node to load its full detail below — workstreams, KPIs, customer targets, tech decisions, risks, and exit gates.</p>
+    
+    <div class="relative py-6">
+      <div class="phase-line"></div>
+      <div class="grid grid-cols-6 gap-1 relative" id="phaseNodes"></div>
+    </div>
+    
+    <!-- Quick stats per phase -->
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mt-8" id="phaseStats"></div>
+  </div>
+</section>
+
+<!-- ===================== 02 · PHASE DETAIL ===================== -->
+<section id="phase-detail" class="px-6 py-12 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 02</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Phase Detail</h2>
+    <p class="text-[var(--bone-dim)] mb-6 max-w-3xl text-sm">The full execution plan for the selected phase. Expand each workstream to see sub-tasks, owners, and dependencies.</p>
+    
+    <!-- Tabs for phase detail -->
+    <div class="tab-bar" id="phaseTabs">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="workstreams">Workstreams</button>
+      <button class="tab-btn" data-tab="customers">Customer Targets</button>
+      <button class="tab-btn" data-tab="tech">Tech Decisions</button>
+      <button class="tab-btn" data-tab="kpis">KPIs & Gates</button>
+      <button class="tab-btn" data-tab="risks">Risks</button>
+    </div>
+    
+    <div id="phaseDetailContent"></div>
+  </div>
+</section>
+
+<!-- ===================== 03 · FIRST 90 DAYS ===================== -->
+<section id="first90" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 03</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">The First 90 Days · Week by Week</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Thirteen weeks. Each with named deliverables, owners, and success criteria. This is the concrete plan for Phase 1 execution. <span class="text-[var(--gold)]">No abstraction. Just work.</span></p>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3" id="weekGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== 04 · CUSTOMER CONQUEST ===================== -->
+<section id="conquest" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 04</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Customer Conquest Plan</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">The first 50 named target customers, organized by segment. Each has a named approach strategy, the inference product they'd buy, and the estimated contract value.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <table class="dtable" id="conquestTable">
+          <thead><tr>
+            <th>#</th><th>Company</th><th>Segment</th><th>Persona</th>
+            <th>Product</th><th>Approach</th><th>Phase</th><th>Est. ACV</th>
+          </tr></thead>
+          <tbody id="conquestBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 05 · PRODUCT LAUNCH SEQUENCE ===================== -->
+<section id="launch" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 05</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Product Launch Sequence</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">All 25 products in launch order, with dependencies, the phase they ship, and the ARR contribution. Products are sequenced by <span class="text-[var(--copper)]">revenue potential ÷ engineering effort</span> — the highest-ROI products ship first.</p>
+    
+    <div class="space-y-2" id="launchList"></div>
+  </div>
+</section>
+
+<!-- ===================== 06 · HIRING PLAN ===================== -->
+<section id="hiring" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 06</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Hiring Plan · 150 People in 60 Months</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Every role, when to hire, the compensation band, the interview rubric, and the phase they unlock. Headcount grows from 2 to 150. Total cumulative compensation: ~$95M over 60 months.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[1000px]">
+        <table class="dtable" id="hiringTable">
+          <thead><tr>
+            <th>Role</th><th>Phase</th><th>Month</th><th>Comp Band</th>
+            <th>Equity</th><th>Reports To</th><th>Unlocks</th><th>Interview Loop</th>
+          </tr></thead>
+          <tbody id="hiringBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 07 · UNIT ECONOMICS ===================== -->
+<section id="economics" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 07</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Unit Economics per Product</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">CAC, LTV, payback period, and gross margin for each of the 25 products at steady-state (Year 3). Products with payback > 18 months are flagged <span class="text-[var(--rust)]">red</span> and require a sales-motion pivot before scaling.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <table class="dtable" id="econTable">
+          <thead><tr>
+            <th>#</th><th>Product</th><th>Price</th><th>COGS</th>
+            <th>GM%</th><th>CAC</th><th>LTV</th><th>Payback</th><th>LTV:CAC</th>
+          </tr></thead>
+          <tbody id="econBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 08 · TECH ARCHITECTURE ===================== -->
+<section id="tech" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 08</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Tech Architecture & Stack Decisions</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Every technology choice with the rationale, the alternative considered, and the cost. The architecture evolves from a $200/mo monolith in Phase 1 to a distributed event-driven platform in Phase 4.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <table class="dtable" id="techTable">
+          <thead><tr>
+            <th>Layer</th><th>Choice</th><th>Alternative</th><th>Rationale</th><th>Monthly Cost</th><th>Phase</th>
+          </tr></thead>
+          <tbody id="techBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 09 · COMPETITIVE MATRIX ===================== -->
+<section id="competition" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 09</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Competitive Positioning Matrix</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">The 8 named competitors and how we differentiate. None of them combine real-time satellite data, live market pricing, and regulatory filings in one platform. That is the gap.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[1000px]">
+        <table class="dtable" id="compTable">
+          <thead><tr>
+            <th>Competitor</th><th>Their Strength</th><th>Their Weakness</th>
+            <th>Our Edge</th><th>How We Win</th>
+          </tr></thead>
+          <tbody id="compBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 10 · PRICING STRATEGY ===================== -->
+<section id="pricing" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 10</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Pricing Strategy & Methodology</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Pricing is value-based, not cost-plus. The methodology: <span class="text-[var(--gold)]">price at 10% of the annual decision value the inference unlocks</span>. If the inference saves a $100M tailings dam from failing, the annual subscription is $100k. If it prevents a $10M bad M&A bet, it's $250k.</p>
+    
+    <div class="grid md:grid-cols-3 gap-4 mb-8" id="pricingTiers"></div>
+    
+    <div class="card p-6">
+      <h3 class="font-display text-xl text-[var(--gold)] mb-4">Pricing Rules</h3>
+      <div class="space-y-3 text-sm text-[var(--bone-dim)]" id="pricingRules"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 11 · GTM PLAYBOOK ===================== -->
+<section id="gtm" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 11</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Go-to-Market Playbook by Vertical</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Five verticals, each with a different sales motion, channel, and sales cycle. Mining majors take 12-18 months. Hedge funds take 30 days. We sell funds first to fund the mining major sales cycle.</p>
+    
+    <div class="space-y-4" id="gtmList"></div>
+  </div>
+</section>
+
+<!-- ===================== 12 · CONTENT CALENDAR ===================== -->
+<section id="content" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 12</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Content & Thought Leadership Calendar</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">26 pieces of content across 12 months — the exact blog posts, reports, and webinars that establish category leadership. Every piece is designed to rank for a specific persona's search intent.</p>
+    
+    <div class="card p-4">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-2" id="contentGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 13 · EVENT CALENDAR ===================== -->
+<section id="events" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 13</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Conference & Event Calendar</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">The 12 conferences we attend, sponsor, or speak at across the 60-month roadmap. Each has an estimated cost and the expected ROI in pipeline generated.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <table class="dtable" id="eventTable">
+          <thead><tr>
+            <th>Event</th><th>Month</th><th>Location</th><th>Audience</th>
+            <th>Cost</th><th>Expected Pipeline</th><th>ROI</th><th>Phase</th>
+          </tr></thead>
+          <tbody id="eventBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 14 · COMPLIANCE TIMELINE ===================== -->
+<section id="compliance" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 14</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Regulatory Compliance Timeline</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Every certification, audit, and legal milestone gated by phase. SOC 2 Type 2 is the gate for $250k+ enterprise deals. ISO 27001 gates government contracts. IPO readiness gates the exit.</p>
+    
+    <div class="space-y-2" id="complianceList"></div>
+  </div>
+</section>
+
+<!-- ===================== 15 · BOARD CADENCE ===================== -->
+<section id="board" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 15</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Board Meeting Cadence</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Quarterly board meetings with a specific agenda template for each phase. The deck structure evolves from "are we building the right thing?" (Phase 1) to "are we IPO-ready?" (Phase 6).</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <table class="dtable" id="boardTable">
+          <thead><tr>
+            <th>Meeting</th><th>Phase</th><th>Focus Question</th>
+            <th>Deck Structure</th><th>Key Metric</th><th>Decision Needed</th>
+          </tr></thead>
+          <tbody id="boardBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 16 · FUNDING ROADMAP ===================== -->
+<section id="funding" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 16</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Funding Roadmap · $80.5M in 5 Rounds</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Each round tied to a milestone gate. No gate, no raise. Target investors named. Valuation methodology documented. Total dilution at exit: ~35% for founders, ~50% for investors, ~15% for employees.</p>
+    
+    <div class="space-y-3" id="fundingList"></div>
+    
+    <div class="card p-6 mt-6" style="border-color:rgba(232,196,106,0.3)">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="font-mono text-xs uppercase tracking-wider text-[var(--gold)] mb-1">Cumulative Capital Deployed</div>
+          <div class="font-display text-2xl text-[var(--gold)]">$80.5M across 5 rounds</div>
+        </div>
+        <div class="text-right">
+          <div class="font-mono text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Target Valuation at Series C / IPO</div>
+          <div class="font-display text-2xl text-[var(--bone)]">$1.2B – $2.5B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 17 · RISK MATRIX ===================== -->
+<section id="risk" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 17</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Risk Matrix · 20 Existential Risks</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">Every risk that could kill the company, ranked by likelihood and impact, each with a named mitigation. Updated quarterly. The top 5 risks get a named owner on the leadership team.</p>
+    
+    <div class="card p-4 overflow-x-auto">
+      <div class="min-w-[1000px]">
+        <table class="dtable" id="riskTable">
+          <thead><tr>
+            <th>#</th><th>Risk</th><th>Likelihood</th><th>Impact</th>
+            <th>Mitigation</th><th>Owner</th><th>Phase</th>
+          </tr></thead>
+          <tbody id="riskBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 18 · THE MOAT ===================== -->
+<section id="moat" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num">§ 18</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">The Moat · 5 Layers of Defensibility</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">By Year 3, the platform is effectively un-copyable. A competitor would need to re-integrate 117 sources, re-build 25 inference engines, and re-acquire 500+ customers. Here's why each layer compounds.</p>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6" id="moatGrid"></div>
+    
+    <div class="card p-8" style="border-color:rgba(232,196,106,0.3)">
+      <div class="flex items-center gap-3 mb-4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e8c46a" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="font-display text-xl text-[var(--gold)]">The Network Effect Thesis</span>
+      </div>
+      <p class="text-[var(--bone-dim)] leading-relaxed text-sm">Every new data source improves every inference. Every new customer generates proxy validation data. Every new inference recipe becomes a feature no competitor has. By Year 3, the 117-source × 25-inference matrix is a <span class="text-[var(--gold)]">combinatorial asset</span> that cannot be replicated by hiring 10 engineers and raising $50M. It requires 60 months of layered integrations, customer feedback loops, and regulatory trust. <span class="text-[var(--bone)] font-medium">That is the moat.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 19 · KILL CRITERIA ===================== -->
+<section id="kill" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto">
+    <span class="section-num" style="color:var(--rust)">§ 19 · When to Stop</span>
+    <h2 class="font-display text-4xl mt-2 mb-3">Kill Criteria · 10 Pre-Committed Triggers</h2>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl text-sm">If any of these fire, <span class="text-[var(--rust)] font-medium">stop building and reassess</span>. No sunk-cost fallacy. Print these. Tape them to your monitor. Re-read monthly.</p>
+    
+    <div class="space-y-3" id="killList"></div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="px-6 py-12 border-t border-[var(--line)]">
+  <div class="max-w-[1200px] mx-auto text-center">
+    <div class="flex items-center justify-center gap-3 mb-3">
+      <svg width="20" height="20" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#e8c46a"/></svg>
+      <span class="font-display text-base">Zero to $212M · Detailed Execution Roadmap</span>
+    </div>
+    <p class="text-xs text-[var(--muted)] font-mono">20 sections · 6 phases · 60 months · 25 products · 150 hires · $80.5M capital · $212M ARR target</p>
+    <p class="text-[10px] text-[var(--muted)] mt-3">This document is the operating plan. Read it weekly. Update it quarterly. Execute relentlessly.</p>
+  </div>
+</footer>
+
+</div><!-- /main-content -->
+
+<script>
+/* ============================================================
+   DATA: 6 Phases
+   ============================================================ */
+const phases = [
+  {n:1, name:'Foundation & Validation', months:'Mo 1-3', duration:'3 months',
+   arr:'$0', funding:'$1M Pre-Seed', color:'#c89858',
+   northStar:'10 signed LOIs + 1 paid pilot started',
+   summary:'Validate the thesis. Ship 8 integrated sources onto a Cesium globe. Interview 30 buyers. Lock 10 LOIs. Close pre-seed. Build 1 prototype, not 25.',
+   kpis:[
+     {k:'Discovery calls booked',v:'30'},
+     {k:'LOIs signed',v:'10'},
+     {k:'Paid pilots started',v:'1'},
+     {k:'Data layers live',v:'3'},
+     {k:'Pre-seed closed',v:'$1M'},
+     {k:'Monthly burn',v:'$28k'}
+   ],
+   customers:[
+     {c:'BHP',seg:'Mining Major',p:'Tailings Risk',a:'Sponsor PDAC booth + intro to Head of Tailings',acv:'$250k',ph:2},
+     {c:'Rio Tinto',seg:'Mining Major',p:'Pit Wall Stability',a:'Intro via Iron Ore risk team in Perth',acv:'$200k',ph:2},
+     {c:'Glencore',seg:'Mining Major',p:'Shadow Production',a:'Commodities desk intro via Baar HQ',acv:'$150k',ph:3},
+     {c:'Anglo American',seg:'Mining Major',p:'Water-Stress Score',a:'Sustainability team via London office',acv:'$100k',ph:3},
+     {c:'Elliott Management',seg:'Hedge Fund',p:'M&A Target Radar',a:'Event-driven desk intro via Prime Broker',acv:'$250k',ph:2},
+     {c:'AIG',seg:'Insurer',p:'Tailings Risk',a:'Mining risk underwriting team via broker',acv:'$150k',ph:2},
+     {c:'MKS PAMP',seg:'Refiner',p:'Concentrate Blend',a:'Swiss trading desk intro',acv:'$150k',ph:3},
+   ],
+   tech:[
+     {l:'Frontend',c:'CesiumJS + React',a:'Three.js',r:'3D globe is the differentiator. No alternative does geospatial 3D as well.',cost:'$0 (OSS)',ph:1},
+     {l:'Backend',c:'Node.js + Express',a:'Python/FastAPI',r:'Same language as frontend = smaller team. Sufficient for Phase 1 traffic.',cost:'$0 (OSS)',ph:1},
+     {l:'Database',c:'PostgreSQL + PostGIS',a:'MongoDB',r:'PostGIS is the standard for geospatial queries. MongoDB has no native geo-indexing.',cost:'$0 (self-host)',ph:1},
+     {l:'Hosting',c:'AWS (EC2 + RDS)',a:'GCP / Azure',r:'AWS has the deepest geospatial ecosystem (S3 + Lambda + Earth Observation).',cost:'$200/mo',ph:1},
+     {l:'Key Broker',c:'Express proxy + .env',a:'AWS Secrets Manager',r:'Simpler for 3 APIs. Migrate to Secrets Manager in Phase 2 when >5 keys.',cost:'$0',ph:1},
+     {l:'Tile Cache',c:'Redis',a:'Memcached',r:'Redis supports geo-commands (GEORADIUS) needed for proximity queries.',cost:'$50/mo',ph:1},
+   ],
+   workstreams:{
+     Data:[
+       'Wire 8 already-integrated sources (USGS EQ, FIRMS, AIS, OpenSky, adsb.lol, CelesTrak, GTFS, GBFS) into production broker — 2 days each, 16 days total',
+       'Build local_data/ pipeline: download MRDS CSV → ogr2ogr → GeoJSON → serve via /data/ endpoint',
+       'Download and bundle ICMM Tailings CSV (347 dams) → geocode by lat/lon → render as Cesium billboards',
+       'Download ARDF (Alaska), GVP (Holocene volcanoes), IHFC Heat Flow CSVs → convert to GeoJSON',
+       'Sign up for free-tier API keys: Sentinel Hub (free), EarthExplorer (free), Mindat (free signup), Open-Meteo (no key)',
+       'Build server-side key broker skeleton: /api/sh/wms → Sentinel Hub, /api/ee/sceneList → EarthExplorer, /api/mindat/* → Mindat',
+       'Set up daily cron jobs to refresh static bundles (MRDS updates quarterly, ICMM annually)'
+     ],
+     Product:[
+       'Deploy Cesium 3D globe to production URL with 3 live layers: earthquakes (USGS), fires (FIRMS), ships (AIS)',
+       'Build 2D Leaflet fallback map for low-end devices and mobile',
+       'Build the POWER UP panel UI — a sidebar showing which keyed APIs are active, rate-limited, or down',
+       'Prototype Tailings Dam 7-Day Failure dashboard: ICMM dam locations + USGS seismic overlay + Open-Meteo rainfall',
+       'Build the inference documentation (this Atlas) as the sales pitch deck — export to PDF for LOI conversations',
+       'Add user authentication (Clerk or Auth0 free tier) for demo access control',
+       'Set up error monitoring (Sentry free tier) and basic analytics (Plausible self-hosted)'
+     ],
+     GTM:[
+       'List 30 named target buyers: 10 mining majors, 10 funds/banks, 10 insurers (see Customer Conquest table)',
+       'Research each target: who is the right persona? What is their pain? What inference would they buy?',
+       'Write personalized cold emails (not templates) — reference their specific mine portfolio or fund holdings',
+       'Book 30 discovery calls (target: 15 from mining, 10 from finance, 5 from insurance)',
+       'Conduct calls: ask "If I could show you [inference], would you pay $X/yr?" Record answers',
+       'Draft LOI template (1-page, non-binding, names the inference + price + pilot timeline)',
+       'Secure 10 signed LOIs — 5 from mining, 3 from funds, 2 from insurers',
+       'Book PDAC (March, Toronto) booth + Mining Indaba (Feb, Cape Town) attendance'
+     ],
+     Funding:[
+       'Build investor pipeline: 50 angels who know mining (see list below)',
+       'Write one-page pitch: "Bloomberg for physical commodities. 117 sources. 25 products. $212M ARR target."',
+       'Send pitch to top 20 angels — target 10 first meetings',
+       'Pitch deck: Problem → Solution (the Atlas) → 3 pilot LOIs → Team → Ask ($1M at $5-8M post)',
+       'Term sheet from lead angel → close pre-seed → wire funds',
+       'Target investors: Pierre Lassonde (gold), Robert Friedland (Ivanhoe), Ross Beaty (Lumina), Nat Rothschild, Slim Fam',
+       'Backup: Climate-tech angels (Chris Sacca, Lowercarbon), industrial-tech (SOSV, Hardware Club)'
+     ],
+     Team:[
+       'Hire 1 senior full-stack engineer: Cesium + Node.js + React. Profile: ex-Mapbox, ex-Planet, ex-Descartes Labs. Comp: $150k + 1% equity',
+       'Hire 1 data engineer: Python + PostGIS + ogr2ogr. Profile: ex-USGS, ex-OpenGeo, geophysics background. Comp: $140k + 0.75% equity',
+       'Founder runs GTM + Product full-time (sweat equity, no salary for first 6 months)',
+       'Engage fractional CFO: $2k/mo, manages cap table, payroll, investor reporting',
+       'Engage IP lawyer: $5k retainer, files trademark + provisional patent',
+       'Total team: 2 FTEs + 2 fractional + 1 founder = 5 people. Burn: ~$28k/mo'
+     ],
+     Legal:[
+       'Incorporate as Delaware C-Corp (Stripe Atlas: $500 + $500 legal)',
+       'File trademark for platform name (USPTO: $350 + $250 attorney)',
+       'Draft data licensing terms — especially for keyed API brokering (reuse model: S&P for Planet, etc.)',
+       'File provisional patent on "multi-source geospatial inference fusion for mineral supply chain risk assessment" ($1,500 attorney)',
+       'Draft NDA template for design-partner conversations',
+       'Draft simple consulting agreements for fractional hires'
+     ]
+   },
+   risks:[
+     {r:'S&P Global / Wood Mackenzie refuse API access to a pre-seed startup', l:'High', i:'High', m:'Start with all-open sources. Approach S&P after $5M ARR. Never depend on one source >15% of COGS.', o:'Founder', ph:1},
+     {r:'Mining companies have 12-18 month procurement cycles — too slow for startup', l:'High', i:'High', m:'Sell to funds/insurers first (30-60 day cycles). Use paid pilot agreements.', o:'Founder', ph:1},
+     {r:'Cesium 3D globe performance issues on low-end devices', l:'Med', i:'Med', m:'Ship 2D Leaflet fallback on day one. Optimize for 60fps on mid-range laptop.', o:'Engineer #1', ph:1},
+   ],
+   gates:['10 LOIs signed from named buyers','3 data layers live on Cesium globe','Pre-seed closed ($1M)','1 paid pilot started','Server-side key broker operational']
+  },
+  
+  {n:2, name:'MVP & Design Partners', months:'Mo 3-9', duration:'6 months',
+   arr:'$0.5M', funding:'$3-5M Seed', color:'#d4b87a',
+   northStar:'5 paid pilots at $50-100k each → $0.5M pilot revenue',
+   summary:'Ship 3 products as paid pilots: Tailings Dam Risk, Cost-Curve Margin Watcher, Shadow Production Detector. Sign 5 design partners. Raise seed. Prove the business model.',
+   kpis:[
+     {k:'Paid pilots',v:'5'},
+     {k:'Pilot revenue',v:'$500k'},
+     {k:'Products shipped',v:'3'},
+     {k:'Design partners → full contract',v:'0 (target Phase 3)'},
+     {k:'Seed closed',v:'$5M'},
+     {k:'Monthly burn',v:'$65k'}
+   ],
+   customers:[
+     {c:'BHP',seg:'Mining Major',p:'Tailings Risk',a:'Convert pilot to $250k/yr 2-yr contract',acv:'$250k',ph:3},
+     {c:'Elliott Management',seg:'Hedge Fund',p:'M&A Target Radar',a:'Paid pilot $100k → full license $250k',acv:'$250k',ph:3},
+     {c:'AIG',seg:'Insurer',p:'Tailings Risk',a:'Pilot $50k → $150k/yr per mine portfolio',acv:'$150k',ph:3},
+     {c:'Newmont',seg:'Mining Major',p:'Pit Wall Stability',a:'Denver-based intro, pilot 5 pits',acv:'$200k',ph:3},
+     {c:'Trafigura',seg:'Trader',p:'Shadow Production',a:'Geneva desk, pilot copper mines',acv:'$150k',ph:3},
+   ],
+   tech:[
+     {l:'Key Broker',c:'AWS Secrets Manager',a:'.env file',r:'5+ keys need rotation, audit trail, IAM integration.',cost:'$6/mo per 10k req',ph:2},
+     {l:'SAR Data',c:'ICEYE + Capella brokered',a:'Sentinel-1 (free)',r:'Sentinel-1 revisit too infrequent (12 days). ICEYE gives 24h revisit for tailings.',cost:'$8k/mo per 50 dams',ph:2},
+     {l:'Market Data',c:'LME brokered feed',a:'Yahoo Finance',r:'LME is the reference price. Yahoo is delayed and unreliable for enterprise.',cost:'$2k/mo',ph:2},
+     {l:'Asset Data',c:'S&P Global MI API',a:'USGS MCS',r:'S&P has asset-level reserves/production. MCS is country-level only.',cost:'$5k/mo',ph:2},
+     {l:'Vector Tiles',c:'Mapbox Vector Tiles',a:'Cesium ion',r:'Mapbox has better road/building data for logistics layer. Cesium ion for 3D terrain.',cost:'$499/mo',ph:2},
+     {l:'Monitoring',c:'Datadog',a:'Sentry only',r:'Need infrastructure monitoring (CPU, memory, API latency) for SLA-bound pilots.',cost:'$300/mo',ph:2},
+   ],
+   workstreams:{
+     Data:[
+       'Integrate ICEYE SAR API (brokered, $8k/mo for 50 dams) — InSAR coherence pipeline',
+       'Integrate Capella Space HR SAR (brokered, $5k/mo) for deformation mm/day',
+       'Wire S&P Global MI API (brokered, response-capped at 100 req/min) for asset reserves/production',
+       'Build EarthChem + Macrostrat + EMAG2 geology fusion (all free/open) for prospectivity stack',
+       'Add Open-Meteo (free, no key) for 7-day rainfall forecast at every dam location',
+       'Add NOAA SWPC (free) for geomagnetic Kp index alerts',
+       'Add USGS Water NWIS (free) for stream gauge real-time data',
+       'Build the data lineage tracker — every data point traces back to source + timestamp + processing step'
+     ],
+     Product:[
+       'Ship Tailings Dam 7-Day Failure Probability (Product #1): ICMM dams + ICEYE InSAR + USGS seismic + Open-Meteo rainfall → risk score dashboard + alert push',
+       'Ship Cost-Curve Dynamic Margin Watcher (Product #2): MineSpans cost quartiles + LME spot + Yahoo ticker → C95 curve overlay on globe + margin alert feed',
+       'Ship Shadow Production Detector (Product #3): Sentinel-2 NDVI + VIIRS night-lights + MRDS polygons + LME warehouse receipts → deviation ledger + badges',
+       'Build per-customer data isolation (PostgreSQL row-level security or schema-per-tenant)',
+       'Build the billing/subscription layer (Stripe + per-seat usage metering)',
+       'Build the alert/notification pipeline (email + Slack webhook + SMS via Twilio)',
+       'Ship the "Fusion Calculator" — users select sources, see which inferences unlock',
+       'Build export to PDF/CSV for every dashboard (enterprise customers need this for board packs)'
+     ],
+     GTM:[
+       'Sign 5-10 design-partner agreements at $50-100k each (3-month pilots)',
+       'Assign each design partner a dedicated Slack channel + weekly Thursday check-in call',
+       'Build case studies from pilot results (even "we detected no anomaly" is a valuable case study)',
+       'Present at LME Week (October, London) — sponsor the Innovation Stage ($15k)',
+       'Present at Mining Indaba (February, Cape Town) — sponsor the Sustainability Pavilion ($25k)',
+       'Run 1:1 demos at prospect offices — bring the Cesium globe on a laptop, show their mine',
+       'Write 3 blog posts per month targeting specific persona search intent (see Content Calendar)',
+       'Launch the weekly "Resource Intelligence Brief" newsletter (Substack, free, weekly)',
+     ],
+     Funding:[
+       'Build seed investor pipeline: 30 VCs with mining/industrial practice (see list)',
+       'Send Atlas pitch deck to top 15 VCs — target 8 first meetings',
+       'Pitch: "$500k pilot revenue, 3 products live, 5 design partners, 25-product roadmap, $212M ARR target"',
+       'Term sheet from lead VC → close seed → wire funds',
+       'Target leads: Systemiq (climate), SOSV (industrial), Breakthrough Energy (climate), Appian Capital (mining PE)',
+       'Valuation target: $15-25M post-money. Pitch: 5x revenue multiple on $5M Year-2 ARR target.',
+     ],
+     Team:[
+       'Hire 1st sales rep: mining industry network essential. Profile: ex-S&P Global, ex-Wood Mackenzie, ex-Bloomberg commodities. Comp: $130k base + $70k OTE + 0.5% equity',
+       'Hire 2nd full-stack engineer: focus on product features, not infra. Comp: $150k + 0.4% equity',
+       'Hire 1 customer-success / solutions engineer: helps design partners onboard. Comp: $110k + 0.25% equity',
+       'Promote data engineer to Head of Data. Comp: raise to $160k + 0.5% equity retention grant',
+       'Hire 1 junior data engineer (Python ETL). Comp: $90k + 0.15% equity',
+       'Total team: 6 FTEs + 2 fractional + 1 founder = 9. Burn: ~$65k/mo'
+     ],
+     Legal:[
+       'Finalize data licensing agreements with S&P Global (revenue-share or flat $5k/mo)',
+       'Finalize ICEYE data contract (per-asset pricing, $160/dam/mo)',
+       'Finalize Capella data contract (per-scene or per-subscription)',
+       'Draft MSA (Master Services Agreement) template for enterprise customers',
+       'Draft DPA (Data Processing Agreement) template for GDPR compliance',
+       'File 2nd provisional patent (on multi-source fusion scoring methodology)',
+       'Begin SOC 2 Type 1 preparation (drate a vCISO or use Vanta $5k/mo)'
+     ]
+   },
+   risks:[
+     {r:'Design partners use the product but won\'t convert to full-price annual contracts', l:'Med', i:'High', m:'Price pilot at 50% of annual. Build switching costs. Auto-conversion clause in agreement.', o:'Sales Rep', ph:2},
+     {r:'ICEYE/Capella SAR data costs exceed pilot revenue ($8k/mo vs $50k pilot)', l:'High', i:'Med', m:'Negotiate per-asset pricing. Limit to 50 dams. Pass-through as "imagery fee".', o:'Founder', ph:2},
+     {r:'Key engineer leaves (single point of failure on Cesium layer)', l:'Med', i:'High', m:'Document everything. 4-year vesting. Backup contractor relationship with Cesium consultancy.', o:'Founder', ph:2},
+   ],
+   gates:['5 paid pilots active','$500k pilot revenue booked','3 products shipped','Seed round closed ($3-5M)','SOC 2 Type 1 audit started']
+  },
+  
+  {n:3, name:'Productization & Early Revenue', months:'Mo 9-18', duration:'9 months',
+   arr:'$5M', funding:'$15-25M Series A', color:'#7a8a6f',
+   northStar:'$5M ARR — convert pilots to annual contracts + ship 5 more products',
+   summary:'Convert 5 design partners to multi-year contracts. Expand to 8 products. Build self-serve onboarding. Open London and Perth offices. Close Series A. Prove the model scales.',
+   kpis:[
+     {k:'ARR',v:'$5M'},
+     {k:'Products live',v:'8'},
+     {k:'Enterprise customers',v:'15'},
+     {k:'Gross margin',v:'65%'},
+     {k:'Series A closed',v:'$25M'},
+     {k:'Monthly burn',v:'$210k'}
+   ],
+   customers:[
+     {c:'Vale',seg:'Mining Major',p:'Tailings Risk',a:'Brazil focus, Brumadinho legacy. $300k/yr enterprise',acv:'$300k',ph:3},
+     {c:'BlackRock',seg:'Asset Manager',p:'ESG Portfolio Screen',a:'Aladdin integration team. $250k/yr',acv:'$250k',ph:3},
+     {c:'Glencore',seg:'Mining Major',p:'Shadow Production + Margin',a:'Convert pilot to $400k/yr multi-product',acv:'$400k',ph:3},
+     {c:'Freeport-McMoRan',seg:'Mining Major',p:'Pit Wall + Tailings',a:'Arizona/Indonesia sites. $350k/yr',acv:'$350k',ph:3},
+     {c:'Orica',seg:'Mining Services',p:'Blast Monitor',a:'Sydney-based, blasting engineer persona. $100k/yr',acv:'$100k',ph:3},
+   ],
+   tech:[
+     {l:'Streaming',c:'Apache Kafka',a:'Polling',r:'Sub-second updates for AIS/ADS-B/earthquake feeds need event streaming.',cost:'$500/mo (MSK)',ph:3},
+     {l:'Cache Layer',c:'Redis Cluster',a:'Single Redis',r:'HA + horizontal scaling needed at 50+ concurrent customers.',cost:'$400/mo',ph:3},
+     {l:'CDN',c:'CloudFront',a:'Direct S3',r:'Tile serving from S3 is slow globally. CloudFront caches at edge.',cost:'$200/mo',ph:3},
+     {l:'Auth',c:'Auth0 Enterprise',a:'Clerk free',r:'Enterprise SSO (SAML, SCIM) required for $250k+ deals.',cost:'$500/mo',ph:3},
+     {l:'Analytics',c:'Snowflake',a:'PostgreSQL',r:'Time-series analysis across years of InSAR data needs columnar store.',cost:'$1k/mo',ph:3},
+     {l:'Status Page',c:'StatusPage.io',a:'Custom',r:'Enterprise SLAs require public uptime page + incident history.',cost:'$29/mo',ph:3},
+   ],
+   workstreams:{
+     Data:[
+       'Integrate LME real-time price feed (brokered, $2k/mo) for commodity layer',
+       'Integrate CME delayed quotes (free) for Au/Ag/Cu',
+       'Integrate SHFE daily settlement (free, HTML scrape) for China demand proxy',
+       'Add Fastmarkets Li/Co/Ni benchmarks (paid PRA, $3k/mo)',
+       'Add Argus ferro-alloy benchmarks (paid PRA, $3k/mo)',
+       'Build the Macrostrat + BGI WGM + EMAG2 full geology fusion (all free/open)',
+       'Wire UN Comtrade (free, rate-limited) for bilateral trade flows',
+       'Wire AISStream WebSocket (already integrated) for real-time vessel tracking'
+     ],
+     Product:[
+       'Ship Chokepoint Radar (Product #4): MCS reserves + S&P ownership + AIS + Comtrade + IEA demand → vulnerability index',
+       'Ship M&A Target Radar (Product #5): SNL + Reuters + Companies House + OpenCorporates + Yahoo → target watchlist',
+       'Ship Water-Stress Score (Product #6): USGS Water + BoM + IBAT + TNFD + WDPA + Open-Meteo → risk badge 0-100',
+       'Ship Andean Lithium Rank (Product #7): SEGEMAR + Sentinel-2 + Fastmarkets + NI 43-101 + NASA POWER → salar leaderboard',
+       'Ship Pit Wall Stability (Product #8): ICEYE + Capella + Sentinel-2 + Maxar + USGS + Open-Meteo → slope failure forecast',
+       'Build self-serve onboarding for sub-$50k products (dashboard signup + Stripe checkout)',
+       'Build the persona-driven product recommender: "I am a [role], what should I buy?"',
+       'Build the alert mobile push (Firebase Cloud Messaging) for iOS + Android PWA'
+     ],
+     GTM:[
+       'Convert 5 design partners to 2-year annual contracts at full price ($100-250k each) = $750k-1.25M ARR',
+       'Hire London-based sales rep (finance vertical — funds, banks, traders). Target: £130k base + £70k OTE',
+       'Hire Perth-based sales rep (mining vertical — BHP, Rio, FMG, Newcrest). Target: AU$140k + AU$80k OTE',
+       'Run the first "Resource Intelligence Summit" (virtual, 200 attendees, free, sponsored by ICEYE + S&P)',
+       'Win 5 new enterprise customers at $150-350k each (target: Vale, BlackRock, Freeport, Orica, Trafigura)',
+       'Launch the "Resource Intelligence Report" — quarterly PDF report sent to 5,000 prospects. Lead magnet.',
+       'Cross-sell additional inferences to existing pilot customers (persona-driven expansion)',
+     ],
+     Funding:[
+       'Build Series A pipeline: 20 Tier-1 VCs (see list)',
+       'Send pitch to top 12 — target 6 first meetings',
+       'Pitch: "$5M ARR, 8 products, 15 enterprise customers, 65% gross margin, 25-product roadmap to $212M"',
+       'Term sheet from lead → close Series A → wire funds',
+       'Target leads: Sequoia, a16z, Bond, Bessemer, Founders Fund, Bow Capital, 8VC',
+       'Strategic: Bowie Capital, Appian Capital, Orion Resource Partners (mining-focused PE as LPs)',
+       'Valuation target: $80-120M post-money. Pitch: 16-24x revenue multiple on $5M ARR.'
+     ],
+     Team:[
+       'Hire VP Engineering: ex-Planet, ex-Descartes Labs, ex-Google Earth. Comp: $220k + 1.5% equity',
+       'Hire VP Sales: ex-Bloomberg commodities, ex-S&P Global, ex-Wood Mackenzie. Comp: $220k + 1.5% equity',
+       'Hire 3rd sales rep (NY, for US mining + finance). Comp: $140k + $60k OTE + 0.2% equity',
+       'Hire 2nd product engineer (focus on self-serve onboarding). Comp: $150k + 0.2% equity',
+       'Hire 1 designer (UX for dashboards + mobile). Comp: $130k + 0.15% equity',
+       'Hire 2nd data engineer. Comp: $140k + 0.15% equity',
+       'Total team: 15 FTEs + 2 fractional + 1 founder = 18. Burn: ~$210k/mo'
+     ],
+     Legal:[
+       'SOC 2 Type 2 certified (required for $250k+ enterprise deals). Use Vanta + external auditor. Cost: $15k.',
+       'GDPR + CCPA compliance (EU + CA customers). Data Processing Agreement template.',
+       'Draft enterprise MSA with SLA (99.9% uptime), indemnification, and data-breach notification clauses',
+       'File full (non-provisional) patent application on inference-fusion methodology. Cost: $15-25k.',
+       'Register .com domain variants + trademark in EU, UK, Australia, Canada. Cost: $8k.',
+       'Engage export-control counsel for SAR satellite data (dual-use regulation). Cost: $5k retainer.'
+     ]
+   },
+   risks:[
+     {r:'S&P Global or WoodMac launches competing "spatial intelligence" product', l:'Low', i:'High', m:'Their cost structure is built for analyst reports, not real-time APIs. We are 3 years ahead on Cesium. If they try, they\'ll acquire us.', o:'Founder', ph:3},
+     {r:'CAC exceeds LTV as we scale sales team', l:'Med', i:'High', m:'2-year contract minimums. Cross-sell additional inferences. <12 month CAC payback. Kill reps below 0.8x quota.', o:'VP Sales', ph:3},
+     {r:'Key data provider (ICEYE, S&P) raises prices or cuts access', l:'Low', i:'High', m:'Diversify to 2+ sources per category. Build open alternatives. Multi-year price locks. Never >15% COGS from one source.', o:'Head of Data', ph:3},
+   ],
+   gates:['$5M ARR achieved','8 products live','SOC 2 Type 2 certified','Series A closed ($15-25M)','London + Perth sales reps hired and productive']
+  },
+  
+  {n:4, name:'Category Leadership', months:'Mo 18-36', duration:'18 months',
+   arr:'$30M', funding:'$50-80M Series B', color:'#c4634a',
+   northStar:'$30M ARR with 15 products — become the default spatial intelligence layer for mining',
+   summary:'Scale to 15 products. Open Singapore office. Win top-10 mining majors. Partner with ICMM and IRMA. Become the category leader. The platform becomes the standard.',
+   kpis:[
+     {k:'ARR',v:'$30M'},
+     {k:'Products live',v:'15'},
+     {k:'Enterprise customers',v:'40'},
+     {k:'Gross margin',v:'70%'},
+     {k:'Series B closed',v:'$80M'},
+     {k:'Monthly burn',v:'$460k'}
+   ],
+   customers:[
+     {c:'Barrick Gold',seg:'Mining Major',p:'Tailings + Pit Wall',a:'Toronto HQ, Nevada/Tanzania sites. $400k/yr',acv:'$400k',ph:4},
+     {c:'Teck Resources',seg:'Mining Major',p:'Water + Tailings',a:'Vancouver HQ, BC/Peru sites. $300k/yr',acv:'$300k',ph:4},
+     {c:'Agnico Eagle',seg:'Mining Major',p:'Arctic Season Op',a:'Toronto HQ, Nunavut sites. $200k/yr',acv:'$200k',ph:4},
+     {c:'Lloyd\'s of London',seg:'Insurance',p:'Tailings Risk Pool',a:'Syndicate underwriting platform. $500k/yr enterprise',acv:'$500k',ph:4},
+     {c:'Toyota Tsusho',seg:'Trading House',p:'Chokepoint + Battery Trace',a:'Tokyo HQ, battery materials desk. $300k/yr',acv:'$300k',ph:4},
+   ],
+   tech:[
+     {l:'Imagery',c:'Maxar SecureWatch',a:'Sentinel-2 only',r:'30-50cm resolution needed for infrastructure verification and illegal mining detection.',cost:'$15k/mo',ph:4},
+     {l:'Daily Imagery',c:'Planet Labs PlanetScope',a:'Sentinel-2 (5-day)',r:'Daily revisit for near-real-time monitoring of 100+ active mines.',cost:'$12k/mo',ph:4},
+     {l:'ESG Data',c:'CDP + IBAT + MSCI',a:'Open data only',r:'Enterprise ESG customers need rated/audited data, not just open frameworks.',cost:'$8k/mo total',ph:4},
+     {l:'Infra',c:'Kubernetes (EKS)',a:'EC2',r:'Container orchestration for 15+ microservices (one per product). Blue-green deploys.',cost:'$1k/mo',ph:4},
+     {l:'CI/CD',c:'GitHub Actions + ArgoCD',a:'Manual deploys',r:'Multiple squads need independent deploy pipelines. GitOps model.',cost:'$200/mo',ph:4},
+     {l:'Data Lake',c:'AWS S3 + Athena',a:'Snowflake only',r:'Petabyte-scale satellite archive. Athena for ad-hoc SQL on S3 objects.',cost:'$2k/mo',ph:4},
+   ],
+   workstreams:{
+     Data:[
+       'Integrate Maxar SecureWatch (paid, $15k/mo) for 30-50cm premium basemap',
+       'Add Planet Labs PlanetScope (paid, $12k/mo) for daily mine monitoring',
+       'Wire the full ESG stack: CDP (paid), TNFD (free framework), IBAT (paid), WDPA (free), IRMA (free), MSCI ESG (paid)',
+       'Build the EarthChem + Mindat + EarthScope full geochemistry layer (all free/open)',
+       'Integrate OpenCorporates (paid, $2k/mo) for global corporate ownership chains',
+       'Integrate Companies House UK (free, keyed) for UK holding company lookup',
+       'Add Morningstar Hemscott (paid, $1k/mo) for historic mining share data + director dealings',
+       'Add SEC EDGAR full-text search (free, no key) for 10-K/20-F/40-F filings'
+     ],
+     Product:[
+       'Ship Methane Attribution (Product #9): TROPOMI + Sentinel-2 + MRDS + MCS + Maxar → per-mine flux estimate',
+       'Ship Deforestation Attribution (Product #10): GFW + MRDS + Maxar + Land Matrix + IBAT + WDPA → operator ledger',
+       'Ship Concentrate Blend Optimizer (Product #11): EarthChem + S&P MI + MarineTraffic + Comtrade + Fastmarkets → blend recommendation',
+       'Ship Arctic Season Window (Product #12): ARDF + NASA POWER + Sentinel-1 + SWPC + C3S → operating calendar',
+       'Ship Resource Validator (Product #13): GeoIndex + Macrostrat + EarthChem + EMAG2 + NGMDB → QP conformance',
+       'Ship Sovereignty Index (Product #14): USGS 50 + EU CRM + IEA + MCS + Comtrade + OECD → vulnerability choropleth',
+       'Ship Insider Charter Flight Detector (Product #15): OpenSky + adsb.lol + Yahoo + Morningstar + EDGAR + SNL → signal feed',
+       'Build the platform marketplace architecture (third-party data sellers, 20% take rate)',
+       'Ship the AI inference generator (natural language → fusion recipe → insight) — beta',
+       'Build the mobile app (iOS/Android via React Native) for field-based personas'
+     ],
+     GTM:[
+       'Win 3 of top-10 mining majors as enterprise customers ($250-500k each)',
+       'Open Singapore office (trade vertical — traders, port ops, shipping). Hire 2 reps.',
+       'Partner with ICMM for tailings-risk distribution to all 24 member companies. Revenue share: 10% to ICMM.',
+       'Partner with IRMA for audited-mine ESG scoring distribution. Revenue share: 10% to IRMA.',
+       'Host in-person "Resource Intelligence Summit" in London (500 attendees, $1,500/ticket, $5k sponsor booths)',
+       'Win first government contract (USGS Earth MRI or IEA) at $500k-1M/yr',
+       'Launch the "Certified Resource Intelligence Analyst" program — 2-day training + exam, $2,500/person',
+       'Publish the first "State of the Resource Intelligence Industry" annual report (PDF, free, lead magnet)'
+     ],
+     Funding:[
+       'Build Series B pipeline: 15 growth investors (see list)',
+       'Send pitch to top 10 — target 5 first meetings',
+       'Pitch: "$30M ARR, 15 products, 40 enterprise customers, 70% gross margin, platform play with marketplace"',
+       'Term sheet from lead → close Series B → wire funds',
+       'Target leads: Tiger Global, Coatue, General Atlantic, ICONIQ, TCV, Lightspeed',
+       'Strategic: Bloomberg Beta, Thomson Reuters Ventures, S&P Global Ventures (strategic optionality)',
+       'Valuation target: $350-500M post-money. Pitch: 12-17x revenue multiple on $30M ARR.'
+     ],
+     Team:[
+       'Hire 4th sales rep (Singapore, trade vertical). Comp: S$180k + S$80k OTE + 0.15% equity',
+       'Hire VP Product: ex-Bloomberg Terminal product, ex-Refinitiv. Comp: $220k + 1% equity',
+       'Hire Head of Data Partnerships: to source third-party marketplace data. Comp: $180k + 0.5% equity',
+       'Scale engineering to 20 (3 squads: Risk, Finance, ESG). 5 hires. Comp: $150k avg + 0.1-0.2% equity each',
+       'Hire Head of Marketing: ex-S&P, ex-Bloomberg marketing. Comp: $180k + 0.4% equity',
+       'Hire 2nd customer-success manager. Comp: $120k + 0.1% equity',
+       'Total team: 35 FTEs + fractional CFO + 1 founder = 37. Burn: ~$460k/mo'
+     ],
+     Legal:[
+       'ISO 27001 certification (required for government contracts). Cost: $30k + 6 months.',
+       'Export control compliance (SAR satellite data is dual-use regulated under ITAR/EAR). Cost: $10k counsel.',
+       'Data residency agreements (EU GDPR Art 28, AU Privacy Act, China PIPL). Cost: $15k counsel.',
+       'Antitrust clearance for marketplace (don\'t aggregate competitor pricing). Cost: $20k counsel.',
+       'Defend provisional patent → file continuation with broader claims. Cost: $30k.',
+       'File trademark in 20 additional jurisdictions (BR, IN, ZA, SA, etc.). Cost: $15k.'
+     ]
+   },
+   risks:[
+     {r:'Government contract procurement takes 24+ months and stalls revenue', l:'High', i:'Med', m:'Don\'t rely on gov for ARR targets. Treat as upside. Use CRADA/OT agreements. 3-4 in pipeline always.', o:'VP Sales', ph:4},
+     {r:'Maxar or Planet gets acquired by competitor who cuts our access', l:'Low', i:'High', m:'Maintain Sentinel-2 as base. Use Maxar/Planet only as premium. Change-of-control clauses. BlackSky/LandSlid as backup.', o:'Head of Data', ph:4},
+     {r:'Talent war — Google/Meta hires our best engineers with 2x comp', l:'High', i:'Med', m:'Pay above market for top 5. Meaningful equity. Sell the mission. Remote-first. 6-month non-solicitables.', o:'VP Eng', ph:4},
+   ],
+   gates:['$30M ARR with >70% gross margin','15 products live','3 of top-10 mining majors as customers','Series B closed ($50-80M)','Marketplace architecture shipped']
+  },
+  
+  {n:5, name:'Platform & Expansion', months:'Mo 36-48', duration:'12 months',
+   arr:'$100M', funding:'$100-150M Series C', color:'#9a96a8',
+   northStar:'$100M ARR — launch marketplace + expand beyond mining',
+   summary:'All 25 products live. Launch the third-party data marketplace. Expand to oil & gas and agriculture. Platform becomes a platform. Raise Series C. IPO-ready.',
+   kpis:[
+     {k:'ARR',v:'$100M'},
+     {k:'Products live',v:'25'},
+     {k:'Marketplace GMV',v:'$5M'},
+     {k:'Verticals',v:'2 (mining + O&G)'},
+     {k:'Series C closed',v:'$150M'},
+     {k:'Monthly burn',v:'$830k'}
+   ],
+   customers:[
+     {c:'Saudi Aramco',seg:'Oil & Gas',p:'Methane Attribution',a:'Dhahran HQ, Scope 1 disclosure. $500k/yr',acv:'$500k',ph:5},
+     {c:'ExxonMobil',seg:'Oil & Gas',p:'Stranded Asset',a:'Houston HQ, Permian Basin. $400k/yr',acv:'$400k',ph:5},
+     {c:'USGS',seg:'Government',p:'Sovereignty Index',a:'Reston VA, critical minerals. $1M/yr contract',acv:'$1M',ph:5},
+     {c:'IEA',seg:'Government',p:'Demand Forecasts',a:'Paris HQ, critical minerals. $500k/yr',acv:'$500k',ph:5},
+     {c:'Cargill',seg:'Agriculture',p:'Deforestation Attribution',a:'Minneapolis HQ, soy supply chain. $300k/yr',acv:'$300k',ph:5},
+   ],
+   tech:[
+     {l:'Streaming',c:'Apache Flink',a:'Kafka only',r:'Complex event processing for real-time inference triggers (e.g., dark-AIS + ownership change → alert).',cost:'$2k/mo',ph:5},
+     {l:'ML Platform',c:'SageMaker',a:'Custom Python',r:'Model training + deployment for AI inference generator. Auto-scaling endpoints.',cost:'$3k/mo',ph:5},
+     {l:'Search',c:'Elasticsearch',a:'PostgreSQL FTS',r:'Full-text search across 1M+ filings + reports for inference lookup.',cost:'$800/mo',ph:5},
+     {l:'API Gateway',c:'Kong',a:'Express routes',r:'Public API product needs rate limiting, auth, usage metering, billing integration.',cost:'$500/mo',ph:5},
+     {l:'Mobile Push',c:'Firebase + APNs',a:'Web only',r:'Native push for alert pipeline to 10,000+ mobile devices.',cost:'$200/mo',ph:5},
+     {l:'Data Marketplace',c:'Custom + Stripe Connect',a:'N/A',r:'Third-party data sellers need onboarding, metering, rev-share payout.',cost:'$1k/mo',ph:5},
+   ],
+   workstreams:{
+     Data:[
+       'Launch marketplace with 10 third-party data sellers (surveyors, labs, consultants)',
+       'Integrate the final 20 sources from the 117-source compendium (completing the atlas)',
+       'Build the real-time streaming pipeline (Kafka + Flink) for sub-second updates',
+       'Launch the public API product — let developers build on your inference layer',
+       'Add oil & gas data: OPGIP, Rystad Energy, Enverus (paid, brokered)',
+       'Add agriculture data: Global Forest Watch (already in), USDA, FAO',
+     ],
+     Product:[
+       'Ship the final 10 products to reach the full 25-product portfolio (see Product Launch Sequence)',
+       'Launch the marketplace seller portal (self-serve data onboarding, 1-click)',
+       'Ship the natural-language inference interface ("ask a question, get a fusion recipe")',
+       'Build the mobile-first field operations suite (tablet-optimized for mine sites)',
+       'Build the boardroom dashboard (C-suite view of mining value chain risk)',
+       'Build the regulatory reporting suite (auto-generate TCFD, GRI, SASB, TNFD reports)',
+     ],
+     GTM:[
+       'Launch marketplace with 20% take rate on third-party data sales',
+       'Expand into oil & gas (same inferences: shadow production → oil, methane → same, tailings → oil spills)',
+       'Expand into agriculture (deforestation → same, water stress → same, supply chain → same)',
+       'Win first government contract (USGS, IEA, or EU JRC) at $1-5M/yr',
+       'Host "Resource Intelligence Summit" in London — 1,000 attendees, $2,500/ticket',
+       'Publish the "State of the Resource Intelligence Industry" report — annual, 50-page PDF, free',
+     ],
+     Funding:[
+       'Raise $100-150M Series C from a pre-IPO growth investor',
+       'Target: Fidelity, T. Rowe Price, Temasek, GIC, SoftBank Vision',
+       'Strategic: Bloomberg, LSEG (London Stock Exchange Group), S&P Global',
+       'Valuation target: $800M-$1.2B post-money. Pitch: "$100M ARR, marketplace live, 3 verticals, IPO-ready in 18 months"',
+     ],
+     Team:[
+       'Hire GM of Marketplace (ex-Apple App Store, ex-Stripe). Comp: $250k + 1% equity',
+       'Hire GM of Oil & Gas vertical. Comp: $220k + 0.75% equity',
+       'Hire GM of Agriculture vertical. Comp: $200k + 0.5% equity',
+       'Scale to 80 headcount (3 verticals × 3 squads each). Comp: $150k avg.',
+       'Hire Head of Customer Success (manages 3 CS managers). Comp: $180k + 0.3% equity',
+       'Total team: 80 FTEs + fractional + 1 founder = 82. Burn: ~$830k/mo'
+     ],
+     Legal:[
+       'Marketplace terms of service (data seller agreements, rev-share, indemnity)',
+       'Antitrust clearance for marketplace expansion across verticals',
+       'IPO readiness audit (Big 4 auditor transition from private to public)',
+       'International data transfer mechanisms (post-Schrems II SCCs + EU AI Act compliance)',
+       'File patents on marketplace architecture + AI inference generator',
+     ]
+   },
+   risks:[
+     {r:'Marketplace gets no third-party sellers — platform thesis fails', l:'Med', i:'High', m:'Seed with 5 hand-picked partners. 0% take for 6 months. 1-click onboarding. If it fails, stay a product company — still $100M+.', o:'GM Marketplace', ph:5},
+     {r:'Oil & gas expansion dilutes focus and mining vertical stalls', l:'Med', i:'Med', m:'Separate P&L + dedicated GM. Don\'t touch mining engineering. 20% revenue target or cut.', o:'GM O&G', ph:5},
+     {r:'IPO window closes and Series C investors want liquidity', l:'Low', i:'Med', m:'Structure with 2-year lockup. 10% secondary for employee liquidity. $30M debt facility backup.', o:'CFO', ph:5},
+   ],
+   gates:['$100M ARR with marketplace generating $5M GMV','25 products all live','Oil & gas vertical launched with 3 paying customers','Series C closed ($100-150M)','IPO-ready financial reporting operational']
+  },
+  
+  {n:6, name:'Scale & Dominance', months:'Mo 48-60', duration:'12 months',
+   arr:'$212M+', funding:'IPO or Strategic Exit', color:'#e8c46a',
+   northStar:'$212M+ ARR — IPO at $1.5-2.5B or strategic exit',
+   summary:'The platform is the standard. 25 products, 3 verticals, marketplace with 50+ sellers, 500+ enterprise customers. IPO or sell to S&P, Bloomberg, or LSEG.',
+   kpis:[
+     {k:'ARR',v:'$212M+'},
+     {k:'Verticals',v:'3'},
+     {k:'Enterprise customers',v:'500+'},
+     {k:'Marketplace GMV',v:'$20M+'},
+     {k:'Valuation',v:'$1.5-2.5B'},
+     {k:'Monthly burn',v:'$1.3M (profitable)'}
+   ],
+   customers:[
+     {c:'Every top-20 mining major',seg:'Mining',p:'Platform license',a:'Enterprise standard. $250-500k/yr each',acv:'$250k+',ph:6},
+     {c:'Every top-20 hedge fund',seg:'Finance',p:'Alpha Signal Feed',a:'$250-500k/yr each',acv:'$250k+',ph:6},
+     {c:'Every top-10 insurer',seg:'Insurance',p:'Risk Pool',a:'$150-500k/yr each',acv:'$150k+',ph:6},
+     {c:'10+ governments',seg:'Government',p:'Sovereignty + CRM',a:'$1-5M/yr each',acv:'$1M+',ph:6},
+   ],
+   tech:[
+     {l:'AI Layer',c:'Custom LLM + RAG',a:'SageMaker',r:'Inference Copilot needs domain-specific LLM fine-tuned on 25 years of mining reports.',cost:'$10k/mo',ph:6},
+     {l:'Multi-Region',c:'AWS Global (us/eu/ap)',a:'Single region',r:'Data residency for global enterprise + government contracts.',cost:'$15k/mo',ph:6},
+     {l:'Data Exhaust',c:'Snowflake Data Exchange',a:'Internal only',r:'Monetize anonymized aggregate signals back to market (revenue line).',cost:'$3k/mo',ph:6},
+     {l:'Public Company Infra',c:'AWS + Datadog + PagerDuty',a:'Current stack',r:'IPO requires SOC 1 + enhanced monitoring + 99.99% SLA infrastructure.',cost:'$20k/mo',ph:6},
+   ],
+   workstreams:{
+     Data:[
+       'Marketplace reaches 50+ third-party data sellers',
+       'Build the AI inference auto-generation pipeline (models write new fusion recipes autonomously)',
+       'Launch the real-time alert network (push notifications to 10,000+ devices)',
+       'Monetize the data exhaust — sell anonymized aggregate signals back to the market',
+     ],
+     Product:[
+       'Ship the "Inference Copilot" — natural language interface for all 25 products',
+       'Launch the public API (developer tier) with usage-based pricing',
+       'Ship the regulatory reporting suite (auto-generate TCFD, GRI, SASB, TNFD reports)',
+       'Build the boardroom dashboard (C-suite view of mining value chain risk)',
+     ],
+     GTM:[
+       'Host "Resource Intelligence Summit" in London — 2,000 attendees, $5k/ticket',
+       'Publish the "State of the Resource Intelligence Industry" annual report',
+       'Win 10 of top-20 mining majors + 5 of top-20 hedge funds as customers',
+       'Launch the certification program ("Certified Resource Intelligence Analyst")',
+     ],
+     Funding:[
+       'IPO on NYSE or LSE at $1.5-2.5B valuation (7-12x ARR multiple)',
+       'Alternative: Strategic sale to S&P Global ($1.8B), Bloomberg ($2B), or LSEG ($1.6B)',
+       'Alternative: Private equity buyout by Blackstone/KKR for roll-up',
+       'Lockup period: 180 days post-IPO; employees can sell 25% at day 91',
+     ],
+     Team:[
+       'Hire CFO (IPO experience, ex-Bloomberg or ex-S&P). Comp: $300k + 1% equity + IPO bonus',
+       'Hire Chief Legal Officer (SEC reporting). Comp: $250k + 0.5% equity',
+       'Hire GM of APAC (Tokyo or Mumbai). Comp: $220k + 0.3% equity',
+       'Scale to 150 headcount. Comp: $150k avg.',
+       'Total team: 150 FTEs + 1 founder = 151. Burn: ~$1.3M/mo (profitable from operations)'
+     ],
+     Legal:[
+       'S-1 registration statement (or LSE prospectus)',
+       'SEC reporting infrastructure (10-Q, 10-K, 8-K)',
+       'Public company D&O insurance',
+       'Audit committee + compensation committee + nominating committee formation',
+     ]
+   },
+   risks:[
+     {r:'IPO market is frozen (no tech IPOs pricing)', l:'Med', i:'High', m:'2 backup paths: $150M Series D bridge at $1.2B, or strategic sale at $1.5B floor. Business is profitable — can wait 18 months.', o:'CFO', ph:6},
+     {r:'Bloomberg launches competing "Bloomberg Mining Terminal"', l:'Low', i:'High', m:'They would need 3 years + 50 engineers. By then we have 1,000 customers + network effect. They\'ll likely acquire us.', o:'Founder', ph:6},
+     {r:'Post-IPO brain drain of early employees', l:'High', i:'Med', m:'Stagger vesting. 4-year post-IPO cliffs. $500k retention bonuses. Promote from within for VP roles.', o:'Founder', ph:6},
+   ],
+   gates:['$212M+ ARR','IPO filed or LOI signed for strategic exit','Marketplace GMV > $20M/yr','3 verticals each > $50M ARR','Public-company reporting operational']
+  },
+];
+
+/* ============================================================
+   DATA: First 90 Days (13 weeks)
+   ============================================================ */
+const weeks = [
+  {w:1, title:'Incorporate & Dev Environment', tasks:[
+    'Day 1-2: Incorporate as Delaware C-Corp via Stripe Atlas ($500 + $500 legal). Open Mercury business bank account.',
+    'Day 3-4: Register domain + set up GitHub org + AWS account + Vercel/Netlify for frontend hosting.',
+    'Day 5-7: Set up dev environment: Cesium + Node.js + PostgreSQL/PostGIS + Python ETL. Deploy "hello world" Cesium globe.'
+  ]},
+  {w:2, title:'Wire 8 Already-Integrated Sources', tasks:[
+    'Day 8-9: Wire USGS Earthquakes GeoJSON feed → Cesium billboard layer. Color by magnitude.',
+    'Day 10: Wire NASA FIRMS fire CSV → Cesium heatmap layer.',
+    'Day 11-12: Wire AISStream WebSocket → Cesium vessel entities with heading orientation.',
+    'Day 13-14: Wire OpenSky + adsb.lol → Cesium aircraft billboards. Wire CelesTrak TLE → SGP4 satellite propagation.'
+  ]},
+  {w:3, title:'Static Data Bundles', tasks:[
+    'Day 15-16: Download USGS MRDS CSV from mrdata.usgs.gov → ogr2ogr convert to GeoJSON → serve via /data/mrds.geojson.',
+    'Day 17: Download ICMM Tailings CSV → geocode 347 dams by lat/lon → Cesium billboards with hazard/consequence fields.',
+    'Day 18: Download ARDF (Alaska) + GVP (Holocene volcanoes) + IHFC Heat Flow CSVs → convert → bundle.',
+    'Day 19-21: Build the local_data/ directory structure. Write README. Set up daily cron to check for source updates.'
+  ]},
+  {w:4, title:'Key Broker Skeleton + First Keyed APIs', tasks:[
+    'Day 22-23: Sign up for Sentinel Hub free tier. Build /api/sh/wms proxy endpoint. Test TRUE_COLOR layer on Cesium.',
+    'Day 24: Sign up for EarthExplorer API (free). Build /api/ee/sceneList endpoint. Display Landsat scene footprints.',
+    'Day 25-26: Sign up for Mindat API (free signup). Build /api/mindat/localities endpoint. Render 1M+ localities as clustered billboards.',
+    'Day 27-28: Build the POWER UP panel UI — sidebar showing which APIs are active/rate-limited/down.'
+  ]},
+  {w:5, title:'Tailings Dam Risk Prototype', tasks:[
+    'Day 29-30: Build Tailings Dam Risk dashboard: ICMM dam locations + USGS seismic overlay (50km buffer) + Open-Meteo 7-day rainfall.',
+    'Day 31: Add risk score calculation: (dam consequence class) × (seismic proximity) × (rainfall forecast) → 0-1 score.',
+    'Day 32-33: Color dams red/amber/green. Add tooltip with dam name, owner, height, volume, consequence class.',
+    'Day 34-35: Build the alert mock — "if risk > 0.6, show red banner". (Real push notification comes in Phase 2.)'
+  ]},
+  {w:6, title:'The Atlas as Pitch Deck', tasks:[
+    'Day 36-37: Write the one-page pitch: "Bloomberg for physical commodities. 117 sources. 25 products. $212M ARR target."',
+    'Day 38-39: Export the Atlas documentation to PDF. This IS the pitch deck. Print 100 copies on heavy stock.',
+    'Day 40-41: Record a 3-minute Loom video demoing the Cesium globe + Tailings prototype. Host on Atlas URL.',
+    'Day 42: Set up Calendly for discovery calls. Add the demo URL to your email signature.'
+  ]},
+  {w:7, title:'List 30 Target Buyers', tasks:[
+    'Day 43: List 10 mining majors: BHP, Rio Tinto, Glencore, Vale, Anglo American, Newmont, Agnico Eagle, Barrick, Freeport, Teck.',
+    'Day 44: List 10 funds/banks: Elliott, Pershing Square, Oasis Management, Palestra, Greenlight, Pala Investments, Sprott, BlackRock, Capital Group, Fidelity.',
+    'Day 45: List 10 insurers: AIG, Chubb, AXA, Zurich, Lloyd\'s syndicates (Catlin/Hiscox/Beazley), Munich Re, Swiss Re, Hannover Re, Scor, Berkshire Hathaway.',
+    'Day 46-47: For each, research: Who is the right persona? What is their specific pain? What inference would they buy? Write 1 paragraph per target.',
+    'Day 48-49: Find email addresses via Hunter.io or Apollo. Find LinkedIn profiles. Note mutual connections.'
+  ]},
+  {w:8, title:'Cold Outreach — 30 Targets', tasks:[
+    'Day 50-51: Write 30 personalized cold emails. NOT templates. Reference their specific mine portfolio or fund holdings. Include demo URL + Atlas PDF.',
+    'Day 52-53: Send 15 emails (mining + insurers). Track opens via Yesware or Mailtrack.',
+    'Day 54-55: Send 15 emails (funds + banks). Track opens.',
+    'Day 56: Follow up on non-responders with "did you see the Tailings demo? Brumadinho was preventable."'
+  ]},
+  {w:9, title:'First 5 Discovery Calls', tasks:[
+    'Day 57-58: Conduct first 5 discovery calls. Script: "If I could show you [inference], would you pay $X/yr for it?"',
+    'Day 59: Record answers in a spreadsheet: company, persona, inference interest, price willingness, next step.',
+    'Day 60-61: Send follow-up email with the Tailings demo URL + the Atlas PDF + the specific inference they asked about.',
+    'Day 62-63: Book second meetings with the 2-3 most interested. Bring the prototype on a laptop.'
+  ]},
+  {w:10, title:'LOI Conversations + Prototype Iteration', tasks:[
+    'Day 64-65: Draft LOI template (1-page, non-binding). Names: inference product, price range, pilot timeline, design-partner terms.',
+    'Day 66-67: Iterate the Tailings prototype based on discovery call feedback. Add the features they asked for.',
+    'Day 68-70: Send LOI to the 3 most interested targets. Goal: 1 signed by end of week 10.'
+  ]},
+  {w:11, title:'IP + Legal Foundation', tasks:[
+    'Day 71: File provisional patent on "multi-source geospatial inference fusion for mineral supply chain risk assessment". Cost: $1,500 via patent attorney.',
+    'Day 72: File trademark for platform name (USPTO). Cost: $350 + $250 attorney.',
+    'Day 73-74: Draft NDA template for design-partner conversations. Have IP lawyer review ($500).',
+    'Day 75-77: Draft simple consulting agreements for fractional hires (CFO, lawyer). Use Stripe Atlas legal templates.'
+  ]},
+  {w:12, title:'PDAC + Mining Indaba Prep', tasks:[
+    'Day 78-79: Submit speaker proposal to PDAC (Prospectors & Developers Association of Canada, March, Toronto). Topic: "Real-time tailings risk monitoring with multi-source satellite fusion".',
+    'Day 80: Book flights + hotel for PDAC (March) and Mining Indaba (February, Cape Town). Cost: ~$5k total.',
+    'Day 81-82: Order business cards (Moo, $50). Print Atlas PDFs on heavy stock for handout. Order branded Cesium globe demo on iPad.',
+    'Day 83-84: Schedule 10 meetings at PDAC in advance. Use LinkedIn to find attendees. Book dinner with top 3 targets.'
+  ]},
+  {w:13, title:'Pre-Seed Pitch + Close', tasks:[
+    'Day 85-87: Build investor pipeline: 50 angels who know mining. Top 20: Pierre Lassonde, Robert Friedland, Ross Beaty, Nat Rothschild, Slim Fam, Frank Giustra, Lukas Lundin, etc.',
+    'Day 88-89: Send pitch to top 10 angels. "Bloomberg for physical commodities. 117 sources. 25 products. 10 LOIs. $1M ask at $5-8M post."',
+    'Day 90: Pitch first 3 angels. Goal: 1 term sheet by end of Week 13. Close pre-seed. Wire funds. Pay first engineer salary.'
+  ]},
+];
+
+/* ============================================================
+   DATA: Customer Conquest (50 targets)
+   ============================================================ */
+const conquestTargets = [
+  // Mining Majors
+  {n:1,c:'BHP',seg:'Mining Major',persona:'Tailings Engineer',product:'Tailings Dam Risk',approach:'Sponsor PDAC booth + intro to Head of Tailings via Anglo American alum',ph:2,acv:'$250k'},
+  {n:2,c:'Rio Tinto',seg:'Mining Major',persona:'Mine Planner',product:'Pit Wall Stability',approach:'Iron Ore risk team in Perth',ph:2,acv:'$200k'},
+  {n:3,c:'Glencore',seg:'Mining Major',persona:'Commodity Trader',product:'Shadow Production',approach:'Commodities desk via Baar HQ',ph:3,acv:'$150k'},
+  {n:4,c:'Vale',seg:'Mining Major',persona:'Tailings Engineer',product:'Tailings Dam Risk',approach:'Brazil focus, Brumadinho legacy. Top priority.',ph:3,acv:'$300k'},
+  {n:5,c:'Anglo American',seg:'Mining Major',persona:'CSO',product:'Water-Stress Score',approach:'Sustainability team via London office',ph:3,acv:'$100k'},
+  {n:6,c:'Newmont',seg:'Mining Major',persona:'Operations Manager',product:'Pit Wall + Tailings',approach:'Denver HQ, Nevada/Peru sites',ph:3,acv:'$200k'},
+  {n:7,c:'Agnico Eagle',seg:'Mining Major',persona:'Mine Planner',product:'Arctic Season Window',approach:'Toronto HQ, Nunavut sites',ph:4,acv:'$200k'},
+  {n:8,c:'Barrick Gold',seg:'Mining Major',persona:'Tailings Engineer',product:'Tailings + Pit Wall',approach:'Toronto HQ, Nevada/Tanzania',ph:4,acv:'$400k'},
+  {n:9,c:'Freeport-McMoRan',seg:'Mining Major',persona:'Operations Manager',product:'Pit Wall + Tailings',approach:'Phoenix HQ, Arizona/Indonesia',ph:3,acv:'$350k'},
+  {n:10,c:'Teck Resources',seg:'Mining Major',persona:'Hydrologist',product:'Water + Tailings',approach:'Vancouver HQ, BC/Peru sites',ph:4,acv:'$300k'},
+  // Hedge Funds & Banks
+  {n:11,c:'Elliott Management',seg:'Hedge Fund',persona:'M&A Banker',product:'M&A Target Radar',approach:'Event-driven desk via Prime Broker',ph:2,acv:'$250k'},
+  {n:12,c:'Pershing Square',seg:'Hedge Fund',persona:'Buy-side PM',product:'Stranded Asset',approach:'Bill Ackman team via intro',ph:3,acv:'$250k'},
+  {n:13,c:'Oasis Management',seg:'Hedge Fund',persona:'M&A Banker',product:'M&A Target Radar',approach:'Zurich office, mining event-driven',ph:3,acv:'$200k'},
+  {n:14,c:'Pala Investments',seg:'Private Equity',persona:'Private Equity VP',product:'Resource Validator',approach:'Mining-focused PE, Geneva',ph:3,acv:'$150k'},
+  {n:15,c:'Sprott Asset Management',seg:'Asset Manager',persona:'Buy-side PM',product:'Cost-Curve Margin',approach:'Toronto, gold/uranium focus',ph:3,acv:'$150k'},
+  {n:16,c:'BlackRock',seg:'Asset Manager',persona:'ESG Portfolio Manager',product:'ESG Portfolio Screen',approach:'Aladdin integration team',ph:3,acv:'$250k'},
+  {n:17,c:'Capital Group',seg:'Asset Manager',persona:'Buy-side PM',product:'Cost-Curve Margin',approach:'Los Angeles, basic materials desk',ph:4,acv:'$150k'},
+  {n:18,c:'Fidelity',seg:'Asset Manager',persona:'Sell-side Analyst',product:'Cost-Curve Margin',approach:'Boston, natural resources desk',ph:4,acv:'$150k'},
+  {n:19,c:'Goldman Sachs',seg:'Investment Bank',persona:'M&A Banker',product:'M&A Target Radar',approach:'Natural Resources M&A group, NYC',ph:3,acv:'$300k'},
+  {n:20,c:'Morgan Stanley',seg:'Investment Bank',persona:'M&A Banker',product:'M&A Target Radar',approach:'Metals & Mining team, London',ph:4,acv:'$300k'},
+  // Insurers
+  {n:21,c:'AIG',seg:'Insurer',persona:'Risk Underwriter',product:'Tailings Risk',approach:'Mining risk underwriting team via broker',ph:2,acv:'$150k'},
+  {n:22,c:'Chubb',seg:'Insurer',persona:'Risk Underwriter',product:'Pit Wall + Tailings',approach:'Zurich, mining specialty lines',ph:3,acv:'$200k'},
+  {n:23,c:'AXA XL',seg:'Insurer',persona:'Risk Underwriter',product:'Tailings Risk',approach:'London, energy & mining lines',ph:3,acv:'$200k'},
+  {n:24,c:'Zurich Insurance',seg:'Insurer',persona:'Political Risk Analyst',product:'Resource Nationalism',approach:'Political risk team, Zurich',ph:4,acv:'$200k'},
+  {n:25,c:'Lloyd\'s syndicates',seg:'Insurance',persona:'Risk Underwriter',product:'Tailings Risk Pool',approach:'Syndicate underwriting platform',ph:4,acv:'$500k'},
+  {n:26,c:'Munich Re',seg:'Reinsurer',persona:'Geotech Risk Engineer',product:'Tailings + Pit Wall',approach:'Munich, natural peril modeling',ph:4,acv:'$300k'},
+  {n:27,c:'Swiss Re',seg:'Reinsurer',persona:'Geotech Risk Engineer',product:'Tailings + Pit Wall',approach:'Zurich, specialty reinsurance',ph:4,acv:'$300k'},
+  {n:28,c:'Berkshire Hathaway',seg:'Reinsurer',persona:'Risk Underwriter',product:'Stranded Asset',approach:'Omaha, large-risk underwriting',ph:5,acv:'$250k'},
+  // Traders & Refiners
+  {n:29,c:'Trafigura',seg:'Trader',persona:'Commodity Trader',product:'Shadow Production + Chokepoint',approach:'Geneva desk, copper/oil',ph:3,acv:'$150k'},
+  {n:30,c:'Vitol',seg:'Trader',persona:'Commodity Trader',product:'Chokepoint Radar',approach:'Geneva, oil/metals desk',ph:4,acv:'$150k'},
+  {n:31,c:'Glencore (trading)',seg:'Trader',persona:'Commodity Trader',product:'Shadow Production',approach:'Stamford CT, metals trading',ph:3,acv:'$200k'},
+  {n:32,c:'Mercuria',seg:'Trader',persona:'Commodity Trader',product:'Chokepoint Radar',approach:'Geneva, energy/metals',ph:4,acv:'$150k'},
+  {n:33,c:'MKS PAMP',seg:'Refiner',persona:'Metallurgist',product:'Concentrate Blend',approach:'Swiss refining, precious metals',ph:3,acv:'$150k'},
+  {n:34,c:'Aurubis',seg:'Refiner',persona:'Refinery Ops Manager',product:'Concentrate Blend',approach:'Hamburg, copper smelter',ph:4,acv:'$150k'},
+  {n:35,c:'Toyota Tsusho',seg:'Trading House',persona:'Battery Materials Buyer',product:'Battery Trace',approach:'Tokyo, battery materials desk',ph:4,acv:'$300k'},
+  {n:36,c:'Sumitomo Corp',seg:'Trading House',persona:'Battery Materials Buyer',product:'Battery Trace',approach:'Tokyo, mineral resources',ph:4,acv:'$200k'},
+  // Downstream & Manufacturing
+  {n:37,c:'Tesla',seg:'EV Manufacturer',persona:'EV Procurement Director',product:'Battery Trace',approach:'Austin TX, battery supply chain team',ph:5,acv:'$300k'},
+  {n:38,c:'Northvolt',seg:'Battery OEM',persona:'Battery Materials Buyer',product:'Battery Trace',approach:'Stockholm, gigafactory supply',ph:5,acv:'$200k'},
+  {n:39,c:'CATL',seg:'Battery OEM',persona:'Battery Materials Buyer',product:'Battery Trace',approach:'Ningde, China, lithium supply',ph:5,acv:'$200k'},
+  {n:40,c:'ArcelorMittal',seg:'Steel',persona:'Steel Mill Procurement',product:'Chokepoint + Blend',approach:'Luxembourg, iron ore/coking coal',ph:5,acv:'$200k'},
+  // Mining Services
+  {n:41,c:'Orica',seg:'Mining Services',persona:'Blasting Engineer',product:'Blast Monitor',approach:'Sydney, blasting services',ph:3,acv:'$100k'},
+  {n:42,c:'Epiroc',seg:'Mining Services',persona:'Mine Planner',product:'Pit Wall + Haulage',approach:'Stockholm, equipment OEM',ph:4,acv:'$150k'},
+  {n:43,c:'Weir Minerals',seg:'Mining Services',persona:'Metallurgist',product:'Concentrate Blend',approach:'Glasgow, processing equipment',ph:4,acv:'$100k'},
+  // Government & Policy
+  {n:44,c:'USGS',seg:'Government',persona:'Critical Minerals Policy Advisor',product:'Sovereignty Index',approach:'Reston VA, Earth MRI program',ph:5,acv:'$1M'},
+  {n:45,c:'IEA',seg:'Government',persona:'Critical Minerals Strategist',product:'Demand Forecasts',approach:'Paris, critical minerals desk',ph:5,acv:'$500k'},
+  {n:46,c:'EU JRC',seg:'Government',persona:'Critical Minerals Policy Advisor',product:'Sovereignty + CRM',approach:'Brussels, raw materials',ph:5,acv:'$500k'},
+  {n:47,c:'Geoscience Australia',seg:'Government',persona:'Targeting Geologist',product:'Blind Porphyry Targeting',approach:'Canberra, geological survey',ph:5,acv:'$300k'},
+  {n:48,c:'BGS',seg:'Government',persona:'Chief Geologist',product:'Resource Validator',approach:'Keyworth, British geological survey',ph:5,acv:'$200k'},
+  // Oil & Gas (Phase 5 expansion)
+  {n:49,c:'Saudi Aramco',seg:'Oil & Gas',persona:'CSO',product:'Methane Attribution',approach:'Dhahran, Scope 1 disclosure',ph:5,acv:'$500k'},
+  {n:50,c:'ExxonMobil',seg:'Oil & Gas',persona:'Carbon Accountant',product:'Stranded Asset',approach:'Houston, Permian Basin',ph:5,acv:'$400k'},
+];
+
+/* ============================================================
+   DATA: Product Launch Sequence (25 products)
+   ============================================================ */
+const productLaunch = [
+  {n:1,name:'Tailings Dam 7-Day Failure Probability',ph:2,month:5,dep:'ICEYE + ICMM + USGS EQ',arr:'$20M',effort:'High',color:'#c4634a'},
+  {n:2,name:'Shadow Production & Undeclared Output Detector',ph:2,month:7,dep:'Sentinel-2 + VIIRS + MRDS + LME',arr:'$10M',effort:'Med',color:'#c89858'},
+  {n:3,name:'Cost-Curve Dynamic Margin Watcher',ph:2,month:8,dep:'MineSpans + LME + Yahoo',arr:'$9M',effort:'Med',color:'#6ba080'},
+  {n:4,name:'Strategic Supply Chokepoint Radar',ph:3,month:10,dep:'MCS + S&P + AIS + Comtrade',arr:'$12M',effort:'Med',color:'#c89858'},
+  {n:5,name:'Pre-Announcement M&A Target Radar',ph:3,month:11,dep:'SNL + Reuters + Companies House',arr:'$15M',effort:'Low',color:'#6ba080'},
+  {n:6,name:'Mine Water-Stress & Closure Score',ph:3,month:12,dep:'USGS Water + IBAT + TNFD',arr:'$6M',effort:'Low',color:'#7a8a6f'},
+  {n:7,name:'Andean Lithium Salar Productivity Rank',ph:3,month:14,dep:'SEGEMAR + Sentinel-2 + Fastmarkets',arr:'$8M',effort:'Med',color:'#c4a070'},
+  {n:8,name:'Pit Wall Stability & Slope Failure Early Warning',ph:3,month:16,dep:'ICEYE + Capella + Sentinel-2 + Maxar',arr:'$11M',effort:'High',color:'#c4634a'},
+  {n:9,name:'Methane Plume Source Attribution',ph:4,month:20,dep:'TROPOMI + Sentinel-2 + MRDS',arr:'$7M',effort:'Med',color:'#c89858'},
+  {n:10,name:'Mine-Driven Deforestation Attribution',ph:4,month:22,dep:'GFW + MRDS + Maxar + Land Matrix',arr:'$5M',effort:'Low',color:'#7a8a6f'},
+  {n:11,name:'Concentrate Blend Feedstock Optimizer',ph:4,month:24,dep:'EarthChem + S&P + MarineTraffic',arr:'$6M',effort:'Med',color:'#c89858'},
+  {n:12,name:'Arctic Mining Season Window Optimizer',ph:4,month:26,dep:'ARDF + NASA POWER + Sentinel-1',arr:'$4M',effort:'Low',color:'#7a8a6f'},
+  {n:13,name:'Independent Resource Estimate Validator',ph:4,month:28,dep:'GeoIndex + Macrostrat + EarthChem',arr:'$4M',effort:'Med',color:'#c89858'},
+  {n:14,name:'Critical-Mineral Sovereignty & Substitution Index',ph:4,month:30,dep:'USGS 50 + EU CRM + IEA + Comtrade',arr:'$10M',effort:'Med',color:'#6ba080'},
+  {n:15,name:'Mine-Site Insider Charter Flight Detector',ph:4,month:33,dep:'OpenSky + adsb.lol + Morningstar',arr:'$15M',effort:'Low',color:'#6ba080'},
+  {n:16,name:'Pre-Funding EV Battery Material Trace',ph:4,month:35,dep:'NI 43-101 + Fastmarkets + EITI',arr:'$14M',effort:'Med',color:'#c4a070'},
+  {n:17,name:'Underground Induced Seismicity & Blast Monitor',ph:5,month:38,dep:'USGS EQ + IRIS + Sentinel-1',arr:'$5M',effort:'Med',color:'#c89858'},
+  {n:18,name:'Haulage & Port Congestion Time Estimator',ph:5,month:40,dep:'TomTom + OSRM + AIS + PortWatch',arr:'$4M',effort:'Low',color:'#7a8a6f'},
+  {n:19,name:'Resource Nationalism & Tax Take Monitor',ph:5,month:42,dep:'EITI + SNL + Reuters + OpenCorporates',arr:'$7M',effort:'Med',color:'#c89858'},
+  {n:20,name:'Coal-Stranded-Asset Pressure Map',ph:5,month:44,dep:'GEM + Ember + Maxar + Argus',arr:'$8M',effort:'Med',color:'#c89858'},
+  {n:21,name:'Revegetation & Closure Progress Verifier',ph:5,month:46,dep:'Sentinel-2 + Planet + WorldClim',arr:'$3M',effort:'Low',color:'#7a8a6f'},
+  {n:22,name:'Carbon-Intense Smelter Siting Optimizer',ph:5,month:48,dep:'OpenInfraMap + Ember + NASA POWER',arr:'$5M',effort:'High',color:'#c4634a'},
+  {n:23,name:'Blind Porphyry & Epithermal Targeting',ph:6,month:50,dep:'Macrostrat + EMAG2 + BGI + EarthChem',arr:'$8M',effort:'High',color:'#c4634a'},
+  {n:24,name:'Discovery-to-Production Lead Timer',ph:6,month:54,dep:'NI 43-101 + SNL + Macrotrends + Yearbook',arr:'$6M',effort:'Med',color:'#c89858'},
+  {n:25,name:'Sanction Evasion & Dark Fleet Router',ph:6,month:58,dep:'OpenSky + adsb.lol + AIS + Comtrade',arr:'$8M',effort:'High',color:'#c4634a'},
+];
+
+/* ============================================================
+   DATA: Hiring Plan
+   ============================================================ */
+const hiringPlan = [
+  {role:'Senior Full-Stack Engineer (Cesium/React/Node)',ph:1,mo:1,comp:'$150k + 1.0% equity',reports:'Founder',unlocks:'Cesium globe + 3 data layers',interview:'Cesium demo + Node API design + geospatial quiz'},
+  {role:'Data Engineer (Python/PostGIS/ogr2ogr)',ph:1,mo:1,comp:'$140k + 0.75% equity',reports:'Founder',unlocks:'Static data bundles + ETL pipelines',interview:'ETL design + PostGIS query + ogr2ogr task'},
+  {role:'Fractional CFO',ph:1,mo:1,comp:'$2k/mo retainer',reports:'Founder',unlocks:'Cap table + payroll + investor reporting',interview:'Startup CFO experience + cap table walkthrough'},
+  {role:'IP Lawyer (retainer)',ph:1,mo:2,comp:'$5k retainer',reports:'Founder',unlocks:'Trademark + provisional patent',interview:'Patent application review + mining IP experience'},
+  {role:'Sales Rep #1 (mining industry network)',ph:2,mo:4,comp:'$130k + $70k OTE + 0.5% equity',reports:'Founder',unlocks:'Design-partner pilots + PDAC/Indaba',interview:'Mining contacts + 5-reference call + mock pitch'},
+  {role:'Full-Stack Engineer #2 (product features)',ph:2,mo:5,comp:'$150k + 0.4% equity',reports:'VP Eng (when hired) / Founder',unlocks:'Self-serve onboarding + billing layer',interview:'React dashboard build + Stripe integration'},
+  {role:'Customer Success / Solutions Engineer',ph:2,mo:6,comp:'$110k + 0.25% equity',reports:'Sales Rep #1 / Founder',unlocks:'Design-partner onboarding + weekly check-ins',interview:'Customer onboarding simulation + technical troubleshooting'},
+  {role:'Junior Data Engineer',ph:2,mo:7,comp:'$90k + 0.15% equity',reports:'Head of Data',unlocks:'Data pipeline scaling + QA',interview:'Python ETL task + geospatial basics'},
+  {role:'VP Engineering',ph:3,mo:10,comp:'$220k + 1.5% equity',reports:'Founder',unlocks:'Scale team 5→15 + architecture decisions',interview:'System design + team scaling + 360 references'},
+  {role:'VP Sales',ph:3,mo:10,comp:'$220k + 1.5% equity',reports:'Founder',unlocks:'Enterprise sales motion + London/Perth offices',interview:'Sales process design + 360 references + quota attainment history'},
+  {role:'Sales Rep #2 (London, finance)',ph:3,mo:12,comp:'£130k + £70k OTE + 0.2% equity',reports:'VP Sales',unlocks:'Finance vertical (funds, banks, traders)',interview:'Finance contacts + mock pitch to fund PM'},
+  {role:'Sales Rep #3 (Perth, mining)',ph:3,mo:12,comp:'AU$140k + AU$80k OTE + 0.2% equity',reports:'VP Sales',unlocks:'Australian mining majors',interview:'Mining contacts + mock pitch to mine manager'},
+  {role:'Product Engineer #3 (self-serve)',ph:3,mo:14,comp:'$150k + 0.2% equity',reports:'VP Eng',unlocks:'Self-serve onboarding + Stripe checkout',interview:'React + Stripe + auth flow build'},
+  {role:'Designer (UX/UI)',ph:3,mo:14,comp:'$130k + 0.15% equity',reports:'VP Product (when hired) / Founder',unlocks:'Dashboard UX + mobile PWA',interview:'Dashboard design portfolio + Figma prototype review'},
+  {role:'Data Engineer #3',ph:3,mo:15,comp:'$140k + 0.15% equity',reports:'Head of Data',unlocks:'Streaming pipeline (Kafka) + data lineage',interview:'Kafka pipeline design + geo-streaming task'},
+  {role:'VP Product',ph:4,mo:20,comp:'$220k + 1.0% equity',reports:'Founder',unlocks:'Product roadmap ownership + marketplace architecture',interview:'Product strategy + roadmap walkthrough + 360 refs'},
+  {role:'Head of Data Partnerships',ph:4,mo:22,comp:'$180k + 0.5% equity',reports:'Founder',unlocks:'Third-party marketplace data sourcing',interview:'Data licensing negotiation + partner pipeline'},
+  {role:'Sales Rep #4 (Singapore, trade)',ph:4,mo:24,comp:'S$180k + S$80k OTE + 0.15% equity',reports:'VP Sales',unlocks:'Trade vertical (traders, port ops)',interview:'Trade contacts + mock pitch to trader'},
+  {role:'Head of Marketing',ph:4,mo:26,comp:'$180k + 0.4% equity',reports:'Founder',unlocks:'Content calendar + Summits + brand',interview:'Marketing strategy + content portfolio + 360 refs'},
+  {role:'Engineers #6-10 (3 squads: Risk/Finance/ESG)',ph:4,mo:24-30,comp:'$150k avg + 0.1-0.2% equity each',reports:'VP Eng',unlocks:'7 more products → 15 total',interview:'Standard eng loop + squad fit assessment'},
+  {role:'Customer Success Manager #2',ph:4,mo:28,comp:'$120k + 0.1% equity',reports:'VP Sales / CS Lead',unlocks:'Enterprise account management + renewals',interview:'CS process design + renewal simulation'},
+  {role:'GM of Marketplace',ph:5,mo:38,comp:'$250k + 1.0% equity',reports:'Founder',unlocks:'Marketplace launch + 20% take rate GMV',interview:'Marketplace strategy + 2-sided network experience'},
+  {role:'GM of Oil & Gas Vertical',ph:5,mo:40,comp:'$220k + 0.75% equity',reports:'Founder',unlocks:'O&G expansion (same inference patterns)',interview:'O&G contacts + vertical expansion strategy'},
+  {role:'GM of Agriculture Vertical',ph:5,mo:42,comp:'$200k + 0.5% equity',reports:'Founder',unlocks:'Ag expansion (deforestation + water)',interview:'Ag contacts + vertical expansion strategy'},
+  {role:'Engineers #11-25 (3 verticals × 5 squads)',ph:5,mo:36-46,comp:'$150k avg + 0.05-0.1% equity',reports:'VP Eng / GMs',unlocks:'Final 10 products → 25 total',interview:'Standard eng loop + vertical fit'},
+  {role:'Head of Customer Success',ph:5,mo:44,comp:'$180k + 0.3% equity',reports:'Founder',unlocks:'CS team management across 3 verticals',interview:'CS org design + NPS improvement strategy'},
+  {role:'CFO (IPO experience)',ph:6,mo:50,comp:'$300k + 1.0% equity + IPO bonus',reports:'Founder / Board',unlocks:'S-1 + SEC reporting + IPO process',interview:'IPO experience + Big 4 audit + investor relations'},
+  {role:'Chief Legal Officer (SEC reporting)',ph:6,mo:52,comp:'$250k + 0.5% equity',reports:'Founder / Board',unlocks:'Public company legal + SEC filings',interview:'SEC reporting + 10-K review + governance'},
+  {role:'GM of APAC',ph:6,mo:54,comp:'$220k + 0.3% equity',reports:'Founder',unlocks:'Tokyo/Mumbai office + APAC enterprise',interview:'APAC enterprise sales + local partnerships'},
+  {role:'Engineers #26-50 + Sales #5-10 + CS #3-5',ph:6,mo:48-60,comp:'$150k avg + 0.02-0.05% equity',reports:'Dept Heads',unlocks:'Scale to 150 headcount + 3 verticals at scale',interview:'Standard loops per function'},
+];
+
+/* ============================================================
+   DATA: Unit Economics per Product
+   ============================================================ */
+const unitEconomics = [
+  {n:1,product:'Tailings Dam Risk',price:'$100k/mine/yr',cogs:'$18k (SAR data)',gm:'82%',cac:'$35k',ltv:'$280k',payback:'4.2 mo',ratio:'8.0x',flag:'green'},
+  {n:2,product:'Shadow Production Detector',price:'$500k ent/yr',cogs:'$50k (imagery)',gm:'90%',cac:'$80k',ltv:'$1.0M',payback:'4.8 mo',ratio:'12.5x',flag:'green'},
+  {n:3,product:'Cost-Curve Margin Watcher',price:'$100k/seat/yr',cogs:'$15k (MineSpans+CRU)',gm:'85%',cac:'$40k',ltv:'$200k',payback:'4.8 mo',ratio:'5.0x',flag:'green'},
+  {n:4,product:'Chokepoint Radar',price:'$150k/seat/yr',cogs:'$20k (AIS+data)',gm:'87%',cac:'$50k',ltv:'$300k',payback:'4 mo',ratio:'6.0x',flag:'green'},
+  {n:5,product:'M&A Target Radar',price:'$250k/firm/yr',cogs:'$25k (SNL+Reuters)',gm:'90%',cac:'$60k',ltv:'$500k',payback:'2.9 mo',ratio:'8.3x',flag:'green'},
+  {n:6,product:'Water-Stress Score',price:'$50k/mine/yr',cogs:'$8k (data)',gm:'84%',cac:'$20k',ltv:'$100k',payback:'4.8 mo',ratio:'5.0x',flag:'green'},
+  {n:7,product:'Lithium Salar Rank',price:'$150k/seat/yr',cogs:'$15k (Fastmarkets+SEGEMAR)',gm:'90%',cac:'$45k',ltv:'$300k',payback:'3.6 mo',ratio:'6.7x',flag:'green'},
+  {n:8,product:'Pit Wall Stability',price:'$120k/mine/yr',cogs:'$25k (SAR+Maxar)',gm:'79%',cac:'$40k',ltv:'$240k',payback:'4 mo',ratio:'6.0x',flag:'green'},
+  {n:9,product:'Methane Attribution',price:'$80k/site/yr',cogs:'$12k (TROPOMI free+Maxar)',gm:'85%',cac:'$30k',ltv:'$160k',payback:'4.5 mo',ratio:'5.3x',flag:'green'},
+  {n:10,product:'Deforestation Attribution',price:'$60k/yr',cogs:'$5k (GFW free+Maxar)',gm:'92%',cac:'$20k',ltv:'$120k',payback:'3.3 mo',ratio:'6.0x',flag:'green'},
+  {n:11,product:'Concentrate Blend Optimizer',price:'$150k/plant/yr',cogs:'$20k (EarthChem+S&P)',gm:'87%',cac:'$50k',ltv:'$300k',payback:'4 mo',ratio:'6.0x',flag:'green'},
+  {n:12,product:'Arctic Season Window',price:'$75k/site/yr',cogs:'$8k (data free)',gm:'89%',cac:'$25k',ltv:'$150k',payback:'4 mo',ratio:'6.0x',flag:'green'},
+  {n:13,product:'Resource Validator',price:'$75k/project',cogs:'$10k (data free)',gm:'87%',cac:'$20k',ltv:'$75k',payback:'3.2 mo',ratio:'3.8x',flag:'amber'},
+  {n:14,product:'Sovereignty Index',price:'$250k/yr',cogs:'$15k (data free)',gm:'94%',cac:'$80k',ltv:'$500k',payback:'3.8 mo',ratio:'6.3x',flag:'green'},
+  {n:15,product:'Insider Charter Flight Detector',price:'$500k/fund/yr',cogs:'$10k (OpenSky free)',gm:'98%',cac:'$100k',ltv:'$1.0M',payback:'2.4 mo',ratio:'10.0x',flag:'green'},
+  {n:16,product:'EV Battery Trace',price:'$200k/yr',cogs:'$25k (Fastmarkets+EITI)',gm:'88%',cac:'$60k',ltv:'$400k',payback:'3.6 mo',ratio:'6.7x',flag:'green'},
+  {n:17,product:'Induced Seismicity Monitor',price:'$90k/mine/yr',cogs:'$10k (USGS free+IRIS)',gm:'89%',cac:'$30k',ltv:'$180k',payback:'4 mo',ratio:'6.0x',flag:'green'},
+  {n:18,product:'Haulage & Port Congestion',price:'$50k/mine/yr',cogs:'$8k (TomTom+OSRM)',gm:'84%',cac:'$20k',ltv:'$100k',payback:'4.8 mo',ratio:'5.0x',flag:'green'},
+  {n:19,product:'Resource Nationalism Monitor',price:'$200k/firm/yr',cogs:'$15k (EITI+SNL)',gm:'93%',cac:'$60k',ltv:'$400k',payback:'3.6 mo',ratio:'6.7x',flag:'green'},
+  {n:20,product:'Coal Stranded Asset',price:'$100k/firm/yr',cogs:'$15k (GEM+Argus)',gm:'85%',cac:'$35k',ltv:'$200k',payback:'4.2 mo',ratio:'5.7x',flag:'green'},
+  {n:21,product:'Revegetation Verifier',price:'$40k/site/yr',cogs:'$5k (Sentinel free+Planet)',gm:'88%',cac:'$15k',ltv:'$80k',payback:'4.5 mo',ratio:'5.3x',flag:'green'},
+  {n:22,product:'Smelter Siting Optimizer',price:'$250k/site study',cogs:'$20k (data free)',gm:'92%',cac:'$50k',ltv:'$250k',payback:'2.4 mo',ratio:'5.0x',flag:'green'},
+  {n:23,product:'Blind Porphyry Targeting',price:'$50k/campaign',cogs:'$5k (data free)',gm:'90%',cac:'$15k',ltv:'$50k',payback:'3.6 mo',ratio:'3.3x',flag:'amber'},
+  {n:24,product:'Discovery-to-Production',price:'$120k/yr',cogs:'$10k (NI 43-101+Yearbook)',gm:'92%',cac:'$35k',ltv:'$240k',payback:'3.5 mo',ratio:'6.9x',flag:'green'},
+  {n:25,product:'Sanction Evasion Router',price:'$300k/firm/yr',cogs:'$15k (OpenSky free+Comtrade)',gm:'95%',cac:'$80k',ltv:'$600k',payback:'4 mo',ratio:'7.5x',flag:'green'},
+];
+
+/* ============================================================
+   DATA: Tech Stack
+   ============================================================ */
+const techStack = [
+  {layer:'Frontend 3D',choice:'CesiumJS + React',alt:'Three.js / MapboxGL',rationale:'3D globe is the differentiator. No alternative does geospatial 3D as well.',cost:'$0 OSS',ph:1},
+  {layer:'Frontend 2D',choice:'Leaflet',alt:'OpenLayers',rationale:'Lighter than OpenLayers. 2D fallback for mobile and low-end devices.',cost:'$0 OSS',ph:1},
+  {layer:'Backend',choice:'Node.js + Express',alt:'Python/FastAPI',rationale:'Same language as frontend = smaller team. Sufficient for Phase 1-3 traffic.',cost:'$0 OSS',ph:1},
+  {layer:'Database',choice:'PostgreSQL + PostGIS',alt:'MongoDB',rationale:'PostGIS is THE standard for geospatial queries. MongoDB has no native geo-indexing.',cost:'$0 self-host',ph:1},
+  {layer:'Hosting',choice:'AWS (EC2 + RDS)',alt:'GCP / Azure',rationale:'AWS has deepest geospatial ecosystem (S3 + Lambda + Earth Observation).',cost:'$200/mo',ph:1},
+  {layer:'Key Broker',choice:'Express proxy + .env',alt:'AWS Secrets Manager',rationale:'Simpler for 3 APIs. Migrate to Secrets Manager in Phase 2.',cost:'$0',ph:1},
+  {layer:'Tile Cache',choice:'Redis',alt:'Memcached',rationale:'Redis supports geo-commands (GEORADIUS) for proximity queries.',cost:'$50/mo',ph:1},
+  {layer:'Auth',choice:'Clerk (free tier)',alt:'Auth0',rationale:'Free tier covers Phase 1. Migrate to Auth0 Enterprise for SSO in Phase 3.',cost:'$0',ph:1},
+  {layer:'Error Monitoring',choice:'Sentry (free)',alt:'Datadog',rationale:'Free tier sufficient for 2 engineers. Upgrade to Datadog for SLA monitoring in Phase 2.',cost:'$0',ph:1},
+  {layer:'Analytics',choice:'Plausible (self-hosted)',alt:'Google Analytics',rationale:'Privacy-first, no cookies. Self-hosted = no data shared with Google.',cost:'$0',ph:1},
+  {layer:'Key Broker (upgrade)',choice:'AWS Secrets Manager',alt:'.env file',rationale:'5+ keys need rotation, audit trail, IAM integration.',cost:'$6/mo per 10k req',ph:2},
+  {layer:'SAR Data',choice:'ICEYE + Capella (brokered)',alt:'Sentinel-1 (free)',rationale:'Sentinel-1 revisit too infrequent (12 days). ICEYE gives 24h revisit for tailings.',cost:'$8k/mo per 50 dams',ph:2},
+  {layer:'Market Data',choice:'LME brokered feed',alt:'Yahoo Finance',rationale:'LME is the reference price. Yahoo is delayed and unreliable for enterprise.',cost:'$2k/mo',ph:2},
+  {layer:'Asset Data',choice:'S&P Global MI API',alt:'USGS MCS',rationale:'S&P has asset-level reserves/production. MCS is country-level only.',cost:'$5k/mo',ph:2},
+  {layer:'Vector Tiles',choice:'Mapbox Vector Tiles',alt:'Cesium ion',rationale:'Mapbox has better road/building data for logistics layer.',cost:'$499/mo',ph:2},
+  {layer:'Monitoring',choice:'Datadog',alt:'Sentry only',rationale:'Need infra monitoring (CPU, memory, API latency) for SLA-bound pilots.',cost:'$300/mo',ph:2},
+  {layer:'Streaming',choice:'Apache Kafka (MSK)',alt:'Polling',rationale:'Sub-second updates for AIS/ADS-B/earthquake feeds need event streaming.',cost:'$500/mo',ph:3},
+  {layer:'Cache Layer',choice:'Redis Cluster',alt:'Single Redis',rationale:'HA + horizontal scaling at 50+ concurrent customers.',cost:'$400/mo',ph:3},
+  {layer:'CDN',choice:'CloudFront',alt:'Direct S3',rationale:'Tile serving from S3 is slow globally. CloudFront caches at edge.',cost:'$200/mo',ph:3},
+  {layer:'Auth (enterprise)',choice:'Auth0 Enterprise',alt:'Clerk',rationale:'Enterprise SSO (SAML, SCIM) required for $250k+ deals.',cost:'$500/mo',ph:3},
+  {layer:'Data Warehouse',choice:'Snowflake',alt:'PostgreSQL',rationale:'Time-series analysis across years of InSAR data needs columnar store.',cost:'$1k/mo',ph:3},
+  {layer:'Status Page',choice:'StatusPage.io',alt:'Custom',rationale:'Enterprise SLAs require public uptime page + incident history.',cost:'$29/mo',ph:3},
+  {layer:'Premium Imagery',choice:'Maxar SecureWatch',alt:'Sentinel-2 only',rationale:'30-50cm resolution for infrastructure verification and illegal mining detection.',cost:'$15k/mo',ph:4},
+  {layer:'Daily Imagery',choice:'Planet Labs PlanetScope',alt:'Sentinel-2 (5-day)',rationale:'Daily revisit for near-real-time monitoring of 100+ active mines.',cost:'$12k/mo',ph:4},
+  {layer:'ESG Data',choice:'CDP + IBAT + MSCI',alt:'Open data only',rationale:'Enterprise ESG customers need rated/audited data, not just open frameworks.',cost:'$8k/mo total',ph:4},
+  {layer:'Container Orchestration',choice:'Kubernetes (EKS)',alt:'EC2',rationale:'Container orchestration for 15+ microservices (one per product). Blue-green deploys.',cost:'$1k/mo',ph:4},
+  {layer:'CI/CD',choice:'GitHub Actions + ArgoCD',alt:'Manual deploys',rationale:'Multiple squads need independent deploy pipelines. GitOps model.',cost:'$200/mo',ph:4},
+  {layer:'Data Lake',choice:'AWS S3 + Athena',alt:'Snowflake only',rationale:'Petabyte-scale satellite archive. Athena for ad-hoc SQL on S3 objects.',cost:'$2k/mo',ph:4},
+  {layer:'Stream Processing',choice:'Apache Flink',alt:'Kafka only',rationale:'Complex event processing for real-time inference triggers.',cost:'$2k/mo',ph:5},
+  {layer:'ML Platform',choice:'SageMaker',alt:'Custom Python',rationale:'Model training + deployment for AI inference generator. Auto-scaling endpoints.',cost:'$3k/mo',ph:5},
+  {layer:'Search',choice:'Elasticsearch',alt:'PostgreSQL FTS',rationale:'Full-text search across 1M+ filings + reports for inference lookup.',cost:'$800/mo',ph:5},
+  {layer:'API Gateway',choice:'Kong',alt:'Express routes',rationale:'Public API product needs rate limiting, auth, usage metering, billing.',cost:'$500/mo',ph:5},
+  {layer:'Marketplace Infra',choice:'Custom + Stripe Connect',alt:'N/A',rationale:'Third-party data sellers need onboarding, metering, rev-share payout.',cost:'$1k/mo',ph:5},
+  {layer:'AI Layer',choice:'Custom LLM + RAG',alt:'SageMaker only',rationale:'Inference Copilot needs domain-specific LLM fine-tuned on 25 years of mining reports.',cost:'$10k/mo',ph:6},
+  {layer:'Multi-Region',choice:'AWS Global (us/eu/ap)',alt:'Single region',rationale:'Data residency for global enterprise + government contracts.',cost:'$15k/mo',ph:6},
+];
+
+/* ============================================================
+   DATA: Competitive Matrix
+   ============================================================ */
+const competitors = [
+  {c:'S&P Global Market Intelligence',strength:'The incumbent mining data monopoly. Owns SNL, MineSpans, Platts. Every bank uses them.',weakness:'Built for terminal subscriptions and PDF reports, not real-time APIs. No geospatial layer. No Cesium globe. No satellite imagery fusion. Innovation pace: glacial.',edge:'We are real-time, API-first, and 3D. They are PDF-and-terminal. We integrate THEIR data better than they do.',win:'Undercut their terminal pricing 10x. Cross-sell our geospatial layer as a premium add-on to their existing customers. Eventually, they acquire us.'},
+  {c:'Wood Mackenzie',strength:'Mine asset database, cost curves, commodity forecasts. The analyst gold standard.',weakness:'Analyst-driven, not data-driven. No live data. No satellite. No APIs. Subscription model is $50k/seat for PDF reports.',edge:'We turn their static analyst reports into live, queryable, 3D-visualized inference dashboards at 1/5 the price.',win:'Poach their engineering talent. Sell to their customers as the "live" version of WoodMac. Partner on data licensing.'},
+  {c:'Bloomberg Terminal',strength:'The financial data monopoly. Every hedge fund has 20+ terminals. Real-time LME prices.',weakness:'No physical commodity intelligence. No satellite. No mine-level data. No ESG. They are financial, not physical.',edge:'We are the "physical Bloomberg." They track paper; we track dirt, ships, and tailings walls. They don\'t and can\'t.',win:'Eventually, Bloomberg launches a "Commodities Physical" terminal module. We partner or get acquired. $2B+ exit.'},
+  {c:'MineSpans (McKinsey)',strength:'Mine-level cost curves. Unmatched cost data. Sold to McKinsey clients.',weakness:'Consulting product, not SaaS. Static CSV exports. No real-time. No geospatial. Locked behind McKinsey consulting engagement.',edge:'We make cost curves real-time, queryable, and combine them with LME prices and satellite activity in one platform.',win:'License MineSpans data (we already plan to). Make McKinsey a data partner, not a competitor. They get distribution; we get product.'},
+  {c:'CRU Group',strength:'Commodity market analysis. Cost curves. London-based. Strong in steel and ferro-alloys.',weakness:'Same as WoodMac: analyst-driven, PDF-based, no APIs, no real-time, no geospatial.',edge:'We are the API-first, real-time, 3D version of CRU. We integrate CRU data (already planned) and make it interactive.',win:'License CRU data. Partner. They remain the analyst; we are the platform.'},
+  {c:'Refinitiv (LSEG)',strength:'Financial data, Eikon terminal. Metals pricing. Owned by LSEG.',weakness:'No physical commodity intelligence. No mine-level data. No satellite. No ESG beyond ratings.',edge:'We are the physical layer they lack. LSEG is a likely acquirer — they need physical commodity data to compete with Bloomberg.',win:'Strategic partnership → acquisition. LSEG buys us to add physical commodity intelligence to Eikon. $1.6B+ exit.'},
+  {c:'Orbital Insight / Ursa Space',strength:'Satellite analytics. Good at counting cars in parking lots and oil tanks.',weakness:'General-purpose, not mining-specific. No geology, no market data, no corporate filings, no ESG. Just imagery analysis.',edge:'We are mining-native. We fuse satellite with geology, LME prices, and SEC filings. They just have pictures; we have context.',win:'They remain general-purpose; we dominate the mining vertical. If they try to enter mining, we are 3 years ahead on domain data.'},
+  {c:'BloombergNEF (BNEF)',strength:'Energy transition research. Strong on EV battery demand and critical minerals forecasts.',weakness:'Research, not platform. PDF reports. No real-time. No mine-level data. No geospatial.',edge:'We turn BNEF forecasts into live, mine-level, geospatial intelligence. We show WHERE the supply is, not just HOW MUCH.',win:'BNEF is research; we are operations. Different buyers. If BNEF wants to go real-time, they acquire us. $2B exit via Bloomberg.'},
+];
+
+/* ============================================================
+   DATA: Pricing Tiers
+   ============================================================ */
+const pricingTiers = [
+  {name:'Single Product',price:'$50k–$250k/yr',desc:'One inference product (e.g., Tailings Dam Risk). For specialists who need one thing done deeply.',who:'Tailings engineers, ESG analysts, single-asset operators',rule:'Priced at 10% of annual decision value unlocked'},
+  {name:'Persona Suite',price:'$100k–$500k/yr',desc:'3-5 inferences bundled for one persona (e.g., the "Mine Ops Suite"). For professionals who need a workflow.',who:'Mine managers, CSOs, fund PMs, traders',rule:'20% discount vs buying separately. Drives expansion.'},
+  {name:'Enterprise Platform',price:'$250k–$1M+/yr',desc:'All 25 products + API + custom integrations + SSO + SLA. For organizations that need everything.',who:'Mining majors, mega-funds, governments, insurers',rule:'Priced per-seat + platform fee. Minimum 2-year contract.'},
+];
+
+const pricingRules = [
+  'Rule 1: Price at 10% of the annual decision value the inference unlocks. If we save a $100M tailings dam, the subscription is $100k/yr. If we prevent a $10M bad M&A bet, it\'s $250k/yr.',
+  'Rule 2: Never compete on price. Compete on inference depth. If a customer says "S&P is cheaper," show them the 3D globe and the real-time alert pipeline.',
+  'Rule 3: 2-year contract minimum for Enterprise tier. 1-year for Persona Suite. Monthly for Single Product (but priced to make annual obvious).',
+  'Rule 4: Data pass-through costs (ICEYE, Maxar, S&P) are itemized as a separate line item. Customer sees the data cost; our margin is on the inference, not the data.',
+  'Rule 5: Free tier exists but is usage-limited (5 queries/day, no alerts, no export). It exists for product-led growth — let developers try the API.',
+  'Rule 6: Government pricing is 50% of enterprise. In exchange: 5-year contract minimum, public case study rights, and ICMM/IRMA partnership distribution.',
+  'Rule 7: Design partner pricing = 50% of list for Year 1. Converts to full price in Year 2 with 2-year price lock.',
+  'Rule 8: Marketplace take rate = 20% from third-party data sellers. They get distribution to 500+ enterprise customers; we get data without integration cost.',
+];
+
+/* ============================================================
+   DATA: GTM Playbook
+   ============================================================ */
+const gtmPlaybook = [
+  {vertical:'Finance (Funds, Banks, Traders)',motion:'Founder-led + PLG',cycle:'30-60 days',acv:'$150-500k',channel:'Prime broker intros, LME Week, Bloomberg terminal displacement',tactic:'Sell to event-driven hedge funds first. They move fastest. Use the M&A Target Radar or Insider Charter Flight Detector as the wedge product. Demo: "Here are 3 pre-announcement targets we flagged last week." They buy on the call.',first:'Phase 2-3'},
+  {vertical:'Mining Majors (BHP, Rio, Vale)',motion:'Enterprise sales (MEDDIC)',cycle:'12-18 months',acv:'$200-500k',channel:'PDAC, Mining Indaba, ICMM partnership, mine-site visits',tactic:'Start with tailings or pit wall (highest pain, regulatory tailwind). Use Brumadinho as the wedge story. Engage the Tailings Engineer persona; let them champion internally. Procurement takes 12 months; start the clock early.',first:'Phase 2-4'},
+  {vertical:'Insurance & Reinsurance',motion:'Broker-channel + direct',cycle:'60-90 days',acv:'$150-500k',channel:'Lloyd\'s broker intros, AIRMIC conference, Munich Re/Swiss Re direct',tactic:'Underwriters need a defensible risk score for pricing. Give them the Tailings Dam Risk score + Pit Wall Stability. They use it in underwriting submissions. The score becomes the standard. Insurers renew annually — high NRR.',first:'Phase 2-4'},
+  {vertical:'Government & Regulators',motion:'RFP + CRADA',cycle:'18-24 months',acv:'$1-5M',channel:'USGS, IEA, EU JRC, Geoscience Australia direct',tactic:'Don\'t target for ARR; target for credibility. A USGS or IEA contract is a logo that opens every other door. Use CRADA (Cooperative R&D Agreement) to bypass FAR procurement (faster). Treat gov revenue as upside, not baseline.',first:'Phase 4-5'},
+  {vertical:'Downstream (EV, Steel, Refiners)',motion:'Enterprise + procurement',cycle:'90-180 days',acv:'$200-500k',channel:'Gigafactory supply chain teams, Auto Show, CRU conference',tactic:'EV OEMs need battery mineral traceability for ESG compliance. Sell the Battery Material Trace as a compliance tool. The buyer is the EV Procurement Director, not IT. Frame as "Scope 3 compliance + supply security." Expand to Concentrate Blend Optimizer for refiners.',first:'Phase 4-5'},
+];
+
+/* ============================================================
+   DATA: Content Calendar (26 pieces)
+   ============================================================ */
+const contentCalendar = [
+  {m:'M1',type:'Blog Post',title:'Why Brumadinho Was Preventable: A Multi-Source Data Analysis',persona:'Tailings Engineer',kw:'tailings dam failure prevention'},
+  {m:'M1',type:'Blog Post',title:'The 117 Data Sources Every Mining Analyst Should Know',persona:'Sell-side Analyst',kw:'mining data sources'},
+  {m:'M2',type:'Report',title:'The State of Tailings Dam Risk in 2024 (Free PDF)',persona:'Tailings Engineer',kw:'tailings dam risk report'},
+  {m:'M2',type:'Blog Post',title:'How Night Lights Reveal Undeclared Mine Production',persona:'Commodity Trader',kw:'shadow production detection'},
+  {m:'M3',type:'Webinar',title:'Live Demo: The Tailings Dam 7-Day Risk Dashboard',persona:'Tailings Engineer',kw:'tailings risk monitoring'},
+  {m:'M3',type:'Blog Post',title:'Sentinel-2 vs PlanetScope vs Maxar: Which Imagery for Which Use Case?',persona:'Remote Sensing Analyst',kw:'satellite imagery mining'},
+  {m:'M4',type:'Blog Post',title:'How to Detect Pre-Announcement M&A Targets Using Charter Flights',persona:'M&A Banker',kw:'M&A target identification'},
+  {m:'M4',type:'Report',title:'The Andean Lithium Triangle: Salar-by-Salar Productivity Ranking',persona:'EV Procurement Director',kw:'lithium salar ranking'},
+  {m:'M5',type:'Blog Post',title:'Why Cesium Is Better Than Mapbox for Mining Intelligence',persona:'Remote Sensing Analyst',kw:'cesium mining visualization'},
+  {m:'M5',type:'Webinar',title:'How Hedge Funds Use Satellite Data to Trade Metals',persona:'Hedge Fund Quant',kw:'satellite trading metals'},
+  {m:'M6',type:'Blog Post',title:'The True Cost of Coal: Mapping Stranded Asset Risk Globally',persona:'ESG Portfolio Manager',kw:'coal stranded assets'},
+  {m:'M6',type:'Blog Post',title:'Methane Plume Attribution: From TROPOMI to Specific Mines',persona:'Carbon Accountant',kw:'methane emission mining'},
+  {m:'M7',type:'Report',title:'Critical Mineral Sovereignty: Which Countries Are Most Vulnerable?',persona:'Critical Minerals Strategist',kw:'critical mineral dependency'},
+  {m:'M7',type:'Blog Post',title:'How AIS Dark Gaps Reveal Sanction Evasion in Metals Trade',persona:'Compliance Officer',kw:'AIS dark fleet sanctions'},
+  {m:'M8',type:'Webinar',title:'The Cost-Curve Dynamic Margin Watcher: Live Demo',persona:'Sell-side Analyst',kw:'mining cost curve analysis'},
+  {m:'M8',type:'Blog Post',title:'Borehole Databases: Validating NI 43-101 Resource Estimates Independently',persona:'Resource Estimator',kw:'NI 43-101 validation'},
+  {m:'M9',type:'Blog Post',title:'Arctic Mining Windows: Optimizing Haulage with Solar and SAR',persona:'Mine Planner',kw:'arctic mining operations'},
+  {m:'M9',type:'Report',title:'The State of Resource Intelligence (Annual Report, 50pg PDF)',persona:'All',kw:'resource intelligence report'},
+  {m:'M10',type:'Blog Post',title:'Deforestation Attribution: Linking GFW Pixels to Mine Operators',persona:'ESG Portfolio Manager',kw:'mining deforestation attribution'},
+  {m:'M10',type:'Webinar',title:'How to Build a 117-Source Data Fusion Engine for Mining',persona:'Remote Sensing Analyst',kw:'data fusion mining'},
+  {m:'M11',type:'Blog Post',title:'Resource Nationalism: Tracking Royalty Changes and State Participation',persona:'Political Risk Analyst',kw:'resource nationalism mining'},
+  {m:'M11',type:'Blog Post',title:'Water-Stress Scoring: A 0-100 Risk Index for Every Mine on Earth',persona:'Hydrologist',kw:'mine water risk'},
+  {m:'M12',type:'Webinar',title:'Year in Review: The Top 25 Mining Intelligence Insights of 2024',persona:'All',kw:'mining intelligence 2024'},
+  {m:'M12',type:'Report',title:'The 2025 Mining Intelligence Outlook (Forecast PDF)',persona:'All',kw:'mining outlook 2025'},
+  {m:'Q4',type:'Conference',title:'Resource Intelligence Summit (Virtual, 200 attendees)',persona:'All',kw:'N/A'},
+  {m:'Q4',type:'Newsletter',title:'The Resource Intelligence Brief (Weekly, 5,000 subscribers)',persona:'All',kw:'N/A'},
+];
+
+/* ============================================================
+   DATA: Event Calendar
+   ============================================================ */
+const events = [
+  {e:'PDAC',mo:'March',loc:'Toronto',aud:'8,000 mining professionals',cost:'$25k (booth + travel)',pipeline:'$2M',roi:'80x',ph:'1-6'},
+  {e:'Mining Indaba',mo:'February',loc:'Cape Town',aud:'7,000 mining + investors',cost:'$30k',pipeline:'$1.5M',roi:'50x',ph:'1-6'},
+  {e:'LME Week',mo:'October',loc:'London',aud:'3,000 metals traders',cost:'$15k (Innovation Stage)',pipeline:'$3M',roi:'200x',ph:'2-6'},
+  {e:'AIMC (African Mining Indaba)',mo:'October',loc:'Accra/Lusaka',aud:'2,000 African mining',cost:'$10k',pipeline:'$500k',roi:'50x',ph:'3-6'},
+  {e:' Mines and Money',mo:'December',loc:'London',aud:'2,000 mining investors',cost:'$20k',pipeline:'$1M',roi:'50x',ph:'2-6'},
+  {e:'CRU World Steel Conference',mo:'April',loc:'London',aud:'500 steel execs',cost:'$10k',pipeline:'$500k',roi:'50x',ph:'3-6'},
+  {e:'AIRMIC (Risk Management)',mo:'June',loc:'London',aud:'1,500 risk managers',cost:'$15k',pipeline:'$1M',roi:'66x',ph:'3-6'},
+  {e:'Fastmarkets Battery Metals',mo:'September',loc:'Amsterdam',aud:'1,000 battery supply chain',cost:'$15k',pipeline:'$1M',roi:'66x',ph:'3-6'},
+  {e:'CESCO Week (Copper)',mo:'April',loc:'Santiago',aud:'3,000 copper industry',cost:'$12k',pipeline:'$800k',roi:'66x',ph:'3-6'},
+  {e:'DRC Mining Week',mo:'June',loc:'Lubumbashi',aud:'1,500 Congo mining',cost:'$8k',pipeline:'$400k',roi:'50x',ph:'4-6'},
+  {e:'IMED (Mineral Exploration)',mo:'November',loc:'London',aud:'1,000 exploration geologists',cost:'$8k',pipeline:'$300k',roi:'37x',ph:'3-6'},
+  {e:'Resource Intelligence Summit (ours)',mo:'October',loc:'London (virtual Y1, in-person Y3+)',aud:'200→2,000',cost:'$20k (we host)',pipeline:'$5M',roi:'250x',ph:'3-6'},
+];
+
+/* ============================================================
+   DATA: Compliance Timeline
+   ============================================================ */
+const complianceTimeline = [
+  {milestone:'Incorporate (Delaware C-Corp)',ph:1,mo:1,cost:'$500',gate:'Legal entity exists'},
+  {milestone:'Trademark filed (USPTO)',ph:1,mo:2,cost:'$600',gate:'Brand protected'},
+  {milestone:'Provisional patent #1 filed',ph:1,mo:3,cost:'$1,500',gate:'IP priority date established'},
+  {milestone:'Data licensing terms drafted',ph:1,mo:3,cost:'$2k',gate:'Can broker keyed APIs legally'},
+  {milestone:'NDA + MSA templates drafted',ph:2,mo:5,cost:'$3k',gate:'Can sign design-partner agreements'},
+  {milestone:'SOC 2 Type 1 audit started',ph:2,mo:6,cost:'$8k',gate:'Enterprise security baseline'},
+  {milestone:'SOC 2 Type 1 certified',ph:2,mo:8,cost:'$15k total',gate:'Can sign $250k+ enterprise deals'},
+  {milestone:'Data licensing agreements signed (S&P, ICEYE, Capella)',ph:2,mo:7,cost:'Legal review',gate:'Can broker paid data commercially'},
+  {milestone:'SOC 2 Type 2 audit started',ph:3,mo:10,cost:'$20k',gate:'Continuous security monitoring'},
+  {milestone:'GDPR + CCPA compliance',ph:3,mo:12,cost:'$10k',gate:'Can sell to EU + CA customers'},
+  {milestone:'Full (non-provisional) patent filed',ph:3,mo:14,cost:'$25k',gate:'Patent pending (20-year protection)'},
+  {milestone:'SOC 2 Type 2 certified',ph:3,mo:16,cost:'$35k total',gate:'Enterprise-grade security posture'},
+  {milestone:'Export control compliance (ITAR/EAR for SAR)',ph:3,mo:15,cost:'$10k',gate:'Can broker ICEYE/Capella SAR legally'},
+  {milestone:'Enterprise MSA + SLA template finalized',ph:3,mo:12,cost:'$15k',gate:'99.9% uptime SLA commitment'},
+  {milestone:'ISO 27001 audit started',ph:4,mo:20,cost:'$30k',gate:'Required for government contracts'},
+  {milestone:'ISO 27001 certified',ph:4,mo:26,cost:'$50k total',gate:'Can bid on government RFPs'},
+  {milestone:'Data residency agreements (EU, AU, China)',ph:4,mo:24,cost:'$15k',gate:'Can host data locally for global customers'},
+  {milestone:'Patent continuation filed (broader claims)',ph:4,mo:28,cost:'$30k',gate:'Defensive IP portfolio'},
+  {milestone:'Marketplace terms of service',ph:5,mo:38,cost:'$20k',gate:'Can host third-party data sellers'},
+  {milestone:'Antitrust clearance (marketplace)',ph:5,mo:40,cost:'$20k',gate:'No anti-competitive risk'},
+  {milestone:'IPO readiness audit (Big 4)',ph:5,mo:46,cost:'$100k',gate:'Public-company financial reporting'},
+  {milestone:'S-1 registration statement',ph:6,mo:52,cost:'$2M (legal + audit)',gate:'IPO filed'},
+  {milestone:'SEC reporting infrastructure (10-Q/K/8-K)',ph:6,mo:54,cost:'$500k/yr',gate:'Public company compliance'},
+  {milestone:'D&O insurance + committee formation',ph:6,mo:55,cost:'$200k/yr',gate:'Board governance operational'},
+];
+
+/* ============================================================
+   DATA: Board Cadence
+   ============================================================ */
+const boardMeetings = [
+  {meeting:'Q1 Board (Mo 3)',ph:1,focus:'Are we building the right thing? Did 30 buyers confirm the thesis?',deck:'10 LOIs + 30 interview summaries + demo URL + pre-seed term sheet',metric:'LOIs signed (target: 10)',decision:'Close pre-seed + hire Engineer #1'},
+  {meeting:'Q2 Board (Mo 6)',ph:2,focus:'Is the MVP working? Are design partners using it?',deck:'5 pilot agreements + product screenshots + usage analytics + seed pipeline',metric:'Paid pilots started (target: 3)',decision:'Close seed + hire Sales Rep #1'},
+  {meeting:'Q3 Board (Mo 9)',ph:2,focus:'Are pilots converting to full-price signals?',deck:'Pilot usage + customer testimonials + case studies + Series A pipeline',metric:'Pilot revenue booked (target: $500k)',decision:'Approach Series A leads + hire VP Eng/VP Sales'},
+  {meeting:'Q4 Board (Mo 12)',ph:3,focus:'Did we hit $5M ARR? Is the model scaling?',deck:'ARR waterfall + 8 products live + customer logos + Series A term sheet',metric:'ARR (target: $5M)',decision:'Close Series A + open London/Perth'},
+  {meeting:'Q5 Board (Mo 15)',ph:3,focus:'Is the enterprise sales motion working?',deck:'Pipeline + CAC/LTV by product + 15 customers + expansion revenue',metric:'Enterprise customers (target: 15)',decision:'Scale engineering to 3 squads + hire VP Product'},
+  {meeting:'Q6 Board (Mo 18)',ph:4,focus:'Are we category leaders? Is ICMM partnership live?',deck:'15 products + ICMM/IRMA partnerships + top-10 mining major logos + Series B pipeline',metric:'ARR (target: $15M)',decision:'Close Series B + open Singapore'},
+  {meeting:'Q7 Board (Mo 24)',ph:4,focus:'Is the platform thesis viable? Marketplace demo?',deck:'Marketplace architecture + O&G expansion plan + 40 customers + $30M ARR trajectory',metric:'ARR (target: $25M)',decision:'Ship marketplace beta + hire GM O&G'},
+  {meeting:'Q8 Board (Mo 30)',ph:4,focus:'Are we IPO-ready in 18 months?',deck:'30M ARR + 15 products + 3 verticals prep + Series C pipeline + marketplace GMV',metric:'ARR (target: $30M)',decision:'Approach Series C leads + IPO prep audit'},
+  {meeting:'Q9 Board (Mo 36)',ph:5,focus:'Series C closed. Is the marketplace scaling?',deck:'Series C close + marketplace GMV + 25 products complete + O&G customers + Series C/CFO',metric:'ARR (target: $50M)',decision:'Hire CFO (IPO exp) + file S-1 prep'},
+  {meeting:'Q10 Board (Mo 42)',ph:5,focus:'Are we IPO-ready?',deck:'$80M ARR trajectory + 3 verticals + marketplace GMV $10M+ + S-1 draft + banker selection',metric:'ARR (target: $80M)',decision:'File S-1 + select bankers (Goldman/Morgan Stanley)'},
+  {meeting:'Q11 Board (Mo 48)',ph:6,focus:'IPO filed. Pricing?',deck:'S-1 filed + roadshow deck + $100M ARR + 500 customers + valuation $1.5-2.5B',metric:'ARR (target: $100M+)',decision:'Price IPO + first day of trading'},
+  {meeting:'Q12 Board (Mo 54)',ph:6,focus:'Post-IPO: Are we executing? Lockup expiry prep?',deck:'Public company reporting + $150M ARR trajectory + employee retention plan + M&A pipeline',metric:'ARR (target: $150M+)',decision:'Acquisitions + secondary offering + employee liquidity'},
+];
+
+/* ============================================================
+   DATA: Funding Rounds
+   ============================================================ */
+const fundingRounds = [
+  {round:'Pre-Seed',amount:'$0.5-1M',timing:'Month 1-3',source:'Mining-literate angels (Pierre Lassonde, Ross Beaty, Nat Rothschild, Frank Giustra, Lukas Lundin, Robert Friedland)',valuation:'$5-8M post',use:'2 engineers + dev infra + legal + 30 GTM interviews + PDAC/Indaba travel',barW:8,color:'var(--copper)'},
+  {round:'Seed',amount:'$3-5M',timing:'Month 3-9',source:'Industrial-tech VCs (Systemiq, SOSV, Breakthrough Energy, Bowie Capital, Appian Capital) + strategic LPs',valuation:'$15-25M post',use:'5 design-partner pilots + 3 product builds + SAR data contracts + 6 hires',barW:20,color:'var(--brass)'},
+  {round:'Series A',amount:'$15-25M',timing:'Month 9-18',source:'Tier-1 VC (Sequoia, a16z, Bond, Bessemer, Founders Fund, 8VC, Bow Capital)',valuation:'$80-120M post',use:'Scale to 8 products + London/Perth offices + 15 headcount + SOC 2 Type 2',barW:45,color:'var(--moss)'},
+  {round:'Series B',amount:'$50-80M',timing:'Month 18-36',source:'Growth investor (Tiger Global, Coatue, General Atlantic, ICONIQ, TCV, Lightspeed) + strategic (Bloomberg Beta, TR Ventures, S&P Ventures)',valuation:'$350-500M post',use:'15 products + Singapore office + marketplace architecture + 35 headcount + ISO 27001',barW:80,color:'var(--rust)'},
+  {round:'Series C / Pre-IPO',amount:'$100-150M',timing:'Month 36-48',source:'Pre-IPO (Fidelity, T. Rowe Price, Temasek, GIC, SoftBank Vision) or strategic (Bloomberg, LSEG, S&P Global)',valuation:'$800M-$1.2B post',use:'25 products + marketplace launch + O&G + Ag expansion + 80 headcount + IPO audit',barW:120,color:'var(--gold)'},
+];
+
+/* ============================================================
+   DATA: Risk Matrix (20 risks)
+   ============================================================ */
+const riskMatrix = [
+  {n:1,r:'S&P / WoodMac refuse API access to a startup',l:'High',i:'High',m:'Start with all-open sources. Approach after $5M ARR. Never >15% COGS from one source.',o:'Founder',ph:1},
+  {n:2,r:'Mining procurement cycles too slow (12-18 months)',l:'High',i:'High',m:'Sell to funds/insurers first (30-60 day). Use paid pilot agreements.',o:'Founder',ph:1},
+  {n:3,r:'SAR data costs exceed pilot revenue',l:'High',i:'Med',m:'Per-asset pricing. Limit to 50 dams. Pass-through as imagery fee.',o:'Founder',ph:2},
+  {n:4,r:'Design partners won\'t convert to full-price',l:'Med',i:'High',m:'Pilot at 50% of annual. Build switching costs. Auto-conversion clause.',o:'Sales Rep',ph:2},
+  {n:5,r:'Key engineer leaves (single point of failure)',l:'Med',i:'High',m:'Document everything. 4-year vesting. Backup contractor.',o:'Founder',ph:2},
+  {n:6,r:'Cesium globe performance on low-end devices',l:'Med',i:'Med',m:'Ship 2D Leaflet fallback. Optimize for 60fps mid-range laptop.',o:'Engineer #1',ph:1},
+  {n:7,r:'S&P/Bloomberg launches competing product',l:'Low',i:'High',m:'Wrong cost structure. They\'ll acquire us instead. We\'re 3 years ahead.',o:'Founder',ph:3},
+  {n:8,r:'CAC exceeds LTV at scale',l:'Med',i:'High',m:'2-year minimums. Cross-sell. <12 month CAC payback. Kill reps below 0.8x quota.',o:'VP Sales',ph:3},
+  {n:9,r:'Key data provider raises prices or cuts access',l:'Low',i:'High',m:'Diversify 2+ sources per category. Open alternatives. Price locks. <15% COGS.',o:'Head of Data',ph:3},
+  {n:10,r:'Government procurement stalls revenue',l:'High',i:'Med',m:'Don\'t rely on gov for ARR. Treat as upside. Use CRADA/OT. 3-4 in pipeline.',o:'VP Sales',ph:4},
+  {n:11,r:'Maxar/Planet acquired by competitor',l:'Low',i:'High',m:'Sentinel-2 as base. Change-of-control clauses. BlackSky/LandSlid backup.',o:'Head of Data',ph:4},
+  {n:12,r:'Talent war — Google/Meta hires our best',l:'High',i:'Med',m:'Above-market comp for top 5. Meaningful equity. Mission sell. Non-solicitables.',o:'VP Eng',ph:4},
+  {n:13,r:'Marketplace gets no third-party sellers',l:'Med',i:'High',m:'Seed 5 hand-picked partners. 0% take 6 months. If fails, stay product company.',o:'GM Marketplace',ph:5},
+  {n:14,r:'Oil & gas expansion dilutes mining focus',l:'Med',i:'Med',m:'Separate P&L + dedicated GM. Don\'t touch mining eng. 20% target or cut.',o:'GM O&G',ph:5},
+  {n:15,r:'IPO window closes',l:'Med',i:'High',m:'2 backup paths: $150M Series D bridge or strategic sale at $1.5B floor. Profitable, can wait.',o:'CFO',ph:6},
+  {n:16,r:'Post-IPO brain drain of early employees',l:'High',i:'Med',m:'Stagger vesting. 4-year post-IPO cliffs. $500k retention. Promote from within.',o:'Founder',ph:6},
+  {n:17,r:'SAR data dual-use export control blocks international sales',l:'Med',i:'Med',m:'Engage export counsel early. License only approved regions. Use open Sentinel-1 for restricted countries.',o:'CLO',ph:3},
+  {n:18,r:'Patent challenged or invalidated',l:'Low',i:'Med',m:'File continuations. Build defensive portfolio (5+ patents by Year 4). Prior art searches quarterly.',o:'IP Lawyer',ph:3},
+  {n:19,r:'Data breach compromises customer data',l:'Low',i:'High',m:'SOC 2 Type 2 from Year 2. Encryption at rest + in transit. Penetration testing annually. Cyber insurance $5M.',o:'VP Eng',ph:2},
+  {n:20,r:'ESG backlash — platform used for greenwashing',l:'Med',i:'Med',m:'Publish methodology openly. Partner with IRMA/ICMM for credibility. Never let marketing override science.',o:'Founder',ph:4},
+];
+
+/* ============================================================
+   DATA: Moat Layers
+   ============================================================ */
+const moatLayers = [
+  {n:1,title:'Data Integration Moat',desc:'117 sources integrated, brokered, and fused. Each took 1-2 weeks of engineering. A competitor must repeat all 117 integrations from scratch. At 2 weeks per source, that\'s 4.5 years of engineering — before writing a single inference.',metric:'117 sources',color:'var(--copper)'},
+  {n:2,title:'Inference Recipe Moat',desc:'25 documented fusion recipes — each the product of domain expertise + data engineering + customer feedback. Each recipe encodes years of geological/financial/ESG knowledge. Cannot be reverse-engineered from the product UI.',metric:'25 recipes',color:'var(--gold)'},
+  {n:3,title:'Network Effect Moat',desc:'Every new customer generates proxy validation data (they confirm or deny our inferences). Every new data source improves every inference. The platform gets smarter with every user — a competitor starting from zero has a cold-start problem.',metric:'500+ customers by Y5',color:'var(--moss)'},
+  {n:4,title:'Regulatory Trust Moat',desc:'SOC 2 Type 2, ISO 27001, data residency agreements, export-control compliance for SAR. Enterprise procurement requires these. A competitor needs 18-24 months to achieve them from a standing start.',metric:'5+ certifications',color:'var(--rust)'},
+  {n:5,title:'Distribution Moat',desc:'ICMM partnership (24 mining majors), IRMA partnership (audited ESG), PDAC/Indaba/LME Week presence, the annual "State of Resource Intelligence" report. These relationships take years to build and are personal, not transactional.',metric:'3 industry partnerships',color:'var(--brass)'},
+];
+
+/* ============================================================
+   DATA: Kill Criteria
+   ============================================================ */
+const killCriteria = [
+  {n:1,trigger:'< 3 LOIs signed by Month 3',action:'Pivot: Focus on the single persona with the highest pain. Rebuild the pitch around one inference, one persona, one price point. If still no LOIs by Month 6, return capital to investors.'},
+  {n:2,trigger:'0 design partners converted to full-price by Month 12',action:'Diagnose: Is it the product (doesn\'t work) or the market (doesn\'t pay)? If product: hire a domain expert to fix the inference. If market: pivot to a different vertical (oil & gas, agriculture) using the same fusion engine.'},
+  {n:3,trigger:'Gross margin < 40% at $5M ARR',action:'Data costs are too high. Renegotiate all keyed API contracts. Cut the most expensive 3 sources. Replace with open alternatives. If margin doesn\'t recover to 60%+ by Month 18, the business model is broken — consider wind-down.'},
+  {n:4,trigger:'CAC payback > 18 months at $15M ARR',action:'Sales motion is broken. Fire the VP Sales. Move to product-led growth (self-serve only). Cut headcount by 30%. If CAC doesn\'t recover to <12 months by Month 24, sell to a strategic.'},
+  {n:5,trigger:'Marketplace GMV < $2M after 12 months live',action:'The platform thesis has failed. Kill the marketplace. Lay off the marketplace team. Focus on being a great product company (still a $100M+ opportunity). Do not throw good money after the platform dream.'},
+  {n:6,trigger:'Top 3 customers churn in same quarter',action:'Existential risk — the product doesn\'t work or a competitor launched. Immediately interview all churned customers. If competitor: match features within 90 days. If product: freeze new features and fix the core. If neither found: reassess the entire thesis.'},
+  {n:7,trigger:'ICMM or IRMA partnership falls through by Month 24',action:'Distribution moat is weakened. Pivot to direct enterprise sales (higher CAC but viable). Build the "State of Resource Intelligence" report as a direct lead magnet. Re-approach ICMM/IRMA in 12 months with stronger traction.'},
+  {n:8,trigger:'Series A term sheet not signed by Month 18',action:'Bridge: extend existing seed runway by cutting burn to $30k/mo (2 engineers only). Pivot to profitability on pilot revenue. If no term sheet by Month 24, sell to S&P Global or Bloomberg as an acqui-hire.'},
+  {n:9,trigger:'Core patent invalidated in re-examination',action:'IP moat weakened but not fatal — the moat is integration, not patents. Stop filing continuations (save $30k). Defend with trade secrets instead. Focus on data + network effects as the moat.'},
+  {n:10,trigger:'2 of top-5 early employees leave within same quarter',action:'Leadership crisis. Engage an executive coach for remaining founders. Conduct stay interviews with all employees. If root cause is founder conflict, bring in an independent board member to mediate. If toxic culture, replace the toxic founder.'},
+];
+
+/* ============================================================
+   RENDER FUNCTIONS
+   ============================================================ */
+let activePhase = 1;
+let activeTab = 'overview';
+
+// Phase nodes
+const phaseNodes = document.getElementById('phaseNodes');
+function renderPhaseNodes(){
+  phaseNodes.innerHTML = phases.map(p => `
+    <div class="phase-node ${p.n === activePhase ? 'active' : ''}" data-phase="${p.n}" style="--c:${p.color}">
+      <div class="ring" style="background:${p.color}">${p.n}</div>
+      <div class="label">${p.name}</div>
+    </div>
+  `).join('');
+  phaseNodes.querySelectorAll('.phase-node').forEach(el => {
+    el.addEventListener('click', () => {
+      activePhase = parseInt(el.dataset.phase);
+      renderPhaseNodes();
+      renderPhaseDetail();
+      renderPhaseStats();
+    });
+  });
+}
+
+// Phase stats
+const phaseStats = document.getElementById('phaseStats');
+function renderPhaseStats(){
+  phaseStats.innerHTML = phases.map(p => `
+    <div class="kpi-card ${p.n === activePhase ? 'border-[var(--copper)]' : ''}" style="${p.n === activePhase ? 'border-color:'+p.color : ''}">
+      <div class="text-[10px] font-mono uppercase tracking-wider" style="color:${p.color}">Phase ${p.n}</div>
+      <div class="kpi-val" style="color:${p.color}">${p.arr}</div>
+      <div class="kpi-label">Target ARR · ${p.months}</div>
+    </div>
+  `).join('');
+}
+
+// Phase detail
+const phaseDetailContent = document.getElementById('phaseDetailContent');
+function renderPhaseDetail(){
+  const p = phases.find(ph => ph.n === activePhase);
+  const tabs = document.getElementById('phaseTabs');
+  tabs.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === activeTab);
+    btn.onclick = () => { activeTab = btn.dataset.tab; renderPhaseDetail(); };
+  });
+  
+  let html = '';
+  if(activeTab === 'overview'){
+    html = `
+      <div class="card p-8" style="animation:fadeIn .4s">
+        <div class="flex items-start gap-4 mb-6">
+          <span class="font-display text-6xl" style="color:${p.color}">${p.n}</span>
+          <div class="flex-1">
+            <div class="font-mono text-xs uppercase tracking-[0.2em]" style="color:${p.color}">${p.months} · ${p.duration}</div>
+            <h3 class="font-display text-3xl mt-1">${p.name}</h3>
+            <p class="text-[var(--bone-dim)] mt-3 leading-relaxed">${p.summary}</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">North Star</div>
+            <div class="text-lg text-[var(--bone)]">${p.northStar}</div>
+          </div>
+          <div>
+            <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Funding</div>
+            <div class="text-lg text-[var(--gold)] font-mono">${p.funding}</div>
+          </div>
+        </div>
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-3">Key KPIs</div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            ${p.kpis.map(k => `<div class="kpi-card"><div class="kpi-val" style="color:${p.color}">${k.v}</div><div class="kpi-label">${k.k}</div></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  } else if(activeTab === 'workstreams'){
+    const wsKeys = ['Data','Product','GTM','Funding','Team','Legal'];
+    html = `<div class="space-y-3">${wsKeys.map(ws => {
+      const tasks = p.workstreams[ws];
+      if(!tasks) return '';
+      return `
+        <div class="ws-block open">
+          <div class="ws-header">
+            <svg class="ws-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--copper)" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            <span class="font-mono text-xs uppercase tracking-wider" style="color:var(--copper)">${ws}</span>
+            <span class="text-[var(--muted)] text-xs ml-auto">${tasks.length} tasks</span>
+          </div>
+          <div class="ws-body"><div class="ws-content">
+            ${tasks.map((t,i) => `<div class="ws-task"><span class="num">${i+1}</span><span>${t}</span></div>`).join('')}
+          </div></div>
+        </div>
+      `;
+    }).join('')}</div>`;
+  } else if(activeTab === 'customers'){
+    html = `<div class="card p-4 overflow-x-auto"><div class="min-w-[800px]"><table class="dtable"><thead><tr><th>Company</th><th>Segment</th><th>Persona</th><th>Product</th><th>Approach</th><th>Phase</th><th>ACV</th></tr></thead><tbody>
+      ${p.customers.map(c => `<tr><td class="text-[var(--bone)]">${c.c}</td><td>${c.seg}</td><td>${c.persona}</td><td>${c.p}</td><td>${c.a}</td><td>P${c.ph}</td><td class="font-mono text-[var(--gold)]">${c.acv}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  } else if(activeTab === 'tech'){
+    const tech = p.tech || [];
+    html = `<div class="card p-4 overflow-x-auto"><div class="min-w-[800px]"><table class="dtable"><thead><tr><th>Layer</th><th>Choice</th><th>Alternative</th><th>Rationale</th><th>Cost</th></tr></thead><tbody>
+      ${tech.map(t => `<tr><td class="text-[var(--bone)]">${t.l}</td><td>${t.c}</td><td class="text-[var(--muted)]">${t.a}</td><td>${t.r}</td><td class="font-mono text-[var(--gold)]">${t.cost}</td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  } else if(activeTab === 'kpis'){
+    html = `<div class="card p-6">
+      <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-3">Exit Gates (Must Achieve Before Phase ${p.n+1})</div>
+      <div class="flex flex-wrap gap-2 mb-8">
+        ${p.gates.map(g => `<div class="gate-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> ${g}</div>`).join('')}
+      </div>
+      <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-3">Key Performance Indicators</div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        ${p.kpis.map(k => `<div class="kpi-card"><div class="kpi-val" style="color:${p.color}">${k.v}</div><div class="kpi-label">${k.k}</div></div>`).join('')}
+      </div>
+    </div>`;
+  } else if(activeTab === 'risks'){
+    html = `<div class="space-y-3">${p.risks.map(r => `
+      <div class="card p-5">
+        <div class="flex items-start justify-between gap-4 mb-2">
+          <div class="text-[var(--bone)]">${r.r}</div>
+          <div class="flex gap-1 flex-shrink-0">
+            <span class="risk-cell risk-${r.l.toLowerCase()}">${r.l}</span>
+            <span class="risk-cell risk-${r.i.toLowerCase()}">${r.i}</span>
+          </div>
+        </div>
+        <div class="text-xs text-[var(--bone-dim)]"><span class="text-[var(--brass)]">Mitigation:</span> ${r.m}</div>
+      </div>
+    `).join('')}</div>`;
+  }
+  phaseDetailContent.innerHTML = html;
+  
+  // Workstream toggle
+  phaseDetailContent.querySelectorAll('.ws-header').forEach(h => {
+    h.onclick = () => h.parentElement.classList.toggle('open');
+  });
+}
+
+// First 90 days
+const weekGrid = document.getElementById('weekGrid');
+function renderWeeks(){
+  weekGrid.innerHTML = weeks.map(w => `
+    <div class="week-card">
+      <div class="week-head">
+        <span class="font-display text-lg" style="color:var(--copper)">Week ${w.w}</span>
+        <span class="text-[10px] font-mono text-[var(--muted)] uppercase tracking-wider ml-auto">${w.tasks.length} tasks</span>
+      </div>
+      <div class="week-body">
+        ${w.tasks.map(t => `<div class="week-task"><span class="dot"></span><span>${t}</span></div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// Customer conquest
+const conquestBody = document.getElementById('conquestBody');
+function renderConquest(){
+  conquestBody.innerHTML = conquestTargets.map(t => `
+    <tr>
+      <td class="font-mono text-[var(--muted)]">${t.n.toString().padStart(2,'0')}</td>
+      <td class="text-[var(--bone)]">${t.c}</td>
+      <td>${t.seg}</td>
+      <td>${t.persona}</td>
+      <td>${t.product}</td>
+      <td class="text-xs">${t.approach}</td>
+      <td><span class="font-mono text-[var(--copper)]">P${t.ph}</span></td>
+      <td class="font-mono text-[var(--gold)]">${t.acv}</td>
+    </tr>
+  `).join('');
+}
+
+// Product launch
+const launchList = document.getElementById('launchList');
+function renderLaunch(){
+  launchList.innerHTML = productLaunch.map(p => `
+    <div class="launch-item">
+      <div class="launch-phase" style="background:${p.color}">${p.n}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-[var(--bone)] font-medium">${p.name}</span>
+          <span class="badge">Phase ${p.ph}</span>
+          <span class="badge">Month ${p.month}</span>
+          <span class="badge" style="color:${p.color};border-color:${p.color}33">${p.effort} effort</span>
+        </div>
+        <div class="text-[10px] text-[var(--muted)] font-mono mt-1">Depends on: ${p.dep}</div>
+      </div>
+      <div class="text-right flex-shrink-0">
+        <div class="font-mono text-[var(--gold)] font-semibold">${p.arr}</div>
+        <div class="text-[10px] text-[var(--muted)] uppercase">ARR target</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Hiring
+const hiringBody = document.getElementById('hiringBody');
+function renderHiring(){
+  hiringBody.innerHTML = hiringPlan.map(h => `
+    <tr>
+      <td class="text-[var(--bone)]">${h.role}</td>
+      <td><span class="font-mono text-[var(--copper)]">P${h.ph}</span></td>
+      <td class="font-mono">Mo ${h.mo}</td>
+      <td class="font-mono text-[var(--gold)]">${h.comp}</td>
+      <td>${h.reports}</td>
+      <td class="text-xs">${h.unlocks}</td>
+      <td class="text-xs text-[var(--bone-dim)]">${h.interview}</td>
+    </tr>
+  `).join('');
+}
+
+// Unit economics
+const econBody = document.getElementById('econBody');
+function renderEconomics(){
+  econBody.innerHTML = unitEconomics.map(e => `
+    <tr>
+      <td class="font-mono text-[var(--muted)]">${e.n.toString().padStart(2,'0')}</td>
+      <td class="text-[var(--bone)]">${e.product}</td>
+      <td class="font-mono">${e.price}</td>
+      <td>${e.cogs}</td>
+      <td style="color:${e.gm >= '85%' ? 'var(--moss)' : 'var(--brass)'}">${e.gm}</td>
+      <td>${e.cac}</td>
+      <td>${e.ltv}</td>
+      <td style="color:${e.flag === 'green' ? 'var(--moss)' : 'var(--brass)'}">${e.payback}</td>
+      <td class="font-mono" style="color:${e.ratio >= '6.0x' ? 'var(--moss)' : 'var(--brass)'}">${e.ratio}</td>
+    </tr>
+  `).join('');
+}
+
+// Tech stack
+const techBody = document.getElementById('techBody');
+function renderTech(){
+  techBody.innerHTML = techStack.map(t => `
+    <tr>
+      <td class="text-[var(--bone)]">${t.layer}</td>
+      <td class="text-[var(--copper)]">${t.choice}</td>
+      <td class="text-[var(--muted)]">${t.alt}</td>
+      <td class="text-xs">${t.rationale}</td>
+      <td class="font-mono text-[var(--gold)]">${t.cost}</td>
+      <td><span class="font-mono text-[var(--copper)]">P${t.ph}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Competitors
+const compBody = document.getElementById('compBody');
+function renderComp(){
+  compBody.innerHTML = competitors.map(c => `
+    <tr>
+      <td class="text-[var(--bone)] font-medium">${c.c}</td>
+      <td>${c.strength}</td>
+      <td class="text-xs">${c.weakness}</td>
+      <td class="text-xs text-[var(--copper)]">${c.edge}</td>
+      <td class="text-xs text-[var(--gold)]">${c.win}</td>
+    </tr>
+  `).join('');
+}
+
+// Pricing
+const pricingTiersEl = document.getElementById('pricingTiers');
+function renderPricingTiers(){
+  pricingTiersEl.innerHTML = pricingTiers.map(t => `
+    <div class="card p-6">
+      <div class="font-display text-xl text-[var(--gold)] mb-2">${t.name}</div>
+      <div class="font-mono text-2xl text-[var(--bone)] mb-3">${t.price}</div>
+      <p class="text-sm text-[var(--bone-dim)] leading-relaxed mb-3">${t.desc}</p>
+      <div class="text-xs text-[var(--muted)] mb-2"><span class="text-[var(--brass)]">Who:</span> ${t.who}</div>
+      <div class="text-xs text-[var(--muted)]"><span class="text-[var(--brass)]">Rule:</span> ${t.rule}</div>
+    </div>
+  `).join('');
+}
+const pricingRules = document.getElementById('pricingRules');
+function renderPricingRules(){
+  pricingRules.innerHTML = pricingRulesData.map((r,i) => `<div class="flex gap-3"><span class="font-mono text-[var(--copper)] flex-shrink-0">${i+1}.</span><span>${r}</span></div>`).join('');
+}
+
+// GTM
+const gtmList = document.getElementById('gtmList');
+function renderGTM(){
+  gtmList.innerHTML = gtmPlaybook.map(g => `
+    <div class="card p-6">
+      <div class="flex items-baseline justify-between gap-4 flex-wrap mb-4">
+        <h3 class="font-display text-xl text-[var(--gold)]">${g.vertical}</h3>
+        <div class="flex gap-2">
+          <span class="badge">${g.motion}</span>
+          <span class="badge">${g.cycle}</span>
+          <span class="badge" style="color:var(--gold);border-color:rgba(232,196,106,0.3);background:rgba(232,196,106,0.08)">${g.acv}</span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 text-sm">
+        <div><span class="text-[var(--brass)] font-mono text-[10px] uppercase">Channel:</span> ${g.channel}</div>
+        <div><span class="text-[var(--brass)] font-mono text-[10px] uppercase">First sells:</span> Phase ${g.first}</div>
+      </div>
+      <p class="text-sm text-[var(--bone-dim)] mt-3 leading-relaxed">${g.tactic}</p>
+    </div>
+  `).join('');
+}
+
+// Content
+const contentGrid = document.getElementById('contentGrid');
+function renderContent(){
+  contentGrid.innerHTML = contentCalendar.map(c => `
+    <div class="p-3 border border-[var(--line)] rounded-lg bg-[rgba(0,0,0,0.2)]">
+      <div class="flex items-center gap-2 mb-1">
+        <span class="font-mono text-[10px] text-[var(--copper)]">${c.m}</span>
+        <span class="badge">${c.type}</span>
+      </div>
+      <div class="text-sm text-[var(--bone)] leading-tight mb-2">${c.title}</div>
+      <div class="text-[10px] text-[var(--muted)]">→ ${c.persona}</div>
+    </div>
+  `).join('');
+}
+
+// Events
+const eventBody = document.getElementById('eventBody');
+function renderEvents(){
+  eventBody.innerHTML = events.map(e => `
+    <tr>
+      <td class="text-[var(--bone)]">${e.e}</td>
+      <td>${e.mo}</td>
+      <td>${e.loc}</td>
+      <td>${e.aud}</td>
+      <td class="font-mono">${e.cost}</td>
+      <td class="font-mono text-[var(--moss)]">${e.pipeline}</td>
+      <td class="font-mono text-[var(--gold)]">${e.roi}</td>
+      <td><span class="font-mono text-[var(--copper)]">${e.ph}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Compliance
+const complianceList = document.getElementById('complianceList');
+function renderCompliance(){
+  complianceList.innerHTML = complianceTimeline.map(c => `
+    <div class="grid gap-3 py-2 border-b border-[var(--line)]" style="grid-template-columns:60px 1fr 80px 100px 1fr">
+      <div><span class="font-mono text-[var(--copper)]">P${c.ph}</span></div>
+      <div class="text-sm text-[var(--bone)]">${c.milestone}</div>
+      <div class="font-mono text-xs text-[var(--muted)]">Mo ${c.mo}</div>
+      <div class="font-mono text-xs text-[var(--gold)]">${c.cost}</div>
+      <div class="text-xs text-[var(--bone-dim)]"><span class="text-[var(--moss)]">Gate:</span> ${c.gate}</div>
+    </div>
+  `).join('');
+}
+
+// Board
+const boardBody = document.getElementById('boardBody');
+function renderBoard(){
+  boardBody.innerHTML = boardMeetings.map(b => `
+    <tr>
+      <td class="text-[var(--bone)]">${b.meeting}</td>
+      <td><span class="font-mono text-[var(--copper)]">P${b.ph}</span></td>
+      <td class="text-xs">${b.focus}</td>
+      <td class="text-xs">${b.deck}</td>
+      <td class="text-xs font-mono text-[var(--gold)]">${b.metric}</td>
+      <td class="text-xs text-[var(--bone-dim)]">${b.decision}</td>
+    </tr>
+  `).join('');
+}
+
+// Funding
+const fundingList = document.getElementById('fundingList');
+function renderFunding(){
+  fundingList.innerHTML = fundingRounds.map(f => `
+    <div class="card p-5">
+      <div class="grid md:grid-cols-12 gap-4 items-center">
+        <div class="md:col-span-2">
+          <div class="font-display text-xl" style="color:${f.color}">${f.round}</div>
+          <div class="text-[10px] font-mono text-[var(--muted)] uppercase tracking-wider">${f.timing}</div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="fund-bar"><div class="fill" style="width:${f.barW}%;background:${f.color}"></div><span class="amt" style="color:${f.color}">${f.amount}</span></div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Source</div>
+          <div class="text-xs text-[var(--bone-dim)]">${f.source}</div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Valuation</div>
+          <div class="text-xs font-mono text-[var(--bone)]">${f.valuation}</div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Use of Funds</div>
+          <div class="text-xs text-[var(--bone-dim)]">${f.use}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Risk matrix
+const riskBody = document.getElementById('riskBody');
+function renderRisks(){
+  riskBody.innerHTML = riskMatrix.map(r => `
+    <tr>
+      <td class="font-mono text-[var(--muted)]">${r.n.toString().padStart(2,'0')}</td>
+      <td class="text-[var(--bone)]">${r.r}</td>
+      <td><span class="risk-cell risk-${r.l.toLowerCase()}">${r.l}</span></td>
+      <td><span class="risk-cell risk-${r.i.toLowerCase()}">${r.i}</span></td>
+      <td class="text-xs text-[var(--bone-dim)]">${r.m}</td>
+      <td class="text-xs">${r.o}</td>
+      <td><span class="font-mono text-[var(--copper)]">P${r.ph}</span></td>
+    </tr>
+  `).join('');
+}
+
+// Moat
+const moatGrid = document.getElementById('moatGrid');
+function renderMoat(){
+  moatGrid.innerHTML = moatLayers.map(m => `
+    <div class="card p-6">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="font-display text-3xl" style="color:${m.color}">${m.n.toString().padStart(2,'0')}</span>
+        <h3 class="font-display text-xl" style="color:${m.color}">${m.title}</h3>
+      </div>
+      <p class="text-sm text-[var(--bone-dim)] leading-relaxed mb-4">${m.desc}</p>
+      <div class="font-mono text-2xl" style="color:${m.color}">${m.metric}</div>
+    </div>
+  `).join('');
+}
+
+// Kill criteria
+const killList = document.getElementById('killList');
+function renderKill(){
+  killList.innerHTML = killCriteria.map(k => `
+    <div class="card p-6" style="border-color:rgba(196,99,74,0.2)">
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full border-2 border-[var(--rust)] flex items-center justify-center bg-[rgba(196,99,74,0.1)]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4634a" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--rust)] mb-1">Kill Criterion #${k.n}</div>
+          <div class="text-[var(--bone)] font-medium mb-2">${k.trigger}</div>
+          <div class="text-sm text-[var(--bone-dim)] leading-relaxed"><span class="text-[var(--brass)]">Action:</span> ${k.action}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   BACKGROUND VISUALS
+   ============================================================ */
+function buildTopo(){
+  const g = document.getElementById('topoGroup');
+  let html = '';
+  for(let i=0;i<20;i++){
+    const cx = 720 + Math.sin(i*0.7) * 200;
+    const cy = 450 + Math.cos(i*0.5) * 150;
+    const r = 80 + i*35;
+    html += `<path class="topo-path" d="M ${cx-r},${cy} a ${r},${r*0.7} 0 1,0 ${r*2},0 a ${r},${r*0.7} 0 1,0 ${-r*2},0" style="opacity:${0.3 + (i%7)*0.05}"/>`;
+  }
+  for(let i=0;i<8;i++){
+    const y = i * 120;
+    html += `<path class="topo-path" d="M 0,${y} Q 360,${y-30} 720,${y+10} T 1440,${y-20}" style="opacity:${0.2 + i*0.04}"/>`;
+  }
+  g.innerHTML = html;
+}
+
+const dustCanvas = document.getElementById('dustCanvas');
+const dustCtx = dustCanvas.getContext('2d');
+let dust = [];
+function resizeDust(){
+  dustCanvas.width = window.innerWidth;
+  dustCanvas.height = window.innerHeight;
+  dust = [];
+  for(let i=0;i<50;i++){
+    dust.push({x:Math.random()*dustCanvas.width,y:Math.random()*dustCanvas.height,
+      r:Math.max(0.3,Math.random()*1.5),vx:(Math.random()-0.5)*0.15,vy:(Math.random()-0.5)*0.15,
+      a:0.1+Math.random()*0.4,hue:Math.random()>0.7?'moss':'copper'});
+  }
+}
+function animateDust(){
+  dustCtx.clearRect(0,0,dustCanvas.width,dustCanvas.height);
+  dust.forEach(p=>{p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0)p.x=dustCanvas.width;if(p.x>dustCanvas.width)p.x=0;
+    if(p.y<0)p.y=dustCanvas.height;if(p.y>dustCanvas.height)p.y=0;
+    dustCtx.fillStyle=p.hue==='copper'?`rgba(200,152,88,${p.a})`:`rgba(122,138,111,${p.a})`;
+    dustCtx.beginPath();dustCtx.arc(p.x,p.y,Math.max(0.2,p.r),0,Math.PI*2);dustCtx.fill();
+  });
+  requestAnimationFrame(animateDust);
+}
+
+document.addEventListener('mousemove',e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*15;
+  const y=(e.clientY/window.innerHeight-0.5)*15;
+  const g=document.getElementById('topoGroup');
+  if(g)g.style.transform=`translate(${x}px,${y}px)`;
+});
+
+// Side nav active state
+window.addEventListener('scroll',()=>{
+  const sections = document.querySelectorAll('section[id]');
+  let current = '';
+  sections.forEach(s=>{
+    if(window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  document.querySelectorAll('.sidenav a').forEach(a=>{
+    a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+  });
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded',()=>{
+  buildTopo();resizeDust();animateDust();
+  renderPhaseNodes();renderPhaseDetail();renderPhaseStats();
+  renderWeeks();renderConquest();renderLaunch();renderHiring();
+  renderEconomics();renderTech();renderComp();
+  renderPricingTiers();renderPricingRules();renderGTM();
+  renderContent();renderEvents();renderCompliance();
+  renderBoard();renderFunding();renderRisks();renderMoat();renderKill();
+  window.addEventListener('resize',resizeDust);
+  const style=document.createElement('style');
+  style.innerHTML=`@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}`;
+  document.head.appendChild(style);
+});
+</script>
+</body>
+</html>

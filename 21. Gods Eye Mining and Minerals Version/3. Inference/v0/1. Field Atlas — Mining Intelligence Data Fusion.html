@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Field Atlas — Mining Intelligence Data Fusion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEE9DD; --bg-panel:#F8F5EC; --bg-raised:#FFFFFF;
+  --text:#20241F; --text-muted:#5B6459; --border:#CBC2AC;
+  --accent:#A8571F; --accent-2:#2E6E68; --hazard:#8A5A16;
+  --font-serif:'Source Serif 4',Georgia,serif;
+  --font-sans:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181A; --bg-panel:#1B2124; --bg-raised:#20272A;
+    --text:#E9E4D8; --text-muted:#93A19A; --border:#333F3B;
+    --accent:#DE9251; --accent-2:#63B6AC; --hazard:#E0AA45;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14181A; --bg-panel:#1B2124; --bg-raised:#20272A;
+  --text:#E9E4D8; --text-muted:#93A19A; --border:#333F3B;
+  --accent:#DE9251; --accent-2:#63B6AC; --hazard:#E0AA45;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;}
+a{color:inherit;}
+h1,h2,h3{font-family:var(--font-serif);font-weight:600;line-height:1.2;margin:0 0 .4em;}
+.mono{font-family:var(--font-mono);}
+#topbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.9rem 1.4rem;border-bottom:1px solid var(--border);background:var(--bg-panel);position:sticky;top:0;z-index:20;padding-top:calc(.9rem + env(safe-area-inset-top,0px));}
+#topbar .brand{display:flex;align-items:center;gap:.6rem;}
+#topbar .brand .mark{font-size:1.3rem;}
+#topbar .brand h1{font-size:1.05rem;margin:0;letter-spacing:.01em;}
+#topbar .stats{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);display:none;}
+@media(min-width:640px){#topbar .stats{display:block;}}
+#theme-btn{border:1px solid var(--border);background:var(--bg-raised);color:var(--text);border-radius:3px;padding:.4rem .6rem;font-size:.85rem;cursor:pointer;}
+#theme-btn:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;}
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 54px);}
+@media(max-width:860px){.shell{grid-template-columns:1fr;}}
+nav#side{border-right:1px solid var(--border);background:var(--bg-panel);padding:1rem 0;overflow-y:auto;}
+@media(max-width:860px){nav#side{border-right:none;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:.5rem;gap:.2rem;}}
+nav#side .grp-label{padding:.3rem 1.1rem;font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-top:.6rem;}
+@media(max-width:860px){nav#side .grp-label{display:none;}}
+nav#side a{display:flex;gap:.55rem;align-items:baseline;padding:.4rem 1.1rem;text-decoration:none;font-size:.88rem;color:var(--text-muted);white-space:nowrap;border-left:2px solid transparent;}
+@media(max-width:860px){nav#side a{border-left:none;border-bottom:2px solid transparent;padding:.4rem .6rem;}}
+nav#side a .code{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);min-width:2.4em;}
+nav#side a.active{color:var(--text);border-left-color:var(--accent);background:var(--bg-raised);}
+nav#side a:hover{color:var(--text);}
+main{padding:2.2rem 1.4rem 4rem;display:flex;justify-content:center;}
+.page{max-width:700px;width:100%;}
+.page .kicker{font-family:var(--font-mono);font-size:.78rem;color:var(--accent);display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;}
+.page .kicker svg{width:14px;height:14px;}
+.page h2{font-size:1.85rem;margin-bottom:.5rem;}
+.page .count{color:var(--text-muted);font-size:.9rem;margin-bottom:1.4rem;}
+.lead{font-size:1.08rem;color:var(--text);max-width:60ch;}
+.muted{color:var(--text-muted);}
+h3.section{font-size:1rem;font-family:var(--font-sans);font-weight:600;margin-top:2rem;border-top:1px solid var(--border);padding-top:1rem;}
+ul.insights{list-style:none;margin:1rem 0;padding:0;display:grid;gap:.6rem;}
+ul.insights li{border-left:2px solid var(--accent-2);background:var(--bg-panel);padding:.7rem .9rem;border-radius:0 3px 3px 0;font-size:.95rem;}
+.fusion-box{margin-top:1.6rem;background:var(--bg-raised);border:1px solid var(--border);border-radius:3px;padding:1rem 1.1rem;}
+.fusion-box .lbl{font-size:.75rem;color:var(--text-muted);margin-bottom:.5rem;}
+.tag{display:inline-flex;align-items:center;border:1px solid var(--border);background:var(--bg-panel);color:var(--text);font-family:var(--font-mono);font-size:.75rem;padding:.3rem .55rem;border-radius:3px;margin:.15rem .3rem .15rem 0;text-decoration:none;cursor:pointer;}
+.tag:hover{border-color:var(--accent);color:var(--accent);}
+.stack-chip{font-family:var(--font-mono);font-size:.68rem;border:1px solid var(--border);border-radius:3px;padding:.15rem .4rem;color:var(--text-muted);}
+.play{border:1px solid var(--border);border-radius:3px;padding:1.2rem 1.3rem;margin-bottom:1.3rem;background:var(--bg-panel);scroll-margin-top:5rem;}
+.play h3{font-family:var(--font-serif);font-size:1.25rem;margin-bottom:.5rem;}
+.play .stack{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.7rem;}
+.play .payoff{margin-top:.7rem;font-style:italic;color:var(--accent);font-size:.92rem;}
+.grid-cats{display:grid;gap:.5rem;margin-top:1rem;}
+.grid-cats a{display:flex;justify-content:space-between;border:1px solid var(--border);border-radius:3px;padding:.6rem .8rem;text-decoration:none;font-size:.9rem;}
+.grid-cats a:hover{border-color:var(--accent);}
+.stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem;margin:1.6rem 0;}
+@media(min-width:520px){.stat-row{grid-template-columns:repeat(4,1fr);}}
+.stat-row div{border:1px solid var(--border);border-radius:3px;padding:.8rem;background:var(--bg-panel);}
+.stat-row .n{font-family:var(--font-mono);font-size:1.4rem;color:var(--accent);}
+.stat-row .l{font-size:.72rem;color:var(--text-muted);}
+.legend-row{display:flex;gap:.6rem;align-items:baseline;padding:.5rem 0;border-bottom:1px solid var(--border);font-size:.9rem;}
+.legend-row .k{font-family:var(--font-mono);color:var(--accent-2);min-width:5.2em;}
+.shipped{display:grid;gap:.35rem;margin-top:.8rem;font-size:.88rem;}
+.shipped div{display:flex;gap:.5rem;}
+.shipped .c{font-family:var(--font-mono);color:var(--accent);min-width:3.4em;}
+footer.note{margin-top:2.5rem;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border);padding-top:1rem;}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <div class="brand"><span class="mark">⛏️</span><h1>Field Atlas</h1></div>
+  <div class="stats mono">125 sources · 12 domains · 6 fusion plays</div>
+  <button id="theme-btn" aria-label="Toggle color theme">◐ Theme</button>
+</div>
+<div class="shell">
+  <nav id="side"></nav>
+  <main><div class="page" id="page"></div></main>
+</div>
+<script>
+const CATS = [
+ {code:'GEO',icon:'🪨',name:'Mineral Deposits & Geology',n:17,
+  intro:'Bedrock maps, historic occurrence catalogs, whole-rock geochemistry and mineral-locality databases turn a bare basemap into a stacked exploration model.',
+  bullets:[
+   'Overlay MRDS / ARDF / SAMINDABA occurrence density on Macrostrat, BGS and NGMDB bedrock polygons to rank host-rock units by historic hit-rate, not just lithology name.',
+   'Cross EarthChem whole-rock geochemistry against Mindat locality clusters to spot geochemical anomalies with no recorded occurrence yet — first-pass target generation.',
+   'Layer IHFC heat-flow values under porphyry-prone bedrock to separate cold, unlikely intrusive centers from thermally anomalous ones worth drilling.',
+   'Compare MRDS active-mine status against surrounding untested geology to find brownfield extensions analysts routinely overlook.'],
+  plays:['P2']},
+ {code:'EO',icon:'🛰️',name:'Earth Observation & Satellite',n:14,
+  intro:'Optical, SAR and thermal feeds substitute for a site visit — before, during and after a discovery or a disturbance.',
+  bullets:[
+   'Task Sentinel Hub / Planet true-color imagery on a cadence to change-detect pit expansion, waste-rock growth or new haul roads a competitor hasn\'t disclosed.',
+   'Pair Capella / ICEYE SAR with tailings-dam coordinates to watch wall geometry through cloud cover and at night, months ahead of any filing.',
+   'Read Sentinel-5P TROPOMI methane columns over coal basins to flag venting or fugitive-emission spikes before a regulator does.',
+   'Use OpenAerialMap UAV footprints to fill the resolution gap satellites miss at pit-wall scale, e.g. bench-level slope monitoring.'],
+  plays:['P1','P5']},
+ {code:'OPS',icon:'⛏️',name:'Mining Operations & Production',n:12,
+  intro:'Yearbooks, cost curves and ownership registries convert a map pin into an asset with a cost position and a balance sheet.',
+  bullets:[
+   'Match USGS Minerals Yearbook site-level output against MineSpans / CRU cost curves to find which "active" mines sit quietly above the marginal-cost line.',
+   'Blend BGS WMP and World Mining Congress country series into a rolling 5-year share to see who is gaining share, one commodity at a time.',
+   'Attach S&P Global / Wood Mackenzie asset reserves to the same polygon as MRDS occurrence data to separate resource from reserve with confidence.',
+   'Track S&P SNL M&A events against cost-curve position to see whether deals are chasing the cheap tail of the curve or the expensive one.'],
+  plays:['P4','P6']},
+ {code:'MKT',icon:'💹',name:'Commodity Prices & Financials',n:14,
+  intro:'Exchange ticks, benchmark prices and filings turn a commodity name into a live, tradeable signal.',
+  bullets:[
+   'Reconcile LME / COMEX / SHFE quotes for the same metal intraday to catch arbitrage windows and regional premium shifts before they close.',
+   'Overlay Macrotrends\' 100-year series behind live LBMA / Kitco spot so any current move gets real historical context on the same chart.',
+   'Pin Yahoo Finance tickers to mine polygons so one click moves from ore body straight to equity chart.',
+   'Cross SEC EDGAR filing language against StockAnalysis.com financials to catch guidance shifts before they\'ve moved the price.'],
+  plays:['P3','P4']},
+ {code:'REG',icon:'📑',name:'Company Filings & Disclosures',n:9,
+  intro:'Technical reports and registries are the paper trail behind every resource number and every ownership claim.',
+  bullets:[
+   'Geocode all 3,800+ NI 43-101 filings and watch for a new one appearing near an existing occurrence cluster — often the first public sign of a discovery.',
+   'Chain Companies House and OpenCorporates records to unwind beneficial ownership across shell layers before a deal is announced.',
+   'Compare JORC (ASX) announcements against SEDAR+ NI 43-101s for the same asset to catch resource-classification gaps across jurisdictions.',
+   'Watch FCA NSS / RNS filings for director dealings that tend to precede a technical-report update.'],
+  plays:['P4']},
+ {code:'LOG',icon:'🚢',name:'Shipping, Logistics & Trade',n:11,
+  intro:'Vessel pings, port calls and bilateral trade rows show the commodity actually moving, not just the commodity priced.',
+  bullets:[
+   'Track AISStream bulk-carrier routes into one exporting port, cross-referenced with PortWatch call volume, to estimate loaded tonnage weeks before customs data.',
+   'Compare UN Comtrade bilateral flows to Trade Map tariff schedules to spot a trade-diversion pattern the moment a tariff changes.',
+   'Match VesselFinder / MarineTraffic idle time near a smelter to a labor action or feedstock shortage reported by Mining.com or Reuters.',
+   'Layer Clarksons freight-rate context on the same route to tell whether a slowdown is logistics cost or genuine demand loss.'],
+  plays:['P3']},
+ {code:'ESG',icon:'🌱',name:'ESG, Environmental & Social',n:11,
+  intro:'Disclosure registries and land or biodiversity datasets attach a risk score to the polygon, not just a location.',
+  bullets:[
+   'Merge ICMM / Global Tailings Review hazard class with IBAT biodiversity proximity to prioritize which dams need satellite watch first.',
+   'Cross Land Matrix deal polygons with WDPA protected-area boundaries to flag concessions overlapping contested or protected land.',
+   'Compare MSCI and Sustainalytics ratings for the same ticker — the divergence between them is itself a signal worth investigating.',
+   'Track IRMA / TSM audited site scores against EITI country revenue transparency to separate site-level risk from country-level governance risk.'],
+  plays:['P1','P6']},
+ {code:'HAZ',icon:'🌋',name:'Geophysics, Seismic & Hazards',n:8,
+  intro:'Earthquake, volcano, magnetic and gravity feeds are both an exploration tool and a live risk feed for the same ground.',
+  bullets:[
+   'Filter USGS / EMSC earthquake feeds within a fixed radius of every tailings dam and mine for an automatic proximity alert, not a manual lookup.',
+   'Stack EMAG2 magnetic and BGI gravity anomalies under bedrock geology to infer buried intrusions with no surface expression.',
+   'Cross Global Volcanism Program Holocene records against nearby infrastructure to pre-plan ashfall exposure.',
+   'Use NOAA SWPC geomagnetic storm alerts to anticipate GPS and survey-equipment drift during active exploration campaigns.'],
+  plays:['P1','P2','P5']},
+ {code:'INF',icon:'⚡',name:'Infrastructure, Energy & Water',n:8,
+  intro:'Grid, water and rail data determine whether a deposit is actually developable, independent of its geology.',
+  bullets:[
+   'Overlay OpenInfraMap grid lines and OpenRailwayMap heavy-haul rail on undeveloped occurrences to instantly rule out stranded assets.',
+   'Pair Ember grid-carbon intensity with a mine\'s location to estimate Scope 2 exposure before a company discloses it.',
+   'Watch USGS / BoM water-gauge trends upstream of water-intensive processing sites for early drought-curtailment risk.',
+   'Cross Global Energy Monitor plant data with EIA generation stats to judge regional power reliability for a smelter\'s uptime.'],
+  plays:['P5']},
+ {code:'WX',icon:'🌦️',name:'Meteorology & Climate',n:6,
+  intro:'Live forecasts and reanalysis convert "weather" into an operational-continuity variable for one specific site.',
+  bullets:[
+   'Push Open-Meteo forecasts through the same pipeline as tailings-dam coordinates to flag heavy-rainfall windows against dam freeboard.',
+   'Use NASA POWER solar and wind fields to size on-site renewable potential for remote, off-grid operations.',
+   'Layer ERA5 / C3S long-run reanalysis behind live forecasts to tell an unusual season from a genuinely new climate baseline.',
+   'Compare WorldClim bioclim rasters against mine locations for long-horizon site-suitability and closure-planning work.'],
+  plays:['P5']},
+ {code:'RES',icon:'📚',name:'Academic, Research & News',n:7,
+  intro:'Standardized critical-minerals lists and live news translate raw data into the language regulators and markets actually use.',
+  bullets:[
+   'Use the USGS 50 Critical Minerals and EU CRM lists as filter chips across every other layer — geology, trade, ESG — to instantly re-scope the whole map to "criticality."',
+   'Cross OECD raw-materials trade and criticality tables with UN Comtrade flows to test official criticality claims against real trade concentration.',
+   'Geocode Mining.com / Reuters headlines by keyword match onto the mine layer so breaking news appears exactly where it happened.',
+   'Use World Bank Minerals for Climate Action demand curves alongside IEA projections to stress-test two independent demand forecasts against each other.'],
+  plays:['P6']},
+ {code:'OPX',icon:'📡',name:'Live Operational Telemetry',n:8,
+  intro:'Satellites, transit feeds and traffic data already running in the platform supply the connective tissue — timing, movement, context — for every other layer.',
+  bullets:[
+   'Use CelesTrak-propagated satellite passes to predict the next clear Sentinel or Landsat overpass for a specific mine before tasking new imagery.',
+   'Cross TomTom traffic and OSRM routing around a mine\'s road network to estimate haul-truck cycle-time disruption during a weather or protest event.',
+   'Layer GBFS / GTFS-Realtime transit context around processing hubs to gauge workforce-access disruption during a labor dispute.',
+   'Use Radio Browser\'s geolocated stations as a passive local-sentiment listening post in regions with sparse news coverage.'],
+  plays:['P3','P5']},
+];
+const PLAYS = [
+ {id:'P1',title:'Tailings Failure Early-Warning Radar',stack:['ESG','HAZ','EO','WX'],
+  body:'Take every dam in the ICMM / Global Tailings Review disclosure layer and its published hazard class, then wrap each one in a standing watch: USGS/EMSC seismicity within a fixed radius, Open-Meteo/NOAA rainfall accumulation against the dam\'s freeboard, and repeat Sentinel Hub or Capella SAR imagery to catch wall-geometry change no filing has reported yet. None of the four sources alone would justify an alert; a moderate quake, a rainfall spike and a geometry shift on the same high-hazard dam in the same week is a compounding signal an analyst would otherwise have to notice by hand.',
+  payoff:'Turns a static disclosure list into a live, ranked watchlist — ahead of the next public filing, not after it.'},
+ {id:'P2',title:'Undiscovered Deposit Targeting',stack:['GEO','HAZ'],
+  body:'Stack Macrostrat/BGS/NGMDB bedrock polygons, MRDS/ARDF/SAMINDABA historic occurrence density, EarthChem geochemical anomalies, Mindat locality clustering, IHFC heat flow, and EMAG2/BGI magnetic-gravity anomalies into one prospectivity index per grid cell. Terranes that score high on lithology and geophysics but carry no recorded occurrence are the analog targets nobody has drilled — the entire point of combining static geology with geophysics rather than reading either layer alone.',
+  payoff:'Converts a catalog of known deposits into a ranked map of where the next one is statistically likely to be.'},
+ {id:'P3',title:'Supply Chain Chokepoint & Price Shock Intelligence',stack:['LOG','MKT','WX','RES'],
+  body:'Watch AISStream bulk-carrier density and PortWatch call volume at the handful of ports that dominate a commodity\'s seaborne trade, alongside UN Comtrade\'s latest bilateral flows and LME/SHFE price action. A build-up of idle vessels off a major export terminal, a widening LME–SHFE spread, and a Reuters headline about a labor action are three independent confirmations of the same disruption, arriving on different timelines, days before any one of them would be conclusive alone.',
+  payoff:'A leading indicator for price moves and delivery risk that beats waiting on monthly trade statistics.'},
+ {id:'P4',title:'Corporate Risk & M&A Signal Fusion',stack:['REG','MKT','ESG','RES'],
+  body:'Cross new NI 43-101 / JORC resource updates against S&P SNL M&A transaction history, the issuer\'s stock chart, and its MSCI/Sustainalytics rating trend. A resource upgrade on an asset with no matching price reaction, held by a company with a recent ESG-rating downgrade, is a pattern institutional acquirers specifically screen for: one dataset shows the asset is worth more, another shows the market hasn\'t noticed, a third suggests why the incumbent owner might sell.',
+  payoff:'Surfaces plausible acquisition targets from public filings alone, ahead of a formal announcement.'},
+ {id:'P5',title:'Operational Continuity & Production-Disruption Forecasting',stack:['EO','WX','HAZ','INF','OPX'],
+  body:'For every active mine, blend Open-Meteo/USGS water-gauge trends, earthquake and Global Volcanism Program proximity, grid-reliability data from Global Energy Monitor/EIA, and change-detected satellite imagery of stockpiles and haul roads. A drought signal at a water-intensive processing site, a grid-outage risk from an aging regional plant, and a satellite-visible stockpile drawdown together predict a production miss well before a company\'s own quarterly guidance does.',
+  payoff:'An independent, bottom-up forecast of output disruption that doesn\'t rely on the operator\'s own disclosures.'},
+ {id:'P6',title:'Critical Minerals Security & Geopolitical Exposure Map',stack:['RES','OPS','LOG','ESG'],
+  body:'Filter every layer to the USGS 50 Critical Minerals / EU CRM list, then combine country-level reserve and production share (MCS, BGS WMP, World Mining Congress) with UN Comtrade/Trade Map trade-dependency flows and EITI/Land Matrix governance-transparency scores. A commodity with reserves concentrated in one or two countries, thin trade diversification, and weak revenue-transparency scores reads as structurally exposed, independent of any single headline about export controls.',
+  payoff:'A standing, commodity-by-commodity exposure index instead of a reactive read of geopolitical news.'},
+];
+const SHIPPED = [
+ ['EO','NASA FIRMS — active fire detections'],
+ ['OPS','ICMM Tailings — global dam disclosure'],
+ ['LOG','AISStream — live vessel positions'],
+ ['LOG','OpenSky Network — live flight tracking'],
+ ['LOG','adsb.lol — military/charter flights'],
+ ['HAZ','USGS Earthquakes — real-time seismicity'],
+ ['OPX','CelesTrak — satellite propagation'],
+ ['OPX','GTFS-Realtime — transit feeds'],
+ ['OPX','GBFS — bikeshare availability'],
+ ['OPX','Radio Browser — geolocated radio'],
+ ['OPX','TomTom Traffic — live flow speeds'],
+ ['OPX','OSRM — routing engine'],
+ ['OPX','OpenStreetMap — basemap & Overpass'],
+ ['OPX','Launch Library 2 — orbital launches'],
+];
+const CODE_NAME = Object.fromEntries(CATS.map(c=>[c.code,c.name]));
+const total = CATS.reduce((a,c)=>a+c.n,0);
+const $ = s=>document.querySelector(s);
+const page = $('#page');
+const crosshair = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2v6M12 16v6M2 12h6M16 12h6"/><circle cx="12" cy="12" r="3.2"/></svg>';
+
+function buildNav(){
+  const items = [{id:'overview',label:'Overview'}]
+    .concat(CATS.map(c=>({id:c.code.toLowerCase(),label:c.name,code:c.code,icon:c.icon})))
+    .concat([{id:'playbook',label:'Fusion Playbook'},{id:'methodology',label:'Methodology & Legend'}]);
+  $('#side').innerHTML = items.map(it=>
+    `<a href="#${it.id}" data-id="${it.id}">${it.code?`<span class="code">${it.code}</span>`:''}<span>${it.icon?it.icon+' ':''}${it.label}</span></a>`
+  ).join('');
+}
+function setActive(id){
+  document.querySelectorAll('#side a').forEach(a=>a.classList.toggle('active', a.dataset.id===id));
+}
+function tagRow(ids){
+  return ids.map(id=>{
+    const p = PLAYS.find(p=>p.id===id);
+    return `<a class="tag" href="#playbook-${id}">${id} · ${p.title}</a>`;
+  }).join('');
+}
+function renderOverview(){
+  page.innerHTML = `
+   <div class="kicker">${crosshair}<span>field atlas</span></div>
+   <h2>A field atlas for mining intelligence</h2>
+   <p class="lead">${total} public, freemium and licensed sources feed this platform — bedrock maps, satellite tasking, vessel pings, exchange ticks and dam registries among them. Read alone, each is a fact. Layered together, they become a forecast.</p>
+   <div class="stat-row">
+     <div><div class="n">${total}</div><div class="l">sources cataloged</div></div>
+     <div><div class="n">12</div><div class="l">sensing domains</div></div>
+     <div><div class="n">6</div><div class="l">named fusion plays</div></div>
+     <div><div class="n">14</div><div class="l">feeds already live</div></div>
+   </div>
+   <h3 class="section">How to read this atlas</h3>
+   <p>Each domain page below covers what one group of sources reveals on its own — the signal you get before combining anything. The <a href="#playbook">Fusion Playbook</a> is where the value compounds: named combinations that cross domain lines to answer a question no single source can. <a href="#methodology">Methodology &amp; Legend</a> explains how each source gets integrated, and which fourteen are already shipping in the current build.</p>
+   <h3 class="section">Twelve domains</h3>
+   <div class="grid-cats">${CATS.map(c=>`<a href="#${c.code.toLowerCase()}"><span>${c.icon} ${c.name}</span><span class="mono muted">${c.n}</span></a>`).join('')}</div>
+   <footer class="note">Domain codes (GEO, EO, OPS…) are used throughout the atlas as shorthand and appear on every fusion play's signal stack.</footer>`;
+}
+function renderCategory(c){
+  page.innerHTML = `
+   <div class="kicker">${crosshair}<span>${c.code}</span></div>
+   <h2>${c.icon} ${c.name}</h2>
+   <div class="count mono">${c.n} sources in this domain</div>
+   <p class="lead">${c.intro}</p>
+   <h3 class="section">Advanced insight, within the domain</h3>
+   <ul class="insights">${c.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+   <div class="fusion-box">
+     <div class="lbl">Combines into these fusion plays</div>
+     ${tagRow(c.plays)}
+   </div>`;
+}
+function renderPlaybook(){
+  page.innerHTML = `
+   <div class="kicker">${crosshair}<span>playbook</span></div>
+   <h2>Fusion playbook</h2>
+   <p class="lead">Six named combinations that cross domain lines. Each stack lists the domains involved — open any domain page to see the raw signal these plays draw from.</p>
+   ${PLAYS.map(p=>`
+    <div class="play" id="${p.id}">
+      <h3>${p.title}</h3>
+      <div class="stack">${p.stack.map(s=>`<a class="stack-chip" href="#${s.toLowerCase()}" style="text-decoration:none;">${s} — ${CODE_NAME[s]}</a>`).join('')}</div>
+      <p>${p.body}</p>
+      <p class="payoff">${p.payoff}</p>
+    </div>`).join('')}`;
+}
+function renderMethodology(){
+  page.innerHTML = `
+   <div class="kicker">${crosshair}<span>methodology</span></div>
+   <h2>Methodology &amp; legend</h2>
+   <p class="lead">Every source in the atlas is tagged by how it gets integrated, not just what it contains.</p>
+   <div class="legend-row"><span class="k">01 Static</span><span>Bundle a file in <span class="mono">local_data/</span> — CSV, shapefile or GeoJSON converted once and shipped with the build.</span></div>
+   <div class="legend-row"><span class="k">02 Live</span><span>Poll a public API or WMS endpoint on a schedule — no credentials required.</span></div>
+   <div class="legend-row"><span class="k">03 Keyed</span><span>Broker through the server with a registered key, via the Power Up panel — free, freemium or paid.</span></div>
+   <div class="legend-row"><span class="k">04 AI</span><span>Describe the need in natural language to a coding agent rather than wiring an API directly.</span></div>
+   <h3 class="section">Already shipping (✅)</h3>
+   <p class="muted">Fourteen sources are live in the current build and already form the operational spine several fusion plays lean on.</p>
+   <div class="shipped">${SHIPPED.map(([c,n])=>`<div><span class="c">${c}</span><span>${n}</span></div>`).join('')}</div>
+   <footer class="note">Everything else in the atlas is documented and integration-ready, staged behind the method above.</footer>`;
+}
+function route(){
+  let h = (location.hash || '#overview').slice(1);
+  let id = h, anchor = null;
+  if(h.startsWith('playbook-')){ id='playbook'; anchor=h.slice(9); }
+  if(id==='overview') renderOverview();
+  else if(id==='playbook') renderPlaybook();
+  else if(id==='methodology') renderMethodology();
+  else {
+    const c = CATS.find(c=>c.code.toLowerCase()===id);
+    if(c) renderCategory(c); else { renderOverview(); id='overview'; }
+  }
+  setActive(id);
+  window.scrollTo(0,0);
+  if(anchor){ setTimeout(()=>{ const el=document.getElementById(anchor); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); },20); }
+}
+buildNav();
+window.addEventListener('hashchange', route);
+route();
+try{
+  const saved = localStorage.getItem('fa-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+}catch(e){}
+$('#theme-btn').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur==='dark' ? 'light' : (cur==='light' ? 'dark' : (matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark'));
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('fa-theme', next); }catch(e){}
+});
+</script>
+</body>
+</html>

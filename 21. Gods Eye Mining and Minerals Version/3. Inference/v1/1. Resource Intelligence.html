@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas of Resource Intelligence · Mineral, Mining & Markets Data Fusion</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0a0e; --obsidian:#111016; --ash:#1a1922; --bone:#ebe6dc;
+    --bone-dim:#b8b3a6; --muted:#6c6859; --copper:#c89858; --brass:#d4b87a;
+    --moss:#7a8a6f; --rust:#c4634a; --slag:#9a96a8; --line:#2a2730;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--void);color:var(--bone);overflow-x:hidden}
+  .font-display{font-family:'Fraunces',serif;font-optical-sizing:auto}
+  .font-mono{font-family:'JetBrains Mono',monospace}
+  
+  /* Topographic background */
+  .topo-bg{position:fixed;inset:0;z-index:-2;opacity:.5;pointer-events:none}
+  .topo-bg svg{width:100%;height:100%}
+  .topo-path{fill:none;stroke:var(--copper);stroke-width:.6;opacity:.35}
+  .topo-path.bold{stroke:var(--brass);opacity:.55;stroke-width:.8}
+  
+  /* Atmospheric gradient */
+  .atmo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+    radial-gradient(ellipse 60% 50% at 20% 20%,rgba(200,152,88,.08),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 60%,rgba(122,138,111,.06),transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(196,99,74,.05),transparent 70%)}
+  
+  /* Particle canvas */
+  .dust{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  
+  /* Category color binding */
+  [data-cat=geology]{--c:#c89858}
+  [data-cat=earth]{--c:#8ab4c0}
+  [data-cat=mining]{--c:#d4b87a}
+  [data-cat=commodity]{--c:#6ba080}
+  [data-cat=filings]{--c:#c4a070}
+  [data-cat=shipping]{--c:#4a8a8a}
+  [data-cat=esg]{--c:#7a8a6f}
+  [data-cat=geophysics]{--c:#c4634a}
+  [data-cat=infra]{--c:#9a96a8}
+  [data-cat=climate]{--c:#b0a890}
+  [data-cat=academic]{--c:#a898c8}
+  [data-cat=live]{--c:#c89878}
+  
+  /* Cards */
+  .card{background:linear-gradient(180deg,rgba(26,25,34,.92),rgba(17,16,22,.92));
+    border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;
+    transition:all .35s cubic-bezier(.4,0,.2,1)}
+  .card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+    background:var(--c,var(--copper));opacity:.3;transition:opacity .3s}
+  .card:hover::before{opacity:1}
+  .card:hover{transform:translateY(-3px);border-color:rgba(200,152,88,.4);
+    box-shadow:0 12px 32px -12px rgba(200,152,88,.2),0 0 0 1px rgba(200,152,88,.1)}
+  
+  /* Badges */
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;
+    font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;
+    letter-spacing:.08em;font-weight:500;border:1px solid var(--line);background:rgba(0,0,0,.3)}
+  .badge-method{background:rgba(var(--c-rgb,200,152,88),.1);color:var(--c,var(--copper));border-color:rgba(var(--c-rgb,200,152,88),.3)}
+  .badge-static{color:#9a96a8;background:rgba(154,150,168,.08);border-color:rgba(154,150,168,.25)}
+  .badge-live{color:#6ba080;background:rgba(107,160,128,.08);border-color:rgba(107,160,128,.25)}
+  .badge-keyed{color:#c4634a;background:rgba(196,99,74,.08);border-color:rgba(196,99,74,.25)}
+  .badge-integrated{color:#d4b87a;background:rgba(212,184,122,.12);border-color:rgba(212,184,122,.35)}
+  
+  /* Hero title shimmer */
+  .hero-title{background:linear-gradient(120deg,#ebe6dc 0%,#d4b87a 40%,#c89858 60%,#ebe6dc 100%);
+    background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:shimmer 8s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  
+  /* Section reveal */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  
+  /* Category nav chip */
+  .cat-chip{padding:8px 14px;border-radius:100px;border:1px solid var(--line);
+    background:rgba(0,0,0,.4);font-size:12px;letter-spacing:.05em;
+    transition:all .25s;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    color:var(--bone-dim);white-space:nowrap}
+  .cat-chip:hover{border-color:var(--c,var(--copper));color:var(--bone);transform:translateY(-1px)}
+  .cat-chip.active{background:var(--c,var(--copper));color:#0a0a0e;border-color:transparent;font-weight:600}
+  .cat-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--copper))}
+  .cat-chip.active .dot{background:#0a0a0e}
+  
+  /* Search input */
+  .search-input{background:rgba(0,0,0,.5);border:1px solid var(--line);
+    border-radius:100px;padding:10px 16px 10px 42px;color:var(--bone);width:100%;
+    font-family:'Space Grotesk',sans-serif;font-size:14px;transition:all .25s}
+  .search-input:focus{outline:none;border-color:var(--copper);
+    box-shadow:0 0 0 3px rgba(200,152,88,.15)}
+  
+  /* Fusion recipe connectors */
+  .recipe-wire{stroke:var(--copper);stroke-width:1.2;fill:none;stroke-dasharray:4 4;
+    animation:dash 1.5s linear infinite;opacity:.6}
+  @keyframes dash{to{stroke-dashoffset:-16}}
+  
+  /* Insight card */
+  .insight-card{position:relative;border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(180deg,rgba(26,25,34,.95),rgba(11,11,15,.95));
+    overflow:hidden;transition:all .4s}
+  .insight-card:hover{border-color:rgba(200,152,88,.4);
+    box-shadow:0 20px 50px -20px rgba(200,152,88,.3)}
+  .insight-card .num{font-family:'Fraunces',serif;font-size:88px;font-weight:300;
+    color:var(--copper);opacity:.15;position:absolute;top:-10px;right:20px;line-height:1}
+  
+  /* Knowledge graph */
+  .graph-node{cursor:pointer;transition:all .3s}
+  .graph-node:hover circle{r:8;fill:var(--copper)}
+  .graph-edge{stroke:rgba(200,152,88,.15);stroke-width:1;fill:none}
+  .graph-edge.active{stroke:var(--copper);stroke-width:1.5}
+  
+  /* Code snippet */
+  .code-block{background:rgba(0,0,0,.5);border:1px solid var(--line);
+    border-radius:6px;padding:8px 12px;font-family:'JetBrains Mono',monospace;
+    font-size:11px;color:var(--bone-dim);overflow-x:auto;white-space:nowrap}
+  .code-block .k{color:#c89858}
+  .code-block .s{color:#7a8a6f}
+  .code-block .c{color:#6c6859}
+  
+  /* Scrollbar */
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--void)}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--copper)}
+  
+  /* Marker dots */
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--copper);
+    box-shadow:0 0 0 0 rgba(200,152,88,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,152,88,.6)}70%{box-shadow:0 0 0 8px rgba(200,152,88,0)}100%{box-shadow:0 0 0 0 rgba(200,152,88,0)}}
+  
+  /* Fusion calculator */
+  .calc-source{padding:6px 12px;border:1px solid var(--line);border-radius:100px;
+    font-size:11px;cursor:pointer;transition:all .25s;font-family:'JetBrains Mono',monospace;
+    color:var(--bone-dim);background:rgba(0,0,0,.4)}
+  .calc-source:hover{border-color:var(--copper);color:var(--bone)}
+  .calc-source.selected{background:var(--copper);color:#0a0a0e;border-color:transparent;font-weight:600}
+  
+  /* Animated divider */
+  .divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--copper) 50%,transparent);
+    opacity:.3}
+  
+  /* Source row */
+  .source-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px;
+    border-bottom:1px solid var(--line);align-items:start;transition:background .2s}
+  .source-row:hover{background:rgba(200,152,88,.03)}
+  .source-row:last-child{border-bottom:none}
+  
+  @media(max-width:768px){
+    .source-row{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- Topographic background -->
+<div class="topo-bg">
+<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" id="topoSvg">
+<g id="topoGroup"></g>
+</svg>
+</div>
+<div class="atmo"></div>
+<canvas class="dust" id="dustCanvas"></canvas>
+
+<!-- ===================== NAV ===================== -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[rgba(10,10,14,0.7)] border-b border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="8" fill="none" stroke="#d4b87a" stroke-width="1"/><circle cx="16" cy="16" r="3" fill="#c89858"/></svg>
+      <span class="font-display text-lg tracking-tight">Atlas of Resource Intelligence</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-6 text-sm text-[var(--bone-dim)]">
+      <a href="#compendium" class="hover:text-[var(--copper)] transition">Compendium</a>
+      <a href="#fusions" class="hover:text-[var(--copper)] transition">Fusion Insights</a>
+      <a href="#graph" class="hover:text-[var(--copper)] transition">Knowledge Graph</a>
+      <a href="#calculator" class="hover:text-[var(--copper)] transition">Calculator</a>
+      <a href="#legend" class="hover:text-[var(--copper)] transition">Legend</a>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(200,152,88,0.1)] border border-[rgba(200,152,88,0.3)]">
+      <span class="pulse-dot"></span>
+      <span class="text-xs font-mono text-[var(--copper)]">v3.0 LIVE</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header id="top" class="relative pt-32 pb-24 px-6">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="h-px w-12 bg-[var(--copper)]"></div>
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">A Documented Atlas · 117 Sources · 12 Categories</span>
+    </div>
+    
+    <h1 class="font-display text-[clamp(48px,8vw,128px)] leading-[0.92] tracking-tight mb-8 hero-title">
+      The<br/>
+      Resource<br/>
+      Intelligence Atlas.
+    </h1>
+    
+    <div class="grid lg:grid-cols-12 gap-8 mt-12">
+      <p class="lg:col-span-7 text-lg leading-relaxed text-[var(--bone-dim)] max-w-2xl">
+        A documented compendium of <span class="text-[var(--bone)] font-medium">117 data sources</span> spanning mineral geology, Earth observation, mining operations, commodity markets, corporate disclosures, maritime trade, ESG, geophysical hazards, infrastructure, climate, research and live telemetry — and the <span class="text-[var(--copper)]">fusion recipes</span> that turn them into foresight.
+      </p>
+      <div class="lg:col-span-5 lg:pl-8 lg:border-l border-[var(--line)]">
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <div class="font-display text-4xl text-[var(--copper)]" data-counter="117">0</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Sources</div>
+          </div>
+          <div>
+            <div class="font-display text-4xl text-[var(--brass)]" data-counter="22">0</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Fusion Recipes</div>
+          </div>
+          <div>
+            <div class="font-display text-4xl text-[var(--moss)]" data-counter="12">0</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Categories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-16 flex flex-wrap gap-3">
+      <a href="#compendium" class="px-6 py-3 bg-[var(--copper)] text-[var(--void)] font-medium rounded-full hover:bg-[var(--brass)] transition">Browse the Compendium</a>
+      <a href="#fusions" class="px-6 py-3 border border-[var(--line)] text-[var(--bone)] rounded-full hover:border-[var(--copper)] transition">See the Fusion Recipes</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== CATEGORY INDEX ===================== -->
+<section class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-baseline justify-between mb-8">
+      <h2 class="font-display text-3xl">Twelve veins of intelligence</h2>
+      <span class="font-mono text-xs text-[var(--muted)]">click to filter ↓</span>
+    </div>
+    <div class="flex flex-wrap gap-2" id="catChips">
+      <button class="cat-chip active" data-filter="all"><span class="dot" style="background:var(--copper)"></span>All Sources</button>
+      <button class="cat-chip" data-filter="geology" data-cat="geology"><span class="dot"></span>Mineral Deposits &amp; Geology <span class="opacity-50 ml-1">17</span></button>
+      <button class="cat-chip" data-filter="earth" data-cat="earth"><span class="dot"></span>Earth Observation <span class="opacity-50 ml-1">14</span></button>
+      <button class="cat-chip" data-filter="mining" data-cat="mining"><span class="dot"></span>Mining Operations <span class="opacity-50 ml-1">12</span></button>
+      <button class="cat-chip" data-filter="commodity" data-cat="commodity"><span class="dot"></span>Commodity Prices <span class="opacity-50 ml-1">14</span></button>
+      <button class="cat-chip" data-filter="filings" data-cat="filings"><span class="dot"></span>Company Filings <span class="opacity-50 ml-1">9</span></button>
+      <button class="cat-chip" data-filter="shipping" data-cat="shipping"><span class="dot"></span>Shipping &amp; Trade <span class="opacity-50 ml-1">11</span></button>
+      <button class="cat-chip" data-filter="esg" data-cat="esg"><span class="dot"></span>ESG &amp; Environmental <span class="opacity-50 ml-1">11</span></button>
+      <button class="cat-chip" data-filter="geophysics" data-cat="geophysics"><span class="dot"></span>Geophysics &amp; Hazards <span class="opacity-50 ml-1">8</span></button>
+      <button class="cat-chip" data-filter="infra" data-cat="infra"><span class="dot"></span>Infrastructure &amp; Energy <span class="opacity-50 ml-1">8</span></button>
+      <button class="cat-chip" data-filter="climate" data-cat="climate"><span class="dot"></span>Meteorology <span class="opacity-50 ml-1">6</span></button>
+      <button class="cat-chip" data-filter="academic" data-cat="academic"><span class="dot"></span>Academic &amp; News <span class="opacity-50 ml-1">7</span></button>
+      <button class="cat-chip" data-filter="live" data-cat="live"><span class="dot"></span>Live Telemetry <span class="opacity-50 ml-1">8</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMPENDIUM ===================== -->
+<section id="compendium" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-end justify-between mb-2 flex-wrap gap-4">
+      <div>
+        <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 01</span>
+        <h2 class="font-display text-5xl mt-2">Source Compendium</h2>
+      </div>
+      <div class="relative w-full md:w-96">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchBox" type="text" placeholder="Search sources, formats, insights…" class="search-input">
+      </div>
+    </div>
+    <p class="text-[var(--bone-dim)] mb-12 max-w-3xl">Each source below is annotated with the <span class="text-[var(--copper)]">advanced insight</span> it provides in isolation. Hover or expand to see the integration pattern, the layer file, and a representative code snippet. Filter by category or search to triangulate.</p>
+    
+    <div id="compendiumGrid" class="space-y-12"></div>
+  </div>
+</section>
+
+<!-- ===================== FUSION INSIGHTS ===================== -->
+<section id="fusions" class="px-6 py-24 border-t border-[var(--line)] relative">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="mb-16">
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 02 · The Killer Section</span>
+      <h2 class="font-display text-[clamp(40px,6vw,80px)] mt-3 leading-[0.95]">Fusion Recipes.<br/><span class="text-[var(--bone-dim)] italic">When sources combine.</span></h2>
+      <p class="text-[var(--bone-dim)] mt-6 max-w-3xl text-lg leading-relaxed">No single source reveals the truth. Below are <span class="text-[var(--copper)]">22 documented fusion recipes</span> — combinations of 3–6 sources that, layered together, expose patterns invisible to any one of them. Each recipe is reproducible from the compendium above.</p>
+    </div>
+    <div id="fusionGrid" class="grid lg:grid-cols-2 gap-6"></div>
+  </div>
+</section>
+
+<!-- ===================== KNOWLEDGE GRAPH ===================== -->
+<section id="graph" class="px-6 py-24 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 03</span>
+    <h2 class="font-display text-5xl mt-2 mb-6">The Knowledge Graph</h2>
+    <p class="text-[var(--bone-dim)] mb-12 max-w-3xl">How the 12 categories interlock. <span class="text-[var(--bone)]">Hover any node</span> to highlight the categories it most commonly fuses with. Edge thickness ∝ number of shared recipes.</p>
+    <div class="card p-4 md:p-8" data-cat="geology">
+      <svg viewBox="0 0 800 600" id="kgSvg" class="w-full h-[500px]"></svg>
+      <div id="kgReadout" class="mt-4 p-4 border border-[var(--line)] rounded-lg bg-[rgba(0,0,0,0.3)] text-sm font-mono text-[var(--bone-dim)]">→ Hover a node to read its connections.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FUSION CALCULATOR ===================== -->
+<section id="calculator" class="px-6 py-24 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 04 · Interactive</span>
+    <h2 class="font-display text-5xl mt-2 mb-6">Fusion Calculator</h2>
+    <p class="text-[var(--bone-dim)] mb-12 max-w-3xl">Toggle the sources you have access to. The Atlas will infer which fusion recipes become possible, and which insights you can derive. <span class="text-[var(--copper)]">Every selection recalculates in real time.</span></p>
+    
+    <div class="grid lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-7 card p-6" data-cat="geology">
+        <h3 class="font-display text-xl mb-4 text-[var(--copper)]">Select your available sources</h3>
+        <div class="flex flex-wrap gap-2" id="calcSources"></div>
+      </div>
+      <div class="lg:col-span-5 card p-6" data-cat="mining">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-display text-xl text-[var(--brass)]">Available Insights</h3>
+          <span class="font-mono text-xs text-[var(--muted)]" id="calcCount">0 recipes</span>
+        </div>
+        <div id="calcInsights" class="space-y-3 max-h-[480px] overflow-y-auto pr-2"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LEGEND ===================== -->
+<section id="legend" class="px-6 py-24 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 05</span>
+    <h2 class="font-display text-5xl mt-2 mb-12">Methodology Legend</h2>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <div class="card p-6">
+        <span class="badge badge-static">01 Static</span>
+        <h3 class="font-display text-xl mt-3 mb-2">Bundle a file</h3>
+        <p class="text-sm text-[var(--bone-dim)] leading-relaxed">A pre-downloaded dataset bundled into <code class="font-mono text-[var(--copper)]">local_data/</code>. Lowest latency, no API key, full reproducibility. Updated quarterly.</p>
+      </div>
+      <div class="card p-6">
+        <span class="badge badge-live">02 Live</span>
+        <h3 class="font-display text-xl mt-3 mb-2">Poll a public API</h3>
+        <p class="text-sm text-[var(--bone-dim)] leading-relaxed">A no-key, no-cost endpoint polled directly from the browser. Subject to rate limits and CORS. Best for low-frequency data like earthquakes, weather, and trade flows.</p>
+      </div>
+      <div class="card p-6">
+        <span class="badge badge-keyed">03 Keyed</span>
+        <h3 class="font-display text-xl mt-3 mb-2">Broker through server</h3>
+        <p class="text-sm text-[var(--bone-dim)] leading-relaxed">A keyed or paid API brokered through the server's <code class="font-mono text-[var(--copper)]">POWER UP</code> panel. Keys never reach the client. Response caps prevent runaway bills.</p>
+      </div>
+      <div class="card p-6">
+        <span class="badge badge-integrated">✅ Integrated</span>
+        <h3 class="font-display text-xl mt-3 mb-2">Shipped in build</h3>
+        <p class="text-sm text-[var(--bone-dim)] leading-relaxed">Already live in the current production build. Polling, rendering, and UI affordances are wired end-to-end.</p>
+      </div>
+    </div>
+    
+    <div class="card p-8" data-cat="academic">
+      <h3 class="font-display text-2xl mb-6 text-[var(--copper)]">Format Glossary</h3>
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+        <div><span class="badge mr-2">GeoJSON</span><span class="text-[var(--bone-dim)]">Vector geometry + properties</span></div>
+        <div><span class="badge mr-2">CSV</span><span class="text-[var(--bone-dim)]">Tabular, geocoded by lat/lon</span></div>
+        <div><span class="badge mr-2">WMS</span><span class="text-[var(--bone-dim)]">OGC tiled map imagery</span></div>
+        <div><span class="badge mr-2">API</span><span class="text-[var(--bone-dim)]">REST/JSON over HTTPS</span></div>
+        <div><span class="badge mr-2">RSS</span><span class="text-[var(--bone-dim)]">XML syndication feed</span></div>
+        <div><span class="badge mr-2">TLE</span><span class="text-[var(--bone-dim)]">Two-line orbital element set</span></div>
+        <div><span class="badge mr-2">Protobuf</span><span class="text-[var(--bone-dim)]">GTFS-RT binary transit feed</span></div>
+        <div><span class="badge mr-2">GeoTIFF</span><span class="text-[var(--bone-dim)]">Georeferenced raster imagery</span></div>
+        <div><span class="badge mr-2">WebSocket</span><span class="text-[var(--bone-dim)]">Persistent streaming JSON</span></div>
+        <div><span class="badge mr-2">XML</span><span class="text-[var(--bone-dim)]">Hierarchical markup</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <svg width="24" height="24" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#c89858"/></svg>
+          <span class="font-display text-lg">Atlas of Resource Intelligence</span>
+        </div>
+        <p class="text-sm text-[var(--bone-dim)] leading-relaxed">A documented compendium for analysts, geologists, traders and policy researchers. Built on Cesium + an open broker layer. 117 sources. 22 fusion recipes. 1 atlas.</p>
+      </div>
+      <div>
+        <div class="font-mono text-xs uppercase tracking-wider text-[var(--muted)] mb-3">Architecture</div>
+        <ul class="space-y-2 text-sm text-[var(--bone-dim)]">
+          <li>Local data bundles in <code class="font-mono text-[var(--copper)]">local_data/</code></li>
+          <li>Public APIs polled client-side</li>
+          <li>Keyed APIs brokered through <code class="font-mono text-[var(--copper)]">/api/&lt;source&gt;/</code></li>
+          <li>Each source maps to a single layer file</li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-mono text-xs uppercase tracking-wider text-[var(--muted)] mb-3">Reference Vectors</div>
+        <ul class="space-y-2 text-sm text-[var(--bone-dim)]">
+          <li>USGS · ESA · NOAA · NASA · IEA · IMF</li>
+          <li>LBMA · LME · CME · SHFE · Fastmarkets</li>
+          <li>ICMM · IRMA · GRI · TNFD · IBAT</li>
+          <li>Mindat · Macrostrat · OneGeology</li>
+        </ul>
+      </div>
+    </div>
+    <div class="divider-line mb-6"></div>
+    <div class="flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--muted)] font-mono">
+      <span>© Atlas of Resource Intelligence · v3.0 · Documentation Build</span>
+      <span>117 sources · 22 fusions · 12 categories</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA — Categories with sources and their insights
+   ============================================================ */
+const categories = [
+  {id:'geology',name:'Mineral Deposits & Geology',num:17,
+   desc:'Bedrock geology, mineral occurrences, geochemistry and heat-flow data underpin every exploration model.',
+   sources:[
+    {n:'USGS MRDS',f:'GeoJSON/CSV',m:'01 Static',i:'Reveal global mineral occurrence density and identify under-explored mineralized belts by commodity clustering.',code:"fetch('./data/local_data/mrds/mrds.geojson')"},
+    {n:'USGS Active Mines',f:'GeoJSON',m:'01 Static',i:'Live snapshot of operating mines — the basis for production-concentration risk scoring.',code:"mrds.filter(m => m.status==='Active')"},
+    {n:'OneGeology',f:'WMS',m:'02 Live',i:'Cross-border geological continuity — basin-scale structural interpretation across political boundaries.',code:"new Cesium.WebMapServiceImageryProvider({url, layers})"},
+    {n:'Macrostrat',f:'GeoJSON API',m:'02 Live',i:'Lithostratigraphic correlation — predict host-rock extensions beneath cover and identify prospective analogues.',code:"viewer.dataSources.add(Cesium.GeoJsonDataSource.load(...))"},
+    {n:'Geoscience Australia',f:'WMS',m:'02 Live',i:'MINEDEX overlay for regional prospectivity mapping and Australian tenement intelligence.',code:"url: 'https://services.ga.gov.au/...'"},
+    {n:'BGS Geology',f:'WMS',m:'02 Live',i:'UK onshore bedrock — constrain mineralization controls beneath Quaternary drift.',code:"layers: 'BGS_Geology_625k_Bedrock'"},
+    {n:'GeoIndex (BGS)',f:'JSON API',m:'02 Live',i:'Borehole depth metadata for 3D subsurface modelling and resource estimate validation.',code:"fetch('http://mapapps2.bgs.ac.uk/geoindex/...')"},
+    {n:'ARDF (Alaska)',f:'CSV/GeoJSON',m:'01 Static',i:'Permafrost-hosted placer and lode occurrences — critical mineral potential in the Arctic.',code:"local_data/ardf_alaska/ardf.geojson"},
+    {n:'NRCan Geoscience',f:'WMS/GeoJSON',m:'02 Live',i:'MINCAN commodity-coloured billboards — Canadian deposit-type patterns and diamond indicator dispersion.',code:"url: 'https://geo.nrcan.gc.ca/...'"},
+    {n:'SGU (Sweden)',f:'WMS',m:'02 Live',i:'Fennoscandian bedrock and till — greenstone-belt continuity and geochemical anomaly vectors.',code:"layers: 'SGU_Bedrock_50k'"},
+    {n:'GS Namibia',f:'GeoJSON/CSV',m:'01 Static',i:'Namibian rare-metal pegmatite (Li, Ta, Nb) and Damara orogen Cu-Pb-Zn belts.',code:"local_data/namibia_minerals/occurrences.geojson"},
+    {n:'CGS (South Africa)',f:'GeoJSON',m:'01 Static',i:'SAMINDABA-filtered Au/PGM/Mn/Cr — quantifying the Bushveld endowment and Witwatersrand heritage.',code:"local_data/samindaba/samindaba.geojson"},
+    {n:'SEGEMAR',f:'WMS',m:'02 Live',i:'Argentine geology — Andean porphyry Cu belts and Puna lithium brine salars.',code:"url: 'https://www.segemar.gob.ar/...'"},
+    {n:'EarthChem',f:'JSON API',m:'02 Live',i:'Whole-rock geochemistry by bounding box — vector toward potassic/propylitic alteration and fertility indicators.',code:"fetch('https://earthchem.org/api/v1/samples?...')"},
+    {n:'Mindat.org',f:'JSON API',m:'03 Keyed',i:'1M+ mineral localities clustered — mineral-species density heat maps flag exploration priority and rarity.',code:"fetch('/api/mindat/localities?mineral=quartz')"},
+    {n:'USGS NGMDB',f:'WMS',m:'02 Live',i:'US stratigraphic lexicon — correlation of formations across state lines and historical nomenclature.',code:"layers: 'ngmdb_bedrock'"},
+    {n:'Global Heat Flow',f:'CSV/GeoJSON',m:'01 Static',i:'IHFC mW/m² — geothermal energy potential plus epithermal and IOCG system vectoring.',code:"local_data/heat_flow/ihfc.geojson"},
+  ]},
+  {id:'earth',name:'Earth Observation & Satellite',num:14,
+   desc:'Multispectral, SAR and very-high-resolution imagery for change detection, environmental monitoring and asset verification.',
+   sources:[
+    {n:'Sentinel Hub',f:'API/WMS',m:'03 Keyed',i:'Revisit-based NDVI/NDSI/SAR change detection — pit expansion and tailings footprint tracking.',code:"WebMapServiceImageryProvider({url:'/api/sh/wms',layers:'TRUE_COLOR'})"},
+    {n:'USGS EarthExplorer',f:'API/JSON',m:'03 Keyed',i:'Scene catalogue and footprints — Landsat historical comparison back to 1972 for mine lifecycle reconstruction.',code:"fetch('/api/earthexplorer/sceneList?dataset=LANDSAT_8')"},
+    {n:'Copernicus Data Hub',f:'API/JSON',m:'03 Keyed',i:'Sentinel-1 SAR scene catalogue — surface deformation monitoring and cloud-penetrating mine surveillance.',code:"fetch('/api/copernicus/odata?$filter=...')"},
+    {n:'NASA FIRMS',f:'API/CSV',m:'03 Keyed',i:'Active fire radiative power — smelting activity, coal-seam fires and slag-heap ignition detection.',code:"✅ ALREADY INTEGRATED"},
+    {n:'OpenAerialMap',f:'JSON API',m:'02 Live',i:'UAV imagery footprints — site-level high-resolution basemaps for tailings and pit surveys.',code:"fetch('https://api.openaerialmap.org/aoi?bbox=...')"},
+    {n:'ESA EO Catalogue',f:'JSON API',m:'03 Keyed',i:'Multi-sensor mission coverage — SMOS, Sentinel and CryoSat tasking for site-specific campaigns.',code:"fetch('/api/esa/search?mission=SMOS')"},
+    {n:'Planet Labs',f:'API/JSON',m:'03 Keyed',i:'Daily PlanetScope footprints — near-real-time operations monitoring and undocumented activity detection.',code:"fetch('/api/planet/search?item_types=PSOrthoTile')"},
+    {n:'Maxar',f:'API/WMS',m:'03 Keyed',i:'30–50 cm SecureWatch basemap — infrastructure verification and illegal mining detection at machine resolution.',code:"WebMapServiceImageryProvider({url:'/api/maxar/wms'})"},
+    {n:'ICEYE',f:'API/JSON',m:'03 Keyed',i:'SAR revisit constellation — cloud-penetrating tailings wall monitoring regardless of weather.',code:"fetch('/api/iceye/scenes?bbox=...')"},
+    {n:'Capella Space',f:'API/JSON',m:'03 Keyed',i:'HR SAR scenes — minute-level wall stability and ground subsidence in active tailings facilities.',code:"fetch('/api/capella/scenes?bbox=...')"},
+    {n:'Sentinel-5P TROPOMI',f:'API/WMS',m:'03 Keyed',i:'Methane (CH₄) and CO column retrieval — fugitive emissions attribution to specific coal and Cu operations.',code:"layers: '5P_METHANE', url: '/api/sh/wms'"},
+    {n:'Global Forest Watch',f:'API/JSON',m:'02 Live',i:'GLAD/RADD weekly loss alerts — mine-driven deforestation attribution and ESG controversy trigger.',code:"fetch('https://api.globalforestwatch.org/v1/...')"},
+    {n:'NASA Earthdata',f:'API/JSON',m:'03 Keyed',i:'CMR search for MODIS/VIIRS/SRTM/ASTER — thermal anomaly and DEM extraction at mine scale.',code:"fetch('/api/earthdata/search?...')"},
+    {n:'NOAA Night Lights',f:'WMS',m:'02 Live',i:'VIIRS DNB night-light intensity — proxy for undeclared production activity and pre-commissioning ramp-up.',code:"layers: 'VIIRS_DNB'"},
+  ]},
+  {id:'mining',name:'Mining Operations & Production',num:12,
+   desc:'Asset-level production, reserves, cost curves, tailings inventories and corporate ownership.',
+   sources:[
+    {n:'USGS Minerals Yearbook',f:'CSV',m:'01 Static',i:'Mine-level production — supply concentration risk and country-commodity dependency scoring.',code:"local_data/minerals_yearbook/2024.csv"},
+    {n:'USGS MCS',f:'CSV/JSON',m:'01 Static',i:'Country reserves and production — strategic vulnerability choropleth by commodity.',code:"local_data/mcs/2024_reserves.json"},
+    {n:'ICMM Tailings',f:'CSV/GeoJSON',m:'01 Static',i:'Global Tailings Disclosure — dam geometry, hazard class and consequence fields for failure-impact modelling.',code:"✅ ALREADY INTEGRATED"},
+    {n:'Global Tailings Review',f:'CSV/GeoJSON',m:'01 Static',i:'GTR CSV merged with ICMM for fuller coverage of global tailings dam inventory.',code:"local_data/tailings_dams/gtr.geojson"},
+    {n:'World Mining Congress',f:'CSV',m:'01 Static',i:'Country production shares — 10-year trend in supply diversification / concentration.',code:"local_data/wmc/production_by_country.json"},
+    {n:'BGS WMP',f:'CSV',m:'01 Static',i:'5-year rolling country × commodity × year matrix — supply disruption stress-test scenarios.',code:"local_data/bgs_wmp/5yr_production.json"},
+    {n:'S&P Global MI',f:'API/JSON',m:'03 Keyed',i:'Asset-level reserves and production — the authoritative mine register for M&A screening.',code:"fetch('/api/spglobal/asset?mineId=...')"},
+    {n:'MineSpans (McKinsey)',f:'API/CSV',m:'03 Keyed',i:'Cost curves by commodity — margin analysis and quartile positioning under price stress.',code:"local_data/minespans/cost_curves.csv"},
+    {n:'Raw Materials Data',f:'CSV',m:'01 Static',i:'Mine & smelter ownership/production — corporate control of the midstream supply chain.',code:"local_data/rmd/mines_smelters.geojson"},
+    {n:'S&P SNL Mining',f:'API/JSON',m:'03 Keyed',i:'M&A pipeline and transactions — future supply additions and consolidation trends.',code:"fetch('/api/snl/transactions?commodity=copper')"},
+    {n:'CRU Group',f:'API/CSV',m:'03 Keyed',i:'Mine cost curves & production forecasts — analyst-grade forward supply model.',code:"fetch('/api/cru/costcurve?commodity=...')"},
+    {n:'Wood Mackenzie',f:'API/CSV',m:'03 Keyed',i:'Asset database & outlooks — bank-grade commodity outlook and assetNAV.',code:"fetch('/api/woodmac/asset?mineId=...')"},
+  ]},
+  {id:'commodity',name:'Commodity Prices & Financials',num:14,
+   desc:'Real-time and benchmark prices, equity valuations and historical cycles for margin and market sentiment.',
+   sources:[
+    {n:'London Metal Exchange',f:'API/JSON',m:'03 Keyed',i:'Real-time LME Cu/Al/Zn/Ni/Pb/Sn — the reference for global physical pricing and inventory signals.',code:"fetch('/api/lme/quotes?metals=Cu,Al,Zn')"},
+    {n:'COMEX / CME',f:'API/JSON',m:'02 Live',i:'Delayed quotes for Au/Ag/Cu — financial vs physical divergence and arbitrage windows.',code:"fetch('https://www.cmegroup.com/.../settlements')"},
+    {n:'Shanghai Futures',f:'API/JSON',m:'02 Live',i:'SHFE daily settlement — China physical demand proxy and import-arbitrage indicator.',code:"fetch('https://www.shfe.com.cn/data/dailydata/...')"},
+    {n:'LBMA',f:'API/CSV',m:'02 Live',i:'Au/Ag/Pt/Pd benchmark prices — the global precious metals reference rate.',code:"fetch('https://www.lbma.org.uk/prices/add')"},
+    {n:'Kitco',f:'API/JSON',m:'02 Live',i:'Live precious metals spot — retail-investor sentiment and intraday volatility trigger.',code:"fetch('https://www.kitco.com/price/precious-metals')"},
+    {n:'Metalary',f:'API/JSON',m:'02 Live',i:'60+ industrial metals & rare earths — broad coverage of non-exchange-traded elements.',code:"fetch('https://www.metalary.com/...')"},
+    {n:'Fastmarkets',f:'API/JSON',m:'03 Keyed',i:'Li/Co/Ni/graphite PRA benchmarks — battery-material reference pricing for cost models.',code:"fetch('/api/fastmarkets/benchmarks?metal=Li')"},
+    {n:'Argus Media',f:'API/JSON',m:'03 Keyed',i:'Ferro-alloys/coal/steel/rare-earths — non-LME price discovery for steel and ferroalloys.',code:"fetch('/api/argus/prices?category=ferroalloys')"},
+    {n:'S&P Platts',f:'API/JSON',m:'03 Keyed',i:'Iron ore/coal/steel/ferrous scrap — seaborne benchmark pricing for cost-curve modelling.',code:"fetch('/api/platts/benchmarks?commodity=ironore')"},
+    {n:'Yahoo Finance',f:'API/JSON',m:'02 Live',i:'Equity valuations by ticker — market capitalisation vs NAV divergence as M&A trigger.',code:"fetch('https://query1.finance.yahoo.com/v7/quote?symbol=BHP')"},
+    {n:'StockAnalysis.com',f:'API/JSON',m:'02 Live',i:'Income/balance/cashflow — fundamental mine telemetry attached to corporate issuer.',code:"fetch('https://stockanalysis.com/api/symbol/AEE/...')"},
+    {n:'Macrotrends',f:'API/CSV',m:'01 Static',i:'10–100 yr historical series — long-wave commodity cycle context for supercycle thesis.',code:"local_data/macrotrends/gold_100yr.json"},
+    {n:'Koyfin',f:'API/JSON',m:'03 Keyed',i:'Macro/commodity/equity dashboard — cross-asset correlation screen for regime detection.',code:"fetch('/api/koyfin/series?symbol=...')"},
+    {n:'SEC EDGAR',f:'API/JSON',m:'02 Live',i:'Full-text 10-K/20-F/40-F search — link filings to mines by CIK and detect disclosure lag.',code:"fetch('https://efts.sec.gov/LATEST/search-index?q=...')"},
+  ]},
+  {id:'filings',name:'Company Filings & Disclosures',num:9,
+   desc:'Regulatory filings, technical reports and corporate-ownership traces for project pipelines and accountability.',
+   sources:[
+    {n:'SEDAR+',f:'API/JSON',m:'02 Live',i:'Canadian NI 43-101 filings — resource estimate changes and project pipeline monitoring.',code:"fetch('https://www.sedarplus.ca/.../search?doctype=43-101')"},
+    {n:'NI 43-101 Registry',f:'CSV/GeoJSON',m:'01 Static',i:'3,800+ CIM-filed projects geocoded — the global resource-pipeline discovery surface.',code:"local_data/ni43101/registry.geojson"},
+    {n:'JORC Code',f:'API/JSON',m:'02 Live',i:'ASX announcements for JORC resource/reserve filings — Australian project pipeline.',code:"fetch('https://www.asx.com.au/asx/.../announcements?...')"},
+    {n:'SAMREC / SAMVAL',f:'CSV/JSON',m:'01 Static',i:'South African competency statements — compliance with reporting code and auditor lineage.',code:"local_data/samrec/reports.json"},
+    {n:'Companies House (UK)',f:'API/JSON',m:'03 Keyed',i:'UK holding company lookup — corporate-veil piercing for beneficial ownership of mine assets.',code:"fetch('/api/companieshouse/company?name=...')"},
+    {n:'OpenCorporates',f:'API/JSON',m:'03 Keyed',i:'Global corporate registry — trace mine ownership chains across jurisdictions for ESG accountability.',code:"fetch('/api/opencorporates/companies?q=...')"},
+    {n:'FCA NSS',f:'API/XML',m:'02 Live',i:'RNS regulatory news service — link disclosure events to mine entities by ticker.',code:"fetch('https://api.fca.org.uk/...')"},
+    {n:'Morningstar (Hemscott)',f:'API/JSON',m:'02 Live',i:'Historic mining share data — dividends and director dealings as insider-sentiment proxy.',code:"fetch('https://www.morningstar.co.uk/...')"},
+    {n:'EITI',f:'API/CSV',m:'01 Static',i:'Country revenue/payment data — government-to-company payment transparency for extractive sector.',code:"local_data/eiti/country_revenue.csv"},
+  ]},
+  {id:'shipping',name:'Shipping, Logistics & Trade',num:11,
+   desc:'Vessel tracking, port activity and bilateral trade flows revealing physical supply in motion.',
+   sources:[
+    {n:'AISStream',f:'WebSocket/JSON',m:'03 Keyed',i:'Live global vessel positions — bulk carrier routing and charter flight / sanction-evasion detection.',code:"✅ ALREADY INTEGRATED"},
+    {n:'MarineTraffic',f:'API/JSON',m:'03 Keyed',i:'Vessel positions by bbox — port congestion and dry-bulk fleet utilisation proxy.',code:"fetch('/api/marinetraffic/vessel?bbox=...')"},
+    {n:'VesselFinder',f:'API/JSON',m:'03 Keyed',i:'Coastal bulker coverage — secondary AIS source for redundancy and gap-filling.',code:"fetch('/api/vesselfinder/vessels?bbox=...')"},
+    {n:'FleetMon',f:'API/JSON',m:'03 Keyed',i:'Port arrivals and fleet analytics — port-activity sublayer for trade-flow inference.',code:"fetch('/api/fleetmon/portcalls?port=...')"},
+    {n:'UN Comtrade',f:'API/JSON',m:'02 Live',i:'Bilateral trade by HS code — physical cargo flow validation against vessel data.',code:"fetch('https://comtradeapi.un.org/data/v1/get/C/A/HS?...')"},
+    {n:'Trade Map (ITC)',f:'API/CSV',m:'01 Static',i:'Bilateral trade statistics and tariffs — annual snapshot for trade-flow choropleth.',code:"local_data/trademap/2024_cu_ores.csv"},
+    {n:'PortWatch (IMF)',f:'API/JSON',m:'02 Live',i:'Daily ship calls and cargo volumes — high-frequency trade-volume proxy.',code:"fetch('https://portwatch.imf.org/api/v1/portcalls?...')"},
+    {n:'Drewry',f:'API/CSV',m:'01 Static',i:'Dry bulk market analysis — freight rate context for landed cost of ore.',code:"local_data/drewry/dry_bulk_2024q3.csv"},
+    {n:'Clarksons Research',f:'API/CSV',m:'01 Static',i:'Fleet/orderbook/freight rates — bulker supply-side capacity constraint forecast.',code:"local_data/clarksons/fleet_orderbook.csv"},
+    {n:'OpenSky Network',f:'API/JSON',m:'02 Live',i:'Live aircraft states — charter flights to remote mine sites as M&A due-diligence tell.',code:"✅ ALREADY INTEGRATED"},
+    {n:'adsb.lol',f:'API/JSON',m:'02 Live',i:'Public ADS-B — military/charter flight tracking alongside OpenSky for redundancy.',code:"✅ ALREADY INTEGRATED"},
+  ]},
+  {id:'esg',name:'ESG, Environmental & Social',num:11,
+   desc:'Disclosures, audits, protected areas and biodiversity risk overlaying operations with consequences.',
+   sources:[
+    {n:'GRI Standards',f:'API/JSON',m:'02 Live',i:'GRI disclosure database — standardized mining sustainability reports for cross-issuer comparison.',code:"fetch('https://database.globalreporting.org/reports?sector=Mining')"},
+    {n:'SASB Standards',f:'JSON/CSV',m:'01 Static',i:'Metals & Mining sector metrics — materiality framework for ESG KPI extraction.',code:"local_data/sasb/metals_mining.json"},
+    {n:'CDP',f:'API/JSON',m:'03 Keyed',i:'Climate/water/forest disclosures — corporate environmental performance for green-finance screening.',code:"fetch('/api/cdp/disclosures?company=BHP')"},
+    {n:'TNFD',f:'JSON/CSV',m:'01 Static',i:'Taskforce on Nature-related Financial Disclosures framework — biodiversity-risk scoring schema.',code:"local_data/tnfd/framework.json"},
+    {n:'IRMA',f:'API/JSON',m:'02 Live',i:'Audited mine-site ESG scores — independent third-party site-level performance badge.',code:"fetch('https://responsiblemining.net/audit-registry/...')"},
+    {n:'Towards Sustainable Mining',f:'JSON/CSV',m:'01 Static',i:'MAC TSM facility-level protocol — Canadian site performance scores for ESG ranking.',code:"local_data/tsm/facilities.json"},
+    {n:'Land Matrix',f:'API/JSON',m:'02 Live',i:'Mining-sector land deals — investor, status, polygon size for community-impact screening.',code:"fetch('https://landmatrix.org/api/v1/deals?sector=Mining')"},
+    {n:'IBAT',f:'API/JSON',m:'03 Keyed',i:'Biodiversity proximity query — KBAs and protected species near mine bounding box.',code:"fetch('/api/ibat/proximity?lat=...&lon=...')"},
+    {n:'WDPA',f:'GeoJSON/CSV',m:'01 Static',i:'World Database on Protected Areas — polygons for legally designated exclusion zones.',code:"local_data/wdpa/protected_areas.geojson"},
+    {n:'MSCI ESG',f:'API/JSON',m:'03 Keyed',i:'ESG ratings and controversy scores — issuer-level rating for portfolio screening.',code:"fetch('/api/msci/esg?ticker=BHP')"},
+    {n:'Sustainalytics',f:'API/JSON',m:'03 Keyed',i:'ESG risk ratings — complementary to MSCI for triangulated issuer risk profile.',code:"fetch('/api/sustainalytics/risk?ticker=RIO')"},
+  ]},
+  {id:'geophysics',name:'Geophysics, Seismic & Hazards',num:8,
+   desc:'Earthquakes, volcanoes, magnetics, gravity and rapid-mapping activations revealing earth processes and risk.',
+   sources:[
+    {n:'USGS Earthquakes',f:'API/GeoJSON',m:'02 Live',i:'Real-time seismicity — tailings dam stability assessment and induced-seismicity detection.',code:"✅ ALREADY INTEGRATED"},
+    {n:'EMSC',f:'API/JSON',m:'02 Live',i:'European Mediterranean Seismological Centre — secondary global source for redundancy and EMSC regional detail.',code:"fetch('https://www.seismicportal.eu/fdsnws/event/1/query?format=json')"},
+    {n:'EarthScope (IRIS)',f:'API/XML',m:'02 Live',i:'FDSN-WS event & waveform service — station locations for passive seismic tomography.',code:"fetch('https://service.iris.edu/fdsnws/event/1/query?format=xml')"},
+    {n:'Global Volcanism Program',f:'CSV/GeoJSON',m:'01 Static',i:'Smithsonian Holocene volcanoes — epithermal and porphyry fertility indicator.',code:"local_data/gvp_volcanoes/holocene.geojson"},
+    {n:'NOAA SWPC',f:'API/JSON',m:'02 Live',i:'Geomagnetic Kp index — ionospheric storm alert for GPS-guided mining and surveying operations.',code:"fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')"},
+    {n:'EMAG2 v3',f:'WMS',m:'02 Live',i:'Global magnetic anomaly grid — basement structure, dyke swarms and kimberlite detection.',code:"layers: 'EMAG2_V3'"},
+    {n:'BGI WGM',f:'WMS',m:'02 Live',i:'Bouguer gravity anomaly — basin geometry, ore-controlling structures and basement interpretation.',code:"layers: 'BGI_WGM'"},
+    {n:'Copernicus EMS',f:'API/WMS',m:'02 Live',i:'Rapid Mapping activations — delineation products during crises at mine sites.',code:"fetch('https://emergency.copernicus.eu/mapping/.../activations')"},
+  ]},
+  {id:'infra',name:'Infrastructure, Energy & Water',num:8,
+   desc:'Power, rail, water and energy demand context surrounding every mining operation.',
+   sources:[
+    {n:'OpenInfraMap',f:'WMS',m:'02 Live',i:'Power/gas/water infrastructure overlay — energy supply chain and grid reliability for mine sites.',code:"url: 'https://openinframap.org/...'"},
+    {n:'Global Energy Monitor',f:'CSV/GeoJSON',m:'01 Static',i:'Coal/steel/gas plant tracker — stranded-asset exposure and downstream demand source.',code:"local_data/gem/coal_plants.geojson"},
+    {n:'Ember Climate',f:'CSV/JSON',m:'01 Static',i:'Country electricity mix — carbon-intensity factor for embodied-emissions scoring.',code:"local_data/ember/electricity_mix.csv"},
+    {n:'EIA',f:'API/JSON',m:'03 Keyed',i:'Coal/uranium/electricity generation — demand-side fundamentals for energy commodities.',code:"fetch('https://api.eia.gov/v2/coal/...?api_key=...')"},
+    {n:'IEA Critical Minerals',f:'CSV/JSON',m:'01 Static',i:'Li/Co/Ni/Cu/REE/graphite demand projections — forward demand curve for supply investment thesis.',code:"local_data/iea/demand_projections.json"},
+    {n:'BoM Water (AU)',f:'API/JSON',m:'02 Live',i:'Australian reservoir levels — water-stress scoring for water-intensive operations.',code:"fetch('http://www.bom.gov.au/waterdata/...')"},
+    {n:'USGS Water Data',f:'API/JSON',m:'02 Live',i:'NWIS instant stream gauges & groundwater — hydrological baseline for dewatering permits.',code:"fetch('https://waterservices.usgs.gov/nwis/iv/?format=json')"},
+    {n:'OpenRailwayMap',f:'WMS',m:'02 Live',i:'Heavy-haul rail network — logistics cost and export-route risk for mine-to-port supply chains.',code:"url: 'https://tiles.openrailwaymap.org/...'"},
+  ]},
+  {id:'climate',name:'Meteorology & Climate',num:6,
+   desc:'Weather, climate reanalysis and seasonal forecasts for operational planning and risk scoring.',
+   sources:[
+    {n:'Open-Meteo',f:'API/JSON',m:'02 Live',i:'Forecast at mine point locations — operational planning and extreme-event warning.',code:"fetch('https://api.open-meteo.com/v1/forecast?latitude=...&longitude=...')"},
+    {n:'NOAA Climate Data',f:'API/JSON',m:'03 Keyed',i:'Historical weather observations — climate baseline for water-balance modelling.',code:"fetch('https://www.ncdc.noaa.gov/cdo-web/api/v2/data?token=...')"},
+    {n:'C3S Climate Store',f:'API/JSON',m:'03 Keyed',i:'ERA5 reanalysis at mine points — long-term temperature/precipitation baseline for tailings design.',code:"fetch('/api/cds/era5?lat=...&lon=...&var=temperature')"},
+    {n:'WorldClim v2',f:'GeoTIFF/CSV',m:'01 Static',i:'Bioclim rasters — ecological niche modelling for reclamation and biodiversity offset.',code:"local_data/worldclim/bio1.tif"},
+    {n:'NASA POWER',f:'API/JSON',m:'02 Live',i:'Solar irradiance & meteorology — solar PV potential for off-grid mine power.',code:"fetch('https://power.larc.nasa.gov/api/temporal/hourly/...')"},
+    {n:'ECMWF',f:'API/JSON',m:'03 Keyed',i:'ERA5 reanalysis & SEAS5 seasonal forecasts — long-lead water and operational risk outlook.',code:"fetch('/api/ecmwf/era5?var=tp&lat=...')"},
+  ]},
+  {id:'academic',name:'Academic, Research & News',num:7,
+   desc:'Critical-mineral lists, demand forecasts and news flow anchoring the analytical narrative.',
+   sources:[
+    {n:'USGS Critical Minerals',f:'JSON/CSV',m:'01 Static',i:'50 critical minerals list — commodity filter chips and strategic vulnerability scoring.',code:"local_data/usgs_critical/50_minerals.json"},
+    {n:'USGS SIP',f:'WMS',m:'02 Live',i:'Earth MRI airborne geophysics & geochemistry — US-specific exploration overlay.',code:"layers: 'EMRI_AERO_MAG'"},
+    {n:'EU CRM List',f:'JSON/CSV',m:'01 Static',i:'EU Critical Raw Materials list — secondary commodity filter for European strategic lens.',code:"local_data/eu_crm/crm_list.json"},
+    {n:'World Bank MinDev',f:'JSON/CSV',m:'01 Static',i:'Minerals for Climate Action report — demand forecasts tied to energy transition scenarios.',code:"local_data/worldbank/minerals_climate.json"},
+    {n:'OECD Raw Materials',f:'CSV',m:'01 Static',i:'Minerals & metals database — trade, criticality and productivity tables for material-flow analysis.',code:"local_data/oecd/raw_materials.csv"},
+    {n:'Mining.com',f:'RSS/XML',m:'02 Live',i:'Mining news feed — geocoded headlines by keyword matching for event-driven alerts.',code:"fetch('https://www.mining.com/feed/')"},
+    {n:'Reuters Metals',f:'RSS/XML',m:'02 Live',i:'Reuters metals & mining RSS — deal, operational and market news flow alongside Mining.com.',code:"fetch('https://www.reuters.com/business/metals-mining/rss/')"},
+  ]},
+  {id:'live',name:'Live Operational Telemetry',num:8,
+   desc:'Satellites, transit, radio and routing — the live operational layer of the planet.',
+   sources:[
+    {n:'CelesTrak',f:'API/TLE',m:'02 Live',i:'TLE catalogs propagated with SGP4 — satellite overhead passes for tasking windows.',code:"✅ ALREADY INTEGRATED"},
+    {n:'GTFS-Realtime',f:'Protobuf',m:'02 Live',i:'Operator transit feeds — delayed playback for crew-transport logistics.',code:"✅ ALREADY INTEGRATED"},
+    {n:'GBFS',f:'API/JSON',m:'02 Live',i:'Bikeshare station availability — urban-mobility proxy at mining-town sites.',code:"✅ ALREADY INTEGRATED"},
+    {n:'Radio Browser',f:'API/JSON',m:'02 Live',i:'Geolocated radio stations — ambient audio layer for situational awareness at remote sites.',code:"✅ ALREADY INTEGRATED"},
+    {n:'TomTom Traffic',f:'API/JSON',m:'03 Keyed',i:'Flow speeds — traffic simulation for mine-to-port haulage time estimation.',code:"✅ ALREADY INTEGRATED"},
+    {n:'OSRM',f:'API',m:'02 Live',i:'Open Source Routing Machine — A/B routing on terrain for haulage scenario planning.',code:"✅ ALREADY INTEGRATED"},
+    {n:'OpenStreetMap',f:'WMS/GeoJSON',m:'02 Live',i:'OSM tile servers & Overpass API — 2D basemap fallback and roads/buildings/site polygons.',code:"✅ ALREADY INTEGRATED"},
+    {n:'Launch Library 2',f:'API/JSON',m:'03 Keyed',i:'30-day orbital launches — launch pads and trajectories for mission-timing context.',code:"✅ ALREADY INTEGRATED"},
+  ]},
+];
+
+/* ============================================================
+   FUSION RECIPES — cross-source insight combinations
+   ============================================================ */
+const fusions = [
+  {n:1,title:'Undeclared Production Detector',
+   sources:['Sentinel Hub','USGS MRDS','NOAA Night Lights','LME','S&P Global MI'],
+   insight:'Flag mines whose night-light intensity, pit-area NDVI change, and brokered production figures diverge from declared output — a quantitative shadow-economy indicator.',
+   chain:'Sentinel-2 NDVI pit growth × VIIRS DNB night-light uplift × MRDS polygon × LME warehouse receipts × S&P MI declared tonnes → deviation score.',
+   deliverable:'Weekly "production-truth" ledger per mine, displayed as red-amber-green billboards.'},
+  {n:2,title:'Tailings Wall Failure Predictor',
+   sources:['ICEYE','Capella Space','USGS Earthquakes','ICMM Tailings','Open-Meteo','EMSC'],
+   insight:'Fuse SAR InSAR millimetre-scale wall motion with seismicity, dam geometry and rainfall to compute a 7-day failure probability for every tailings storage facility on Earth.',
+   chain:'ICEYE 24h SAR coherence × Capella HR deformation × USGS+EMSC events × ICMM dam height/volume/consequence × Open-Meteo 7-day rainfall → probabilistic risk score.',
+   deliverable:'Daily dam-status dashboard; alerts pushed to operator + regulator when score crosses 0.6.'},
+  {n:3,title:'Strategic Supply Chokepoint Radar',
+   sources:['USGS MCS','S&P Global MI','AISStream','UN Comtrade','IEA Critical Minerals'],
+   insight:'Combine country reserves, asset-level ownership, live bulker tracking and bilateral trade to detect strategic-mineral concentration risk and chokepoint disruption scenarios.',
+   chain:'MCS country reserves × S&P MI ownership graph × AIS bulker tracks × Comtrade HS flows × IEA demand forecast → dependency matrix per importing country.',
+   deliverable:'Country-level supply-vulnerability index with live chokepoint annotations on the globe.'},
+  {n:4,title:'Blind Geothermal & Epithermal Discovery',
+   sources:['Global Heat Flow','EMAG2 v3','BGI WGM','Macrostrat','EarthChem','Global Volcanism Program'],
+   insight:'Layer heat-flow anomalies, magnetic and gravity signatures, host lithology, whole-rock geochemistry and Holocene volcanism to vector toward blind geothermal and epithermal Au-Ag systems.',
+   chain:'IHFC heat-flow > 80 mW/m² × EMAG2 magnetic low × BGI Bouguer gravity high × Macrostrat felsic volcanic host × EarthChem Au-As-Sb anomalies × GVP Holocene proximal → prospect rank.',
+   deliverable:'Ranked prospect polygons with exploration-confidence scoring and drill-target coordinates.'},
+  {n:5,title:'Methane Emission Attribution',
+   sources:['Sentinel-5P TROPOMI','Sentinel Hub','USGS MRDS','USGS MCS','Maxar'],
+   insight:'Trace TROPOMI methane column plumes back to specific coal and Cu operations using high-resolution pit outlines and commodity attribution — quantifying per-mine Scope 1 methane.',
+   chain:'TROPOMI CH₄ column × Sentinel-2 pit outline × MRDS operation type × MCS coal production × Maxar 50 cm infrastructure → source-attributed plume inventory.',
+   deliverable:'Per-mine methane flux estimate with uncertainty, integrated into corporate Scope 1 disclosure.'},
+  {n:6,title:'Sanction Evasion & Conflict-Mineral Router',
+   sources:['OpenSky Network','adsb.lol','AISStream','Reuters Metals','UN Comtrade','OpenCorporates'],
+   insight:'Detect flights to remote mine sites, dark-fleet AIS gaps, anomalous trade flows and ownership chains to flag sanction-evasion and conflict-mineral routing.',
+   chain:'OpenSky charter flights × adsb.lol military coverage × AIS dark gaps × Reuters deal news × Comtrade anomalies × OpenCorporates ownership → evasion-risk flag.',
+   deliverable:'Vessel-and-aircraft timeline with ownership graph; alert when dark-AIS gap overlaps sanctioned operator.'},
+  {n:7,title:'Andean Lithium Triangle Recon',
+   sources:['SEGEMAR','Sentinel Hub','Fastmarkets','NI 43-101 Registry','NASA POWER'],
+   insight:'Combine SEGEMAR bedrock, brine-pond colour change, Li benchmark price, NI 43-101 filings and evaporation climate to rank lithium salar projects by productivity and timing.',
+   chain:'SEGEMAR salar polygons × Sentinel-2 pond colour (brine concentration) × Fastmarkets Li price × NI 43-101 resource estimate × NASA POWER evaporation → production proxy.',
+   deliverable:'Per-salar production forecast with price-implied NPV overlay on the map.'},
+  {n:8,title:'Mine-Driven Deforestation Attribution',
+   sources:['Global Forest Watch','USGS MRDS','Maxar','Land Matrix','IBAT','WDPA'],
+   insight:'Triangulate GFW loss pixels with mine polygons, 50 cm Maxar imagery, land-deal records and protected-area proximity to attribute deforestation to specific operators.',
+   chain:'GFW GLAD alerts × MRDS 5 km buffer × Maxar imagery confirmation × Land Matrix deal size × IBAT KBA proximity × WDPA polygon intersection → attribution + ESG flag.',
+   deliverable:'Operator-level deforestation ledger; auto-escalated to ESG controversy workflow.'},
+  {n:9,title:'Bushveld PGM Strategic Stockpile Assessment',
+   sources:['CGS (South Africa)','BGI WGM','Mindat.org','S&P Global MI','LBMA','Macrotrends'],
+   insight:'Combine SAMINDABA PGM occurrences, Bouguer gravity, mineral localities, asset ownership, LBMA Pt/Pd prices and 100-year cycles to model PGM strategic stockpile adequacy.',
+   chain:'CGS SAMINDABA Au/PGM × BGI Bouguer basement × Mindat species density × S&P MI asset graph × LBMA Pt/Pd × Macrotrends 100-yr cycle → stockpile stress test.',
+   deliverable:'South-Africa-specific PGM supply curve with strategic-reserve adequacy readout.'},
+  {n:10,title:'Cost-Curve Dynamic Margin Watcher',
+   sources:['MineSpans','LME','Yahoo Finance','SEC EDGAR','CRU Group'],
+   insight:'Layer cost-curve data with live LME prices, equity valuations, 10-K cash costs and CRU forecasts to flag producers entering negative-margin territory in real time.',
+   chain:'MineSpans quartile cost × LME spot price × Yahoo ticker × SEC 10-K cash cost × CRU forecast → margin compression watchlist.',
+   deliverable:'C95-cost-curve overlay with producers below waterline highlighted red on the globe.'},
+  {n:11,title:'Discovery-to-Production Lead Timer',
+   sources:['NI 43-101 Registry','S&P SNL Mining','Macrotrends','USGS Minerals Yearbook','SEDAR+'],
+   insight:'Compute the lag between NI 43-101 filing date, M&A transaction date and first commercial production to forecast supply additions to the global commodity cycle.',
+   chain:'NI 43-101 filing date × SNL M&A transactions × Macrotrends cycle phase × Yearbook production start × SEDAR+ resource upgrade → lead-time model.',
+   deliverable:'Pipeline-of-supply timeline with expected first-pour dates per asset.'},
+  {n:12,title:'Pre-Announcement M&A Target Radar',
+   sources:['S&P SNL Mining','Reuters Metals','Companies House','OpenCorporates','Yahoo Finance'],
+   insight:'Cross-reference SNL M&A pipeline, Reuters deal news, UK holding-company changes, global ownership chains and equity-vs-NAV discount to identify pre-announcement targets.',
+   chain:'SNL transaction rumour × Reuters news × Companies House filings × OpenCorporates ownership graph × Yahoo mcap/NAV discount → target probability rank.',
+   deliverable:'Weekly target watchlist with probability score and rumour source attribution.'},
+  {n:13,title:'Mine Water-Stress Score',
+   sources:['USGS Water Data','BoM Water (AU)','IBAT','TNFD','WDPA','Open-Meteo'],
+   insight:'Combine live stream gauge data, reservoir levels, KBA proximity, TNFD framework, protected areas and 7-day rainfall forecast into a per-mine water-stress score.',
+   chain:'USGS NWIS gauges × BoM storage × IBAT KBA × TNFD framework × WDPA × Open-Meteo rainfall → water-stress index 0-100.',
+   deliverable:'Per-mine water-risk badge; high scores pushed to portfolio ESG alert layer.'},
+  {n:14,title:'Embodied Carbon Per Mine',
+   sources:['Ember Climate','CDP','Maxar','IEA Critical Minerals','EIA','S&P Global MI'],
+   insight:'Multiply grid carbon intensity by mine energy consumption (inferred from Maxar infrastructure), CDP disclosures and IEA demand to estimate per-mine embodied carbon intensity.',
+   chain:'Ember grid CI × CDP scope-2 disclosure × Maxar plant imagery × IEA demand × EIA generation mix × S&P MI production → kgCO₂e per tonne produced.',
+   deliverable:'Per-mine carbon-intensity badge; integrated into green-financing screen.'},
+  {n:15,title:'Critical-Mineral Sovereignty Index',
+   sources:['USGS Critical Minerals','EU CRM List','IEA Critical Minerals','USGS MCS','UN Comtrade','EITI'],
+   insight:'Combine USGS + EU critical lists, IEA demand, country reserves, bilateral trade and EITI revenue data into a country-level dependency and sovereignty score.',
+   chain:'USGS 50 minerals × EU CRM × IEA demand × MCS reserves × Comtrade imports × EITI payments → sovereignty score per country × mineral.',
+   deliverable:'Choropleth of strategic vulnerability with drill-down per commodity.'},
+  {n:16,title:'Tailings Dam Audit Trail',
+   sources:['ICMM Tailings','Global Tailings Review','Maxar','IRMA','Copernicus EMS','USGS Earthquakes'],
+   insight:'Fuse ICMM + GTR dam inventory, 50 cm Maxar imagery, IRMA audit scores, EMS rapid-mapping activations and recent earthquakes into a single auditable dam ledger.',
+   chain:'ICMM + GTR dam metadata × Maxar wall imagery × IRMA audit score × EMS activation × USGS events → dam status ledger.',
+   deliverable:'Per-dam status card with audit lineage and live deformation overlay.'},
+  {n:17,title:'Arctic Mining Season Window',
+   sources:['ARDF (Alaska)','NASA POWER','Sentinel Hub','NOAA SWPC','C3S Climate Store'],
+   insight:'Combine ARDF occurrences, solar irradiance, SAR-confirmed ice-out, geomagnetic storm alerts and ERA5 reanalysis to compute mine operational windows in the Arctic.',
+   chain:'ARDF site × NASA POWER solar × Sentinel-1 ice-free days × SWPC Kp alerts × C3S ERA5 temperature → operating-window calendar.',
+   deliverable:'Per-site calendar with viable drilling / haulage windows colour-coded.'},
+  {n:18,title:'Conflict-Mineral Origin Network',
+   sources:['OpenCorporates','EITI','Land Matrix','Mindat.org','UN Comtrade','Reuters Metals'],
+   insight:'Trace mine ownership chains, government payments, land deals, mineral localities and trade flows to reconstruct the conflict-mineral origin network.',
+   chain:'OpenCorporates ownership × EITI payments × Land Matrix deals × Mindat localities × Comtrade HS × Reuters news → origin graph.',
+   deliverable:'Network graph of operator → country → trade route with conflict-risk overlay.'},
+  {n:19,title:'Copper Porphyry Belt Prioritization',
+   sources:['Macrostrat','EMAG2 v3','BGI WGM','EarthChem','Mindat.org','USGS NGMDB'],
+   insight:'Fuse bedrock lithology, magnetics, gravity, whole-rock Cu-Mo-Au fertility, mineral localities and US stratigraphy to rank undocumented porphyry copper targets.',
+   chain:'Macrostrat porphyry-friendly lithology × EMAG2 magnetic ring × BGI gravity low × EarthChem Cu-Mo-Au × Mindat species × NGMDB lexicon → target rank.',
+   deliverable:'Top-20 ranked greenfield Cu targets with confidence score and drilling cost estimate.'},
+  {n:20,title:'Mine-Site Insider Activity Detector',
+   sources:['OpenSky Network','adsb.lol','Yahoo Finance','Morningstar (Hemscott)','SEC EDGAR','S&P SNL Mining'],
+   insight:'Detect charter flights to remote mine sites, correlate with director dealings, equity moves, EDGAR filings and SNL M&A to flag undisclosed site visits before announcements.',
+   chain:'OpenSky charter × adsb.lol military × Morningstar director dealings × Yahoo price move × EDGAR 8-K filings × SNL rumour → insider tell.',
+   deliverable:'Pre-announcement signal feed with flight trace and price action timeline.'},
+  {n:21,title:'Coal-Stranded-Asset Pressure Map',
+   sources:['Global Energy Monitor','Ember Climate','Maxar','Argus Media','S&P Platts','MSCI ESG'],
+   insight:'Combine GEM coal plant tracker, grid carbon intensity, plant imagery, coal benchmarks, iron-ore pricing and MSCI ESG ratings to model stranded-asset pressure on coal-reliant miners.',
+   chain:'GEM plant inventory × Ember grid CI × Maxar imagery × Argus coal price × Platts iron-ore × MSCI ESG rating → stranded-asset score.',
+   deliverable:'Coal-exposed miner watchlist with decarbonization trajectory overlay.'},
+  {n:22,title:'Critical-Mineral Substitution Tracker',
+   sources:['USGS Minerals Yearbook','Mindat.org','EarthChem','Fastmarkets','Argus Media','OECD Raw Materials'],
+   insight:'Fuse production stats, mineral species, geochemistry, PRA pricing and material-flow tables to detect commodity substitution under price stress (e.g., Al for Cu in cabling).',
+   chain:'Yearbook production × Mindat substitutes × EarthChem chemistry × Fastmarkets price ratio × Argus non-LME × OECD material flows → substitution indicator.',
+   deliverable:'Substitution-pressure indicator per commodity with technical feasibility note.'},
+];
+
+/* ============================================================
+   RENDER COMPENDIUM
+   ============================================================ */
+const compendiumGrid = document.getElementById('compendiumGrid');
+const methodBadgeClass = {
+  '01 Static':'badge-static',
+  '02 Live':'badge-live',
+  '03 Keyed':'badge-keyed',
+  '✅ ALREADY INTEGRATED':'badge-integrated'
+};
+const formatIcon = (fmt) => {
+  return fmt.replace(/[\/,]/g,' ').split(' ')[0];
+};
+
+function renderCompendium(filter='all', search=''){
+  compendiumGrid.innerHTML = '';
+  categories
+    .filter(c => filter==='all' || c.id===filter)
+    .forEach((cat, idx) => {
+      const sourcesFiltered = cat.sources.filter(s => {
+        if(!search) return true;
+        const q = search.toLowerCase();
+        return s.n.toLowerCase().includes(q) || s.f.toLowerCase().includes(q) || s.i.toLowerCase().includes(q) || s.m.toLowerCase().includes(q);
+      });
+      if(sourcesFiltered.length === 0) return;
+      
+      const section = document.createElement('div');
+      section.setAttribute('data-cat', cat.id);
+      section.className = 'reveal';
+      section.innerHTML = `
+        <div class="flex items-baseline justify-between mb-6 pb-4 border-b border-[var(--line)]">
+          <div>
+            <span class="font-mono text-xs text-[var(--c)] uppercase tracking-[0.25em]">Category ${(idx+1).toString().padStart(2,'0')}</span>
+            <h3 class="font-display text-3xl md:text-4xl mt-1" style="color:var(--c)">${cat.name}</h3>
+            <p class="text-[var(--bone-dim)] mt-2 max-w-3xl">${cat.desc}</p>
+          </div>
+          <div class="text-right">
+            <div class="font-display text-3xl" style="color:var(--c)">${sourcesFiltered.length}</div>
+            <div class="font-mono text-xs text-[var(--muted)] uppercase">sources</div>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          ${sourcesFiltered.map(s => `
+            <div class="card p-4" data-cat="${cat.id}">
+              <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="font-display text-lg leading-tight">${s.n}</div>
+                <div class="flex flex-wrap gap-1 justify-end">
+                  <span class="badge">${s.f}</span>
+                  <span class="badge ${methodBadgeClass[s.m] || 'badge-static'}">${s.m}</span>
+                </div>
+              </div>
+              <p class="text-sm text-[var(--bone-dim)] leading-relaxed mb-3">${s.i}</p>
+              <div class="code-block"><span class="c"># ${cat.id}/${s.n.toLowerCase().replace(/[^a-z0-9]+/g,'_')}.js</span><br/><span class="k">→</span> ${s.code}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      compendiumGrid.appendChild(section);
+    });
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.reveal').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if(r.top < window.innerHeight) el.classList.add('in');
+    });
+  });
+}
+
+/* ============================================================
+   RENDER FUSIONS
+   ============================================================ */
+const fusionGrid = document.getElementById('fusionGrid');
+function renderFusions(){
+  fusionGrid.innerHTML = fusions.map(f => `
+    <article class="insight-card p-6 md:p-8" data-cat="geology">
+      <div class="num">${f.n.toString().padStart(2,'0')}</div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="font-mono text-[10px] tracking-[0.3em] text-[var(--copper)] uppercase">Fusion Recipe</span>
+        <span class="font-mono text-[10px] text-[var(--muted)]">· ${f.sources.length} sources</span>
+      </div>
+      <h3 class="font-display text-2xl md:text-3xl mb-4 leading-tight">${f.title}</h3>
+      <p class="text-[var(--bone)] leading-relaxed mb-5">${f.insight}</p>
+      
+      <div class="mb-5">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Sources</div>
+        <div class="flex flex-wrap gap-2">
+          ${f.sources.map((s,i) => `
+            <span class="px-2.5 py-1 rounded-full text-[11px] font-mono bg-[rgba(200,152,88,0.08)] border border-[rgba(200,152,88,0.2)] text-[var(--brass)]">${i+1}. ${s}</span>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Fusion Chain</div>
+        <div class="text-xs font-mono text-[var(--bone-dim)] bg-[rgba(0,0,0,0.4)] p-3 rounded-lg leading-relaxed">${f.chain}</div>
+      </div>
+      
+      <div>
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Deliverable</div>
+        <div class="text-sm text-[var(--bone-dim)] italic">→ ${f.deliverable}</div>
+      </div>
+    </article>
+  `).join('');
+}
+
+/* ============================================================
+   KNOWLEDGE GRAPH
+   ============================================================ */
+const kgSvg = document.getElementById('kgSvg');
+const kgReadout = document.getElementById('kgReadout');
+
+// Compute category connections from fusion recipes
+const kgData = (() => {
+  // each category node, position in circle
+  const nodes = categories.map((c,i) => {
+    const angle = (i / categories.length) * Math.PI * 2 - Math.PI/2;
+    const r = 200;
+    return {
+      id: c.id, name: c.name, num: c.num,
+      x: 400 + Math.cos(angle) * r,
+      y: 300 + Math.sin(angle) * r,
+      color: getComputedStyle(document.documentElement).getPropertyValue('--copper').trim()
+    };
+  });
+  const colorMap = {};
+  categories.forEach(c => {
+    const el = document.createElement('div');
+    el.setAttribute('data-cat', c.id);
+    el.style.display = 'none';
+    document.body.appendChild(el);
+    colorMap[c.id] = getComputedStyle(el).getPropertyValue('--c').trim();
+    document.body.removeChild(el);
+  });
+  nodes.forEach(n => n.color = colorMap[n.id]);
+  
+  // edges: for each fusion, increment pair counts
+  const edgeMap = {};
+  fusions.forEach(f => {
+    const catSet = new Set();
+    f.sources.forEach(sn => {
+      categories.forEach(c => {
+        if(c.sources.some(s => s.n === sn)) catSet.add(c.id);
+      });
+    });
+    const arr = Array.from(catSet);
+    for(let i=0;i<arr.length;i++) for(let j=i+1;j<arr.length;j++){
+      const k = [arr[i],arr[j]].sort().join('|');
+      edgeMap[k] = (edgeMap[k]||0)+1;
+    }
+  });
+  const edges = Object.entries(edgeMap).map(([k,v]) => {
+    const [a,b] = k.split('|');
+    return {a,b,weight:v};
+  });
+  return {nodes, edges, colorMap};
+})();
+
+function renderKnowledgeGraph(){
+  const {nodes, edges, colorMap} = kgData;
+  let svg = '';
+  // edges first
+  edges.forEach(e => {
+    const a = nodes.find(n => n.id===e.a);
+    const b = nodes.find(n => n.id===e.b);
+    const w = Math.min(e.weight, 5);
+    svg += `<line class="graph-edge" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" data-a="${e.a}" data-b="${e.b}" stroke-width="${w*0.6}" style="stroke-width:${w*0.6}"/>`;
+  });
+  // nodes
+  nodes.forEach(n => {
+    svg += `<g class="graph-node" data-id="${n.id}" transform="translate(${n.x},${n.y})">
+      <circle r="14" fill="${n.color}" opacity="0.15"/>
+      <circle r="8" fill="${n.color}"/>
+      <text y="-22" text-anchor="middle" font-family="Space Grotesk" font-size="11" fill="#ebe6dc" font-weight="500">${n.name.split(' ')[0]}</text>
+      <text y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="${n.color}">${n.num} src</text>
+    </g>`;
+  });
+  kgSvg.innerHTML = svg;
+  
+  // hover behavior
+  kgSvg.querySelectorAll('.graph-node').forEach(node => {
+    node.addEventListener('mouseenter', () => {
+      const id = node.dataset.id;
+      const connected = new Set([id]);
+      edges.forEach(e => {
+        if(e.a===id) connected.add(e.b);
+        if(e.b===id) connected.add(e.a);
+      });
+      kgSvg.querySelectorAll('.graph-edge').forEach(line => {
+        if(line.dataset.a===id || line.dataset.b===id) line.classList.add('active');
+        else line.classList.remove('active');
+      });
+      const catName = nodes.find(n => n.id===id).name;
+      const conns = edges.filter(e => e.a===id || e.b===id)
+        .map(e => {
+          const other = e.a===id ? e.b : e.a;
+          return `${nodes.find(n=>n.id===other).name.split(' ')[0]} ×${e.weight}`;
+        });
+      kgReadout.innerHTML = `<span style="color:${kgData.colorMap[id]}">●</span> <span class="text-[var(--bone)]">${catName}</span> → ${conns.length} fusion paths: ${conns.join(' · ') || 'none'}`;
+    });
+    node.addEventListener('mouseleave', () => {
+      kgSvg.querySelectorAll('.graph-edge').forEach(line => line.classList.remove('active'));
+      kgReadout.innerHTML = '→ Hover a node to read its connections.';
+    });
+  });
+}
+
+/* ============================================================
+   FUSION CALCULATOR
+   ============================================================ */
+const calcSourcesEl = document.getElementById('calcSources');
+const calcInsightsEl = document.getElementById('calcInsights');
+const calcCountEl = document.getElementById('calcCount');
+
+const allSourceNames = [];
+categories.forEach(c => c.sources.forEach(s => allSourceNames.push(s.n)));
+
+function renderCalculator(){
+  // unique sources, alphabetized
+  const unique = [...new Set(allSourceNames)].sort();
+  calcSourcesEl.innerHTML = unique.map(n => `<button class="calc-source" data-name="${n}">${n}</button>`).join('');
+  
+  calcSourcesEl.querySelectorAll('.calc-source').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('selected');
+      updateCalculator();
+    });
+  });
+}
+
+function updateCalculator(){
+  const selected = new Set([...calcSourcesEl.querySelectorAll('.calc-source.selected')].map(b => b.dataset.name));
+  const matching = fusions.filter(f => {
+    // require at least 60% of sources to be selected
+    const hit = f.sources.filter(s => selected.has(s)).length;
+    return hit / f.sources.length >= 0.6;
+  });
+  calcCountEl.textContent = `${matching.length} recipe${matching.length===1?'':'s'}`;
+  if(matching.length === 0){
+    calcInsightsEl.innerHTML = `<div class="text-sm text-[var(--muted)] py-8 text-center">Select sources to unlock fusion recipes. <span class="text-[var(--copper)]">60%+ source coverage required.</span></div>`;
+    return;
+  }
+  calcInsightsEl.innerHTML = matching.map(f => `
+    <div class="p-3 border border-[rgba(200,152,88,0.2)] rounded-lg bg-[rgba(200,152,88,0.04)]">
+      <div class="flex items-baseline justify-between gap-2 mb-1">
+        <div class="font-display text-sm text-[var(--bone)]">${f.title}</div>
+        <div class="font-mono text-[10px] text-[var(--copper)]">${f.sources.filter(s=>selected.has(s)).length}/${f.sources.length}</div>
+      </div>
+      <div class="text-xs text-[var(--bone-dim)] leading-relaxed">${f.insight}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   COUNTERS
+   ============================================================ */
+function animateCounters(){
+  document.querySelectorAll('[data-counter]').forEach(el => {
+    const target = parseInt(el.dataset.counter);
+    const duration = 1500;
+    const start = performance.now();
+    function step(now){
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1-t, 3);
+      el.textContent = Math.floor(eased * target);
+      if(t < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ============================================================
+   TOPOGRAPHIC BACKGROUND
+   ============================================================ */
+function buildTopo(){
+  const g = document.getElementById('topoGroup');
+  let html = '';
+  for(let i=0;i<24;i++){
+    const cx = 720 + Math.sin(i*0.7) * 200;
+    const cy = 450 + Math.cos(i*0.5) * 150;
+    const r = 80 + i*30;
+    const cls = i % 5 === 0 ? 'topo-path bold' : 'topo-path';
+    const op = 0.3 + (i % 7) * 0.05;
+    html += `<path class="${cls}" d="M ${cx-r},${cy} a ${r},${r*0.7} 0 1,0 ${r*2},0 a ${r},${r*0.7} 0 1,0 ${-r*2},0" style="opacity:${op}"/>`;
+  }
+  // add some horizontal-ish bands
+  for(let i=0;i<8;i++){
+    const y = i * 120;
+    html += `<path class="topo-path" d="M 0,${y} Q 360,${y-30} 720,${y+10} T 1440,${y-20}" style="opacity:${0.2 + i*0.04}"/>`;
+  }
+  g.innerHTML = html;
+}
+
+/* ============================================================
+   DUST PARTICLE CANVAS
+   ============================================================ */
+const dustCanvas = document.getElementById('dustCanvas');
+const dustCtx = dustCanvas.getContext('2d');
+let dust = [];
+function resizeDust(){
+  dustCanvas.width = window.innerWidth;
+  dustCanvas.height = window.innerHeight;
+  dust = [];
+  for(let i=0;i<60;i++){
+    dust.push({
+      x: Math.random() * dustCanvas.width,
+      y: Math.random() * dustCanvas.height,
+      r: Math.max(0.3, Math.random()*1.5),
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.15,
+      a: 0.1 + Math.random()*0.4,
+      hue: Math.random() > 0.7 ? 'moss' : 'copper'
+    });
+  }
+}
+function animateDust(){
+  dustCtx.clearRect(0,0,dustCanvas.width,dustCanvas.height);
+  dust.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0) p.x = dustCanvas.width;
+    if(p.x>dustCanvas.width) p.x = 0;
+    if(p.y<0) p.y = dustCanvas.height;
+    if(p.y>dustCanvas.height) p.y = 0;
+    const color = p.hue==='copper' ? `rgba(200,152,88,${p.a})` : `rgba(122,138,111,${p.a})`;
+    dustCtx.fillStyle = color;
+    dustCtx.beginPath();
+    dustCtx.arc(p.x, p.y, Math.max(0.2, p.r), 0, Math.PI*2);
+    dustCtx.fill();
+  });
+  requestAnimationFrame(animateDust);
+}
+
+/* ============================================================
+   INTERSECTION OBSERVER for reveals
+   ============================================================ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) e.target.classList.add('in');
+  });
+}, {threshold: 0.1});
+
+/* ============================================================
+   TOP-LEVEL MOUSE PARALLAX on topo
+   ============================================================ */
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  const g = document.getElementById('topoGroup');
+  if(g) g.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* ============================================================
+   FILTER LOGIC
+   ============================================================ */
+let currentFilter = 'all';
+let currentSearch = '';
+document.getElementById('catChips').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-chip');
+  if(!btn) return;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  renderCompendium(currentFilter, currentSearch);
+});
+document.getElementById('searchBox').addEventListener('input', e => {
+  currentSearch = e.target.value.trim();
+  renderCompendium(currentFilter, currentSearch);
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  buildTopo();
+  resizeDust();
+  animateDust();
+  renderCompendium();
+  renderFusions();
+  renderKnowledgeGraph();
+  renderCalculator();
+  animateCounters();
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  window.addEventListener('resize', resizeDust);
+});
+</script>
+</body>
+</html>

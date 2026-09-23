@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persona Inference Engine & Monetization Matrix · Mining Value Chain Atlas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0a0e; --obsidian:#111016; --ash:#1a1922; --bone:#ebe6dc;
+    --bone-dim:#b8b3a6; --muted:#6c6859; --copper:#c89858; --brass:#d4b87a;
+    --moss:#7a8a6f; --rust:#c4634a; --slag:#9a96a8; --line:#2a2730;
+    --gold:#e8c46a;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--void);color:var(--bone);overflow-x:hidden}
+  .font-display{font-family:'Fraunces',serif;font-optical-sizing:auto}
+  .font-mono{font-family:'JetBrains Mono',monospace}
+  
+  .topo-bg{position:fixed;inset:0;z-index:-2;opacity:.4;pointer-events:none}
+  .topo-bg svg{width:100%;height:100%}
+  .topo-path{fill:none;stroke:var(--copper);stroke-width:.5;opacity:.3}
+  .atmo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+    radial-gradient(ellipse 60% 50% at 20% 20%,rgba(200,152,88,.08),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 60%,rgba(122,138,111,.06),transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(196,99,74,.05),transparent 70%)}
+  .dust{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  
+  [data-cat=exploration]{--c:#c89858}
+  [data-cat=finance]{--c:#6ba080}
+  [data-cat=operations]{--c:#d4b87a}
+  [data-cat=logistics]{--c:#4a8a8a}
+  [data-cat=esg]{--c:#7a8a6f}
+  [data-cat=downstream]{--c:#c4a070}
+  [data-cat=gov]{--c:#a898c8}
+  [data-cat=risk]{--c:#c4634a}
+  [data-cat=tech]{--c:#8ab4c0}
+  
+  .card{background:linear-gradient(180deg,rgba(26,25,34,.92),rgba(17,16,22,.92));
+    border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;
+    transition:all .35s cubic-bezier(.4,0,.2,1)}
+  .card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+    background:var(--c,var(--copper));opacity:.3;transition:opacity .3s}
+  .card:hover::before{opacity:1}
+  .card:hover{transform:translateY(-3px);border-color:rgba(200,152,88,.4);
+    box-shadow:0 12px 32px -12px rgba(200,152,88,.2)}
+  
+  .persona-card{cursor:pointer;user-select:none}
+  .persona-card.active{border-color:var(--c,var(--copper));background:linear-gradient(180deg,rgba(200,152,88,.12),rgba(17,16,22,.95));box-shadow:0 0 0 1px var(--c,var(--copper)),0 12px 32px -12px rgba(200,152,88,.3)}
+  .persona-card.active::before{opacity:1;width:5px}
+  .persona-card .pc-icon{transition:transform .3s}
+  .persona-card:hover .pc-icon{transform:scale(1.1) rotate(5deg)}
+  
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;
+    font-size:10px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;
+    letter-spacing:.08em;font-weight:500;border:1px solid var(--line);background:rgba(0,0,0,.3);color:var(--bone-dim)}
+  
+  .hero-title{background:linear-gradient(120deg,#ebe6dc 0%,#d4b87a 40%,#c89858 60%,#ebe6dc 100%);
+    background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:shimmer 8s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  
+  .search-input{background:rgba(0,0,0,.5);border:1px solid var(--line);
+    border-radius:100px;padding:10px 16px 10px 42px;color:var(--bone);width:100%;
+    font-family:'Space Grotesk',sans-serif;font-size:14px;transition:all .25s}
+  .search-input:focus{outline:none;border-color:var(--copper);box-shadow:0 0 0 3px rgba(200,152,88,.15)}
+  
+  .cat-chip{padding:8px 14px;border-radius:100px;border:1px solid var(--line);
+    background:rgba(0,0,0,.4);font-size:12px;letter-spacing:.05em;
+    transition:all .25s;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    color:var(--bone-dim);white-space:nowrap}
+  .cat-chip:hover{border-color:var(--copper);color:var(--bone)}
+  .cat-chip.active{background:var(--copper);color:#0a0a0e;border-color:transparent;font-weight:600}
+  .cat-chip .dot{width:8px;height:8px;border-radius:50%;background:var(--c,var(--copper))}
+  .cat-chip.active .dot{background:#0a0a0e}
+  
+  .logic-block{background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:8px;
+    padding:12px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--bone-dim);line-height:1.7}
+  .logic-block .op{color:var(--copper);font-weight:700}
+  .logic-block .src{color:var(--brass)}
+  
+  .outputs-list{display:flex;flex-direction:column;gap:8px}
+  .output-row{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+    border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.3);
+    transition:all .25s;position:relative;overflow:hidden}
+  .output-row:hover{border-color:var(--ot,var(--copper));background:rgba(0,0,0,.5);transform:translateX(2px)}
+  .output-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--ot,var(--copper));opacity:0;transition:opacity .25s}
+  .output-row:hover::before{opacity:1}
+  .output-type{flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+    min-width:88px;padding:3px 8px;border-radius:4px;font-size:9px;font-family:'JetBrains Mono',monospace;
+    text-transform:uppercase;letter-spacing:.1em;font-weight:600;
+    background:var(--ot-bg,rgba(200,152,88,.1));color:var(--ot,var(--copper));
+    border:1px solid var(--ot-bg,rgba(200,152,88,.2))}
+  .output-text{font-size:13px;color:var(--bone);line-height:1.55;padding-top:1px}
+  
+  .ot-dashboard{--ot:#c89858;--ot-bg:rgba(200,152,88,.1)}
+  .ot-alert{--ot:#c4634a;--ot-bg:rgba(196,99,74,.1)}
+  .ot-report{--ot:#d4b87a;--ot-bg:rgba(212,184,122,.1)}
+  .ot-calculator{--ot:#7a8a6f;--ot-bg:rgba(122,138,111,.1)}
+  .ot-calendar{--ot:#9a96a8;--ot-bg:rgba(154,150,168,.1)}
+  .ot-notification{--ot:#a898c8;--ot-bg:rgba(168,152,200,.1)}
+  .ot-ledger{--ot:#6ba080;--ot-bg:rgba(107,160,128,.1)}
+  .ot-map{--ot:#4a8a8a;--ot-bg:rgba(74,138,138,.1)}
+  .ot-model{--ot:#8ab4c0;--ot-bg:rgba(138,180,192,.1)}
+  .ot-certificate{--ot:#c4a070;--ot-bg:rgba(196,160,112,.1)}
+  
+  /* BUSINESS MODEL UI */
+  .biz-block{margin-top:16px;padding:16px;border-radius:10px;
+    background:linear-gradient(135deg,rgba(232,196,106,.06),rgba(17,16,22,.6));
+    border:1px solid rgba(232,196,106,.2);position:relative;overflow:hidden}
+  .biz-block::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;
+    background:radial-gradient(circle,rgba(232,196,106,.08),transparent 70%);pointer-events:none}
+  .biz-label{font-size:9px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;
+    letter-spacing:.15em;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .biz-label::before{content:'';width:14px;height:1px;background:var(--gold)}
+  .biz-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .biz-item{}
+  .biz-key{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:2px}
+  .biz-val{font-size:13px;color:var(--bone);font-weight:500}
+  .biz-price{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--gold);font-weight:600}
+  .biz-arr{font-family:'Fraunces',serif;font-size:20px;color:var(--gold);font-weight:600}
+  
+  /* Monetization Matrix Bars */
+  .rev-bar-container{height:32px;background:rgba(0,0,0,.4);border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--line)}
+  .rev-bar{height:100%;background:linear-gradient(90deg,rgba(232,196,106,.2),rgba(232,196,106,.5));
+    border-right:2px solid var(--gold);transition:width 1s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding:0 10px}
+  .rev-bar span{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--bone);white-space:nowrap}
+  
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--void)}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--copper)}
+  
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--copper);
+    box-shadow:0 0 0 0 rgba(200,152,88,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,152,88,.6)}70%{box-shadow:0 0 0 8px rgba(200,152,88,0)}100%{box-shadow:0 0 0 0 rgba(200,152,88,0)}}
+  
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  .pc-icon{width:20px;height:20px;stroke:var(--c,var(--copper));fill:none;stroke-width:1.5}
+</style>
+</head>
+<body>
+
+<div class="topo-bg">
+<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" id="topoSvg">
+<g id="topoGroup"></g>
+</svg>
+</div>
+<div class="atmo"></div>
+<canvas class="dust" id="dustCanvas"></canvas>
+
+<!-- ===================== NAV ===================== -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[rgba(10,10,14,0.7)] border-b border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="8" fill="none" stroke="#d4b87a" stroke-width="1"/><circle cx="16" cy="16" r="3" fill="#c89858"/></svg>
+      <span class="font-display text-lg tracking-tight">Inference & Monetization Engine</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-6 text-sm text-[var(--bone-dim)]">
+      <a href="#personas" class="hover:text-[var(--copper)] transition">Personas</a>
+      <a href="#engine" class="hover:text-[var(--copper)] transition">Inference Matrix</a>
+      <a href="#matrix" class="hover:text-[var(--gold)] transition">Monetization Matrix</a>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(232,196,106,0.1)] border border-[rgba(232,196,106,0.3)]">
+      <span class="pulse-dot" style="background:var(--gold)"></span>
+      <span class="text-xs font-mono text-[var(--gold)]">v6.0 COMMERCIAL</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header id="top" class="relative pt-32 pb-20 px-6">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="h-px w-12 bg-[var(--copper)]"></div>
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">Value Chain Atlas · 55 Roles · 25 Products · $212M ARR Target</span>
+    </div>
+    
+    <h1 class="font-display text-[clamp(48px,8vw,128px)] leading-[0.92] tracking-tight mb-8 hero-title">
+      The Persona-Driven<br/>
+      Monetization Engine.
+    </h1>
+    
+    <div class="grid lg:grid-cols-12 gap-8 mt-12">
+      <p class="lg:col-span-7 text-lg leading-relaxed text-[var(--bone-dim)] max-w-2xl">
+        Select a role across the mining value chain. The engine cross-references <span class="text-[var(--bone)] font-medium">55 distinct personas</span> against 25 inference models — and for each, prescribes the exact <span class="text-[var(--gold)]">business model, pricing tier, and revenue potential</span> to build a profitable, scaled product line.
+      </p>
+      <div class="lg:col-span-5 lg:pl-8 lg:border-l border-[var(--line)]">
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <div class="font-display text-4xl text-[var(--copper)]" data-counter="55">0</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Personas</div>
+          </div>
+          <div>
+            <div class="font-display text-4xl text-[var(--brass)]" data-counter="25">0</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Inferences</div>
+          </div>
+          <div>
+            <div class="font-display text-4xl text-[var(--gold)]">$212M</div>
+            <div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Total ARR Target</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-12 flex flex-wrap gap-3">
+      <a href="#personas" class="px-6 py-3 bg-[var(--copper)] text-[var(--void)] font-medium rounded-full hover:bg-[var(--brass)] transition">Select a Persona</a>
+      <a href="#matrix" class="px-6 py-3 border border-[var(--gold)] text-[var(--gold)] rounded-full hover:bg-[rgba(232,196,106,0.1)] transition">View Monetization Matrix</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== PERSONA LIBRARY ===================== -->
+<section id="personas" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-end justify-between mb-2 flex-wrap gap-4">
+      <div>
+        <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 01</span>
+        <h2 class="font-display text-5xl mt-2">Persona Library</h2>
+      </div>
+      <div class="relative w-full md:w-96">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="searchBox" type="text" placeholder="Search personas (e.g. tailings, M&A, trader)…" class="search-input">
+      </div>
+    </div>
+    <p class="text-[var(--bone-dim)] mb-8 max-w-3xl">Filter by value-chain segment. Click a persona to load their specific decision context, required data fusions, actionable outputs, and the business model for monetizing them.</p>
+    
+    <div class="flex flex-wrap gap-2 mb-10" id="catChips">
+      <button class="cat-chip active" data-filter="all"><span class="dot" style="background:var(--copper)"></span>All Personas</button>
+      <button class="cat-chip" data-filter="exploration" data-cat="exploration"><span class="dot"></span>Exploration & Geology</button>
+      <button class="cat-chip" data-filter="finance" data-cat="finance"><span class="dot"></span>Finance & Markets</button>
+      <button class="cat-chip" data-filter="operations" data-cat="operations"><span class="dot"></span>Operations & Engineering</button>
+      <button class="cat-chip" data-filter="logistics" data-cat="logistics"><span class="dot"></span>Logistics & Trade</button>
+      <button class="cat-chip" data-filter="esg" data-cat="esg"><span class="dot"></span>ESG & Environment</button>
+      <button class="cat-chip" data-filter="downstream" data-cat="downstream"><span class="dot"></span>Downstream & Manufacturing</button>
+      <button class="cat-chip" data-filter="gov" data-cat="gov"><span class="dot"></span>Government & Policy</button>
+      <button class="cat-chip" data-filter="risk" data-cat="risk"><span class="dot"></span>Risk & Insurance</button>
+      <button class="cat-chip" data-filter="tech" data-cat="tech"><span class="dot"></span>Technology & Research</button>
+    </div>
+    
+    <div id="personaGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+  </div>
+</section>
+
+<!-- ===================== INFERENCE ENGINE ===================== -->
+<section id="engine" class="px-6 py-24 border-t border-[var(--line)] relative">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="mb-12">
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--copper)] uppercase">§ 02 · Dynamic Output</span>
+      <h2 class="font-display text-[clamp(40px,6vw,80px)] mt-3 leading-[0.95]">The Inference Matrix.<br/><span class="text-[var(--bone-dim)] italic">Tailored to your role.</span></h2>
+    </div>
+    
+    <div class="card p-8 mb-12" data-cat="operations" id="activePersonaCard">
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+        <div class="flex-shrink-0 w-16 h-16 rounded-full border-2 border-[var(--copper)] flex items-center justify-center bg-[rgba(200,152,88,0.1)]">
+          <svg id="apIcon" class="pc-icon" style="width:32px;height:32px" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="font-mono text-xs text-[var(--copper)] uppercase tracking-[0.2em] mb-2" id="apRole">Operations Manager</div>
+          <h3 class="font-display text-3xl md:text-4xl" id="apName">Operations Manager</h3>
+          <p class="text-[var(--bone-dim)] mt-2" id="apDesc">Select a persona above to load their specific decision context, required data fusions, and actionable inferences.</p>
+        </div>
+        <div class="text-right">
+          <div class="font-display text-4xl text-[var(--copper)]" id="apInferenceCount">0</div>
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)]">Inferences Loaded</div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="inferenceGrid" class="grid lg:grid-cols-2 gap-6"></div>
+    
+    <div id="emptyState" class="text-center py-24 border border-dashed border-[var(--line)] rounded-2xl">
+      <svg class="mx-auto mb-4" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6c6859" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <h3 class="font-display text-2xl text-[var(--bone-dim)]">No persona selected</h3>
+      <p class="text-[var(--muted)] mt-2">Return to the Persona Library above and select a role to generate the inference matrix.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MONETIZATION MATRIX ===================== -->
+<section id="matrix" class="px-6 py-24 border-t border-[var(--line)] relative">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="mb-12">
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 03 · The Business Model</span>
+      <h2 class="font-display text-[clamp(40px,6vw,80px)] mt-3 leading-[0.95]">Monetization Matrix.<br/><span class="text-[var(--bone-dim)] italic">How much we can make.</span></h2>
+      <p class="text-[var(--bone-dim)] mt-6 max-w-3xl text-lg leading-relaxed">Each of the 25 inference models is a standalone SaaS, data feed, or enterprise product. Below is the pricing architecture, Total Addressable Market (TAM), and Annual Recurring Revenue (ARR) target per product at <span class="text-[var(--gold)]">Year 3 scale</span>. Total platform potential: <span class="text-[var(--gold)] font-bold">$212M ARR</span>.</p>
+    </div>
+    
+    <!-- Summary Stats -->
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
+      <div class="card p-6" style="border-color:rgba(232,196,106,0.3)">
+        <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Total Addressable Market</div>
+        <div class="font-display text-4xl text-[var(--gold)]">$45.2B</div>
+        <div class="text-xs text-[var(--bone-dim)] mt-2">Combined TAM across all 25 product lines</div>
+      </div>
+      <div class="card p-6" style="border-color:rgba(232,196,106,0.3)">
+        <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Serviceable Obtainable Market</div>
+        <div class="font-display text-4xl text-[var(--gold)]">$2.1B</div>
+        <div class="text-xs text-[var(--bone-dim)] mt-2">Realistic 3-year capture ceiling (5% of TAM)</div>
+      </div>
+      <div class="card p-6" style="border-color:rgba(232,196,106,0.3)">
+        <div class="text-xs uppercase tracking-wider text-[var(--muted)] mb-2">Year 3 ARR Target</div>
+        <div class="font-display text-4xl text-[var(--gold)]">$212M</div>
+        <div class="text-xs text-[var(--bone-dim)] mt-2">10% of SOM across the portfolio</div>
+      </div>
+    </div>
+    
+    <div id="matrixGrid" class="space-y-3"></div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <svg width="24" height="24" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#c89858"/></svg>
+      <span class="font-display text-lg">Inference & Monetization Engine</span>
+    </div>
+    <p class="text-sm text-[var(--muted)] font-mono">55 personas · 25 inference models · 120 deliverables · $212M ARR target · Built on 117 data sources</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA: Personas (55)
+   ============================================================ */
+const personas = [
+  {id:1,name:'Targeting Geologist',cat:'exploration',icon:'compass',desc:'Identifies greenfield drill targets using structural, geochemical and geophysical overlays.'},
+  {id:2,name:'Chief Geologist',cat:'exploration',icon:'layers',desc:'Manages resource estimation, QA/QC, and multi-project portfolio prioritization.'},
+  {id:3,name:'Geochemist',cat:'exploration',icon:'flask',desc:'Interprets whole-rock and stream-sediment anomalies to vector toward mineralization.'},
+  {id:4,name:'Geophysicist',cat:'exploration',icon:'waves',desc:'Processes magnetic, gravity, and IP data to image basement and alteration footprints.'},
+  {id:5,name:'Land Manager',cat:'exploration',icon:'map',desc:'Acquires and maintains tenures, tracking claim boundaries and competitor staking.'},
+  {id:6,name:'Resource Estimator',cat:'exploration',icon:'box',desc:'Builds 3D block models and computes Measured/Indicated/Inferred resource inventories.'},
+  {id:7,name:'Mineral Economist',cat:'exploration',icon:'trending',desc:'Evaluates NPV of early-stage projects against forward commodity price curves.'},
+  {id:8,name:'Sell-side Analyst',cat:'finance',icon:'chart',desc:'Models cash flow and NAV for coverage of mid- to large-cap mining equities.'},
+  {id:9,name:'M&A Banker',cat:'finance',icon:'handshake',desc:'Sources mining transactions and advises on bid pricing and strategic fit.'},
+  {id:10,name:'Buy-side PM',cat:'finance',icon:'briefcase',desc:'Allocates capital to mining equities based on macro and ESG screens.'},
+  {id:11,name:'Commodity Trader',cat:'finance',icon:'candlestick',desc:'Trades physical and paper metals, basis arbitrage and warehouse location spreads.'},
+  {id:12,name:'Hedge Fund Quant',cat:'finance',icon:'binary',desc:'Stat-arb and mean-reversion strategies on LME/SHFE spreads and physical premia.'},
+  {id:13,name:'Mine CFO',cat:'finance',icon:'calculator',desc:'Capital allocation, hedging strategy, and treasury for a single-asset or multi-asset operator.'},
+  {id:14,name:'ESG Portfolio Manager',cat:'finance',icon:'leaf',desc:'Screens mining issuers for climate, water, and biodiversity risk for fund inclusion.'},
+  {id:15,name:'Private Equity VP',cat:'finance',icon:'piechart',desc:'Sourcing and diligence of late-stage development assets for take-private or recap.'},
+  {id:16,name:'Mine Planner',cat:'operations',icon:'grid',desc:'Optimizes pit shells, pushbacks, and haul road networks over LOM schedule.'},
+  {id:17,name:'Operations Manager',cat:'operations',icon:'settings',desc:'Runs daily throughput, grade, and equipment utilization against budget targets.'},
+  {id:18,name:'Tailings Engineer',cat:'operations',icon:'dam',desc:'Monitors TSF dam stability, freeboard, and piezometer responses.'},
+  {id:19,name:'Metallurgist',cat:'operations',icon:'atom',desc:'Optimizes recovery, grind size, and reagent consumption in the process plant.'},
+  {id:20,name:'Mine Surveyor',cat:'operations',icon:'crosshair',desc:'Verifies volumes, blast patterns, and final pit wall geometry.'},
+  {id:21,name:'UAV Pilot',cat:'operations',icon:'drone',desc:'Captures orthomosaics and photogrammetry of pit, stockpiles, and tailings.'},
+  {id:22,name:'Ventilation Engineer',cat:'operations',icon:'wind',desc:'Manages underground airflow, heat load, and diesel particulate dilution.'},
+  {id:23,name:'Blasting Engineer',cat:'operations',icon:'burst',desc:'Designs blast patterns, timing, and vibration control for wall stability.'},
+  {id:24,name:'Freight Forwarder',cat:'logistics',icon:'truck',desc:'Books containers and breakbulk for mine-to-port inland transport.'},
+  {id:25,name:'Port Operations Manager',cat:'logistics',icon:'anchor',desc:'Manages berth allocation, stevedoring, and stockpile rotation at the export terminal.'},
+  {id:26,name:'Supply Chain Director',cat:'logistics',icon:'network',desc:'Mitigates geopolitical and logistical risk in raw material sourcing.'},
+  {id:27,name:'Chartering Broker',cat:'logistics',icon:'ship',desc:'Fixes vessels for dry bulk and concentrate shipments on spot or period.'},
+  {id:28,name:'Maritime Trade Analyst',cat:'logistics',icon:'globe',desc:'Tracks bulker fleet utilization, ton-miles, and freight rate trends.'},
+  {id:29,name:'Rail Operations Lead',cat:'logistics',icon:'train',desc:'Schedules heavy-haul unit trains from mine to export terminal.'},
+  {id:30,name:'Chief Sustainability Officer',cat:'esg',icon:'leaf',desc:'Sets decarbonization targets and oversees Scope 1/2/3 reporting across assets.'},
+  {id:31,name:'Environmental Compliance Officer',cat:'esg',icon:'shield',desc:'Permits and monitors water discharge, dust, and biodiversity commitments.'},
+  {id:32,name:'Community Relations Manager',cat:'esg',icon:'people',desc:'Manages FPIC, grievance mechanisms, and local employment commitments.'},
+  {id:33,name:'Tailings Safety Auditor',cat:'esg',icon:'clipboard',desc:'Conducts independent GISTM conformance reviews of TSFs.'},
+  {id:34,name:'Hydrologist',cat:'esg',icon:'drop',desc:'Models water balance, dewatering, and downstream catchment impacts.'},
+  {id:35,name:'Reclamation Specialist',cat:'esg',icon:'sprout',desc:'Designs and monitors progressive closure, cover systems, and revegetation.'},
+  {id:36,name:'Carbon Accountant',cat:'esg',icon:'co2',desc:'Calculates embodied carbon intensity and verifies against SBTi pathways.'},
+  {id:37,name:'EV Procurement Director',cat:'downstream',icon:'battery',desc:'Secures Li, Co, Ni, and graphite offtake for gigafactory supply chains.'},
+  {id:38,name:'Battery Materials Buyer',cat:'downstream',icon:'cell',desc:'Tier-1 cell manufacturer sourcing cathode and anode active materials.'},
+  {id:39,name:'Steel Mill Procurement',cat:'downstream',icon:'beam',desc:'Buys iron ore, coking coal, and ferro-alloys for integrated steelmaking.'},
+  {id:40,name:'Refinery Operations Manager',cat:'downstream',icon:'factory',desc:'Runs smelter throughput, scheduling concentrate blend feed.'},
+  {id:41,name:'Critical Minerals Strategist',cat:'downstream',icon:'key',desc:'Maps national stockpile adequacy and substitution pathways for CRM.'},
+  {id:42,name:'Glass & Ceramics Buyer',cat:'downstream',icon:'gem',desc:'Sources industrial minerals, feldspar, silica, and rare earths.'},
+  {id:43,name:'Mining Regulator',cat:'gov',icon:'gavel',desc:'Permits, inspects, and enforces safety and environmental law at mine sites.'},
+  {id:44,name:'Tax / Revenue Inspector',cat:'gov',icon:'coins',desc:'Audits royalties, resource rent, and transfer pricing in the extractive sector.'},
+  {id:45,name:'Indigenous Liaison',cat:'gov',icon:'feather',desc:'Facilitates consultation and consent processes with traditional owners.'},
+  {id:46,name:'Critical Minerals Policy Advisor',cat:'gov',icon:'document',desc:'Designs incentives and tariffs to onshore strategic mineral supply chains.'},
+  {id:47,name:'Land Use Planner',cat:'gov',icon:'blueprint',desc:'Zones and arbitrates competing land uses: mining, agriculture, conservation.'},
+  {id:48,name:'Antitrust Regulator',cat:'gov',icon:'scale',desc:'Reviews mining mergers for commodity market concentration and abuse.'},
+  {id:49,name:'Risk Underwriter',cat:'risk',icon:'shield_cross',desc:'Prices property, business interruption, and political risk cover for mines.'},
+  {id:50,name:'Political Risk Analyst',cat:'risk',icon:'flag',desc:'Assesses resource nationalism, expropriation, and strike probability.'},
+  {id:51,name:'Loss Adjuster',cat:'risk',icon:'magnifier',desc:'Quantifies post-event property and BI losses for insurers.'},
+  {id:52,name:'Geotechnical Risk Engineer',cat:'risk',icon:'cone',desc:'Slope stability, seismic, and tailings dam risk modeling for insurers.'},
+  {id:53,name:'Remote Sensing Analyst',cat:'tech',icon:'satellite',desc:'Builds change-detection pipelines from Sentinel, Planet, and SAR imagery.'},
+  {id:54,name:'Mining Tech Investor',cat:'tech',icon:'rocket',desc:'Sources Series A/B deals in mine planning, autonomy, and ESG tech.'},
+  {id:55,name:'Resource Estimation Consultant',cat:'tech',icon:'cube',desc:'Independent QP for NI 43-101 / JORC / SAMREC reports.'},
+];
+
+/* ============================================================
+   DATA: Inferences (25) with outputs AND business models
+   ============================================================ */
+const inferences = [
+  {id:1, title:'Blind Porphyry & Epithermal Targeting',
+   personas:[1,2,3,4,6,7,53],
+   sources:['Macrostrat','EMAG2 v3','BGI WGM','EarthChem','Mindat.org','Global Volcanism Program'],
+   logic:'<span class="src">Macrostrat</span> felsic volcanic host <span class="op">×</span> <span class="src">EMAG2</span> magnetic ring <span class="op">×</span> <span class="src">BGI WGM</span> gravity low <span class="op">×</span> <span class="src">EarthChem</span> Cu-Mo-Au anomalies <span class="op">×</span> <span class="src">GVP</span> Holocene proximal',
+   inference:'Generate ranked greenfield drill targets for blind porphyry Cu ± Au and epithermal systems by fusing lithology, magnetics, gravity, and pathfinder geochemistry.',
+   outputs:[
+     {t:'map',x:'Ranked prospect polygons overlaid on the globe with drill-target confidence score (0–100).'},
+     {t:'model',x:'3D magnetic inversion model link showing expected depth-to-top-of-ore per target.'},
+     {t:'map',x:'Geochemical pathfinder anomaly heatmap (Cu-Mo-Au-As-Sb) for each prospect.'},
+     {t:'calculator',x:'Drilling cost-per-meter vs expected resource tonnage ROI calculator per target.'},
+     {t:'report',x:'Competent-person target ranking brief with structural interpretation and recommended drillhole collar coordinates.'}
+   ],
+   biz:{model:'Exploration Data License (Per-Campaign)', price:'$50k per campaign brief', tam:'$1.2B', arr:'$8M', buyers:'Exploration teams, prospect generators, royalty companies'}},
+   
+  {id:2, title:'Pre-Announcement M&A Target Radar',
+   personas:[8,9,10,12,15],
+   sources:['S&P SNL Mining','Reuters Metals','Companies House','OpenCorporates','Yahoo Finance'],
+   logic:'<span class="src">SNL</span> transaction rumor <span class="op">×</span> <span class="src">Reuters</span> news <span class="op">×</span> <span class="src">Companies House</span> filings <span class="op">×</span> <span class="src">OpenCorporates</span> ownership graph <span class="op">×</span> <span class="src">Yahoo</span> mcap/NAV discount',
+   inference:'Identify pre-announcement acquisition targets by detecting corporate-veil restructuring, news flow, and equity-vs-NAV discount simultaneously.',
+   outputs:[
+     {t:'dashboard',x:'Weekly target watchlist with probability score (0–100) and implied premium range.'},
+     {t:'calculator',x:'Implied acquisition premium calculator factoring NAV, synergy uplift, and control premium.'},
+     {t:'report',x:'Rumour source attribution timeline linking Reuters headlines, filings, and price action.'},
+     {t:'alert',x:'Push notification when director dealings + ownership restructuring + mcap/NAV discount all breach threshold simultaneously.'},
+     {t:'report',x:'Comparable transaction multiples sheet (EV/Resource, EV/Reserve) for peer benchmarking.'}
+   ],
+   biz:{model:'Hedge Fund Terminal License', price:'$250k / firm / yr', tam:'$3.0B', arr:'$15M', buyers:'Hedge funds, M&A boutiques, private equity'}},
+   
+  {id:3, title:'Tailings Dam 7-Day Failure Probability',
+   personas:[18,22,33,34,49,51,52],
+   sources:['ICEYE','Capella Space','USGS Earthquakes','ICMM Tailings','Open-Meteo','EMSC'],
+   logic:'<span class="src">ICEYE</span> InSAR wall motion <span class="op">×</span> <span class="src">Capella</span> HR deformation <span class="op">×</span> <span class="src">USGS+EMSC</span> events <span class="op">×</span> <span class="src">ICMM</span> dam geometry/consequence <span class="op">×</span> <span class="src">Open-Meteo</span> 7d rainfall',
+   inference:'Compute probabilistic 7-day failure risk for every TSF globally by layering SAR deformation, seismicity, geometry, and rainfall stress.',
+   outputs:[
+     {t:'dashboard',x:'Daily dam-status dashboard — red/amber/green per facility with 7-day rolling risk score.'},
+     {t:'alert',x:'Auto-pushed alert to operators and underwriters when risk score crosses 0.6, with deformation rate and rainfall forecast.'},
+     {t:'model',x:'InSAR deformation time-series (mm/day) per dam wall sector with trend projection.'},
+     {t:'map',x:'Rainfall-stress forecast overlay showing cumulative precipitation vs dam freeboard capacity.'},
+     {t:'notification',x:'Regulator notification draft template pre-filled with dam ID, consequence class, and current risk score.'}
+   ],
+   biz:{model:'Enterprise Risk SaaS (Per-Asset)', price:'$100k / mine / yr', tam:'$4.5B', arr:'$20M', buyers:'Mining majors, insurers, regulators'}},
+   
+  {id:4, title:'Shadow Production & Undeclared Output Detector',
+   personas:[8,11,12,13,43,44],
+   sources:['Sentinel Hub','USGS MRDS','NOAA Night Lights','LME','S&P Global MI'],
+   logic:'<span class="src">Sentinel-2</span> pit NDVI change <span class="op">×</span> <span class="src">VIIRS DNB</span> night-light uplift <span class="op">×</span> <span class="src">MRDS</span> polygon <span class="op">×</span> <span class="src">LME</span> warehouse receipts <span class="op">×</span> <span class="src">S&P MI</span> declared tonnes',
+   inference:'Flag mines whose satellite-inferred activity significantly exceeds brokered/declared production — a quantitative shadow-economy indicator.',
+   outputs:[
+     {t:'ledger',x:'Production-truth ledger per mine — satellite-inferred vs declared tonnes with deviation percentage.'},
+     {t:'map',x:'Deviation badges (red/amber/green) pinned to every mine polygon on the globe.'},
+     {t:'report',x:'LME warehouse receipt reconciliation report cross-referencing physical stock vs declared output.'},
+     {t:'notification',x:'Tax authority referral package with evidence packet (imagery, night-light trend, deviation calc).'},
+     {t:'model',x:'Quarterly shadow-production trend chart per country showing under-reporting delta over time.'}
+   ],
+   biz:{model:'Data Feed (Exchanges & Regulators)', price:'$500k enterprise / yr', tam:'$1.5B', arr:'$10M', buyers:'LME, SEC, tax authorities, sovereign wealth funds'}},
+   
+  {id:5, title:'Strategic Supply Chokepoint Radar',
+   personas:[10,11,26,28,41,46,50],
+   sources:['USGS MCS','S&P Global MI','AISStream','UN Comtrade','IEA Critical Minerals'],
+   logic:'<span class="src">MCS</span> country reserves <span class="op">×</span> <span class="src">S&P MI</span> ownership <span class="op">×</span> <span class="src">AIS</span> bulker tracks <span class="op">×</span> <span class="src">Comtrade</span> HS flows <span class="op">×</span> <span class="src">IEA</span> demand',
+   inference:'Model strategic-mineral concentration risk and detect live chokepoint disruptions by fusing reserves, ownership, vessel routing, and trade flows.',
+   outputs:[
+     {t:'dashboard',x:'Country-level supply-vulnerability index (0–100) per mineral with concentration ratio (HHI).'},
+     {t:'map',x:'Live bulker vessel annotations on globe with destination port and cargo classification.'},
+     {t:'calculator',x:'Alternative-source routing recommendation tool computing freight cost + lead time for backup suppliers.'},
+     {t:'report',x:'Chokepoint disruption scenario stress-test — impact of Strait of Hormuz / Malacca / Panama closure on supply.'},
+     {t:'alert',x:'Push alert when AIS dark-fleet gap overlaps a sanctioned exporting country.'}
+   ],
+   biz:{model:'Trade Desk SaaS (Per-Seat)', price:'$150k / seat / yr', tam:'$2.0B', arr:'$12M', buyers:'Commodity traders, supply chain VPs, sovereign strategists'}},
+   
+  {id:6, title:'Mine Water-Stress & Closure Score',
+   personas:[16,30,31,34,35,49,52],
+   sources:['USGS Water Data','BoM Water (AU)','IBAT','TNFD','WDPA','Open-Meteo'],
+   logic:'<span class="src">USGS NWIS</span> gauges <span class="op">×</span> <span class="src">BoM</span> storage <span class="op">×</span> <span class="src">IBAT</span> KBA <span class="op">×</span> <span class="src">TNFD</span> framework <span class="op">×</span> <span class="src">WDPA</span> protected areas <span class="op">×</span> <span class="src">Open-Meteo</span> rainfall',
+   inference:'Compute per-mine water-stress score (0–100) integrating hydrology, protected-area proximity, biodiversity framework, and rainfall forecast.',
+   outputs:[
+     {t:'dashboard',x:'Per-mine water-risk badge (0–100) with sub-scores for scarcity, biodiversity, and regulatory exposure.'},
+     {t:'alert',x:'Portfolio-level alert layer for CSOs when water-stress score crosses 70.'},
+     {t:'model',x:'Catchment water-balance deficit forecast — 90-day inflow vs mine drawdown projection.'},
+     {t:'calendar',x:'Permit renewal risk calendar showing water-discharge licence expiry dates with stress-score context.'},
+     {t:'report',x:'Reclamation water demand projection for closure planning — post-mining catchment recovery timeline.'}
+   ],
+   biz:{model:'ESG SaaS (Per-Mine)', price:'$50k / mine / yr', tam:'$800M', arr:'$6M', buyers:'ESG teams, hydrologists, reclamation consultants'}},
+   
+  {id:7, title:'Pre-Funding EV Battery Material Trace',
+   personas:[14,37,38,41,46],
+   sources:['NI 43-101 Registry','Fastmarkets','OpenCorporates','EITI','Mindat.org'],
+   logic:'<span class="src">NI 43-101</span> resource estimate <span class="op">×</span> <span class="src">Fastmarkets</span> Li/Co price <span class="op">×</span> <span class="src">OpenCorporates</span> ownership <span class="op">×</span> <span class="src">EITI</span> payments <span class="op">×</span> <span class="src">Mindat</span> origin trace',
+   inference:'Trace battery minerals from mine-of-origin to corporate ownership, pricing benchmark, and government payments for ESG-compliant gigafactory sourcing.',
+   outputs:[
+     {t:'dashboard',x:'Sourcing-decision matrix scoring projects on ESG compliance, resource grade, and commercial viability.'},
+     {t:'certificate',x:'Origin traceability certificate draft — mine-to-refinery chain of custody with EITI payment verification.'},
+     {t:'map',x:'ESG compliance heatmap per project showing biodiversity, water, and community risk overlay.'},
+     {t:'report',x:'Price-locked offtake term sheet template pre-filled with Fastmarkets benchmark and NI 43-101 resource tonnage.'},
+     {t:'calculator',x:'Refinery feedstock security score — years of secured supply vs gigafactory demand ramp.'}
+   ],
+   biz:{model:'Supply Chain Enterprise License', price:'$200k / yr', tam:'$2.5B', arr:'$14M', buyers:'Gigafactories, battery OEMs, automotive OEMs'}},
+   
+  {id:8, title:'Cost-Curve Dynamic Margin Watcher',
+   personas:[8,10,11,12,13,15],
+   sources:['MineSpans','LME','Yahoo Finance','SEC EDGAR','CRU Group'],
+   logic:'<span class="src">MineSpans</span> quartile cost <span class="op">×</span> <span class="src">LME</span> spot price <span class="op">×</span> <span class="src">Yahoo</span> ticker <span class="op">×</span> <span class="src">EDGAR</span> 10-K cash cost <span class="op">×</span> <span class="src">CRU</span> forecast',
+   inference:'Layer cost-curve data with live prices and equity valuations to flag producers entering negative-margin territory in real time.',
+   outputs:[
+     {t:'map',x:'C95 cost-curve overlay on globe — red-flagged producers below the waterline at current spot.'},
+     {t:'alert',x:'Margin compression alert feed — push when cash cost > 90% of trailing 30-day average spot price.'},
+     {t:'calculator',x:'Hedging recommendation per producer — suggested forward-sale percentage based on margin stress.'},
+     {t:'report',x:'Quarterly cash cost reconciliation report comparing MineSpans, CRU, and 10-K disclosed C1 costs.'},
+     {t:'model',x:'12-month margin forecast curve per producer using CRU price deck and MineSpans cost ramp.'}
+   ],
+   biz:{model:'Market Intelligence Terminal', price:'$100k / seat / yr', tam:'$1.8B', arr:'$9M', buyers:'Analysts, traders, mine CFOs'}},
+   
+  {id:9, title:'Arctic Mining Season Window Optimizer',
+   personas:[1,6,16,17,21,27],
+   sources:['ARDF (Alaska)','NASA POWER','Sentinel Hub','NOAA SWPC','C3S Climate Store'],
+   logic:'<span class="src">ARDF</span> site <span class="op">×</span> <span class="src">NASA POWER</span> solar irradiance <span class="op">×</span> <span class="src">Sentinel-1</span> ice-free days <span class="op">×</span> <span class="src">SWPC</span> Kp alerts <span class="op">×</span> <span class="src">C3S</span> ERA5 temp',
+   inference:'Compute viable drilling, haulage, and crew-transport windows in the Arctic by fusing solar, ice-out, geomagnetic, and climate data.',
+   outputs:[
+     {t:'calendar',x:'Per-site operating calendar with viable drilling, haulage, and crew-transport windows color-coded by month.'},
+     {t:'calendar',x:'Drilling crew rotation schedule aligned with ice-road availability and daylight hours.'},
+     {t:'alert',x:'Geomagnetic storm (Kp > 5) blackout warning — 72-hour advance notice for GPS-guided surveying.'},
+     {t:'model',x:'Solar PV generation profile for off-grid diesel displacement — hourly kW projected from NASA POWER irradiance.'},
+     {t:'report',x:'Seasonal logistics cost comparison — ice-road vs all-weather vs airlift per tonne-km.'}
+   ],
+   biz:{model:'Ops Planning SaaS', price:'$75k / site / yr', tam:'$400M', arr:'$4M', buyers:'Arctic operators, logistics contractors, EPCs'}},
+   
+  {id:10, title:'Sanction Evasion & Dark Fleet Router',
+   personas:[11,26,28,43,50],
+   sources:['OpenSky Network','adsb.lol','AISStream','Reuters Metals','UN Comtrade','OpenCorporates'],
+   logic:'<span class="src">OpenSky</span> charter flights <span class="op">×</span> <span class="src">adsb.lol</span> military coverage <span class="op">×</span> <span class="src">AIS</span> dark gaps <span class="op">×</span> <span class="src">Reuters</span> news <span class="op">×</span> <span class="src">Comtrade</span> anomalies <span class="op">×</span> <span class="src">OpenCorporates</span> ownership',
+   inference:'Detect sanction-evasion and conflict-mineral routing by tracking dark-fleet AIS gaps, anomalous trade flows, and offshore ownership chains.',
+   outputs:[
+     {t:'dashboard',x:'Vessel-and-aircraft timeline with ownership graph — dark-AIS gaps, charter landings, and offshore entity links.'},
+     {t:'alert',x:'Push alert when dark-AIS gap overlaps a sanctioned operator or vessel registered to a flagged entity.'},
+     {t:'report',x:'Trade flow anomaly report — Comtrade declared imports vs AIS-observed arrivals with deviation flag.'},
+     {t:'map',x:'Offshore ownership chain visualization — mine → holding company → trading house → end-buyer.'},
+     {t:'notification',x:'Compliance referral package with evidence packet for OFAC / EU sanctions regulator.'}
+   ],
+   biz:{model:'Compliance & Trade Feed', price:'$300k / firm / yr', tam:'$1.0B', arr:'$8M', buyers:'Compliance teams, customs agencies, trade desks'}},
+   
+  {id:11, title:'Mine-Driven Deforestation Attribution',
+   personas:[14,30,31,35,47],
+   sources:['Global Forest Watch','USGS MRDS','Maxar','Land Matrix','IBAT','WDPA'],
+   logic:'<span class="src">GFW</span> GLAD alerts <span class="op">×</span> <span class="src">MRDS</span> 5km buffer <span class="op">×</span> <span class="src">Maxar</span> imagery confirmation <span class="op">×</span> <span class="src">Land Matrix</span> deal size <span class="op">×</span> <span class="src">IBAT/WDPA</span> proximity',
+   inference:'Attribute forest loss pixels to specific operators by fusing GFW alerts, mine polygons, high-res imagery, and land-deal records.',
+   outputs:[
+     {t:'ledger',x:'Operator-level deforestation ledger — hectares lost per year per mine with satellite evidence.'},
+     {t:'notification',x:'Auto-escalated ESG controversy workflow — investor notification draft with evidence packet.'},
+     {t:'report',x:'Satellite evidence packet — geo-tagged before/after Maxar image pair with GLAD alert ID.'},
+     {t:'calculator',x:'Reforestation commitment gap analysis — promised vs actual canopy recovery in hectares.'},
+     {t:'map',x:'Protected-area proximity overlay — KBAs and WDPA polygons within 5/10/50 km of active mine polygons.'}
+   ],
+   biz:{model:'ESG Audit Tool', price:'$60k / yr', tam:'$600M', arr:'$5M', buyers:'ESG raters, impact funds, environmental NGOs'}},
+   
+  {id:12, title:'Methane Plume Source Attribution',
+   personas:[30,31,36,43],
+   sources:['Sentinel-5P TROPOMI','Sentinel Hub','USGS MRDS','USGS MCS','Maxar'],
+   logic:'<span class="src">TROPOMI</span> CH₄ column <span class="op">×</span> <span class="src">Sentinel-2</span> pit outline <span class="op">×</span> <span class="src">MRDS</span> operation type <span class="op">×</span> <span class="src">MCS</span> coal production <span class="op">×</span> <span class="src">Maxar</span> infrastructure',
+   inference:'Trace TROPOMI methane column plumes back to specific coal and Cu operations to quantify per-mine Scope 1 methane emissions.',
+   outputs:[
+     {t:'report',x:'Per-mine methane flux estimate (kgCH₄/hr) with uncertainty bounds and source-attribution confidence.'},
+     {t:'certificate',x:'Scope 1 disclosure integration report — pre-formatted for CDP / SBTi submission.'},
+     {t:'map',x:'Plume trajectory animation on globe — wind-dispersed CH₄ column overlaid on pit outline.'},
+     {t:'calculator',x:'Mitigation cost-benefit analysis — capture-and-flare vs venting, with carbon credit revenue at $X/tCO₂e.'},
+     {t:'notification',x:'Regulator emissions exceedance notice — auto-drafted when flux exceeds permit threshold.'}
+   ],
+   biz:{model:'Carbon Compliance SaaS', price:'$80k / site / yr', tam:'$1.2B', arr:'$7M', buyers:'Carbon accountants, regulators, climate funds'}},
+   
+  {id:13, title:'Discovery-to-Production Lead Timer',
+   personas:[7,8,9,15,41,46],
+   sources:['NI 43-101 Registry','S&P SNL Mining','Macrotrends','USGS Minerals Yearbook','SEDAR+'],
+   logic:'<span class="src">NI 43-101</span> filing date <span class="op">×</span> <span class="src">SNL</span> M&A transactions <span class="op">×</span> <span class="src">Macrotrends</span> cycle phase <span class="op">×</span> <span class="src">Yearbook</span> production start <span class="op">×</span> <span class="src">SEDAR+</span> resource upgrade',
+   inference:'Forecast supply additions by modeling the lag between NI 43-101 filing, M&A transaction, and first commercial production.',
+   outputs:[
+     {t:'calendar',x:'Pipeline-of-supply timeline with expected first-pour dates per asset across 10-year horizon.'},
+     {t:'model',x:'Forecast supply addition curve per commodity — cumulative new tonnes vs IEA demand projection.'},
+     {t:'calculator',x:'Resource upgrade probability matrix — P50/P90 chance of Indicated → Proton upgrade per project.'},
+     {t:'calendar',x:'Project financing trigger calendar — when construction decision is expected vs current price cycle phase.'},
+     {t:'report',x:'M&A activity lead-lag correlation study — discovery rate → transaction rate → production rate.'}
+   ],
+   biz:{model:'Strategic Forecasting License', price:'$120k / yr', tam:'$900M', arr:'$6M', buyers:'Strategists, policy advisors, M&A desks'}},
+   
+  {id:14, title:'Critical-Mineral Sovereignty & Substitution Index',
+   personas:[10,14,37,41,46,48],
+   sources:['USGS Critical Minerals','EU CRM List','IEA Critical Minerals','USGS MCS','UN Comtrade','OECD Raw Materials'],
+   logic:'<span class="src">USGS 50</span> minerals <span class="op">×</span> <span class="src">EU CRM</span> <span class="op">×</span> <span class="src">IEA</span> demand <span class="op">×</span> <span class="src">MCS</span> reserves <span class="op">×</span> <span class="src">Comtrade</span> imports <span class="op">×</span> <span class="src">OECD</span> flows',
+   inference:'Combine critical lists, demand, reserves, and trade to score country-level dependency and substitution pressure per mineral.',
+   outputs:[
+     {t:'map',x:'Strategic vulnerability choropleth — country × mineral dependency score colored red-to-green.'},
+     {t:'report',x:'Substitution pathway report — technical feasibility of Al-for-Cu, Nd-for-Dy, etc. under price stress.'},
+     {t:'calculator',x:'Strategic stockpile adequacy calculator — months of import coverage at current demand.'},
+     {t:'model',x:'Trade-policy intervention simulator — tariff/quota scenario impact on domestic supply.'},
+     {t:'report',x:'Country-level dependency scorecard per mineral with HHI and import-share breakdown.'}
+   ],
+   biz:{model:'Gov & Strategy License', price:'$250k / yr', tam:'$1.5B', arr:'$10M', buyers:'Governments, DFIs, sovereign funds, strategists'}},
+   
+  {id:15, title:'Andean Lithium Salar Productivity Rank',
+   personas:[1,7,11,37,38,41],
+   sources:['SEGEMAR','Sentinel Hub','Fastmarkets','NI 43-101 Registry','NASA POWER'],
+   logic:'<span class="src">SEGEMAR</span> salar polygons <span class="op">×</span> <span class="src">Sentinel-2</span> pond color <span class="op">×</span> <span class="src">Fastmarkets</span> Li price <span class="op">×</span> <span class="src">NI 43-101</span> resource <span class="op">×</span> <span class="src">NASA POWER</span> evaporation',
+   inference:'Rank lithium salar projects by combining brine-pond color change, geology, Li benchmark price, and evaporation climate.',
+   outputs:[
+     {t:'dashboard',x:'Per-salar production forecast dashboard — LCE tonnes/month projected from pond color and evaporation rate.'},
+     {t:'calculator',x:'Price-implied NPV overlay on map per salar — real-time recalculation against Fastmarkets Li spot.'},
+     {t:'model',x:'Brine concentration trend chart — Sentinel-2-derived pond color → ppm Li conversion per salar.'},
+     {t:'report',x:'Evaporation rate benchmark comparison — Salar de Atacama vs Hombre Muerto vs Olaroz vs Cauchari.'},
+     {t:'dashboard',x:'Project ranking leaderboard — top 20 global salar projects by $/tonne LCE and resource grade.'}
+   ],
+   biz:{model:'Commodity Trader Desk', price:'$150k / seat / yr', tam:'$800M', arr:'$8M', buyers:'Li traders, battery buyers, EV OEMs, investors'}},
+   
+  {id:16, title:'Underground Induced Seismicity & Blast Monitor',
+   personas:[16,17,18,22,23,52],
+   sources:['USGS Earthquakes','EMSC','EarthScope (IRIS)','Open-Meteo','Sentinel Hub'],
+   logic:'<span class="src">USGS+EMSC</span> events <span class="op">×</span> <span class="src">IRIS</span> stations <span class="op">×</span> <span class="src">Open-Meteo</span> pressure drop <span class="op">×</span> <span class="src">Sentinel-1</span> surface subsidence',
+   inference:'Distinguish induced seismicity from blasting and natural tectonic events to assess underground geotechnical risk.',
+   outputs:[
+     {t:'dashboard',x:'Per-event classification dashboard — blast / induced / tectonic with waveform signature and depth.'},
+     {t:'map',x:'Subsidence correlation overlay — InSAR mm/year surface motion pinned to seismic event epicenters.'},
+     {t:'map',x:'Geotechnical risk heatmap — sectors of the underground mine color-coded by event density and magnitude.'},
+     {t:'alert',x:'Ventilation air-quality trigger alert — auto-drafts evacuation order if seismic event + gas anomaly co-occur.'},
+     {t:'report',x:'Regulator seismic event report — monthly summary of induced events vs blasting log reconciliation.'}
+   ],
+   biz:{model:'Geotech Monitor SaaS', price:'$90k / mine / yr', tam:'$500M', arr:'$5M', buyers:'Geotech engineers, mine safety, regulators'}},
+   
+  {id:17, title:'Pit Wall Stability & Slope Failure Early Warning',
+   personas:[16,17,18,20,21,49,52],
+   sources:['ICEYE','Capella Space','Sentinel Hub','Maxar','USGS Earthquakes','Open-Meteo'],
+   logic:'<span class="src">ICEYE+Capella</span> InSAR slope motion <span class="op">×</span> <span class="src">Sentinel-2</span> tension crack mapping <span class="op">×</span> <span class="src">Maxar</span> wall detail <span class="op">×</span> <span class="src">USGS</span> seismic <span class="op">×</span> <span class="src">Open-Meteo</span> rainfall',
+   inference:'Fuse multi-satellite InSAR, optical crack mapping, and rainfall to predict open-pit wall slope failure days in advance.',
+   outputs:[
+     {t:'map',x:'Pit-sector risk heatmap — mm/day movement trend per bench sector with color-coded stability bands.'},
+     {t:'map',x:'Tension crack mapping overlay — Sentinel-2 + Maxar detected crack polygons with growth rate.'},
+     {t:'alert',x:'72-hour slope failure probability forecast — push alert when probability > 20% with evacuation zone recommendation.'},
+     {t:'notification',x:'Survey crew task dispatch — auto-generated work order for in-pit inspection of high-risk sectors.'},
+     {t:'model',x:'Bench-by-bench stability model — factor-of-safety calculation per sector integrating cohesion, friction angle, and pore pressure.'}
+   ],
+   biz:{model:'Safety Ops SaaS', price:'$120k / mine / yr', tam:'$1.5B', arr:'$11M', buyers:'Mine ops, geotech consultants, insurers'}},
+   
+  {id:18, title:'Concentrate Blend Feedstock Optimizer',
+   personas:[19,40,42],
+   sources:['EarthChem','S&P Global MI','MarineTraffic','UN Comtrade','Fastmarkets'],
+   logic:'<span class="src">EarthChem</span> whole-rock chemistry <span class="op">×</span> <span class="src">S&P MI</span> production <span class="op">×</span> <span class="src">MarineTraffic</span> vessel ETA <span class="op">×</span> <span class="src">Comtrade</span> tariff <span class="op">×</span> <span class="src">Fastmarkets</span> benchmark',
+   inference:'Optimize smelter blend feedstock by fusing ore chemistry, mine production, vessel ETA, and tariff/scenario economics.',
+   outputs:[
+     {t:'calculator',x:'Daily blend recommendation optimizing recovery, penalty elements (As, Hg, F), and landed cost.'},
+     {t:'report',x:'Penalty element avoidance report — flagging concentrate cargos exceeding As/Hg/F thresholds.'},
+     {t:'calendar',x:'Vessel ETA + stockpile reconciliation calendar — arrival dates vs blending schedule vs smelter campaign.'},
+     {t:'calculator',x:'Landed cost calculator per shipment — mine-gate price + freight + tariff + penalty adjustment.'},
+     {t:'model',x:'Smelter throughput forecast — 90-day concentrate feed availability vs nameplate capacity utilization.'}
+   ],
+   biz:{model:'Process Plant AI', price:'$150k / plant / yr', tam:'$700M', arr:'$6M', buyers:'Smelter operators, metallurgists, concentrate traders'}},
+   
+  {id:19, title:'Haulage & Port Congestion Time Estimator',
+   personas:[16,17,24,25,26,27,29],
+   sources:['TomTom Traffic','OSRM','AISStream','PortWatch (IMF)','OpenRailwayMap','Sentinel Hub'],
+   logic:'<span class="src">TomTom</span> flow <span class="op">×</span> <span class="src">OSRM</span> routing <span class="op">×</span> <span class="src">AIS</span> bulker queue <span class="op">×</span> <span class="src">PortWatch</span> calls <span class="op">×</span> <span class="src">OpenRailwayMap</span> <span class="op">×</span> <span class="src">Sentinel-2</span> stockpile',
+   inference:'Estimate mine-to-ship total logistics time by fusing road traffic, rail, port vessel queues, and stockpile imagery.',
+   outputs:[
+     {t:'calculator',x:'Dynamic landed-cost calculator factoring live road, rail, and port congestion delays per route.'},
+     {t:'dashboard',x:'Port queue length dashboard — vessels at anchor vs berthed with ETA to loading.'},
+     {t:'alert',x:'Rail bottleneck alert — push when OpenRailwayMap indicates disruption on the mine-to-port corridor.'},
+     {t:'report',x:'Alternative routing recommendation — road vs rail vs alternative port with cost-time tradeoff.'},
+     {t:'report',x:'Daily mine-to-ship throughput report — tonnes moved vs nameplate capacity with delay attribution.'}
+   ],
+   biz:{model:'Logistics SaaS', price:'$50k / mine / yr', tam:'$600M', arr:'$4M', buyers:'Freight forwarders, port operators, logistics leads'}},
+   
+  {id:20, title:'Resource Nationalism & Tax Take Monitor',
+   personas:[10,13,43,44,46,50],
+   sources:['EITI','S&P SNL Mining','Reuters Metals','OpenCorporates','USGS MCS','Yahoo Finance'],
+   logic:'<span class="src">EITI</span> payments <span class="op">×</span> <span class="src">SNL</span> M&A <span class="op">×</span> <span class="src">Reuters</span> policy news <span class="op">×</span> <span class="src">OpenCorporates</span> national ownership <span class="op">×</span> <span class="src">MCS</span> reserves',
+   inference:'Detect early signals of resource nationalism by tracking royalty changes, state participation, and political news flow.',
+   outputs:[
+     {t:'dashboard',x:'Country-level political risk score (0–100) updated weekly from news flow, EITI changes, and ownership shifts.'},
+     {t:'calculator',x:'M&A veto probability calculator for acquirers — likelihood of state-block on transaction.'},
+     {t:'calendar',x:'Royalty change forecast calendar — upcoming legislative sessions with mining-law amendments tabled.'},
+     {t:'ledger',x:'State participation equity tracker — government free-carried interest % per asset with change history.'},
+     {t:'calculator',x:'Expropriation insurance premium indicator — suggested PRI premium range per country × commodity.'}
+   ],
+   biz:{model:'Political Risk Feed', price:'$200k / firm / yr', tam:'$1.2B', arr:'$7M', buyers:'Political risk underwriters, M&A desks, sovereign analysts'}},
+   
+  {id:21, title:'Mine-Site Insider Charter Flight Detector',
+   personas:[8,9,10,12,50,53],
+   sources:['OpenSky Network','adsb.lol','Yahoo Finance','Morningstar (Hemscott)','SEC EDGAR','S&P SNL Mining'],
+   logic:'<span class="src">OpenSky</span> charter flights <span class="op">×</span> <span class="src">adsb.lol</span> military <span class="op">×</span> <span class="src">Morningstar</span> director dealings <span class="op">×</span> <span class="src">Yahoo</span> price move <span class="op">×</span> <span class="src">EDGAR</span> 8-K <span class="op">×</span> <span class="src">SNL</span> rumour',
+   inference:'Detect undisclosed charter flights to remote mine sites and correlate with director dealings and equity moves before announcement.',
+   outputs:[
+     {t:'dashboard',x:'Pre-announcement signal feed — ranked list of targets with flight trace + price action timeline.'},
+     {t:'map',x:'Charter flight trajectory map — OpenSky tracks with destination airstrip + mine polygon link.'},
+     {t:'report',x:'Director dealings correlation matrix — who bought shares within 30 days of flight detection.'},
+     {t:'calendar',x:'8-K filing expectation calendar — predicted material-event disclosure window per flagged issuer.'},
+     {t:'report',x:'Rumour source provenance log — SNL rumour + Reuters headline + flight + dealing chain of custody.'}
+   ],
+   biz:{model:'Alpha Signal Feed', price:'$500k / fund / yr', tam:'$2.0B', arr:'$15M', buyers:'Hedge funds, activist funds, event-driven desks'}},
+   
+  {id:22, title:'Coal-Stranded-Asset Pressure Map',
+   personas:[10,13,14,30,39,49,54],
+   sources:['Global Energy Monitor','Ember Climate','Maxar','Argus Media','S&P Platts','MSCI ESG'],
+   logic:'<span class="src">GEM</span> plant inventory <span class="op">×</span> <span class="src">Ember</span> grid CI <span class="op">×</span> <span class="src">Maxar</span> imagery <span class="op">×</span> <span class="src">Argus</span> coal price <span class="op">×</span> <span class="src">Platts</span> iron-ore <span class="op">×</span> <span class="src">MSCI</span> ESG',
+   inference:'Model stranded-asset pressure on coal-reliant miners by combining plant inventory, grid carbon intensity, pricing, and ESG ratings.',
+   outputs:[
+     {t:'dashboard',x:'Coal-exposed miner watchlist — operator-level stranded-asset pressure score (0–100).'},
+     {t:'map',x:'Decarbonization trajectory overlay — country grid carbon intensity reduction vs coal-mine production ramp.'},
+     {t:'calculator',x:'Write-down risk indicator — NPV impairment under SBTi 1.5°C / 2°C / BAU scenarios.'},
+     {t:'calculator',x:'Transition cost estimate — CapEx for solar+wind+storage vs continued coal-fired power per mine.'},
+     {t:'report',x:'Divestiture target screening — coal assets most likely to be spun off under ESG pressure, ranked.'}
+   ],
+   biz:{model:'Transition Finance Tool', price:'$100k / firm / yr', tam:'$1.4B', arr:'$8M', buyers:'Climate funds, transition financiers, ESG teams'}},
+   
+  {id:23, title:'Revegetation & Closure Progress Verifier',
+   personas:[30,31,35,43,47,49],
+   sources:['Sentinel Hub','Planet Labs','Maxar','Open-Meteo','WorldClim v2','WDPA'],
+   logic:'<span class="src">Sentinel-2</span> NDVI time-series <span class="op">×</span> <span class="src">Planet</span> daily confirmation <span class="op">×</span> <span class="src">Maxar</span> detail <span class="op">×</span> <span class="src">Open-Meteo</span> climate <span class="op">×</span> <span class="src">WorldClim</span> baseline <span class="op">×</span> <span class="src">WDPA</span> target',
+   inference:'Verify mine revegetation and closure commitments against baseline climate by fusing multi-satellite NDVI with bioclim data.',
+   outputs:[
+     {t:'report',x:'Closure-conformance report card per site — NDVI achieved vs commitment curve with pass/fail status.'},
+     {t:'model',x:'NDVI trend vs commitment curve — 5-year recovery trajectory with deviation bands per pixel.'},
+     {t:'calculator',x:'Biodiversity offset credit calculation — hectares × eco-condition score × multiplier for trading.'},
+     {t:'notification',x:'Reclamation bond release recommendation — auto-drafted when NDVI exceeds baseline threshold for 3 consecutive quarters.'},
+     {t:'calendar',x:'Progressive closure schedule update — next-phase earthworks and seeding windows aligned with climate suitability.'}
+   ],
+   biz:{model:'Closure Compliance SaaS', price:'$40k / site / yr', tam:'$400M', arr:'$3M', buyers:'Closure teams, reclamation consultants, regulators'}},
+   
+  {id:24, title:'Independent Resource Estimate Validator',
+   personas:[2,6,53,55],
+   sources:['GeoIndex (BGS)','Macrostrat','EarthChem','EMAG2 v3','USGS NGMDB','Sentinel Hub'],
+   logic:'<span class="src">GeoIndex</span> borehole depths <span class="op">×</span> <span class="src">Macrostrat</span> lithology <span class="op">×</span> <span class="src">EarthChem</span> intercept grades <span class="op">×</span> <span class="src">EMAG2</span> structural <span class="op">×</span> <span class="src">NGMDB</span> lexicon <span class="op">×</span> <span class="src">Sentinel-2</span> footprint',
+   inference:'Independently validate reported NI 43-101 resources by cross-checking borehole metadata, geochemistry, and structural interpretation.',
+   outputs:[
+     {t:'certificate',x:'QP conformance statement — pass/fail per resource category (Measured/Indicated/Inferred) with deviation flags.'},
+     {t:'report',x:'Discrepancy flags report — volume, grade, and continuity deviations between filed report and independent reconstruction.'},
+     {t:'model',x:'Block model reconciliation report — 3D tonnage comparison with wireframe and density assumptions tested.'},
+     {t:'report',x:'Borehole database QA/QC log — collar coordinates, downhole deviation, and assay duplicate checks.'},
+     {t:'certificate',x:'Independent competent persons report draft — CIM / JORC / SAMREC-compliant format ready for filing.'}
+   ],
+   biz:{model:'QP Audit Tool', price:'$75k / project', tam:'$300M', arr:'$4M', buyers:'QP consultants, resource estimators, auditors'}},
+   
+  {id:25, title:'Carbon-Intense Smelter Siting Optimizer',
+   personas:[7,30,36,40,41,46,54],
+   sources:['OpenInfraMap','Ember Climate','NASA POWER','Global Energy Monitor','EIA','IEA Critical Minerals'],
+   logic:'<span class="src">OpenInfraMap</span> grid <span class="op">×</span> <span class="src">Ember</span> grid CI <span class="op">×</span> <span class="src">NASA POWER</span> solar <span class="op">×</span> <span class="src">GEM</span> power plants <span class="op">×</span> <span class="src">EIA</span> generation <span class="op">×</span> <span class="src">IEA</span> demand',
+   inference:'Optimize new smelter siting for minimum embodied carbon by fusing grid carbon intensity, solar potential, and infrastructure access.',
+   outputs:[
+     {t:'map',x:'Ranked site polygons on globe with projected kgCO₂e/tonne of aluminum/copper/nickel produced.'},
+     {t:'calculator',x:'Levelized cost of energy comparison per site — grid vs solar+storage vs wind+diesel hybrid.'},
+     {t:'map',x:'Grid connection availability map — high-voltage transmission lines with substation proximity and capacity headroom.'},
+     {t:'report',x:'Renewable PPA opportunity register — nearby solar/wind developers with pipeline capacity and strike price range.'},
+     {t:'calendar',x:'Decarbonization pathway roadmap — 5/10/15-year milestones from grid-only to 100% renewable with interim SBTi targets.'}
+   ],
+   biz:{model:'Strategic Consulting AI', price:'$250k / site study', tam:'$500M', arr:'$5M', buyers:'Smelter developers, governments, green finance'}},
+];
+
+/* ============================================================
+   ICONS
+   ============================================================ */
+const icons = {
+  compass:'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+  layers:'<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
+  flask:'<path d="M10 2v7.31"/><path d="M14 9.88V2"/><path d="M8.5 2h7"/><path d="M14 9.88 19 21a1 1 0 0 1-.85 1.5H5.85A1 1 0 0 1 5 21l5-11.12"/>',
+  waves:'<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  map:'<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21 3 6"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>',
+  box:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>',
+  trending:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+  chart:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+  handshake:'<path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.94 0L21 4"/><path d="m3 21 3-3"/><path d="M3 15v2a1 1 0 0 0 1 1h2"/>',
+  briefcase:'<rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  candlestick:'<path d="M9 2v3"/><path d="M9 20v3"/><path d="M7 22h4"/><path d="M7 10h4"/><rect width="4" height="8" x="7" y="5" rx="1"/><path d="M17 2v3"/><path d="M17 20v3"/><path d="M15 22h4"/><rect width="4" height="6" x="15" y="14" rx="1"/>',
+  binary:'<path d="M14 16V2"/><path d="M14 22V16"/><path d="M4 16V2"/><path d="M4 22V16"/><rect width="8" height="5" x="10" y="3" rx="1"/><rect width="8" height="5" x="0" y="3" rx="1"/>',
+  calculator:'<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+  leaf:'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19.2 2.96c1.4 3.3 2.3 7.85 2.3 13.04C21.5 14.34 16.34 14 11 20Z"/><path d="M2 22c1.85-4.31 6.05-7.4 9.15-9"/>',
+  piechart:'<path d="M21 12c.552 0 1.004-.449.95-.998a10 10 0 1 0-10.952 10.952c.55.054.998-.398.998-.95v-7.004a2 2 0 0 0-2-2H3.046Z"/>',
+  grid:'<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  settings:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+  dam:'<path d="M2 21h20v-3l-10-3-10 3z"/><path d="M2 21V9a4 4 0 0 1 4-4h6v16"/>',
+  atom:'<circle cx="12" cy="12" r="1"/><path d="M20.2 20.2c2.04-2.03.02-7.79-3.6-11.4-3.62-3.62-9.37-5.64-11.4-3.6-2.04 2.03-.02 7.79 3.6 11.4C12.42 20.2 18.17 22.22 20.2 20.2Z"/><path d="M14.6 14.6c2.04-2.03.02-7.79-3.6-11.4C7.38-.42 1.63-2.44-.4-.4c-2.04 2.03-.02 7.79 3.6 11.4C6.82 14.6 12.57 16.62 14.6 14.6Z" transform="translate(6.6 6.6)"/>',
+  crosshair:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>',
+  drone:'<path d="M3 3v4h4"/><path d="M17 3v4h4"/><path d="M3 21v-4h4"/><path d="M17 21v-4h4"/><circle cx="12" cy="12" r="3"/>',
+  wind:'<path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M14.7 17.7a2.5 2.5 0 1 0 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>',
+  burst:'<path d="M12 2v3"/><path d="M12 19v3"/><path d="M4.22 4.22l2.12 2.12"/><path d="M17.66 17.66l2.12 2.12"/><path d="M2 12h3"/><path d="M19 12h3"/><path d="M4.22 19.78l2.12-2.12"/><path d="M17.66 6.34l2.12-2.12"/><circle cx="12" cy="12" r="3"/>',
+  truck:'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M14 9h4l4 4v4a1 1 0 0 1-1 1h-1"/><circle cx="8" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>',
+  anchor:'<path d="M12 5v3"/><path d="M9 21h6"/><path d="M5 21h1.5a1.5 1.5 0 0 0 1.5-1.5V11a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 1.5 1.5v8.5"/><circle cx="12" cy="4" r="1.5"/>',
+  network:'<rect x="2" y="2" width="6" height="6" rx="1"/><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="16" y="2" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><line x1="8" y1="5" x2="16" y2="5"/><line x1="8" y1="19" x2="16" y2="19"/><line x1="5" y1="8" x2="5" y2="16"/><line x1="19" y1="8" x2="19" y2="16"/>',
+  ship:'<path d="M2 21h20v-3l-10-3-10 3z"/><path d="M6 21V9l6-4 6 4v12"/><path d="M12 5V2"/>',
+  globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+  train:'<rect width="16" height="14" x="4" y="3" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><circle cx="8" cy="21" r="1"/><circle cx="16" cy="21" r="1"/><path d="m5 17-1 4"/><path d="m19 17 1 4"/>',
+  people:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  clipboard:'<rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
+  drop:'<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  sprout:'<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-5.2-.4-1.4-.7-2.6-2.1-3.1-3.7 1.6-.9 3.6-1 5.1.4.7.5 1.2 1.2 1.6 2.1.4-.9.9-1.6 1.6-2.1 1.5-1.4 3.5-1.3 5.1-.4-.5 1.6-1.7 3-3.1 3.7-1.7.8-3.2.8-5.2.4z"/>',
+  co2:'<path d="M5 14v-3a2 2 0 0 1 2-2h2"/><path d="M14 14v-3a2 2 0 0 1 2-2h2"/><path d="M5 14v3a2 2 0 0 1 2 2h2a2 2 0 0 1 2-2v0a2 2 0 0 1 2 2h2a2 2 0 0 0 2-2v0"/>',
+  battery:'<rect width="16" height="10" x="2" y="7" rx="1" ry="1"/><line x1="22" x2="22" y1="11" y2="13"/><line x1="6" x2="6" y1="11" y2="13"/><line x1="10" x2="10" y1="11" y2="13"/><line x1="14" x2="14" y1="11" y2="13"/>',
+  cell:'<path d="M12 2v6h6v6"/><path d="M12 22a8 8 0 0 0 8-8h-6v-6h6"/>',
+  beam:'<rect width="20" height="4" x="2" y="6" rx="1"/><rect width="20" height="4" x="2" y="14" rx="1"/>',
+  factory:'<path d="M2 20a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V8l-8 3V8l-8 3V8H4a1 1 0 0 0-1 1v11z"/>',
+  key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+  gem:'<path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+  gavel:'<path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"/><path d="m15 9 5-5"/><path d="m18 12 2-2"/>',
+  coins:'<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h6v6"/>',
+  feather:'<path d="M12 2C6 2 2 6 2 12s4 10 10 10c2.8 0 4.5-2.5 4.5-5 0-2.8-2.5-4.5-5-4.5h-1.5A1.5 1.5 0 0 1 8.5 11c0-1 1-1.5 2-1.5"/><path d="M12 22V2"/>',
+  document:'<path d="M14 2v6h6"/><path d="M4 22V4a2 2 0 0 1 2-2h10l6 6v12a2 2 0 0 1-2 2H4z"/>',
+  blueprint:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/>',
+  scale:'<path d="m16 16 3-8 3 8a2 2 0 0 1-3 0"/><path d="m2 16 3-8 3 8a2 2 0 0 1-3 0"/><path d="M7 21h10"/><path d="M5 8h14"/><path d="M12 21V8"/>',
+  shield_cross:'<path d="M12 2 4 5v7c0 5 3 8 7 10 4-2 7-5 7-10V5z"/><path d="M12 2v20"/><path d="M2 12h20"/>',
+  flag:'<path d="M4 22V2"/><path d="M4 4h12l-2 4 2 4H4"/>',
+  magnifier:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  cone:'<path d="M12 2 2 22h20L12 2z"/>',
+  satellite:'<path d="m13 7 4 4"/><path d="M5 19 21 3"/><circle cx="19" cy="5" r="3"/><path d="M5 13V7a2 2 0 0 1 2-2h6"/><path d="M5 11h6"/>',
+  rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.5-3 2-5c2-2 5-2 5-2"/>',
+  cube:'<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  default:'<circle cx="12" cy="12" r="10"/>'
+};
+function iconSVG(name){
+  const path = icons[name] || icons.default;
+  return `<svg class="pc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+}
+
+const outputTypeLabels = {
+  dashboard:'Dashboard', alert:'Alert', report:'Report', calculator:'Calculator', calendar:'Calendar',
+  notification:'Notification', ledger:'Ledger', map:'Map Layer', model:'Model', certificate:'Certificate'
+};
+
+/* ============================================================
+   RENDER: Persona Library
+   ============================================================ */
+const personaGrid = document.getElementById('personaGrid');
+let activeFilter = 'all';
+let activeSearch = '';
+
+function renderPersonas(){
+  const filtered = personas.filter(p => {
+    if(activeFilter !== 'all' && p.cat !== activeFilter) return false;
+    if(activeSearch && !p.name.toLowerCase().includes(activeSearch) && !p.desc.toLowerCase().includes(activeSearch)) return false;
+    return true;
+  });
+  personaGrid.innerHTML = filtered.map(p => `
+    <div class="card persona-card p-5" data-cat="${p.cat}" data-id="${p.id}">
+      <div class="flex items-start justify-between mb-3">
+        ${iconSVG(p.icon)}
+        <span class="font-mono text-[10px] text-[var(--muted)]">#${p.id.toString().padStart(2,'0')}</span>
+      </div>
+      <h4 class="font-display text-lg leading-tight mb-1">${p.name}</h4>
+      <p class="text-xs text-[var(--bone-dim)] leading-relaxed">${p.desc}</p>
+    </div>
+  `).join('');
+  
+  personaGrid.querySelectorAll('.persona-card').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = parseInt(el.dataset.id);
+      const persona = personas.find(p => p.id === id);
+      selectPersona(persona);
+      personaGrid.querySelectorAll('.persona-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('engine').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+}
+
+/* ============================================================
+   RENDER: Inference Matrix with outputs AND business model
+   ============================================================ */
+function selectPersona(persona){
+  document.getElementById('apRole').textContent = persona.cat.charAt(0).toUpperCase() + persona.cat.slice(1);
+  document.getElementById('apName').textContent = persona.name;
+  document.getElementById('apDesc').textContent = persona.desc;
+  
+  const apIcon = document.getElementById('apIcon');
+  apIcon.innerHTML = icons[persona.icon] || icons.default;
+  apIcon.style.stroke = 'var(--copper)';
+  
+  document.getElementById('activePersonaCard').setAttribute('data-cat', persona.cat);
+  
+  const matching = inferences.filter(i => i.personas.includes(persona.id));
+  document.getElementById('apInferenceCount').textContent = matching.length;
+  
+  const grid = document.getElementById('inferenceGrid');
+  const empty = document.getElementById('emptyState');
+  if(matching.length === 0){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  
+  grid.innerHTML = matching.map((inf, idx) => `
+    <div class="card p-6" data-cat="${persona.cat}" style="animation: fadeUp 0.6s ${idx*0.1}s both">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="font-mono text-[10px] tracking-[0.3em] text-[var(--copper)] uppercase">Inference #${inf.id.toString().padStart(2,'0')}</span>
+        <span class="font-mono text-[10px] text-[var(--muted)]">· ${inf.outputs.length} deliverables</span>
+      </div>
+      <h3 class="font-display text-2xl mb-3 leading-tight">${inf.title}</h3>
+      <p class="text-sm text-[var(--bone)] leading-relaxed mb-4">${inf.inference}</p>
+      
+      <div class="mb-4">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Data Fusion Chain</div>
+        <div class="logic-block">${inf.logic}</div>
+      </div>
+      
+      <div class="mb-4">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Sources Combined</div>
+        <div class="flex flex-wrap gap-1.5">
+          ${inf.sources.map(s => `<span class="badge">${s}</span>`).join('')}
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-3">Actionable Outputs for ${persona.name}</div>
+        <div class="outputs-list">
+          ${inf.outputs.map((o, oi) => `
+            <div class="output-row ot-${o.t}">
+              <span class="output-type">${outputTypeLabels[o.t] || o.t}</span>
+              <span class="output-text">${o.x}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="biz-block">
+        <div class="biz-label">Business Model · Revenue Potential</div>
+        <div class="biz-grid">
+          <div class="biz-item">
+            <div class="biz-key">Model</div>
+            <div class="biz-val">${inf.biz.model}</div>
+          </div>
+          <div class="biz-item">
+            <div class="biz-key">Pricing</div>
+            <div class="biz-price">${inf.biz.price}</div>
+          </div>
+          <div class="biz-item">
+            <div class="biz-key">Target Market (TAM)</div>
+            <div class="biz-val">${inf.biz.tam}</div>
+          </div>
+          <div class="biz-item">
+            <div class="biz-key">Year 3 ARR Target</div>
+            <div class="biz-arr">${inf.biz.arr}</div>
+          </div>
+        </div>
+        <div class="biz-key mt-2" style="border-top:1px solid rgba(232,196,106,0.15);padding-top:8px">Target Buyers: <span class="text-[var(--bone-dim)] font-normal text-xs">${inf.biz.buyers}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   RENDER: Monetization Matrix
+   ============================================================ */
+const matrixGrid = document.getElementById('matrixGrid');
+function renderMatrix(){
+  // Calculate max ARR for bar scaling (strip non-numeric)
+  const arrs = inferences.map(i => parseInt(i.biz.arr.replace(/[^0-9]/g,'')));
+  const maxArr = Math.max(...arrs);
+  const totalArr = arrs.reduce((a,b)=>a+b,0);
+  
+  matrixGrid.innerHTML = inferences.map((inf, idx) => {
+    const arrNum = arrs[idx];
+    const widthPct = (arrNum / maxArr * 100).toFixed(1);
+    return `
+      <div class="card p-4" data-cat="finance" style="animation: fadeIn 0.5s ${idx*0.05}s both">
+        <div class="grid md:grid-cols-12 gap-4 items-center">
+          <div class="md:col-span-1">
+            <div class="font-display text-2xl text-[var(--gold)] opacity-50">#${inf.id.toString().padStart(2,'0')}</div>
+          </div>
+          <div class="md:col-span-4">
+            <div class="font-display text-lg leading-tight">${inf.title}</div>
+            <div class="text-xs text-[var(--muted)] mt-1">${inf.biz.model} · ${inf.biz.buyers.split(',')[0]}...</div>
+          </div>
+          <div class="md:col-span-2">
+            <div class="text-[10px] uppercase tracking-wider text-[var(--muted)]">Price</div>
+            <div class="font-mono text-sm text-[var(--bone)]">${inf.biz.price}</div>
+          </div>
+          <div class="md:col-span-1">
+            <div class="text-[10px] uppercase tracking-wider text-[var(--muted)]">TAM</div>
+            <div class="font-mono text-sm text-[var(--bone-dim)]">${inf.biz.tam}</div>
+          </div>
+          <div class="md:col-span-4">
+            <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Year 3 ARR Target</div>
+            <div class="rev-bar-container">
+              <div class="rev-bar" style="width:0%" data-target="${widthPct}">
+                <span>${inf.biz.arr}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  
+  // Add total row
+  matrixGrid.innerHTML += `
+    <div class="card p-6 mt-6" style="border-color:rgba(232,196,106,0.4);background:linear-gradient(135deg,rgba(232,196,106,0.08),rgba(17,16,22,0.95))">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="font-mono text-xs uppercase tracking-[0.2em] text-[var(--gold)] mb-1">Total Platform Revenue Potential</div>
+          <div class="font-display text-3xl text-[var(--gold)]">25 Products Combined</div>
+        </div>
+        <div class="text-right">
+          <div class="font-display text-5xl text-[var(--gold)]">$${totalArr}M</div>
+          <div class="text-xs uppercase tracking-wider text-[var(--muted)]">Year 3 ARR Target</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Animate bars on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        matrixGrid.querySelectorAll('.rev-bar').forEach(bar => {
+          bar.style.width = bar.dataset.target + '%';
+        });
+        observer.disconnect();
+      }
+    });
+  }, {threshold: 0.1});
+  observer.observe(matrixGrid);
+}
+
+/* ============================================================
+   FILTERS
+   ============================================================ */
+document.getElementById('catChips').addEventListener('click', e => {
+  const btn = e.target.closest('.cat-chip');
+  if(!btn) return;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter;
+  renderPersonas();
+});
+document.getElementById('searchBox').addEventListener('input', e => {
+  activeSearch = e.target.value.trim().toLowerCase();
+  renderPersonas();
+});
+
+/* ============================================================
+   COUNTERS
+   ============================================================ */
+function animateCounters(){
+  document.querySelectorAll('[data-counter]').forEach(el => {
+    const target = parseInt(el.dataset.counter);
+    const duration = 1500;
+    const start = performance.now();
+    function step(now){
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1-t, 3);
+      el.textContent = Math.floor(eased * target);
+      if(t < 1) requestAnimationFrame(step);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ============================================================
+   BACKGROUND VISUALS
+   ============================================================ */
+function buildTopo(){
+  const g = document.getElementById('topoGroup');
+  let html = '';
+  for(let i=0;i<20;i++){
+    const cx = 720 + Math.sin(i*0.7) * 200;
+    const cy = 450 + Math.cos(i*0.5) * 150;
+    const r = 80 + i*35;
+    const op = 0.3 + (i % 7) * 0.05;
+    html += `<path class="topo-path" d="M ${cx-r},${cy} a ${r},${r*0.7} 0 1,0 ${r*2},0 a ${r},${r*0.7} 0 1,0 ${-r*2},0" style="opacity:${op}"/>`;
+  }
+  for(let i=0;i<8;i++){
+    const y = i * 120;
+    html += `<path class="topo-path" d="M 0,${y} Q 360,${y-30} 720,${y+10} T 1440,${y-20}" style="opacity:${0.2 + i*0.04}"/>`;
+  }
+  g.innerHTML = html;
+}
+
+const dustCanvas = document.getElementById('dustCanvas');
+const dustCtx = dustCanvas.getContext('2d');
+let dust = [];
+function resizeDust(){
+  dustCanvas.width = window.innerWidth;
+  dustCanvas.height = window.innerHeight;
+  dust = [];
+  for(let i=0;i<60;i++){
+    dust.push({
+      x: Math.random() * dustCanvas.width,
+      y: Math.random() * dustCanvas.height,
+      r: Math.max(0.3, Math.random()*1.5),
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.15,
+      a: 0.1 + Math.random()*0.4,
+      hue: Math.random() > 0.7 ? 'moss' : 'copper'
+    });
+  }
+}
+function animateDust(){
+  dustCtx.clearRect(0,0,dustCanvas.width,dustCanvas.height);
+  dust.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0) p.x = dustCanvas.width;
+    if(p.x>dustCanvas.width) p.x = 0;
+    if(p.y<0) p.y = dustCanvas.height;
+    if(p.y>dustCanvas.height) p.y = 0;
+    const color = p.hue==='copper' ? `rgba(200,152,88,${p.a})` : `rgba(122,138,111,${p.a})`;
+    dustCtx.fillStyle = color;
+    dustCtx.beginPath();
+    dustCtx.arc(p.x, p.y, Math.max(0.2, p.r), 0, Math.PI*2);
+    dustCtx.fill();
+  });
+  requestAnimationFrame(animateDust);
+}
+
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  const g = document.getElementById('topoGroup');
+  if(g) g.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  buildTopo();
+  resizeDust();
+  animateDust();
+  renderPersonas();
+  renderMatrix();
+  animateCounters();
+  window.addEventListener('resize', resizeDust);
+  
+  const style = document.createElement('style');
+  style.innerHTML = `@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}@keyframes fadeIn{from{opacity:0}to{opacity:1}}`;
+  document.head.appendChild(style);
+});
+</script>
+</body>
+</html>

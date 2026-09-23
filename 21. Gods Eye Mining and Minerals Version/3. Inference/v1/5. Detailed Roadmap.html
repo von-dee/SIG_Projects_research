@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero to $212M · The Execution Roadmap · Mining Intelligence Atlas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#0a0a0e; --obsidian:#111016; --ash:#1a1922; --bone:#ebe6dc;
+    --bone-dim:#b8b3a6; --muted:#6c6859; --copper:#c89858; --brass:#d4b87a;
+    --moss:#7a8a6f; --rust:#c4634a; --slag:#9a96a8; --line:#2a2730;
+    --gold:#e8c46a; --jade:#4a8a6f; --iron:#8a6a5a;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Space Grotesk',sans-serif;background:var(--void);color:var(--bone);overflow-x:hidden}
+  .font-display{font-family:'Fraunces',serif;font-optical-sizing:auto}
+  .font-mono{font-family:'JetBrains Mono',monospace}
+  
+  .topo-bg{position:fixed;inset:0;z-index:-2;opacity:.35;pointer-events:none}
+  .topo-bg svg{width:100%;height:100%}
+  .topo-path{fill:none;stroke:var(--copper);stroke-width:.5;opacity:.3}
+  .atmo{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+    radial-gradient(ellipse 60% 50% at 20% 15%,rgba(200,152,88,.1),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 70%,rgba(232,196,106,.06),transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(196,99,74,.04),transparent 70%)}
+  .dust{position:fixed;inset:0;z-index:-1;pointer-events:none}
+  
+  .card{background:linear-gradient(180deg,rgba(26,25,34,.92),rgba(17,16,22,.92));
+    border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden;
+    transition:all .35s cubic-bezier(.4,0,.2,1)}
+  .card:hover{border-color:rgba(200,152,88,.35);box-shadow:0 12px 32px -12px rgba(200,152,88,.15)}
+  
+  .hero-title{background:linear-gradient(120deg,#ebe6dc 0%,#d4b87a 35%,#c89858 55%,#e8c46a 75%,#ebe6dc 100%);
+    background-size:200% 100%;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:shimmer 8s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  
+  .pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--copper);
+    box-shadow:0 0 0 0 rgba(200,152,88,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(200,152,88,.6)}70%{box-shadow:0 0 0 8px rgba(200,152,88,0)}100%{box-shadow:0 0 0 0 rgba(200,152,88,0)}}
+  
+  /* Phase timeline track */
+  .phase-track{position:relative;padding:40px 0 20px}
+  .phase-line{position:absolute;top:60px;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--copper),var(--gold),var(--moss),var(--brass),var(--rust),var(--slag))}
+  .phase-node{cursor:pointer;transition:all .3s;position:relative;z-index:2}
+  .phase-node .ring{width:40px;height:40px;border-radius:50%;border:2px solid var(--void);
+    background:var(--copper);display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-weight:600;font-size:16px;color:var(--void);
+    transition:all .3s;box-shadow:0 0 0 4px var(--void),0 0 20px rgba(200,152,88,.4)}
+  .phase-node:hover .ring{transform:scale(1.15);box-shadow:0 0 0 4px var(--void),0 0 30px rgba(200,152,88,.6)}
+  .phase-node.active .ring{background:var(--gold);box-shadow:0 0 0 4px var(--void),0 0 30px rgba(232,196,106,.7);transform:scale(1.2)}
+  .phase-node .label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;
+    color:var(--bone-dim);margin-top:10px;text-align:center;max-width:120px;line-height:1.3}
+  .phase-node.active .label{color:var(--gold);font-weight:600}
+  
+  /* Workstream rows */
+  .ws-row{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:10px 0;
+    border-bottom:1px solid var(--line);align-items:start}
+  .ws-row:last-child{border-bottom:none}
+  .ws-label{font-size:11px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;
+    letter-spacing:.1em;color:var(--copper);padding-top:4px;display:flex;align-items:center;gap:6px}
+  .ws-tasks{display:flex;flex-direction:column;gap:6px}
+  .ws-task{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--bone-dim);line-height:1.5}
+  .ws-task .marker{flex-shrink:0;width:5px;height:5px;border-radius:50%;background:var(--copper);margin-top:7px}
+  
+  /* Risk heat cells */
+  .risk-cell{padding:10px;border-radius:6px;font-size:11px;text-align:center;
+    border:1px solid var(--line);transition:all .25s;cursor:default}
+  .risk-low{background:rgba(122,138,111,.08);border-color:rgba(122,138,111,.25);color:var(--moss)}
+  .risk-med{background:rgba(212,184,122,.08);border-color:rgba(212,184,122,.25);color:var(--brass)}
+  .risk-high{background:rgba(196,99,74,.1);border-color:rgba(196,99,74,.3);color:var(--rust)}
+  
+  /* Checklist */
+  .check-item{display:flex;align-items:flex-start;gap:12px;padding:12px;
+    border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.3);
+    transition:all .25s;cursor:pointer}
+  .check-item:hover{border-color:var(--copper);background:rgba(200,152,88,.05)}
+  .check-box{flex-shrink:0;width:20px;height:20px;border:2px solid var(--copper);border-radius:4px;
+    display:flex;align-items:center;justify-content:center;transition:all .25s;margin-top:1px}
+  .check-item.checked .check-box{background:var(--copper)}
+  .check-item.checked .check-box::after{content:'';width:10px;height:6px;
+    border-left:2px solid var(--void);border-bottom:2px solid var(--void);
+    transform:rotate(-45deg) translate(1px,-1px)}
+  .check-item.checked .check-text{text-decoration:line-through;color:var(--muted)}
+  
+  /* Funding bars */
+  .fund-bar{height:40px;border-radius:8px;display:flex;align-items:center;
+    padding:0 14px;border:1px solid var(--line);position:relative;overflow:hidden;
+    transition:all .3s}
+  .fund-bar .amt{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:14px;z-index:2;position:relative}
+  .fund-bar .fill{position:absolute;left:0;top:0;bottom:0;border-radius:8px;opacity:.15;z-index:1}
+  
+  /* Gate badges */
+  .gate-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;
+    border-radius:100px;font-size:11px;font-family:'JetBrains Mono',monospace;
+    background:rgba(122,138,111,.1);border:1px solid rgba(122,138,111,.3);color:var(--moss)}
+  
+  /* Gantt matrix */
+  .gantt-cell{padding:8px 6px;border:1px solid var(--line);font-size:10px;
+    font-family:'JetBrains Mono',monospace;color:var(--bone-dim);text-align:center;
+    transition:all .25s;min-height:36px;display:flex;align-items:center;justify-content:center}
+  .gantt-cell.active{background:rgba(200,152,88,.08);border-color:rgba(200,152,88,.2);color:var(--copper)}
+  .gantt-cell.peak{background:rgba(232,196,106,.15);border-color:rgba(232,196,106,.4);color:var(--gold);font-weight:600}
+  .gantt-cell.wind{background:rgba(122,138,111,.08);border-color:rgba(122,138,111,.2);color:var(--moss)}
+  
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--void)}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--copper)}
+  
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .8s,transform .8s}
+  .reveal.in{opacity:1;transform:translateY(0)}
+  
+  .divider-line{height:1px;background:linear-gradient(90deg,transparent,var(--copper) 50%,transparent);opacity:.3}
+</style>
+</head>
+<body>
+
+<!-- Backgrounds -->
+<div class="topo-bg">
+<svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" id="topoSvg">
+<g id="topoGroup"></g>
+</svg>
+</div>
+<div class="atmo"></div>
+<canvas class="dust" id="dustCanvas"></canvas>
+
+<!-- ===================== NAV ===================== -->
+<nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[rgba(10,10,14,0.7)] border-b border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="8" fill="none" stroke="#e8c46a" stroke-width="1"/><circle cx="16" cy="16" r="3" fill="#e8c46a"/></svg>
+      <span class="font-display text-lg tracking-tight">Zero to $212M · Execution Roadmap</span>
+    </a>
+    <div class="hidden lg:flex items-center gap-6 text-sm text-[var(--bone-dim)]">
+      <a href="#phases" class="hover:text-[var(--copper)] transition">Phase Map</a>
+      <a href="#gantt" class="hover:text-[var(--copper)] transition">Workstream Gantt</a>
+      <a href="#day1" class="hover:text-[var(--copper)] transition">Day 1-30</a>
+      <a href="#funding" class="hover:text-[var(--copper)] transition">Funding</a>
+      <a href="#risk" class="hover:text-[var(--copper)] transition">Risk Matrix</a>
+      <a href="#moat" class="hover:text-[var(--copper)] transition">The Moat</a>
+    </div>
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(232,196,106,0.1)] border border-[rgba(232,196,106,0.3)]">
+      <span class="pulse-dot" style="background:var(--gold)"></span>
+      <span class="text-xs font-mono text-[var(--gold)]">EXECUTION PLAN</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header id="top" class="relative pt-32 pb-16 px-6">
+  <div class="max-w-[1400px] mx-auto">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="h-px w-12 bg-[var(--gold)]"></div>
+      <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">60 Months · 6 Phases · $212M ARR Target</span>
+    </div>
+    
+    <h1 class="font-display text-[clamp(48px,8vw,120px)] leading-[0.92] tracking-tight mb-8 hero-title">
+      From Zero<br/>
+      to $212M.
+    </h1>
+    
+    <div class="grid lg:grid-cols-12 gap-8 mt-10">
+      <p class="lg:col-span-7 text-lg leading-relaxed text-[var(--bone-dim)] max-w-2xl">
+        A month-by-month execution plan to build the <span class="text-[var(--bone)] font-medium">Bloomberg for Physical Commodities</span> — from a pre-seed concept with 8 shipped data sources to a $212M ARR platform with 25 inference products, 55 persona segments, and a defensible data moat across the global mining value chain.
+      </p>
+      <div class="lg:col-span-5 lg:pl-8 lg:border-l border-[var(--line)]">
+        <div class="grid grid-cols-3 gap-4">
+          <div><div class="font-display text-4xl text-[var(--copper)]">6</div><div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Phases</div></div>
+          <div><div class="font-display text-4xl text-[var(--gold)]">60</div><div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">Months</div></div>
+          <div><div class="font-display text-4xl text-[var(--moss)]">$212M</div><div class="text-xs uppercase tracking-wider text-[var(--muted)] mt-1">ARR Target</div></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="#phases" class="px-6 py-3 bg-[var(--gold)] text-[var(--void)] font-medium rounded-full hover:bg-[var(--brass)] transition">View the Phase Map</a>
+      <a href="#day1" class="px-6 py-3 border border-[var(--line)] text-[var(--bone)] rounded-full hover:border-[var(--gold)] transition">Day 1-30 Action Plan</a>
+    </div>
+  </div>
+</header>
+
+<!-- ===================== PHASE TIMELINE ===================== -->
+<section id="phases" class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 01</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">The Six-Phase Map</h2>
+    <p class="text-[var(--bone-dim)] mb-12 max-w-3xl">Click any phase to load its detailed execution plan — workstreams, hiring, funding, risks, and exit gates.</p>
+    
+    <div class="phase-track">
+      <div class="phase-line"></div>
+      <div class="grid grid-cols-6 gap-2 relative" id="phaseNodes"></div>
+    </div>
+    
+    <div id="phaseDetail" class="mt-12"></div>
+  </div>
+</section>
+
+<!-- ===================== GANTT MATRIX ===================== -->
+<section id="gantt" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 02</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">Workstream Gantt</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">Six parallel workstreams across 60 months. <span class="text-[var(--gold)]">Gold</span> = peak activity, <span class="text-[var(--copper)]">copper</span> = active build, <span class="text-[var(--moss)]">moss</span> = winding/maintain.</p>
+    
+    <div class="card p-4 md:p-6 overflow-x-auto">
+      <div class="min-w-[900px]">
+        <!-- Header row -->
+        <div class="grid gap-1 mb-2" style="grid-template-columns:120px repeat(6,1fr)">
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] p-2">Workstream</div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 1<br/><span class="text-[var(--muted)]">Mo 1-3</span></div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 2<br/><span class="text-[var(--muted)]">Mo 3-9</span></div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 3<br/><span class="text-[var(--muted)]">Mo 9-18</span></div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 4<br/><span class="text-[var(--muted)]">Mo 18-36</span></div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 5<br/><span class="text-[var(--muted)]">Mo 36-48</span></div>
+          <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 text-center">Phase 6<br/><span class="text-[var(--muted)]">Mo 48-60</span></div>
+        </div>
+        <div id="ganttGrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DAY 1-30 ===================== -->
+<section id="day1" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 03 · Immediate Execution</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">Day 1 to Day 30</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">The first 30 days. No excuses. These are the concrete steps to take <span class="text-[var(--gold)]">starting tomorrow morning</span>. Check them off as you go.</p>
+    
+    <div class="grid md:grid-cols-2 gap-4" id="day1List"></div>
+  </div>
+</section>
+
+<!-- ===================== FUNDING ROADMAP ===================== -->
+<section id="funding" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 04</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">Funding Roadmap</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">Five staged raises totalling <span class="text-[var(--gold)]">$80M</span> in dilution funding to reach $212M ARR. Each round is tied to a specific milestone gate — no milestone, no raise.</p>
+    
+    <div class="space-y-4" id="fundingList"></div>
+    
+    <div class="card p-6 mt-8" style="border-color:rgba(232,196,106,0.3)">
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <div class="font-mono text-xs uppercase tracking-wider text-[var(--gold)] mb-1">Cumulative Capital Deployed</div>
+          <div class="font-display text-3xl text-[var(--gold)]">$80.5M across 5 rounds</div>
+        </div>
+        <div class="text-right">
+          <div class="font-mono text-xs uppercase tracking-wider text-[var(--muted)] mb-1">Target Valuation at Series C</div>
+          <div class="font-display text-3xl text-[var(--bone)]">$1.2B – $1.5B</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RISK MATRIX ===================== -->
+<section id="risk" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 05</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">Risk Matrix</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">The 12 existential risks that could kill the company, ranked by likelihood and impact. Each has a documented mitigation — click to read.</p>
+    
+    <div class="card p-6">
+      <div class="grid gap-3" style="grid-template-columns:1fr 100px 100px 1fr" id="riskHeader">
+        <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] p-2">Risk</div>
+        <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] p-2 text-center">Likelihood</div>
+        <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] p-2 text-center">Impact</div>
+        <div class="text-[10px] font-mono uppercase tracking-wider text-[var(--muted)] p-2">Mitigation</div>
+      </div>
+      <div id="riskGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE MOAT ===================== -->
+<section id="moat" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--gold)] uppercase">§ 06</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">The Moat</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">Five layers of defensibility. By Year 3, the combination of these makes the platform effectively un-copyable — a competitor would need to re-integrate 117 data sources, re-build 25 inference engines, and re-acquire 500+ paying customers.</p>
+    
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" id="moatGrid"></div>
+    
+    <div class="card p-8 mt-8" style="border-color:rgba(232,196,106,0.3)">
+      <div class="flex items-center gap-3 mb-4">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e8c46a" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span class="font-display text-2xl text-[var(--gold)]">The Network Effect Thesis</span>
+      </div>
+      <p class="text-[var(--bone-dim)] leading-relaxed">Every new data source improves every inference. Every new customer generates proxy validation data (e.g., "this mine confirmed our shadow-production estimate"). Every new inference recipe becomes a feature no competitor has. By Year 3, the platform's 117-source × 25-inference matrix is a <span class="text-[var(--gold)]">combinatorial asset</span> that cannot be replicated by hiring 10 engineers and raising $50M. It requires 60 months of layered integrations, customer feedback loops, and regulatory trust. <span class="text-[var(--bone)] font-medium">That is the moat.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== KILL CRITERIA ===================== -->
+<section id="kill" class="px-6 py-20 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto">
+    <span class="font-mono text-xs tracking-[0.3em] text-[var(--rust)] uppercase">§ 07 · When to Stop</span>
+    <h2 class="font-display text-5xl mt-2 mb-4">Kill Criteria</h2>
+    <p class="text-[var(--bone-dim)] mb-10 max-w-3xl">Pre-committed triggers for pivoting or shutting down. If any of these fire, <span class="text-[var(--rust)] font-medium">stop building and reassess</span>. Do not fall victim to sunk-cost fallacy.</p>
+    
+    <div class="space-y-4" id="killList"></div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="px-6 py-16 border-t border-[var(--line)]">
+  <div class="max-w-[1400px] mx-auto text-center">
+    <div class="flex items-center justify-center gap-3 mb-4">
+      <svg width="24" height="24" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="#c89858" stroke-width="1.5"/><circle cx="16" cy="16" r="3" fill="#e8c46a"/></svg>
+      <span class="font-display text-lg">Zero to $212M · Execution Roadmap</span>
+    </div>
+    <p class="text-sm text-[var(--muted)] font-mono">6 phases · 60 months · 6 workstreams · $80.5M capital · $212M ARR target</p>
+    <p class="text-xs text-[var(--muted)] mt-4">Print this. Pin it to the wall. Execute one phase at a time.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   DATA: 6 Phases with full detail
+   ============================================================ */
+const phases = [
+  {n:1, name:'Foundation & Validation', months:'Month 1-3', duration:'3 months',
+   arr:'$0', funding:'$1.0M Pre-Seed', color:'#c89858',
+   northStar:'10 signed Letters of Intent from named buyers across 3 persona segments',
+   summary:'Validate the thesis. Ship the 8 already-integrated sources onto a working Cesium globe. Interview 30 buyers. Lock in 10 design-partner LOIs. Close pre-seed. Do not build 25 products — build 1 prototype and prove someone will pay for it.',
+   workstreams:{
+     Data:['Wire 8 already-integrated sources (USGS EQ, FIRMS, AIS, OpenSky, adsb.lol, CelesTrak, GTFS, GBFS) into production broker','Build local_data/ pipeline for MRDS, ICMM Tailings, ARDF, GVP, Heat Flow (5 static bundles)','Sign up for 3 keyed API accounts: Sentinel Hub (free tier), EarthExplorer (free), Mindat (free signup)','Build the server-side key broker skeleton (POWER UP panel) — keys never reach client'],
+     Product:['Ship Cesium 3D globe with 3 live data layers: earthquakes, fires, ship positions','Build the 2D fallback map (Leaflet) for low-end devices','Prototype the Tailings Dam Risk dashboard (the highest-ARR product) as a clickable demo','Write the inference documentation (this Atlas itself) as the sales pitch deck'],
+     GTM:['Interview 30 target buyers: 10 mining majors, 10 funds/banks, 10 insurers','Validate pricing for top 5 inferences — ask "would you pay $X for this?"','Secure 10 LOIs (Letters of Intent) — non-binding but named','Attend PDAC (March, Toronto) and Mining Indaba (Feb, Cape Town) with the prototype'],
+     Funding:['Raise $500k-$1M pre-seed from mining-literate angels','Target investors: ex-mining executives, commodity fund PMs, climate-tech angels, ESG funds','Use the 25-inference Atlas as the pitch deck — it IS the product roadmap','Valuation target: $5-8M post-money'],
+     Team:['Hire 1 senior full-stack engineer (Cesium + Node.js) — $140-160k','Hire 1 data engineer (Python, PostGIS, ogr2ogr, ETL) — $130-150k','Founder runs GTM + Product full-time (sweat equity)','Engage fractional CFO ($2k/mo) and IP lawyer ($5k retainer)'],
+     Legal:['Incorporate as Delaware C-Corp','File trademark for platform name','Draft data licensing terms — especially for keyed API brokering','File provisional patent on the inference-fusion methodology']
+   },
+   risks:[
+     {r:'S&P Global / Wood Mackenzie refuse API access to a pre-seed startup', l:'High', i:'High', m:'Start with all-open sources (USGS, ESA, NOAA, NASA, Mindat free tier). Use public MCS/Yearbook. Approach S&P and WoodMac AFTER $5M ARR when you have leverage.'},
+     {r:'Mining companies have 12-18 month procurement cycles — too slow for a startup', l:'High', i:'High', m:'Target hedge funds, traders, and insurers FIRST (faster cycles, 30-60 day pilots). Use paid design-partner agreements ($25-50k for 3-month pilot) not full procurement.'},
+     {r:'Cesium 3D globe performance issues on low-end devices', l:'Med', i:'Med', m:'Ship 2D Leaflet fallback on day one. Optimize for 60fps on a mid-range laptop. Defer mobile entirely to Phase 2.'}
+   ],
+   gates:['10 LOIs signed from named buyers','3 data layers live and performing on Cesium globe','Pre-seed round closed ($500k-$1M)','1 design-partner pilot agreement signed (paid)','Server-side key broker operational for 3 APIs'],
+   hire:'2 engineers + fractional CFO + IP lawyer = ~$340k/yr burn'
+  },
+  
+  {n:2, name:'MVP & Design Partners', months:'Month 3-9', duration:'6 months',
+   arr:'$0.5M', funding:'$3-5M Seed', color:'#d4b87a',
+   northStar:'5 paid design partners at $50-100k each → $0.5M pilot revenue',
+   summary:'Ship 3 products as paid pilots. The Tailings Dam Risk (highest ARR + regulatory tailwind), the Cost-Curve Margin Watcher (easiest finance sell), and the Shadow Production Detector (most unique/defensible). Sign 5-10 design partners. Convert the prototype into a real product. Raise seed.',
+   workstreams:{
+     Data:['Integrate ICEYE + Capella SAR feeds (paid, brokered) for tailings InSAR','Wire S&P Global MI API (brokered, response-capped) for asset-level reserves','Build the EarthChem + Macrostrat + EMAG2 fusion for the geology stack','Add Open-Meteo, NOAA SWPC, and USGS Water for the real-time risk layer'],
+     Product:['Ship Tailings Dam 7-Day Failure Probability as Product #1 — full dashboard + alerts','Ship Cost-Curve Dynamic Margin Watcher as Product #2 — globe overlay + alert feed','Ship Shadow Production Detector as Product #3 — deviation ledger + badges','Build user authentication, per-customer data isolation, and the billing/subscription layer'],
+     GTM:['Sign 5-10 design-partner agreements at $50-100k each (3-month pilots)','Assign each design partner a dedicated slack channel + weekly check-in','Build case studies from pilot results (even negative ones — "we detected no anomaly" is still valuable)','Present at LME Week (Oct, London) and Mining Indaba (Feb, Cape Town)'],
+     Funding:['Raise $3-5M Seed from a mining/industrial-tech VC lead','Target: Climate-tech funds (Systemiq, Breakthrough), industrial-tech (SOSV, Hardware Club), strategic LPs (mining majors as LPs not customers)','Valuation target: $15-25M post-money','Use the 5 paid pilots as proof of revenue traction'],
+     Team:['Hire 1st sales rep (mining industry network essential) — $120-150k + comm','Hire 2nd full-stack engineer (focus on product, not infra) — $140-160k','Hire 1 customer-success / solutions engineer — $100-130k','Promote data engineer to Head of Data; hire 1 junior data eng — $90k'],
+     Legal:['Finalize data licensing agreements with S&P, ICEYE, Capella (revenue-share or flat)','Draft MSA + DPA templates for enterprise customers','File 2nd provisional patent (on the multi-source fusion scoring methodology)','SOC 2 Type 1 preparation (required for enterprise sales)']
+   },
+   risks:[
+     {r:'Design partners use the product but won\'t convert to full-price annual contracts', l:'Med', i:'High', m:'Price the pilot at 50% of annual contract. Build switching costs (their data is in your system). Include auto-conversion clause in pilot agreement. Offer locked-in pricing for 2 years.'},
+     {r:'ICEYE / Capella SAR data costs exceed pilot revenue', l:'High', i:'Med', m:'Negotiate startup-tier data pricing (pay-per-asset not pay-per-scene). Limit SAR coverage to 50 dams initially. Pass data costs through to customer as "imagery pass-through fee".'},
+     {r:'Key engineer leaves (single-point-of-failure on Cesium layer)', l:'Med', i:'High', m:'Document everything. Pair-program on critical paths. Offer equity cliffs that vest over 4 years. Have a backup contractor relationship with a Cesium consultancy.'}
+   ],
+   gates:['5 paid design partners signed and active','$500k in pilot revenue booked','3 products shipped and operational (not just prototypes)','Seed round closed ($3-5M)','SOC 2 Type 1 audit started'],
+   hire:'5 engineers + 1 sales + 1 CS = ~$780k/yr burn (post-seed runway: 36+ months)'
+  },
+  
+  {n:3, name:'Productization & Early Revenue', months:'Month 9-18', duration:'9 months',
+   arr:'$5M', funding:'$15-25M Series A', color:'#7a8a6f',
+   northStar:'$5M ARR — convert pilots to full annual contracts and expand to 8 products',
+   summary:'Convert design partners to full-priced multi-year contracts. Expand the product line from 3 to 8. Build self-serve onboarding for lower-tier products. Open the London office (finance vertical). Close Series A. This is where you prove the business model scales beyond pilot revenue.',
+   workstreams:{
+     Data:['Integrate LME + CME + SHFE live price feeds (brokered) for commodity layer','Add Fastmarkets + Argus (paid PRAs) for Li/Co/Ni/graphite benchmarks','Build the Macrostrat + BGI + EMAG2 geology fusion (full prospectivity stack)','Wire UN Comtrade + AIS for the trade-flow layer'],
+     Product:['Ship 5 more products: Chokepoint Radar, M&A Target Radar, Water-Stress Score, Andean Lithium Rank, Pit Wall Stability','Build self-serve onboarding for sub-$50k products (dashboard signup + Stripe)','Build the persona-driven product recommender (which inference for which role?)','Ship the "Fusion Calculator" — let users see what inferences unlock with their data'],
+     GTM:['Convert 5 design partners to 2-year annual contracts at full price ($100-250k each)','Hire London-based sales rep (finance vertical — funds, banks, traders)','Hire Perth-based sales rep (mining vertical — Australian majors)','Run the first user conference (virtual, 200 attendees) — "Resource Intelligence Summit"'],
+     Funding:['Raise $15-25M Series A from a Tier-1 VC lead','Target: Sequoia, a16z, Bond, Founders Fund, or Bessemer (if they have an industrial practice)','Strategic: Bowie Capital, Appian Capital, Orion Resource Partners (mining-focused PE)','Valuation target: $80-120M post-money. Pitch: "$5M ARR, 8 products, 2-year CAC payback, 25-product roadmap to $212M"'],
+     Team:['Hire VP Engineering (to scale team from 5 to 15) — $200-250k','Hire VP Sales (ex-Bloomberg, ex-S&P, ex-WoodMac) — $200-250k + equity','Hire 3rd sales rep (NY, for US mining + finance)','Hire 2nd data engineer, 2nd product engineer, 1 designer — $400k total'],
+     Legal:['SOC 2 Type 2 certified (required for $250k+ enterprise deals)','GDPR + CCPA compliance (EU + CA customers)','Draft enterprise MSA with SLA, indemnification, and data-breach clauses','File full patent application on the inference-fusion methodology']
+   },
+   risks:[
+     {r:'S&P Global or WoodMac launches a competing "spatial intelligence" product', l:'Med', i:'High', m:'They won\'t — their cost structure is built for analyst reports, not real-time APIs. If they try, they\'ll bundle it into $50k terminal subscriptions, which we undercut at $15-25k/seat. Our Cesium globe is 3 years ahead of anything they\'ll build.'},
+     {r:'CAC exceeds LTV as we scale sales team', l:'Med', i:'High', m:'Enforce 2-year contract minimums. Cross-sell additional inferences to existing customers (persona-driven expansion). Target <12 month CAC payback. Kill any sales rep below 0.8x quota for 2 quarters.'},
+     {r:'Key data provider (ICEYE, S&P) raises prices or cuts access', l:'Low', i:'High', m:'Diversify to 2+ sources per data category. Build open-source alternatives (Sentinel-1 SAR as ICEYE fallback). Negotiate multi-year price locks. Never let one source exceed 15% of COGS.'}
+   ],
+   gates:['$5M ARR achieved (mix of converted pilots + new contracts)','8 products shipped and revenue-generating','SOC 2 Type 2 certified','Series A closed ($15-25M)','London + Perth sales reps hired and productive'],
+   hire:'15 total headcount = ~$2.5M/yr burn (post-Series A runway: 36+ months)'
+  },
+  
+  {n:4, name:'Category Leadership', months:'Month 18-36', duration:'18 months',
+   arr:'$30M', funding:'$50-80M Series B', color:'#c4634a',
+   northStar:'$30M ARR with 15 products — become the default "spatial intelligence" layer for mining',
+   summary:'Scale from 8 to 15 products. Open Singapore office (trade vertical). Win enterprise deals with top-10 mining majors. Partner with ICMM and IRMA for distribution. This is the phase where you stop being a startup and become the category leader. The platform becomes the standard.',
+   workstreams:{
+     Data:['Integrate Maxar SecureWatch (paid, premium basemap for enterprise)','Add Planet Labs (daily PlanetScope for near-real-time monitoring)','Wire the full ESG stack: CDP, TNFD, IBAT, WDPA, IRMA, MSCI ESG','Build the EarthChem + Mindat + EarthScope full geochemistry layer'],
+     Product:['Ship 7 more products: Methane Attribution, Deforestation Attribution, Concentrate Blend Optimizer, Arctic Season Window, Resource Validator, Sovereignty Index, Insider Charter Flight Detector','Build the platform marketplace architecture (third-party data sellers)','Ship the AI inference generator (natural language → fusion recipe → insight)','Build the mobile app (iOS/Android) for field-based personas'],
+     GTM:['Win 3 of top-10 mining majors as enterprise customers ($250-500k each)','Open Singapore office (trade vertical — traders, port ops, shipping)','Partner with ICMM for tailings-risk distribution to all 24 member companies','Partner with IRMA for audited-mine ESG scoring distribution','Host in-person "Resource Intelligence Summit" in London (500 attendees)'],
+     Funding:['Raise $50-80M Series B from a growth-stage lead','Target: Tiger Global, Coatue, General Atlantic, ICONIQ, or TCV','Strategic: Bloomberg Beta, Thomson Reuters Ventures, S&P Global Ventures','Valuation target: $350-500M post-money. Pitch: "$30M ARR, 15 products, 60% gross margin, platform play with marketplace layer"'],
+     Team:['Hire 4th sales rep (Singapore, trade vertical)','Hire VP Product (ex-Bloomberg product lead) — $220k','Hire Head of Data Partnerships (to source third-party marketplace data) — $180k','Scale engineering to 20 (3 squads: Risk, Finance, ESG) — $1.5M/yr add'],
+     Legal:['ISO 27001 certification (required for government contracts)','Export control compliance (SAR satellite data is dual-use regulated)','Data residency agreements (EU, AU, China data localization)','Antitrust clearance for marketplace (don\'t aggregate competitor pricing)']
+   },
+   risks:[
+     {r:'Government contract procurement takes 24+ months and stalls revenue', l:'High', i:'Med', m:'Don\'t rely on gov revenue for ARR targets. Treat gov contracts as upside. Have 3-4 in pipeline at all times. Use CRADA or OT agreements (faster than FAR procurement).'},
+     {r:'Maxar or Planet gets acquired by a competitor who cuts our access', l:'Low', i:'High', m:'Maintain Sentinel-2 (free) as the base layer. Use Maxar/Planet only as premium upgrade. Negotiate change-of-control clauses in data contracts. Have BlackSky and LandSlid as backup providers.'},
+     {r:'Talent war — Google/Meta hires our best engineers with 2x comp', l:'High', i:'Med', m:'Pay above market for top 5 engineers. Give meaningful equity (0.5-1%). Sell the mission: "you\'re building the Bloomberg for physical commodities, not optimizing ad clicks." Offer remote-first. Have 6-month non-solicitables from competitors.'}
+   ],
+   gates:['$30M ARR with >80% gross margin','15 products live and revenue-generating','3 of top-10 mining majors as enterprise customers','Series B closed ($50-80M)','Marketplace architecture shipped (even if no third-party sellers yet)'],
+   hire:'35 total headcount = ~$5.5M/yr burn (post-Series B runway: 36+ months)'
+  },
+  
+  {n:5, name:'Platform & Expansion', months:'Month 36-48', duration:'12 months',
+   arr:'$100M', funding:'$100-150M Series C', color:'#9a96a8',
+   northStar:'$100M ARR — launch the data marketplace and expand beyond mining',
+   summary:'All 25 products live. Launch the third-party data marketplace (other companies can sell their data through your platform, you take 20%). Expand into oil & gas, agriculture, and infrastructure. This is the phase where the platform becomes a platform — not just a product company.',
+   workstreams:{
+     Data:['Launch marketplace with 10 third-party data sellers (surveyors, labs, consultants)','Integrate the final 20 sources from the 117-source compendium','Build the real-time streaming pipeline (Kafka + Flink) for sub-second updates','Launch the API product — let developers build on your inference layer'],
+     Product:['Ship the final 10 products to reach the full 25-product portfolio','Launch the marketplace seller portal (self-serve data onboarding)','Ship the natural-language inference interface ("ask a question, get a fusion recipe")','Build the mobile-first field operations suite (tablet-optimized for mine sites)'],
+     GTM:['Launch marketplace with 20% take rate on third-party data sales','Expand into oil & gas (same inference patterns: shadow production, methane, tailings → oil spills)','Expand into agriculture (deforestation attribution → land-use change, water stress same)','Win first government contract (USGS, IEA, or EU JRC) at $1-5M/yr'],
+     Funding:['Raise $100-150M Series C from a pre-IPO growth investor','Target: Fidelity, T. Rowe Price, Temasek, GIC, SoftBank Vision','Strategic: Bloomberg, LSEG (London Stock Exchange Group), S&P Global','Valuation target: $800M-$1.2B post-money. Pitch: "$100M ARR, marketplace live, expanding to 3 verticals, IPO-ready in 18 months"'],
+     Team:['Hire GM of Marketplace (ex-Apple App Store, ex-Stripe) — $250k','Hire GM of Oil & Gas vertical — $220k','Hire GM of Agriculture vertical — $200k','Scale to 80 headcount — $8M/yr add'],
+     Legal:['Marketplace terms of service (data seller agreements, rev-share)','Antitrust clearance for marketplace expansion','IPO readiness audit (Big 4 auditor transition)','International data transfer mechanisms (post-Schrems II SCCs)']
+   },
+   risks:[
+     {r:'Marketplace gets no third-party sellers — platform thesis fails', l:'Med', i:'High', m:'Seed the marketplace with 5 partner companies you hand-pick (surveyors you already work with). Offer 0% take rate for first 6 months. Make the seller onboarding 1-click. If it fails, kill marketplace and stay a product company — still a $100M+ business.'},
+     {r:'Oil & gas expansion dilutes focus and the mining vertical stalls', l:'Med', i:'Med', m:'Run O&G as a separate P&L with a dedicated GM. Don\'t touch mining engineering resources. Set O&G revenue target at 20% of total by Year 4 — if it misses, cut it.'},
+     {r:'IPO window closes and Series C investors want liquidity', l:'Low', i:'Med', m:'Structure Series C with 2-year lockup. Include secondary sale provision (10% of round for employee liquidity). Have backup debt facility ($30M revolver from Silicon Valley Bank).'}
+   ],
+   gates:['$100M ARR with marketplace generating $5M GMV','25 products all live','Oil & gas vertical launched with 3 paying customers','Series C closed ($100-150M)','IPO-ready financial reporting operational'],
+   hire:'80 total headcount = ~$10M/yr burn (post-Series C runway: 24+ months)
+  },
+  
+  {n:6, name:'Scale & Dominance', months:'Month 48-60', duration:'12 months',
+   arr:'$212M+', funding:'IPO or Strategic Exit', color:'#e8c46a',
+   northStar:'$212M+ ARR — IPO at $1.5-2.5B valuation or strategic exit to S&P/Bloomberg/LSEG',
+   summary:'The platform is the standard. 25 products, 3 verticals, marketplace with 50+ sellers, 500+ enterprise customers. This is the exit phase — IPO at a $1.5-2.5B valuation, or sell to S&P Global, Bloomberg, LSEG, or a sovereign wealth fund for a strategic premium.',
+   workstreams:{
+     Data:['Marketplace reaches 50+ third-party data sellers','Build the AI inference auto-generation pipeline (models write new fusion recipes autonomously)','Launch the real-time alert network (push notifications to 10,000+ devices)','Monetize the data exhaust — sell anonymized aggregate signals back to the market'],
+     Product:['Ship the "Inference Copilot" — natural language interface for all 25 products','Launch the public API (developer tier) with usage-based pricing','Ship the regulatory reporting suite (auto-generate TCFD, GRI, SASB, TNFD reports)','Build the boardroom dashboard (C-suite view of mining value chain risk)'],
+     GTM:['Host "Resource Intelligence Summit" in London — 2,000 attendees, $5k/ticket','Publish the "State of the Resource Intelligence Industry" annual report','Win 10 of top-20 mining majors + 5 of top-20 hedge funds as customers','Launch the certification program ("Certified Resource Intelligence Analyst")'],
+     Funding:['IPO on NYSE or LSE at $1.5-2.5B valuation (50-100x ARR multiple)','Alternative: Strategic sale to S&P Global ($1.8B), Bloomberg ($2B), or LSEG ($1.6B)','Alternative: Private equity buyout by Blackstone/KKR for roll-up','Lockup period: 180 days post-IPO; employees can sell 25% at day 91'],
+     Team:['Hire CFO (IPO experience, ex-Bloomberg or ex-S&P) — $300k + IPO bonus','Hire Chief Legal Officer (SEC reporting) — $250k','Hire GM of APAC (Tokyo or Mumbai) — $220k','Scale to 150 headcount — $12M/yr add'],
+     Legal:['S-1 registration statement (or LSE prospectus)','SEC reporting infrastructure (10-Q, 10-K, 8-K)','Public company D&O insurance','Audit committee + compensation committee + nominating committee formation']
+   },
+   risks:[
+     {r:'IPO market is frozen (no tech IPOs pricing)', l:'Med', i:'High', m:'Have 2 backup paths: (1) $150M Series D bridge from existing investors at $1.2B valuation, (2) strategic sale to S&P/Bloomberg at $1.5B floor. The business is profitable at $212M ARR — you can wait 12-18 months for the window.'},
+     {r:'Bloomberg launches a competing "Bloomberg Mining Terminal"', l:'Low', i:'High', m:'They would need 3 years and 50 engineers to match our 117-source integration. By then we have 1,000 customers and the network effect. If they launch, they\'ll likely acquire us rather than compete — that\'s a win.'},
+     {r:'Key early employees cash out at IPO and the brain drain kills product velocity', l:'High', i:'Med', m:'Stagger equity vesting so no single employee owns more than 0.5%. Implement 4-year post-IPO vesting cliffs for the top 10. Create "Founder Awards" — $500k retention bonuses tied to 3-year tenure post-IPO. Promote from within to fill VP roles.'}
+   ],
+   gates:['$212M+ ARR','IPO filed or LOI signed for strategic exit','Marketplace GMV > $20M/yr','3 verticals (mining, O&G, agriculture) each > $50M ARR','Public-company reporting infrastructure operational'],
+   hire:'150 total headcount = ~$16M/yr burn (profitable from operations)
+  },
+];
+
+/* ============================================================
+   DATA: Gantt matrix (6 workstreams × 6 phases)
+   ============================================================ */
+const workstreams = [
+  {name:'Data Integration', cells:[
+    {p:1, level:'active', text:'8 open sources + 3 keyed APIs + 5 static bundles'},
+    {p:2, level:'peak', text:'ICEYE, Capella, S&P MI, EarthChem, LME/SHFE'},
+    {p:3, level:'peak', text:'Fastmarkets, Argus, Maxar, Planet, full ESG stack'},
+    {p:4, level:'active', text:'Marketplace sourcing + remaining 20 sources'},
+    {p:5, level:'active', text:'Final integration + real-time Kafka pipeline'},
+    {p:6, level:'wind', text:'AI auto-generation + data exhaust monetization'}
+  ]},
+  {name:'Product', cells:[
+    {p:1, level:'active', text:'Cesium globe + 3 layers + Tailings prototype'},
+    {p:2, level:'peak', text:'Ship 3 products (Tailings, Margin, Shadow Prod)'},
+    {p:3, level:'peak', text:'Ship 5 more products → 8 total + self-serve'},
+    {p:4, level:'peak', text:'Ship 7 more → 15 total + marketplace + mobile'},
+    {p:5, level:'peak', text:'Ship final 10 → 25 total + NL inference + API'},
+    {p:6, level:'wind', text:'Inference Copilot + regulatory reporting suite'}
+  ]},
+  {name:'Go-to-Market', cells:[
+    {p:1, level:'active', text:'30 interviews + 10 LOIs + PDAC/Indaba'},
+    {p:2, level:'peak', text:'5-10 paid pilots + case studies + LME Week'},
+    {p:3, level:'peak', text:'Convert pilots + London/Perth reps + virtual summit'},
+    {p:4, level:'peak', text:'Top-10 majors + Singapore + ICMM/IRMA partners'},
+    {p:5, level:'active', text:'Marketplace launch + O&G + Ag expansion + gov'},
+    {p:6, level:'wind', text:'London Summit 2k attendees + certification program'}
+  ]},
+  {name:'Funding', cells:[
+    {p:1, level:'peak', text:'$1M pre-seed (angels)'},
+    {p:2, level:'peak', text:'$3-5M seed (industrial VC)'},
+    {p:3, level:'peak', text:'$15-25M Series A (Tier-1 VC)'},
+    {p:4, level:'peak', text:'$50-80M Series B (growth)'},
+    {p:5, level:'active', text:'$100-150M Series C (pre-IPO)'},
+    {p:6, level:'peak', text:'IPO or strategic exit $1.5-2.5B'}
+  ]},
+  {name:'Team', cells:[
+    {p:1, level:'active', text:'2 engineers + fractional CFO + founder'},
+    {p:2, level:'active', text:'+1 sales + 1 eng + 1 CS + 1 junior data'},
+    {p:3, level:'peak', text:'+VP Eng + VP Sales + 3 reps + 3 eng = 15 total'},
+    {p:4, level:'peak', text:'+VP Product + Head Data Partnerships = 35 total'},
+    {p:5, level:'active', text:'+3 GMs (marketplace, O&G, Ag) = 80 total'},
+    {p:6, level:'wind', text:'+CFO + CLO + APAC GM = 150 total'}
+  ]},
+  {name:'Legal & Compliance', cells:[
+    {p:1, level:'active', text:'Incorporate + trademark + provisional patent'},
+    {p:2, level:'active', text:'Data licenses + MSA template + SOC 2 Type 1'},
+    {p:3, level:'active', text:'SOC 2 Type 2 + GDPR + full patent filed'},
+    {p:4, level:'active', text:'ISO 27001 + export control + data residency'},
+    {p:5, level:'active', text:'Marketplace ToS + antitrust + IPO audit'},
+    {p:6, level:'peak', text:'S-1 + SEC reporting + D&O + committees'}
+  ]},
+];
+
+/* ============================================================
+   DATA: Day 1-30 action plan
+   ============================================================ */
+const day1Actions = [
+  {day:'Day 1-2', priority:'Critical', task:'Incorporate as Delaware C-Corp. Open business bank account. Register domain name.', owner:'Founder'},
+  {day:'Day 3-5', priority:'Critical', task:'Set up dev environment: Cesium + Node.js + PostgreSQL/PostGIS + Python ETL. Deploy the 8 already-integrated sources to a live URL.', owner:'Founder + Engineer #1'},
+  {day:'Day 6-7', priority:'Critical', task:'Sign up for free-tier API keys: Sentinel Hub, EarthExplorer, Mindat, Open-Meteo, NASA POWER. Store in server-side .env.', owner:'Engineer #1'},
+  {day:'Day 8-10', priority:'Critical', task:'Build the Cesium globe with 3 live layers: USGS earthquakes, NASA FIRMS fires, AISStream ship positions. This is the demo.', owner:'Engineer #1'},
+  {day:'Day 11-12', priority:'High', task:'Write the one-page pitch: "Bloomberg for physical commodities. 117 data sources. 25 inference products. $212M ARR target." Print 100 copies.', owner:'Founder'},
+  {day:'Day 13-15', priority:'High', task:'List 30 target buyers: 10 mining majors (BHP, Rio Tinto, Glencore, Vale, Anglo, Newmont, Agnico, Barrick, Freeport, Teck), 10 funds (Pershing Square, Oasis, Elliot, Palestra, Greenlight), 10 insurers (AIG, Chubb, AXA, Zurich, Lloyd\'s syndicates).', owner:'Founder'},
+  {day:'Day 16-20', priority:'High', task:'Cold-email / LinkedIn-message all 30 targets with the demo URL + pitch. Goal: 10 discovery calls booked.', owner:'Founder'},
+  {day:'Day 21-22', priority:'High', task:'Conduct first 5 discovery calls. Ask: "If I could show you [inference], would you pay $100k/yr for it?" Record answers.', owner:'Founder'},
+  {day:'Day 23-25', priority:'High', task:'Build the Tailings Dam Risk dashboard prototype (clickable, even if data is mocked). This is the #1 highest-ARR product.', owner:'Engineer #1'},
+  {day:'Day 26-27', priority:'Medium', task:'File provisional patent on "multi-source geospatial inference fusion for mineral supply chain risk assessment". Cost: $1,500 via a patent attorney.', owner:'IP Lawyer'},
+  {day:'Day 28-30', priority:'Medium', task:'Submit speaker proposal to PDAC (Prospectors & Developers Association of Canada) and Mining Indaba. Book flights. Order business cards.', owner:'Founder'},
+];
+
+/* ============================================================
+   DATA: Funding rounds
+   ============================================================ */
+const fundingRounds = [
+  {round:'Pre-Seed', amount:'$0.5-1M', timing:'Month 1-3', source:'Mining-literate angels, ex-executives, commodity PMs', valuation:'$5-8M post', use:'2 engineers + dev infra + legal + 30 GTM interviews', barWidth:8, color:'var(--copper)'},
+  {round:'Seed', amount:'$3-5M', timing:'Month 3-9', source:'Industrial-tech VCs (SOSV, Systemiq, Breakthrough), strategic LPs', valuation:'$15-25M post', use:'5 design-partner pilots + 3 product builds + SAR data contracts', barWidth:20, color:'var(--brass)'},
+  {round:'Series A', amount:'$15-25M', timing:'Month 9-18', source:'Tier-1 VC (Sequoia, a16z, Bond, Bessemer)', valuation:'$80-120M post', use:'Scale to 8 products + London/Perth offices + 15 headcount', barWidth:45, color:'var(--moss)'},
+  {round:'Series B', amount:'$50-80M', timing:'Month 18-36', source:'Growth investor (Tiger, Coatue, General Atlantic, TCV)', valuation:'$350-500M post', use:'15 products + Singapore office + marketplace architecture + 35 headcount', barWidth:80, color:'var(--rust)'},
+  {round:'Series C / IPO', amount:'$100-150M', timing:'Month 36-48', source:'Pre-IPO (Fidelity, T. Rowe, Temasek) or strategic (Bloomberg, S&P, LSEG)', valuation:'$800M-$1.2B post', use:'25 products + marketplace launch + O&G + Ag expansion + 80 headcount', barWidth:120, color:'var(--gold)'},
+];
+
+/* ============================================================
+   DATA: Risk matrix
+   ============================================================ */
+const risks = [
+  {risk:'S&P / WoodMac refuse API access to a startup', likelihood:'High', impact:'High', mitigation:'Start with all-open sources. Approach after $5M ARR with leverage. Never depend on one source >15% of COGS.'},
+  {risk:'Mining procurement cycles too slow (12-18 months)', likelihood:'High', impact:'High', mitigation:'Sell to funds/insurers first (30-60 day cycles). Use paid design-partner pilots, not full procurement.'},
+  {risk:'SAR data costs exceed pilot revenue', likelihood:'High', impact:'Med', mitigation:'Negotiate per-asset pricing. Limit to 50 dams initially. Pass-through to customer as imagery fee.'},
+  {risk:'Design partners won\'t convert to full-price contracts', likelihood:'Med', impact:'High', mitigation:'Price pilot at 50% of annual. Build switching costs. Auto-conversion clause. Locked pricing for 2 years.'},
+  {risk:'Key engineer leaves (single point of failure)', likelihood:'Med', impact:'High', mitigation:'Document everything. Pair-program. 4-year equity vest. Backup contractor relationship.'},
+  {risk:'S&P/Bloomberg launches competing product', likelihood:'Low', impact:'High', mitigation:'They won\'t — wrong cost structure. If they try, they\'ll acquire us instead. We\'re 3 years ahead on Cesium.'},
+  {risk:'CAC exceeds LTV at scale', likelihood:'Med', impact:'High', mitigation:'2-year contract minimums. Cross-sell inferences. <12 month CAC payback. Kill reps below 0.8x quota.'},
+  {risk:'Marketplace gets no third-party sellers', likelihood:'Med', impact:'High', mitigation:'Seed with 5 hand-picked partners. 0% take rate for 6 months. 1-click onboarding. If it fails, stay a product company — still $100M+.'},
+  {risk:'Oil & gas expansion dilutes mining focus', likelihood:'Med', impact:'Med', mitigation:'Separate P&L + dedicated GM. Don\'t touch mining engineering. 20% revenue target or cut.'},
+  {risk:'IPO window closes', likelihood:'Med', impact:'High', mitigation:'2 backup paths: $150M Series D bridge or strategic sale at $1.5B floor. Business is profitable — can wait 18 months.'},
+  {risk:'Government contract procurement stalls', likelihood:'High', impact:'Med', mitigation:'Don\'t rely on gov for ARR targets. Treat as upside. Use CRADA/OT agreements (faster). 3-4 in pipeline always.'},
+  {risk:'Post-IPO brain drain of early employees', likelihood:'High', impact:'Med', mitigation:'Stagger vesting. 4-year post-IPO cliffs. $500k retention bonuses. Promote from within for VP roles.'},
+];
+
+/* ============================================================
+   DATA: Moat layers
+   ============================================================ */
+const moatLayers = [
+  {n:1, title:'Data Integration Moat', desc:'117 sources integrated, brokered, and fused. Each took weeks of integration work. A competitor must repeat all 117 integrations from scratch. At 2 weeks per source, that\'s 4.5 years of engineering.', metric:'117 sources', color:'var(--copper)'},
+  {n:2, title:'Inference Recipe Moat', desc:'25 documented fusion recipes — each the product of domain expertise + data engineering + customer feedback. Each recipe encodes years of geological / financial / ESG knowledge. Cannot be reverse-engineered from the product UI.', metric:'25 recipes', color:'var(--gold)'},
+  {n:3, title:'Network Effect Moat', desc:'Every new customer generates proxy validation data (they confirm or deny our inferences). Every new data source improves every inference. The platform gets smarter with every user — a competitor starting from zero has a cold-start problem.', metric:'500+ customers by Year 5', color:'var(--moss)'},
+  {n:4, title:'Regulatory Trust Moat', desc:'SOC 2 Type 2, ISO 27001, data residency agreements, export-control compliance for SAR. Enterprise procurement requires these certifications. A competitor needs 18-24 months to achieve them from a standing start.', metric:'5 certifications', color:'var(--rust)'},
+  {n:5, title:'Distribution Moat', desc:'ICMM partnership (24 mining majors), IRMA partnership (audited ESG), PDAC/Indaba/LME Week presence, the annual "State of Resource Intelligence" report. These relationships take years to build and are personal, not transactional.', metric:'3 industry partnerships', color:'var(--brass)'},
+];
+
+/* ============================================================
+   DATA: Kill criteria
+   ============================================================ */
+const killCriteria = [
+  {trigger:'< 3 LOIs signed by Month 3', action:'Pivot: Focus on the single persona with the highest pain. Rebuild the pitch around one inference, one persona, one price point. If still no LOIs by Month 6, return capital to investors.'},
+  {trigger:'0 design partners converted to full-price by Month 12', action:'Diagnose: Is it the product (doesn\'t work) or the market (doesn\'t pay)? If product: hire a domain expert to fix the inference. If market: pivot to a different vertical (oil & gas, agriculture) using the same fusion engine.'},
+  {trigger:'Gross margin < 40% at $5M ARR', action:'Data costs are too high. Renegotiate all keyed API contracts. Cut the most expensive 3 sources. Replace with open alternatives. If margin doesn\'t recover to 60%+ by Month 18, the business model is broken — consider wind-down.'},
+  {trigger:'CAC payback > 18 months at $15M ARR', action:'Sales motion is broken. Fire the VP Sales. Move to product-led growth (self-serve only). Cut headcount by 30%. If CAC doesn\'t recover to <12 months by Month 24, sell to a strategic.'},
+  {trigger:'Marketplace GMV < $2M after 12 months live', action:'The platform thesis has failed. Kill the marketplace. Lay off the marketplace team. Focus on being a great product company (still a $100M+ opportunity). Do not throw good money after the platform dream.'},
+  {trigger:'Top 3 customers churn in same quarter', action:'Existential risk — the product doesn\'t work or a competitor launched. Immediately interview all churned customers. If competitor: match features within 90 days. If product: freeze new features and fix the core. If neither found: the market has shifted — reassess the entire thesis.'},
+];
+
+/* ============================================================
+   RENDER: Phase timeline + detail
+   ============================================================ */
+const phaseNodes = document.getElementById('phaseNodes');
+const phaseDetail = document.getElementById('phaseDetail');
+let activePhase = 1;
+
+function renderPhaseNodes(){
+  phaseNodes.innerHTML = phases.map(p => `
+    <div class="phase-node ${p.n === activePhase ? 'active' : ''}" data-phase="${p.n}">
+      <div class="ring">${p.n}</div>
+      <div class="label">${p.name}</div>
+    </div>
+  `).join('');
+  phaseNodes.querySelectorAll('.phase-node').forEach(el => {
+    el.addEventListener('click', () => {
+      activePhase = parseInt(el.dataset.phase);
+      renderPhaseNodes();
+      renderPhaseDetail();
+    });
+  });
+}
+
+function renderPhaseDetail(){
+  const p = phases.find(ph => ph.n === activePhase);
+  const wsKeys = ['Data','Product','GTM','Funding','Team','Legal'];
+  const wsIcons = {
+    Data:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>',
+    Product:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+    GTM:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+    Funding:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+    Team:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+    Legal:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+  };
+  
+  phaseDetail.innerHTML = `
+    <div class="card p-6 md:p-10" style="animation: fadeIn 0.5s both">
+      <div class="flex items-start justify-between flex-wrap gap-4 mb-6 pb-6 border-b border-[var(--line)]">
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <span class="font-display text-5xl" style="color:${p.color}">${p.n}</span>
+            <div>
+              <div class="font-mono text-xs uppercase tracking-[0.2em]" style="color:${p.color}">${p.months} · ${p.duration}</div>
+              <h3 class="font-display text-3xl md:text-4xl mt-1">${p.name}</h3>
+            </div>
+          </div>
+          <p class="text-[var(--bone-dim)] max-w-3xl leading-relaxed">${p.summary}</p>
+        </div>
+        <div class="text-right space-y-3">
+          <div><div class="font-display text-3xl" style="color:${p.color}">${p.arr}</div><div class="text-xs uppercase tracking-wider text-[var(--muted)]">Target ARR</div></div>
+          <div><div class="font-mono text-sm text-[var(--bone)]">${p.funding}</div><div class="text-xs uppercase tracking-wider text-[var(--muted)]">Funding</div></div>
+        </div>
+      </div>
+      
+      <div class="grid lg:grid-cols-3 gap-6 mb-6">
+        <div class="lg:col-span-2">
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">North Star Metric</div>
+          <div class="text-lg text-[var(--bone)] leading-relaxed">${p.northStar}</div>
+        </div>
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--muted)] mb-2">Team Burn</div>
+          <div class="text-sm text-[var(--bone-dim)]">${p.hire}</div>
+        </div>
+      </div>
+      
+      <div class="space-y-1 mb-6">
+        <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--copper)] mb-3">Workstream Detail</div>
+        ${wsKeys.map(ws => `
+          <div class="ws-row">
+            <div class="ws-label">${wsIcons[ws]} ${ws}</div>
+            <div class="ws-tasks">
+              ${p.workstreams[ws].map(t => `<div class="ws-task"><span class="marker"></span><span>${t}</span></div>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--rust)] mb-3">Top 3 Risks This Phase</div>
+          <div class="space-y-3">
+            ${p.risks.map(r => `
+              <div class="p-3 border border-[var(--line)] rounded-lg bg-[rgba(0,0,0,0.3)]">
+                <div class="text-sm text-[var(--bone)] mb-1">${r.r}</div>
+                <div class="text-xs text-[var(--bone-dim)]"><span class="text-[var(--rust)]">Mitigation:</span> ${r.m}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div>
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--moss)] mb-3">Exit Gates (Must Achieve Before Next Phase)</div>
+          <div class="space-y-2">
+            ${p.gates.map(g => `<div class="gate-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg> ${g}</div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   RENDER: Gantt matrix
+   ============================================================ */
+const ganttGrid = document.getElementById('ganttGrid');
+function renderGantt(){
+  let html = '';
+  workstreams.forEach(ws => {
+    html += `<div class="grid gap-1 mb-1" style="grid-template-columns:120px repeat(6,1fr)">`;
+    html += `<div class="text-[11px] font-mono uppercase tracking-wider text-[var(--copper)] p-2 flex items-center">${ws.name}</div>`;
+    ws.cells.forEach(c => {
+      html += `<div class="gantt-cell ${c.level === 'peak' ? 'peak' : c.level === 'active' ? 'active' : 'wind'}">${c.text}</div>`;
+    });
+    html += `</div>`;
+  });
+  ganttGrid.innerHTML = html;
+}
+
+/* ============================================================
+   RENDER: Day 1-30
+   ============================================================ */
+const day1List = document.getElementById('day1List');
+function renderDay1(){
+  day1List.innerHTML = day1Actions.map((a, i) => `
+    <div class="check-item ${i < 5 ? 'checked' : ''}" data-idx="${i}">
+      <div class="check-box"></div>
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="font-mono text-[10px] uppercase tracking-wider text-[var(--copper)]">${a.day}</span>
+          <span class="font-mono text-[10px] px-1.5 py-0.5 rounded ${a.priority === 'Critical' ? 'bg-[rgba(196,99,74,.15)] text-[var(--rust)]' : a.priority === 'High' ? 'bg-[rgba(212,184,122,.15)] text-[var(--brass)]' : 'bg-[rgba(154,150,168,.1)] text-[var(--slag)]'}">${a.priority}</span>
+        </div>
+        <div class="check-text text-sm text-[var(--bone)] leading-relaxed">${a.task}</div>
+        <div class="text-[10px] text-[var(--muted)] mt-1 font-mono">Owner: ${a.owner}</div>
+      </div>
+    </div>
+  `).join('');
+  day1List.querySelectorAll('.check-item').forEach(el => {
+    el.addEventListener('click', () => el.classList.toggle('checked'));
+  });
+}
+
+/* ============================================================
+   RENDER: Funding roadmap
+   ============================================================ */
+const fundingList = document.getElementById('fundingList');
+function renderFunding(){
+  fundingList.innerHTML = fundingRounds.map((f, i) => `
+    <div class="card p-5" style="animation: fadeIn 0.5s ${i*0.1}s both">
+      <div class="grid md:grid-cols-12 gap-4 items-center">
+        <div class="md:col-span-2">
+          <div class="font-display text-xl" style="color:${f.color}">${f.round}</div>
+          <div class="text-[10px] font-mono text-[var(--muted)] uppercase tracking-wider">${f.timing}</div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="fund-bar">
+            <div class="fill" style="width:${f.barWidth}%;background:${f.color}"></div>
+            <span class="amt" style="color:${f.color}">${f.amount}</span>
+          </div>
+        </div>
+        <div class="md:col-span-3">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Source</div>
+          <div class="text-xs text-[var(--bone-dim)]">${f.source}</div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Valuation</div>
+          <div class="text-xs font-mono text-[var(--bone)]">${f.valuation}</div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="text-[10px] uppercase tracking-wider text-[var(--muted)] mb-1">Use of Funds</div>
+          <div class="text-xs text-[var(--bone-dim)]">${f.use}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   RENDER: Risk matrix
+   ============================================================ */
+const riskGrid = document.getElementById('riskGrid');
+function renderRisks(){
+  let html = '';
+  risks.forEach(r => {
+    const lClass = r.likelihood === 'High' ? 'risk-high' : r.likelihood === 'Med' ? 'risk-med' : 'risk-low';
+    const iClass = r.impact === 'High' ? 'risk-high' : r.impact === 'Med' ? 'risk-med' : 'risk-low';
+    html += `
+      <div class="grid gap-3 mb-1 py-2 border-b border-[var(--line)]" style="grid-template-columns:1fr 100px 100px 1fr">
+        <div class="text-sm text-[var(--bone)] p-2">${r.risk}</div>
+        <div class="flex items-center justify-center"><span class="risk-cell ${lClass}">${r.likelihood}</span></div>
+        <div class="flex items-center justify-center"><span class="risk-cell ${iClass}">${r.impact}</span></div>
+        <div class="text-xs text-[var(--bone-dim)] p-2 leading-relaxed">${r.mitigation}</div>
+      </div>
+    `;
+  });
+  riskGrid.innerHTML = html;
+}
+
+/* ============================================================
+   RENDER: Moat
+   ============================================================ */
+const moatGrid = document.getElementById('moatGrid');
+function renderMoat(){
+  moatGrid.innerHTML = moatLayers.map(m => `
+    <div class="card p-6" style="animation: fadeIn 0.5s ${m.n*0.1}s both">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="font-display text-3xl" style="color:${m.color}">${m.n.toString().padStart(2,'0')}</span>
+        <h3 class="font-display text-xl" style="color:${m.color}">${m.title}</h3>
+      </div>
+      <p class="text-sm text-[var(--bone-dim)] leading-relaxed mb-4">${m.desc}</p>
+      <div class="font-mono text-2xl" style="color:${m.color}">${m.metric}</div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   RENDER: Kill criteria
+   ============================================================ */
+const killList = document.getElementById('killList');
+function renderKill(){
+  killList.innerHTML = killCriteria.map((k, i) => `
+    <div class="card p-6" style="border-color:rgba(196,99,74,0.2);animation: fadeIn 0.5s ${i*0.1}s both">
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 rounded-full border-2 border-[var(--rust)] flex items-center justify-center bg-[rgba(196,99,74,0.1)]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c4634a" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        </div>
+        <div class="flex-1">
+          <div class="font-mono text-[10px] uppercase tracking-wider text-[var(--rust)] mb-1">Kill Criterion #${i+1}</div>
+          <div class="text-[var(--bone)] font-medium mb-2">${k.trigger}</div>
+          <div class="text-sm text-[var(--bone-dim)] leading-relaxed"><span class="text-[var(--brass)]">Action:</span> ${k.action}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   BACKGROUND VISUALS
+   ============================================================ */
+function buildTopo(){
+  const g = document.getElementById('topoGroup');
+  let html = '';
+  for(let i=0;i<20;i++){
+    const cx = 720 + Math.sin(i*0.7) * 200;
+    const cy = 450 + Math.cos(i*0.5) * 150;
+    const r = 80 + i*35;
+    const op = 0.3 + (i % 7) * 0.05;
+    html += `<path class="topo-path" d="M ${cx-r},${cy} a ${r},${r*0.7} 0 1,0 ${r*2},0 a ${r},${r*0.7} 0 1,0 ${-r*2},0" style="opacity:${op}"/>`;
+  }
+  for(let i=0;i<8;i++){
+    const y = i * 120;
+    html += `<path class="topo-path" d="M 0,${y} Q 360,${y-30} 720,${y+10} T 1440,${y-20}" style="opacity:${0.2 + i*0.04}"/>`;
+  }
+  g.innerHTML = html;
+}
+
+const dustCanvas = document.getElementById('dustCanvas');
+const dustCtx = dustCanvas.getContext('2d');
+let dust = [];
+function resizeDust(){
+  dustCanvas.width = window.innerWidth;
+  dustCanvas.height = window.innerHeight;
+  dust = [];
+  for(let i=0;i<60;i++){
+    dust.push({
+      x: Math.random() * dustCanvas.width,
+      y: Math.random() * dustCanvas.height,
+      r: Math.max(0.3, Math.random()*1.5),
+      vx: (Math.random()-0.5)*0.15,
+      vy: (Math.random()-0.5)*0.15,
+      a: 0.1 + Math.random()*0.4,
+      hue: Math.random() > 0.7 ? 'moss' : 'copper'
+    });
+  }
+}
+function animateDust(){
+  dustCtx.clearRect(0,0,dustCanvas.width,dustCanvas.height);
+  dust.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if(p.x<0) p.x = dustCanvas.width;
+    if(p.x>dustCanvas.width) p.x = 0;
+    if(p.y<0) p.y = dustCanvas.height;
+    if(p.y>dustCanvas.height) p.y = 0;
+    const color = p.hue==='copper' ? `rgba(200,152,88,${p.a})` : `rgba(122,138,111,${p.a})`;
+    dustCtx.fillStyle = color;
+    dustCtx.beginPath();
+    dustCtx.arc(p.x, p.y, Math.max(0.2, p.r), 0, Math.PI*2);
+    dustCtx.fill();
+  });
+  requestAnimationFrame(animateDust);
+}
+
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  const g = document.getElementById('topoGroup');
+  if(g) g.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded', () => {
+  buildTopo();
+  resizeDust();
+  animateDust();
+  renderPhaseNodes();
+  renderPhaseDetail();
+  renderGantt();
+  renderDay1();
+  renderFunding();
+  renderRisks();
+  renderMoat();
+  renderKill();
+  window.addEventListener('resize', resizeDust);
+  
+  const style = document.createElement('style');
+  style.innerHTML = `@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}`;
+  document.head.appendChild(style);
+});
+</script>
+</body>
+</html>
