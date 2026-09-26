@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assay LIMS Walkthrough — SIG × HGF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #13150F;
+      --panel: #1A1D16;
+      --panel-2: #20241C;
+      --border: #33362A;
+      --border-soft: #262920;
+      --text: #E9E6D8;
+      --text-muted: #9B9987;
+      --text-faint: #6C6B5D;
+      --gold: #C9A227;
+      --gold-dim: #7A6519;
+      --teal: #4A9483;
+      --teal-dim: #2E5C51;
+      --rust: #BD5A34;
+      --rust-dim: #6E3A22;
+      --radius: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand h1 {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .brand span {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    select,
+    button {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px;
+      background: var(--panel-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    select:hover,
+    button:hover {
+      border-color: var(--text-faint);
+    }
+
+    button.primary {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: #F5E9C4;
+      font-weight: 500;
+    }
+
+    button.primary:hover {
+      background: #8C721C;
+    }
+
+    .layout {
+      display: flex;
+      height: calc(100vh - 65px);
+      min-height: 600px;
+    }
+
+    .graph-pane {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+      background:
+        radial-gradient(var(--border-soft) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-position: -11px -11px;
+    }
+
+    .graph-pane svg {
+      display: block;
+      margin: 24px auto 40px;
+    }
+
+    .legend {
+      position: sticky;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      display: flex;
+      gap: 18px;
+      padding: 10px 20px;
+      background: rgba(19, 21, 15, 0.92);
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .inspector {
+      width: 400px;
+      flex-shrink: 0;
+      border-left: 1px solid var(--border);
+      background: var(--panel);
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .inspector h2 {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-faint);
+      margin-bottom: 12px;
+    }
+
+    .empty-state {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.7;
+      padding-top: 6px;
+    }
+
+    .empty-state .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+
+    .node-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .node-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .type-badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      border: 1px solid;
+      margin-bottom: 14px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 13px;
+      gap: 12px;
+    }
+
+    .field-row .k {
+      color: var(--text-muted);
+    }
+
+    .field-row .v {
+      font-family: 'IBM Plex Mono', monospace;
+      text-align: right;
+    }
+
+    .section {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .section h3 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+
+    .balance-box {
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      background: var(--panel-2);
+    }
+
+    .balance-pass {
+      border-color: var(--teal-dim);
+    }
+
+    .balance-warn {
+      border-color: var(--rust-dim);
+    }
+
+    .balance-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-pass {
+      background: var(--teal);
+    }
+
+    .dot-warn {
+      background: var(--rust);
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 14px;
+    }
+
+    .checklist-item {
+      font-size: 13px;
+      color: var(--text);
+      padding: 8px 0 8px 16px;
+      position: relative;
+      border-bottom: 1px solid var(--border-soft);
+      line-height: 1.4;
+    }
+
+    .checklist-item::before {
+      content: "›";
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-weight: 600;
+    }
+    
+    .checklist-item.audit::before {
+      content: "⚠";
+      color: var(--rust);
+    }
+
+    .check-log {
+      margin-top: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .check-log h2 {
+      margin-bottom: 10px;
+    }
+
+    .check-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-soft);
+      font-size: 12px;
+    }
+
+    .check-row .op {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text);
+    }
+
+    .check-row .delta {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .ok {
+      color: var(--teal);
+    }
+
+    .bad {
+      color: var(--rust);
+    }
+
+    /* SVG node styling */
+    .g-node {
+      cursor: pointer;
+    }
+
+    .g-node rect {
+      fill: var(--panel-2);
+      stroke: var(--border);
+      stroke-width: 1;
+      transition: stroke 0.15s, filter 0.15s;
+    }
+
+    .g-node.type-active rect {
+      stroke: var(--gold-dim);
+    }
+
+    .g-node.type-archive rect {
+      stroke: var(--teal-dim);
+    }
+
+    .g-node.type-discard rect {
+      stroke: var(--rust-dim);
+    }
+
+    .g-node.type-input rect {
+      stroke: var(--border);
+      stroke-dasharray: 3 3;
+    }
+
+    .g-node.type-final rect {
+      fill: #241D0D;
+      stroke: var(--gold);
+    }
+
+    .g-node:hover rect {
+      stroke: var(--text-faint);
+    }
+
+    .g-node.selected rect {
+      stroke: var(--gold);
+      stroke-width: 1.6;
+      filter: drop-shadow(0 0 5px rgba(201, 162, 39, 0.35));
+    }
+
+    .g-node.related rect {
+      stroke: var(--gold-dim);
+      stroke-width: 1.4;
+    }
+
+    .n-title {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      fill: var(--text);
+    }
+
+    .n-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      fill: var(--text-muted);
+    }
+
+    .edge {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 1.3;
+      transition: stroke 0.15s, stroke-width 0.15s;
+    }
+
+    .edge.related {
+      stroke: var(--gold-dim);
+      stroke-width: 2;
+    }
+
+    @media (max-width: 860px) {
+      .layout {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .inspector {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+
+      .graph-pane {
+        height: 60vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="brand">
+      <h1>Assay LIMS Walkthrough — SIG × HGF</h1>
+      <span>Prestea Mine · Offline-first architecture · 2-week build sprint</span>
+    </div>
+    <div class="controls">
+      <select id="dataset-select">
+        <option value="lineage">HGF End-to-End Fire Assay Workflow (13 Stages)</option>
+        <option value="composite">Bulk metallurgical composite — merge example</option>
+      </select>
+      <button id="check-btn" class="primary">Run mass balance check</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="graph-pane">
+      <div class="legend" id="legend"></div>
+      <svg id="graph-svg" role="img"></svg>
+    </div>
+    <div class="inspector" id="inspector">
+      <div class="empty-state">
+        Click any node in the graph to inspect the transformation that produced it. This prototype reflects the HGF stakeholder review, including the 19 change requests, audit rules, and offline-first architecture requirements.
+        <div class="hint">The graph is the data model: every edge is a real record with mass_in, mass_out, an operator and a timestamp. Tray integrity from fusion to cupellation is enforced.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TOLERANCE_PCT = 5; // mass balance tolerance
+
+    /* ---------- DATASETS ---------- */
+
+    const lineage = {
+      viewBox: "0 0 800 1600",
+      col: { L: 70, C: 310, R: 550, W: 180, H: 56 },
+      legend: [
+        ["type-active", "Active path"],
+        ["type-archive", "Retained / archived"],
+        ["type-discard", "Discarded"],
+        ["type-input", "Raw material input"],
+        ["type-final", "Reported result"]
+      ],
+      nodes: [
+        {
+          id: "received", type: "input", x: 310, y: 20, label: "Field Sampling & Receiving", sub: "Rig campaign / Manifest",
+          walkthrough: [
+            "Rig campaign capture: drill holes, coordinates, positioning.",
+            "Sample submission tied to borehole ID; type HQ-2 / NQ-2.",
+            "Auto-generated codes + printed sticker tags per sample, batch tag per bag.",
+            "Chain-of-custody handover sign-off to lab dispatch.",
+            "Manifest verification with 'mismatch for review' flagging.",
+            "Lab ID auto-generated — replaces manual numbering.",
+            "Digital scale integration — weight captured to each sample ID.",
+            "Accept / Hold / Reject with mandatory reason codes."
+          ],
+          provenance: "Field Geologist Station -> Receiving Clerk Station", produced_by: null
+        },
+
+        {
+          id: "dried", type: "active", x: 310, y: 136, label: "Drying", sub: "Max 8h cycle, 3 ovens",
+          produced_by: {
+            txId: "tx-dry", op: "DRY", instrument: "Oven (81 samples/tray max)", operator: "Lab Technician", ts: "2026-09-01 09:12",
+            inputs: [{ id: "received", label: "Received", mass: 3000 }],
+            outputs: [{ id: "dried", label: "Dried", mass: 2810 }],
+            note: "Drying-station selection: select batch first, then specific tray (250-350 sample batches)."
+          },
+          walkthrough: [
+            "Redesign selection: select batch first, then specific samples/tray to load.",
+            "Handle variable batch sizes (250-350) with 81-sample tray limit; track loaded ranges.",
+            "Record drying start time per sample (max 8-hour cycle, 3 ovens, temp setpoint).",
+            "Remove 'Drain vessel' field from drying form (delete or set once globally).",
+            "Keep operator pre-transfer checklist before moving to next stage."
+          ]
+        },
+
+        {
+          id: "crushed", type: "active", x: 310, y: 252, label: "Crushing & Splitting", sub: "Sequential, 1 at a time",
+          produced_by: {
+            txId: "tx-crush", op: "CRUSH_SPLIT", instrument: "Jaw Crusher (2 crushers, 2mm gap)", operator: "Accountable Technician", ts: "2026-09-01 11:40",
+            inputs: [{ id: "dried", label: "Dried", mass: 2810 }],
+            outputs: [{ id: "crushed", label: "Crushed", mass: 1405 }, { id: "reject", label: "Pulp Reject", mass: 1405 }],
+            note: "Sequential one-sample-at-a-time processing (batch -> sample)."
+          },
+          walkthrough: [
+            "Capture the technician who performed crushing & splitting at every step.",
+            "Add crusher selection (2 on site) with jaw gap clearance setting (2 mm).",
+            "Sequential one-sample-at-a-time processing; UI must follow batch-then-sample order.",
+            "Add a selectable preparation method list (Grind, Screen Fire, Ultra Fine, etc.)."
+          ]
+        },
+        {
+          id: "reject", type: "archive", x: 70, y: 368, label: "Pulp Reject", sub: "1405 g, archived",
+          produced_by: {
+            txId: "tx-crush", op: "CRUSH_SPLIT", instrument: "Jaw Crusher", operator: "Accountable Technician", ts: "2026-09-01 11:40",
+            inputs: [{ id: "dried", label: "Dried", mass: 2810 }],
+            outputs: [{ id: "crushed", label: "Crushed", mass: 1405 }, { id: "reject", label: "Pulp Reject", mass: 1405 }],
+            note: "Retained for reference after the crushing and splitting stage."
+          }
+        },
+
+        {
+          id: "pulp", type: "active", x: 310, y: 484, label: "Pulverizing", sub: "85% passing 75µm",
+          produced_by: {
+            txId: "tx-pulverise", op: "PULVERISE", instrument: "Ring mill RM1", operator: "Accountable Technician", ts: "2026-09-01 13:05",
+            inputs: [{ id: "crushed", label: "Crushed", mass: 1405 }],
+            outputs: [{ id: "pulp", label: "Pulp", mass: 1380 }],
+            note: "Pulverizing to powdery form enhances reactivity for fire assay."
+          },
+          walkthrough: [
+            "QC sizing analysis: 1 in every 20 samples.",
+            "Accept entered sieve figures and auto-generate QC graphs for 2 mm crusher check (~85% passing).",
+            "Auto-generate QC graphs for 75 µm pulverizing check (plant performance cited at ~98%).",
+            "HGF to send reference graphs for format replication."
+          ]
+        },
+
+        {
+          id: "charge", type: "active", x: 310, y: 600, label: "Weighing & Fluxing", sub: "Pulp weight + flux",
+          produced_by: {
+            txId: "tx-weighout", op: "WEIGH_OUT", instrument: "Analytical balance B7", operator: "F. Owusu", ts: "2026-09-02 08:20",
+            inputs: [{ id: "pulp", label: "Pulp", mass: 1380 }],
+            outputs: [{ id: "charge", label: "Assay charge", mass: 50 }, { id: "pulparchive", label: "Pulp archive", mass: 1330 }],
+            note: "NB: Most important is weight of pulp. Weigh before assay. Fluxing added as configuration."
+          },
+          walkthrough: [
+            "Capture flux & reagents before fusion is initiated.",
+            "Correct reagent capture position/timing in the fusion flow.",
+            "Add as configuration."
+          ]
+        },
+        {
+          id: "pulparchive", type: "archive", x: 550, y: 600, label: "Pulp archive", sub: "1330 g, retained",
+          produced_by: {
+            txId: "tx-weighout", op: "WEIGH_OUT", instrument: "Analytical balance B7", operator: "F. Owusu", ts: "2026-09-02 08:20",
+            inputs: [{ id: "pulp", label: "Pulp", mass: 1380 }],
+            outputs: [{ id: "charge", label: "Assay charge", mass: 50 }, { id: "pulparchive", label: "Pulp archive", mass: 1330 }],
+            note: "Lost or delayed samples revisitable; data pullable at any time."
+          }
+        },
+
+        {
+          id: "flux", type: "input", x: 70, y: 832, label: "Flux added", sub: "150 g",
+          provenance: "Litharge, soda ash, borax, silica, reducing agent", produced_by: null
+        },
+
+        {
+          id: "fusion", type: "active", x: 310, y: 832, label: "Fusion", sub: "Furnace 1 or 2",
+          produced_by: {
+            txId: "tx-fuse", op: "FUSE", instrument: "Fusion Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 09:00",
+            inputs: [{ id: "charge", label: "Assay charge", mass: 50 }, { id: "flux", label: "Flux", mass: 150 }],
+            outputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }, { id: "slag", label: "Slag", mass: 170 }],
+            note: "Main purpose: get the lead button."
+          },
+          walkthrough: [
+            "Furnace selection fields: Fusion Furnace 1/2 must be selectable.",
+            "Enforce tray integrity from fusion to cupellation: same tray, same sequential order. (Audit-Critical)",
+            "System must not allow changes to tray sequence at this point."
+          ]
+        },
+
+        {
+          id: "leadbutton", type: "active", x: 310, y: 948, label: "Lead Button Weighed", sub: "25 g mass obtained",
+          produced_by: {
+            txId: "tx-fuse", op: "FUSE", instrument: "Fusion Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 09:00",
+            inputs: [{ id: "charge", label: "Assay charge", mass: 50 }, { id: "flux", label: "Flux", mass: 150 }],
+            outputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }, { id: "slag", label: "Slag", mass: 170 }],
+            note: "Separated from slag, cleaned, hammered into a cube."
+          }
+        },
+        {
+          id: "slag", type: "discard", x: 70, y: 948, label: "Slag", sub: "170 g, discarded",
+          produced_by: {
+            txId: "tx-fuse", op: "FUSE", instrument: "Fusion Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 09:00",
+            inputs: [{ id: "charge", label: "Assay charge", mass: 50 }, { id: "flux", label: "Flux", mass: 150 }],
+            outputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }, { id: "slag", label: "Slag", mass: 170 }],
+            note: "Discarded."
+          }
+        },
+
+        {
+          id: "cupellation", type: "active", x: 310, y: 1064, label: "Cupellation", sub: "Furnace 1 or 2",
+          produced_by: {
+            txId: "tx-cupel", op: "CUPEL", instrument: "Cupellation Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 11:30",
+            inputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }],
+            outputs: [{ id: "prill", label: "Prill", mass: 0.00073 }, { id: "litharge", label: "Litharge", mass: 24.99927 }],
+            note: "Tray & sequential order carried through from fusion — never altered."
+          },
+          walkthrough: [
+            "Furnace selection fields: Cupellation Furnace 1/2 must be selectable.",
+            "Cupel matrix type set once globally: standard cupel used throughout; remove repetitive per-batch steps.",
+            "Prill is not read directly — sent to wet chemistry digestion."
+          ]
+        },
+
+        {
+          id: "prill", type: "active", x: 310, y: 1180, label: "Prill", sub: "730 µg",
+          produced_by: {
+            txId: "tx-cupel", op: "CUPEL", instrument: "Cupellation Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 11:30",
+            inputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }],
+            outputs: [{ id: "prill", label: "Prill", mass: 0.00073 }, { id: "litharge", label: "Litharge", mass: 24.99927 }],
+            note: "Weighed on a microbalance."
+          }
+        },
+        {
+          id: "litharge", type: "archive", x: 70, y: 1180, label: "Litharge Saved", sub: "~25 g, flux",
+          produced_by: {
+            txId: "tx-cupel", op: "CUPEL", instrument: "Cupellation Furnace 1/2", operator: "F. Owusu", ts: "2026-09-02 11:30",
+            inputs: [{ id: "leadbutton", label: "Lead button", mass: 25 }],
+            outputs: [{ id: "prill", label: "Prill", mass: 0.00073 }, { id: "litharge", label: "Litharge", mass: 24.99927 }],
+            note: "Litharge saved (as) flux for future fusion runs."
+          }
+        },
+
+        {
+          id: "digestion", type: "active", x: 310, y: 1296, label: "Digestion", sub: "Wet chemistry",
+          produced_by: {
+            txId: "tx-digest", op: "DIGEST", instrument: "Acid digestion", operator: "Lab QA", ts: "2026-09-02 13:00",
+            inputs: [{ id: "prill", label: "Prill", mass: 0.00073 }],
+            outputs: [{ id: "digestion", label: "Solution", mass: null }],
+            note: "Split Digestion & AAS Reading into two separate stages."
+          },
+          walkthrough: [
+            "Split Digestion & AAS Reading into two separate stages (currently captured as one)."
+          ]
+        },
+
+        {
+          id: "aas", type: "active", x: 310, y: 1412, label: "AAS / Gravimetric Finish", sub: "Full-page view",
+          produced_by: {
+            txId: "tx-aas", op: "AAS_READ", instrument: "AAS / Gravimetric parting", operator: "Lab QA", ts: "2026-09-02 14:00",
+            inputs: [{ id: "digestion", label: "Solution", mass: null }],
+            outputs: [{ id: "aas", label: "Reading", mass: null }],
+            note: "Atomic Absorption Spectrometry reading or gravimetric parting alternative finish."
+          },
+          walkthrough: [
+            "Move the Finish (AAS/Gravimetric) step to a full-page view (same layout as other stations).",
+            "Instrument, furnace, prill count and method all selectable.",
+            "Cross-check fields against documents HGF shared."
+          ]
+        },
+
+        {
+          id: "grade", type: "final", x: 310, y: 1528, label: "QA/QC & Reporting", sub: "14.6 g/t Au, Printable Report",
+          reporting: [
+            "Select → Get graph to be presented → Work sheet",
+            "Select date from and to → select blanks",
+            "Give graph report → Give all values for that standard",
+            "Bring out all outliers",
+            "QA review, sign off, generate results printable",
+            "Take off all standards → blanks & standards are taken out",
+            "Sent to Boss / Quality Control"
+          ],
+          walkthrough: [
+            "Lock QC figures: once entered/picked, they cannot be changed by anyone. (Audit Rule)",
+            "Strip internal standards & lab blanks from client reports.",
+            "Report client duplicates as unknown samples (never flagged as duplicates).",
+            "Monthly blanks graph (1st–31st) pulled against set limit files.",
+            "Per-standard graphs retrieve every recorded value to plot performance/bias.",
+            "Worksheet control positions reserve defined spots for standards, duplicates, blanks.",
+            "Track % passing 75 µm (target ≥85%; plant performance ~98%) for client claims.",
+            "Report export format: match field layout of sample reports HGF shared.",
+            "Record editing restricted to Supervisors & Managers only."
+          ],
+          produced_by: {
+            txId: "tx-finish", op: "REPORT", instrument: "QA Console & AAS", operator: "Supervisor / Manager", ts: "2026-09-02 15:00",
+            inputs: [{ id: "aas", label: "Reading", mass: null }],
+            outputs: [{ id: "grade", label: "Final Grade", mass: null }],
+            note: "Two-Tier UI: Simple forms for operators, full oversight dashboard for admin."
+          }
+        }
+      ],
+      connections: [
+        { txId: "tx-dry", d: "M400,76 L400,136" },
+        { txId: "tx-crush", d: "M400,192 L400,252" },
+        { txId: "tx-crush-out", d: "M400,308 L400,338 L160,338 L160,368" },
+        { txId: "tx-pulverise", d: "M400,308 L400,484" },
+        { txId: "tx-weighout", d: "M400,540 L400,600" },
+        { txId: "tx-weighout-out", d: "M490,628 L550,628" },
+        { txId: "tx-fuse", d: "M400,656 L400,832" },
+        { txId: "tx-fuse", d: "M250,860 L310,860" },
+        { txId: "tx-fuse-out", d: "M400,888 L400,948" },
+        { txId: "tx-fuse-out", d: "M400,888 L400,918 L160,918 L160,948" },
+        { txId: "tx-cupel", d: "M400,1004 L400,1064" },
+        { txId: "tx-cupel-out", d: "M400,1120 L400,1180" },
+        { txId: "tx-cupel-out", d: "M400,1120 L400,1150 L160,1150 L160,1180" },
+        { txId: "tx-digest", d: "M400,1236 L400,1296" },
+        { txId: "tx-aas", d: "M400,1352 L400,1412" },
+        { txId: "tx-report", d: "M400,1468 L400,1528" }
+      ]
+    };
+
+    const composite = {
+      viewBox: "0 0 800 464",
+      col: { L: 70, C: 310, R: 550, W: 180, H: 56 },
+      legend: [
+        ["type-input", "Parent pulp"],
+        ["type-active", "Active path"],
+        ["type-discard", "Discarded"],
+        ["type-final", "Reported result"]
+      ],
+      nodes: [
+        {
+          id: "pulpA", type: "input", x: 70, y: 20, label: "Pulp A", sub: "DDH-2214, 233 g",
+          provenance: "Archived pulp from hole DDH-2214", produced_by: null
+        },
+        {
+          id: "pulpB", type: "input", x: 310, y: 20, label: "Pulp B", sub: "DDH-2215, 233 g",
+          provenance: "Archived pulp from hole DDH-2215", produced_by: null
+        },
+        {
+          id: "pulpC", type: "input", x: 550, y: 20, label: "Pulp C", sub: "DDH-2216, 234 g",
+          provenance: "Archived pulp from hole DDH-2216", produced_by: null
+        },
+
+        {
+          id: "composite", type: "active", x: 310, y: 136, label: "Composite", sub: "700 g bulk sample",
+          produced_by: {
+            txId: "tx-merge", op: "MERGE", instrument: "Riffle blend, tray 4", operator: "S. Adjei", ts: "2026-08-20 10:15",
+            inputs: [{ id: "pulpA", label: "Pulp A", mass: 233 }, { id: "pulpB", label: "Pulp B", mass: 233 }, { id: "pulpC", label: "Pulp C", mass: 234 }],
+            outputs: [{ id: "composite", label: "Composite", mass: 700 }],
+            note: "Three parents combine into one node — the case a flat parent_id table can't express."
+          }
+        },
+
+        {
+          id: "leachtest", type: "active", x: 310, y: 252, label: "Leach test", sub: "Bottle roll, 48 h",
+          produced_by: {
+            txId: "tx-leach", op: "LEACH_TEST", instrument: "Bottle roll, NaCN", operator: "S. Adjei", ts: "2026-08-21 09:00",
+            inputs: [{ id: "composite", label: "Composite", mass: 700 }],
+            outputs: [{ id: "recovery", label: "Recovery", mass: null }, { id: "tailings", label: "Tailings", mass: 695 }],
+            note: "Metallurgical test on the merged bulk sample. Recovery is read from solution assay, not mass."
+          }
+        },
+
+        {
+          id: "recovery", type: "final", x: 310, y: 368, label: "Recovery", sub: "92.4% Au",
+          produced_by: {
+            txId: "tx-leach", op: "LEACH_TEST", instrument: "Bottle roll, NaCN", operator: "S. Adjei", ts: "2026-08-21 09:00",
+            inputs: [{ id: "composite", label: "Composite", mass: 700 }],
+            outputs: [{ id: "recovery", label: "Recovery", mass: null }, { id: "tailings", label: "Tailings", mass: 695 }],
+            note: "Traceable back to all three parent holes and their original from–to intervals."
+          }
+        },
+        {
+          id: "tailings", type: "discard", x: 550, y: 368, label: "Tailings", sub: "695 g, discarded",
+          produced_by: {
+            txId: "tx-leach", op: "LEACH_TEST", instrument: "Bottle roll, NaCN", operator: "S. Adjei", ts: "2026-08-21 09:00",
+            inputs: [{ id: "composite", label: "Composite", mass: 700 }],
+            outputs: [{ id: "recovery", label: "Recovery", mass: null }, { id: "tailings", label: "Tailings", mass: 695 }],
+            note: "Leached solids, discarded after solution is assayed."
+          }
+        }
+      ],
+      connections: [
+        { txId: "tx-merge", d: "M160,76 L160,106 L400,106 L400,136" },
+        { txId: "tx-merge", d: "M400,76 L400,136" },
+        { txId: "tx-merge", d: "M640,76 L640,106 L400,106 L400,136" },
+        { txId: "tx-leach", d: "M400,192 L400,252" },
+        { txId: "tx-leach-out", d: "M400,308 L400,368" },
+        { txId: "tx-leach-out", d: "M400,308 L400,338 L640,338 L640,368" }
+      ]
+    };
+
+    const DATASETS = { lineage, composite };
+
+    /* ---------- RENDER ---------- */
+
+    const svg = document.getElementById("graph-svg");
+    const legendEl = document.getElementById("legend");
+    const inspector = document.getElementById("inspector");
+    let current = null;
+    let selectedId = null;
+
+    const TYPE_COLOR = {
+      "type-active": "var(--gold-dim)",
+      "type-archive": "var(--teal-dim)",
+      "type-discard": "var(--rust-dim)",
+      "type-input": "var(--border)",
+      "type-final": "var(--gold)"
+    };
+
+    function fmtMass(g) {
+      if (g === null || g === undefined) return "—";
+      if (g < 0.01) return (g * 1000000).toFixed(0) + " µg";
+      if (g < 1) return (g * 1000).toFixed(2) + " mg";
+      return g.toLocaleString(undefined, { maximumFractionDigits: 2 }) + " g";
+    }
+
+    function renderGraph(name) {
+      current = DATASETS[name];
+      selectedId = null;
+      svg.setAttribute("viewBox", current.viewBox);
+      const width = parseInt(current.viewBox.split(" ")[2]);
+      svg.setAttribute("width", width);
+      svg.setAttribute("height", current.viewBox.split(" ")[3]);
+      svg.innerHTML = "";
+
+      const svgns = "http://www.w3.org/2000/svg";
+      const defs = document.createElementNS(svgns, "defs");
+      defs.innerHTML = '<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>';
+      svg.appendChild(defs);
+
+      // edges first (so nodes sit above)
+      current.connections.forEach(c => {
+        const p = document.createElementNS(svgns, "path");
+        p.setAttribute("d", c.d);
+        p.setAttribute("class", "edge");
+        p.setAttribute("data-tx", c.txId);
+        p.setAttribute("marker-end", "url(#arrow)");
+        svg.appendChild(p);
+      });
+
+      // nodes
+      current.nodes.forEach(n => {
+        const w = current.col.W, h = current.col.H;
+        const g = document.createElementNS(svgns, "g");
+        g.setAttribute("class", "g-node type-" + n.type);
+        g.setAttribute("data-id", n.id);
+        g.setAttribute("tabindex", "0");
+        g.setAttribute("role", "button");
+        g.setAttribute("aria-label", n.label + ", " + n.sub);
+
+        const rect = document.createElementNS(svgns, "rect");
+        rect.setAttribute("x", n.x); rect.setAttribute("y", n.y);
+        rect.setAttribute("width", w); rect.setAttribute("height", h);
+        rect.setAttribute("rx", 6);
+        g.appendChild(rect);
+
+        const t1 = document.createElementNS(svgns, "text");
+        t1.setAttribute("class", "n-title");
+        t1.setAttribute("x", n.x + w / 2); t1.setAttribute("y", n.y + h / 2 - 8);
+        t1.setAttribute("text-anchor", "middle");
+        t1.textContent = n.label;
+        g.appendChild(t1);
+
+        const t2 = document.createElementNS(svgns, "text");
+        t2.setAttribute("class", "n-sub");
+        t2.setAttribute("x", n.x + w / 2); t2.setAttribute("y", n.y + h / 2 + 12);
+        t2.setAttribute("text-anchor", "middle");
+        t2.textContent = n.sub;
+        g.appendChild(t2);
+
+        g.addEventListener("click", () => selectNode(n.id));
+        g.addEventListener("keypress", (e) => { if (e.key === "Enter") selectNode(n.id); });
+        svg.appendChild(g);
+      });
+
+      renderLegend();
+      showEmptyState();
+    }
+
+    function renderLegend() {
+      legendEl.innerHTML = "";
+      current.legend.forEach(([cls, label]) => {
+        const item = document.createElement("div");
+        item.className = "legend-item";
+        item.innerHTML = '<span class="swatch" style="background:' + TYPE_COLOR[cls] + '"></span>' + label;
+        legendEl.appendChild(item);
+      });
+    }
+
+    function showEmptyState() {
+      inspector.innerHTML = '<div class="empty-state">Click any node in the graph to inspect the transformation that produced it. This prototype reflects the HGF stakeholder review, including the 19 change requests, audit rules, and offline-first architecture requirements.<div class="hint">The graph is the data model: every edge is a real record with mass_in, mass_out, an operator and a timestamp. Tray integrity from fusion to cupellation is enforced.</div></div>';
+    }
+
+    function selectNode(id) {
+      selectedId = id;
+      const node = current.nodes.find(n => n.id === id);
+
+      // clear highlights
+      svg.querySelectorAll(".g-node").forEach(g => g.classList.remove("selected", "related"));
+      svg.querySelectorAll(".edge").forEach(e => e.classList.remove("related"));
+
+      svg.querySelector('.g-node[data-id="' + id + '"]').classList.add("selected");
+
+      if (node.produced_by) {
+        const tx = node.produced_by;
+        const relatedIds = new Set([...tx.inputs.map(i => i.id), ...tx.outputs.map(o => o.id)]);
+        relatedIds.forEach(rid => {
+          if (rid === id) return;
+          const el = svg.querySelector('.g-node[data-id="' + rid + '"]');
+          if (el) el.classList.add("related");
+        });
+        svg.querySelectorAll('.edge[data-tx="' + tx.txId + '"]').forEach(e => e.classList.add("related"));
+        // also highlight the paired output edge (e.g. tx-fuse-out) if present
+        svg.querySelectorAll('.edge[data-tx="' + tx.txId + '-out"]').forEach(e => e.classList.add("related"));
+      }
+
+      renderInspector(node);
+    }
+
+    function renderInspector(n) {
+      let html = "";
+      html += '<div class="node-title">' + n.label + '</div>';
+      html += '<div class="node-sub mono">' + n.sub + '</div>';
+
+      const badgeColor = TYPE_COLOR["type-" + n.type];
+      html += '<div class="type-badge" style="border-color:' + badgeColor + ';color:' + badgeColor + '">' + n.type.replace('type-', '') + '</div>';
+
+      // Render Walkthrough & Change Requests if available
+      if (n.walkthrough) {
+        html += '<div class="section"><h3>HGF Change Requests & Notes</h3><div class="todo-list">';
+        n.walkthrough.forEach(item => {
+          let isAudit = item.includes("Audit");
+          html += '<div class="checklist-item ' + (isAudit ? 'audit' : '') + '">' + item + '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      // Render Reporting Steps if available
+      if (n.reporting) {
+        html += '<div class="section"><h3>QA/QC Reporting Steps</h3><div class="todo-list">';
+        n.reporting.forEach(item => {
+          html += '<div class="checklist-item">' + item + '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      if (!n.produced_by) {
+        html += '<div class="section"><h3>Provenance</h3><div class="note">' + (n.provenance || "Root node — no incoming transformation.") + '</div></div>';
+      } else {
+        const tx = n.produced_by;
+        html += '<div class="section"><h3>Produced by</h3>';
+        html += '<div class="field-row"><span class="k">Operation</span><span class="v">' + tx.op + '</span></div>';
+        html += '<div class="field-row"><span class="k">Operator</span><span class="v">' + tx.operator + '</span></div>';
+        html += '<div class="field-row"><span class="k">Instrument</span><span class="v">' + tx.instrument + '</span></div>';
+        html += '<div class="field-row"><span class="k">Timestamp</span><span class="v">' + tx.ts + '</span></div>';
+        html += '</div>';
+
+        html += '<div class="section"><h3>Inputs</h3>';
+        tx.inputs.forEach(i => {
+          html += '<div class="field-row"><span class="k">' + i.label + '</span><span class="v">' + fmtMass(i.mass) + '</span></div>';
+        });
+        html += '</div>';
+
+        html += '<div class="section"><h3>Outputs</h3>';
+        tx.outputs.forEach(o => {
+          html += '<div class="field-row"><span class="k">' + o.label + '</span><span class="v">' + fmtMass(o.mass) + '</span></div>';
+        });
+        html += '</div>';
+
+        const massIn = tx.inputs.reduce((s, i) => s + i.mass, 0);
+        const massOutKnown = tx.outputs.filter(o => o.mass !== null);
+        const massOut = massOutKnown.reduce((s, o) => s + o.mass, 0);
+        const hasUnmeasuredOutput = tx.outputs.some(o => o.mass === null);
+
+        html += '<div class="section"><h3>Mass balance</h3>';
+        if (hasUnmeasuredOutput) {
+          html += '<div class="balance-box"><div class="note" style="margin-top:0">This transformation ends in a measured value rather than a weighed mass (e.g. a grade or recovery), so mass balance isn\'t applicable here.</div></div>';
+        } else {
+          const diff = massIn - massOut;
+          const pct = massIn > 0 ? Math.abs(diff / massIn * 100) : 0;
+          const pass = pct <= TOLERANCE_PCT;
+          html += '<div class="balance-box ' + (pass ? "balance-pass" : "balance-warn") + '">';
+          html += '<div class="balance-status"><span class="dot ' + (pass ? "dot-pass" : "dot-warn") + '"></span>' + (pass ? "Within tolerance" : "Out of tolerance") + '</div>';
+          html += '<div class="field-row"><span class="k">Mass in</span><span class="v">' + fmtMass(massIn) + '</span></div>';
+          html += '<div class="field-row"><span class="k">Mass out (sum)</span><span class="v">' + fmtMass(massOut) + '</span></div>';
+          html += '<div class="field-row"><span class="k">Unaccounted</span><span class="v">' + fmtMass(diff) + ' (' + pct.toFixed(1) + '%)</span></div>';
+          html += '</div>';
+        }
+        html += '</div>';
+
+        html += '<div class="note">' + tx.note + '</div>';
+      }
+
+      inspector.innerHTML = html;
+    }
+
+    function runMassBalanceCheck() {
+      const seen = new Set();
+      const results = [];
+      current.nodes.forEach(n => {
+        if (!n.produced_by) return;
+        const tx = n.produced_by;
+        if (seen.has(tx.txId)) return;
+        seen.add(tx.txId);
+        const hasUnmeasuredOutput = tx.outputs.some(o => o.mass === null);
+        if (hasUnmeasuredOutput) return;
+        const massIn = tx.inputs.reduce((s, i) => s + i.mass, 0);
+        const massOut = tx.outputs.reduce((s, o) => s + o.mass, 0);
+        const diff = massIn - massOut;
+        const pct = massIn > 0 ? Math.abs(diff / massIn * 100) : 0;
+        results.push({ op: tx.op, pct, pass: pct <= TOLERANCE_PCT, diff });
+      });
+
+      let html = '<div class="check-log"><h2>Integrity check — ' + results.length + ' transformations</h2>';
+      results.forEach(r => {
+        html += '<div class="check-row"><span class="op">' + r.op + '</span><span class="delta ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "✓ " : "✗ ") + r.pct.toFixed(1) + '% drift</span></div>';
+      });
+      const allPass = results.every(r => r.pass);
+      html += '<div class="note">' + (allPass ? "All transformations reconcile within " + TOLERANCE_PCT + "% tolerance." : "One or more transformations exceed tolerance — investigate before releasing the grade.") + '</div>';
+      html += '</div>';
+
+      if (selectedId) {
+        const node = current.nodes.find(n => n.id === selectedId);
+        renderInspector(node);
+        inspector.insertAdjacentHTML("beforeend", html);
+      } else {
+        inspector.innerHTML = '<div class="empty-state" style="padding-top:0">Ran an integrity check across the whole graph.</div>' + html;
+      }
+    }
+
+    document.getElementById("dataset-select").addEventListener("change", (e) => {
+      renderGraph(e.target.value);
+    });
+    document.getElementById("check-btn").addEventListener("click", runMassBalanceCheck);
+
+    renderGraph("lineage");
+  </script>
+</body>
+
+</html>

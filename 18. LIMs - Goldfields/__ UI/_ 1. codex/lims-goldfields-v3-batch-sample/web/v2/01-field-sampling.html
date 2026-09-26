@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — Field Sampling | Drill Core Sampling Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1816;
+    --bg-2: #221f1c;
+    --paper: #ebe4d4;
+    --paper-2: #ddd4be;
+    --ink: #1a1816;
+    --ochre: #c8782d;
+    --rust: #8a3b1c;
+    --moss: #4a5a3a;
+    --mineral: #6b8e8a;
+    --line: rgba(26, 24, 22, 0.25);
+    --line-light: rgba(235, 228, 212, 0.18);
+    --accent: #d4a017;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'Fraunces', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle geologic texture background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(200, 120, 45, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(74, 90, 58, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 90%, rgba(139, 59, 28, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.92 0 0 0 0 0.89 0 0 0 0 0.83 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: overlay;
+  }
+
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 60px 80px;
+  }
+
+  /* HEADER */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line-light);
+    margin-bottom: 60px;
+  }
+
+  .top-bar .left {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+
+  .protocol-mark {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--ochre);
+    text-transform: uppercase;
+  }
+
+  .doc-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: rgba(235, 228, 212, 0.5);
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.6;
+  }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    margin-bottom: 80px;
+    align-items: stretch;
+    min-height: 60vh;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .step-number {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: clamp(180px, 22vw, 320px);
+    line-height: 0.8;
+    color: var(--paper);
+    margin-bottom: 0;
+    position: relative;
+    display: inline-block;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .step-number::after {
+    content: '';
+    position: absolute;
+    bottom: 18%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--ochre);
+    transform: scaleX(0.4);
+    transform-origin: left;
+  }
+
+  .step-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .step-label::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: var(--ochre);
+  }
+
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(48px, 6vw, 84px);
+    line-height: 0.95;
+    color: var(--paper);
+    margin-bottom: 32px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ochre);
+  }
+
+  .hero-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(235, 228, 212, 0.7);
+    max-width: 460px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Hero card — sample visualization */
+  .hero-card {
+    background: var(--paper);
+    color: var(--ink);
+    padding: 36px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 
+      0 30px 60px -20px rgba(0,0,0,0.6),
+      0 0 0 1px rgba(235, 228, 212, 0.1);
+    transform: rotate(0.5deg);
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='p'><feTurbulence baseFrequency='0.9' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .hero-card > * { position: relative; z-index: 1; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+
+  .card-header .stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--rust);
+    text-transform: uppercase;
+    border: 1px solid var(--rust);
+    padding: 4px 8px;
+    transform: rotate(-2deg);
+  }
+
+  .card-header .barcode {
+    display: flex;
+    gap: 1px;
+    align-items: flex-end;
+    height: 24px;
+  }
+
+  .barcode span {
+    display: block;
+    background: var(--ink);
+    width: 2px;
+  }
+
+  /* Drill core illustration */
+  .core-viz {
+    margin: 8px 0 24px;
+    height: 100px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+  }
+
+  .core-segment {
+    flex: 1;
+    background: linear-gradient(180deg, 
+      #b8a682 0%, 
+      #a8946a 30%, 
+      #94814f 60%, 
+      #7a6a3e 100%);
+    position: relative;
+    border-right: 1px solid rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+
+  .core-segment::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      repeating-linear-gradient(45deg, transparent 0, transparent 4px, rgba(0,0,0,0.06) 4px, rgba(0,0,0,0.06) 5px),
+      repeating-linear-gradient(-12deg, transparent 0, transparent 8px, rgba(139, 59, 28, 0.15) 8px, rgba(139, 59, 28, 0.15) 9px);
+  }
+
+  .core-segment:nth-child(2) {
+    background: linear-gradient(180deg, #c8a06a, #a87e44, #6a4a20);
+  }
+  .core-segment:nth-child(2)::before {
+    background-image: 
+      repeating-linear-gradient(30deg, transparent 0, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px),
+      radial-gradient(circle at 30% 50%, rgba(0,0,0,0.2) 0%, transparent 20%),
+      radial-gradient(circle at 70% 30%, rgba(0,0,0,0.15) 0%, transparent 15%);
+  }
+
+  .core-segment:nth-child(3) {
+    background: linear-gradient(180deg, #8a7a5a, #6a5a3a, #4a3a20);
+  }
+  .core-segment:nth-child(3)::before {
+    background-image: 
+      repeating-linear-gradient(75deg, transparent 0, transparent 2px, rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 3px),
+      radial-gradient(circle at 50% 50%, rgba(212, 160, 23, 0.3) 0%, transparent 30%);
+  }
+
+  .core-segment:nth-child(4) {
+    background: linear-gradient(180deg, #5a6a4a, #3a4a2a, #2a3a1a);
+  }
+  .core-segment:nth-child(4)::before {
+    background-image: 
+      repeating-linear-gradient(15deg, transparent 0, transparent 5px, rgba(0,0,0,0.12) 5px, rgba(0,0,0,0.12) 6px);
+  }
+
+  .depth-marker {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink);
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 16px;
+  }
+
+  .depth-marker span {
+    flex: 1;
+    text-align: center;
+    border-right: 1px dashed var(--line);
+    padding: 2px 0;
+  }
+  .depth-marker span:last-child { border-right: none; }
+
+  .card-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 8px;
+    border-bottom: 1px dotted var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+
+  .card-row .label {
+    color: rgba(26, 24, 22, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 9px;
+  }
+
+  .card-row .value {
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .card-row .value.accent { color: var(--rust); }
+
+  .seal-line {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(26, 24, 22, 0.7);
+  }
+
+  /* SECTIONS — common */
+  section {
+    margin-bottom: 100px;
+    position: relative;
+  }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 60px;
+    align-items: end;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--ochre);
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1;
+    color: var(--paper);
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--ochre);
+    font-weight: 400;
+  }
+
+  /* Role / Outcome / Batch */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line-light);
+    border: 1px solid var(--line-light);
+  }
+
+  .meta-cell {
+    background: var(--bg-2);
+    padding: 32px;
+    position: relative;
+  }
+
+  .meta-cell .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .meta-cell .value {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--paper);
+    font-weight: 400;
+  }
+
+  .meta-cell .value strong {
+    font-weight: 700;
+    color: var(--paper);
+  }
+
+  .meta-cell .footnote {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(235, 228, 212, 0.5);
+    margin-top: 12px;
+    line-height: 1.6;
+  }
+
+  /* USER FLOW */
+  .flow-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 80px;
+  }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 24px;
+    align-items: start;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--line-light);
+    position: relative;
+  }
+
+  .flow-step .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--ochre);
+    line-height: 1;
+    padding-top: 4px;
+  }
+
+  .flow-step .body h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    color: var(--paper);
+    margin-bottom: 10px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .flow-step .body p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: rgba(235, 228, 212, 0.7);
+  }
+
+  /* FORM FIELDS */
+  .form-fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line-light);
+    border: 1px solid var(--line-light);
+  }
+
+  .field-group {
+    background: var(--bg-2);
+    padding: 32px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .field-group .group-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ochre);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .field-group .group-label .count {
+    color: rgba(235, 228, 212, 0.4);
+    font-size: 9px;
+  }
+
+  .field-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .field-list li {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 12px 0;
+    color: rgba(235, 228, 212, 0.85);
+    border-bottom: 1px dashed var(--line-light);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .field-list li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--ochre);
+    flex-shrink: 0;
+    transform: rotate(45deg);
+  }
+
+  .field-list li:last-child { border-bottom: none; }
+
+  /* CONTROLS — signature dark panel */
+  .controls-panel {
+    background: linear-gradient(135deg, #2a2520 0%, #1f1c19 100%);
+    padding: 60px;
+    border: 1px solid rgba(200, 120, 45, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .controls-panel::before {
+    content: 'CUSTODY';
+    position: absolute;
+    top: 30px;
+    right: -30px;
+    font-family: 'Fraunces', serif;
+    font-size: 200px;
+    font-weight: 900;
+    color: rgba(200, 120, 45, 0.04);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    transform: rotate(0deg);
+    pointer-events: none;
+  }
+
+  .controls-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+
+  .controls-intro {
+    grid-column: 1 / -1;
+    margin-bottom: 12px;
+  }
+
+  .controls-intro h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 36px;
+    color: var(--paper);
+    margin-bottom: 16px;
+    font-variation-settings: 'opsz' 144;
+  }
+
+  .controls-intro h3 em {
+    font-style: italic;
+    color: var(--ochre);
+  }
+
+  .controls-intro p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: rgba(235, 228, 212, 0.6);
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  .control-item {
+    padding: 24px;
+    background: rgba(235, 228, 212, 0.03);
+    border-left: 2px solid var(--ochre);
+    position: relative;
+  }
+
+  .control-item .ctrl-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ochre);
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .control-item p {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--paper);
+    font-weight: 400;
+  }
+
+  .control-item .key {
+    color: var(--ochre);
+    font-style: italic;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    margin-top: 100px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(235, 228, 212, 0.4);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .doc-footer .next {
+    color: var(--ochre);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .doc-footer .next::after {
+    content: '→';
+    font-family: serif;
+    font-size: 14px;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .step-number, .hero-title, .hero-subtitle, .hero-card {
+    animation: fadeUp 1s ease-out backwards;
+  }
+  .step-number { animation-delay: 0.1s; }
+  .hero-title { animation-delay: 0.3s; }
+  .hero-subtitle { animation-delay: 0.5s; }
+  .hero-card { animation-delay: 0.4s; }
+
+  .flow-step {
+    animation: slideIn 0.8s ease-out backwards;
+  }
+  .flow-step:nth-child(1) { animation-delay: 0.1s; }
+  .flow-step:nth-child(2) { animation-delay: 0.2s; }
+  .flow-step:nth-child(3) { animation-delay: 0.3s; }
+  .flow-step:nth-child(4) { animation-delay: 0.4s; }
+  .flow-step:nth-child(5) { animation-delay: 0.5s; }
+  .flow-step:nth-child(6) { animation-delay: 0.6s; }
+
+  /* Hover interactivity on hero card */
+  .hero-card:hover {
+    transform: rotate(0deg) translateY(-4px);
+    transition: transform 0.4s ease;
+  }
+
+  .core-segment {
+    transition: flex 0.4s ease;
+  }
+  .core-segment:hover { flex: 1.5; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .page { padding: 24px 24px 60px; }
+    .hero, .section-header, .controls-content { grid-template-columns: 1fr; gap: 32px; }
+    .meta-grid, .form-fields { grid-template-columns: 1fr; }
+    .flow-container { grid-template-columns: 1fr; }
+    .controls-panel { padding: 32px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="left">
+        <span class="protocol-mark">PROTOCOL · 01 / 13</span>
+      </div>
+      <div class="doc-meta">
+        HGF Prestea Mine — Fire Assay LIMS<br>
+        Field Sampling &amp; Receiving · Stage 01
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-left">
+        <div>
+          <div class="step-label">Stage One</div>
+          <div class="step-number">01</div>
+        </div>
+        <div>
+          <h1 class="hero-title">Field Sampling <em>&amp; Receiving</em>.</h1>
+          <p class="hero-subtitle">
+            Drill hole capture at the rig, borehole ID tie, Batch ID assignment, and auto-generated sticker codes.
+            Samples enter the LIMS only after manifest verification, digital scale weighing, and an Accept / Hold / Reject decision.
+          </p>
+        </div>
+      </div>
+
+      <!-- HERO CARD: sample visualization -->
+      <div class="hero-card">
+        <div class="card-header">
+          <div class="stamp">Field Sample</div>
+          <div class="barcode">
+            <span style="height:100%"></span>
+            <span style="height:60%"></span>
+            <span style="height:100%"></span>
+            <span style="height:80%"></span>
+            <span style="height:40%"></span>
+            <span style="height:100%"></span>
+            <span style="height:70%"></span>
+            <span style="height:90%"></span>
+            <span style="height:50%"></span>
+            <span style="height:100%"></span>
+            <span style="height:65%"></span>
+            <span style="height:85%"></span>
+            <span style="height:100%"></span>
+            <span style="height:45%"></span>
+          </div>
+        </div>
+
+        <div class="core-viz">
+          <div class="core-segment"></div>
+          <div class="core-segment"></div>
+          <div class="core-segment"></div>
+          <div class="core-segment"></div>
+        </div>
+
+        <div class="depth-marker">
+          <span>42.00 m</span>
+          <span>43.00 m</span>
+          <span>44.00 m</span>
+          <span>45.00 m</span>
+        </div>
+
+        <div class="card-rows">
+          <div class="card-row">
+            <span class="label">Sample ID</span>
+            <span class="value accent">DDH-2214</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Batch ID</span>
+            <span class="value">B-700</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Tray</span>
+            <span class="value">N/A — Field stage</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Hole Type</span>
+            <span class="value">HQ-2 / NQ-2</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Digital Scale Mass</span>
+            <span class="value">2.94 kg</span>
+          </div>
+          <div class="card-row">
+            <span class="label">Status</span>
+            <span class="value">Accepted</span>
+          </div>
+        </div>
+
+        <div class="seal-line">
+          <span>Sealed · 14:32</span>
+          <span>Custody Open</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROLE / OUTCOME / BATCH -->
+    <section>
+      <div class="section-header">
+        <div class="section-tag">Brief</div>
+        <h2 class="section-title">The handoff begins <em>here</em>.</h2>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta-cell">
+          <span class="label">Role</span>
+          <div class="value"><strong>Field &amp; Receiving Clerk.</strong> Captures drill hole data at the rig, ties samples to the borehole ID, assigns the primary Batch ID, and verifies the manifest at receiving.</div>
+        </div>
+        <div class="meta-cell">
+          <span class="label">Record</span>
+          <div class="value">Auto-generated sample codes + printed sticker/batch tags. Signed <strong>chain-of-custody</strong> for lab dispatch. Manifest verification with mismatch flagging.</div>
+          <div class="footnote">↳ Lab ID auto-generated — replaces manual numbering. Mismatch samples flagged for review.</div>
+        </div>
+        <div class="meta-cell">
+          <span class="label">Outcome</span>
+          <div class="value">Sample enters flow logged under <strong>Batch B-700</strong>. Digital scale mass recorded. Accept, Hold, or Reject with mandatory reason codes.</div>
+          <div class="footnote">↳ Sample: DDH-2214 | Batch: B-700 | Tray: N/A</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USER FLOW -->
+    <section>
+      <div class="section-header">
+        <div class="section-tag">User flow</div>
+        <h2 class="section-title">Eight steps, in <em>order</em>.</h2>
+      </div>
+
+      <div class="flow-container">
+        <div class="flow-step">
+          <div class="num">01</div>
+          <div class="body">
+            <h4>Capture at the rig.</h4>
+            <p>Capture drill hole, coordinates, and positioning at the rig. Confirm the campaign and hole type (HQ-2 / NQ-2) before sampling begins.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">02</div>
+          <div class="body">
+            <h4>Tie to borehole ID.</h4>
+            <p>Tie the sample submission to the borehole ID. Confirm drill hole type (HQ-2 / NQ-2) and link depth interval to the sampling plan.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">03</div>
+          <div class="body">
+            <h4>Assign Batch ID.</h4>
+            <p>Assign the sample to its primary Batch ID (e.g., B-700). Auto-generate sample codes and print sticker tags per sample and batch tag per bag.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">04</div>
+          <div class="body">
+            <h4>Print &amp; seal.</h4>
+            <p>Auto-generate sample codes. Print sticker tags and batch tags. Seal the bag and complete the chain-of-custody for lab dispatch.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">05</div>
+          <div class="body">
+            <h4>Sign chain-of-custody.</h4>
+            <p>Sign off chain-of-custody for lab dispatch. The hand-off is recorded per sample; custody remains open until receiving clerk confirms receipt.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">06</div>
+          <div class="body">
+            <h4>Verify manifest at receiving.</h4>
+            <p>Verify the manifest at receiving. Flag mismatches for review. Samples that do not reconcile against the COC cannot proceed without a deviation record.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">07</div>
+          <div class="body">
+            <h4>Weigh on digital scale.</h4>
+            <p>Weigh the received sample using digital scale integration. Record gross wet mass against the Lab ID auto-generated at this step.</p>
+          </div>
+        </div>
+
+        <div class="flow-step">
+          <div class="num">08</div>
+          <div class="body">
+            <h4>Accept, Hold, or Reject.</h4>
+            <p>Accept, Hold, or Reject each sample with mandatory reason codes. No sample may enter the prep queue without a recorded disposition.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORM FIELDS -->
+    <section>
+      <div class="section-header">
+        <div class="section-tag">Form fields</div>
+        <h2 class="section-title">What gets <em>recorded</em>.</h2>
+      </div>
+
+      <div class="form-fields">
+        <div class="field-group">
+          <div class="group-label">
+            <span>Field Identity</span>
+            <span class="count">06 fields</span>
+          </div>
+          <ul class="field-list">
+            <li>Drill hole ID + coordinates</li>
+            <li>Rig campaign / positioning</li>
+            <li>Sample ID (auto-generated)</li>
+            <li>Batch ID (e.g., B-700)</li>
+            <li>Borehole type (HQ-2 / NQ-2)</li>
+            <li>Sticker / batch tag printed</li>
+          </ul>
+        </div>
+
+        <div class="field-group">
+          <div class="group-label">
+            <span>Receiving &amp; Custody</span>
+            <span class="count">06 fields</span>
+          </div>
+          <ul class="field-list">
+            <li>Manifest reference / COC ID</li>
+            <li>Mismatch flag (if any)</li>
+            <li>Lab ID (auto-generated)</li>
+            <li>Digital scale mass (kg)</li>
+            <li>Receiver &amp; timestamp</li>
+            <li>Sender / receiver signature</li>
+          </ul>
+        </div>
+
+        <div class="field-group">
+          <div class="group-label">
+            <span>Disposition</span>
+            <span class="count">04 fields</span>
+          </div>
+          <ul class="field-list">
+            <li>Status: Accept / Hold / Reject</li>
+            <li>Mandatory reason code</li>
+            <li>Sample condition notes</li>
+            <li>Receiving clerk sign-off</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTROLS & HAND-OFF -->
+    <section>
+      <div class="section-header">
+        <div class="section-tag">Controls &amp; hand-off</div>
+        <h2 class="section-title">Three rules, <em>inviolable</em>.</h2>
+      </div>
+
+      <div class="controls-panel">
+        <div class="controls-content">
+          <div class="controls-intro">
+            <h3>Batch identity is <em>locked here</em>.</h3>
+            <p>
+              Every transformation downstream logs the specific Sample ID (e.g., DDH-2214), Batch ID (e.g., B-700), and Tray ID.
+              The Lab ID replaces manual numbering and is auto-generated at receiving — it can never be reused or reassigned.
+            </p>
+          </div>
+
+          <div class="control-item">
+            <span class="ctrl-num">Control · 01</span>
+            <p><span class="key">Lab ID is auto-generated</span> at receiving — replaces manual numbering. Mismatch between the bag label and manifest must be flagged before any ID is issued.</p>
+          </div>
+
+          <div class="control-item">
+            <span class="ctrl-num">Control · 02</span>
+            <p>A sample cannot enter the prep queue without a recorded <span class="key">Accept / Hold / Reject disposition with a mandatory reason code</span>. No silent intake.</p>
+          </div>
+
+          <div class="control-item">
+            <span class="ctrl-num">Control · 03</span>
+            <p>Rig campaign data (drill holes, coordinates, positioning) is captured at the field stage. Borehole type <span class="key">(HQ-2 / NQ-2)</span> is tied to every sample submission — not assumed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <span>End of stage 01 · Field Sampling &amp; Receiving</span>
+      <span class="next">Stage 02 — Drying</span>
+    </div>
+
+  </div>
+</body>
+</html>
